@@ -1,0 +1,22 @@
+{
+  "name": "arena",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "check": "pnpm run check:governance && pnpm run check:boundary",
+    "check:governance": "python3 scripts/governance-check.py",
+    "check:boundary": "node scripts/boundary-check.mjs",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "build": "turbo run build"
+  },
+  "devDependencies": {
+    "turbo": "catalog:",
+    "typescript": "catalog:"
+  }
+}
