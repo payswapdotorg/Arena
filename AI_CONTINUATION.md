@@ -7,10 +7,9 @@ Default branch: main
 Work-order schema: AWO1.0
 Maximum concurrent workers: 3
 Architecture lock: A1.0
-Current main head: af6c125bb84b01052accde5952f28aeaa0636ecc
 Current authorized item: A001
 Current live Work Order issue: #1
-All successor items: WAITING_ON_DEPENDENCIES.
+Bootstrap governance is committed; use live GitHub state for the exact latest main SHA.
 
 A001 establishes the executable foundation, governance checks, package boundaries, CI/test harness and protocol primitives.
 
