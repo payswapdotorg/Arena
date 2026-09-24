@@ -7,9 +7,13 @@ Maximum concurrent workers: 3
 
 ## Current main head
 
-This state file is updated by the Architect/Tech Lead after every accepted merge.
+af6c125bb84b01052accde5952f28aeaa0636ecc
 
-Current seed/foundation history has been committed in small atomic bootstrap commits. The exact latest SHA is always taken from live GitHub state rather than inferred from this document.
+## Bootstrap status
+
+Repository architecture, governance, requirements, implementation plan, core object specifications, security/data governance, dependency graph and Work Orders are committed.
+
+Live A001 issue: #1.
 
 ## Current frontier
 
@@ -54,40 +58,44 @@ Current seed/foundation history has been committed in small atomic bootstrap com
 
 A001 — Repository foundation, governance, CI, test harness, package boundaries and base protocol primitives.
 
-A001 acceptance must establish:
-
+Acceptance requires:
 - reproducible local install;
 - frozen dependency policy;
-- package/service/app layer rules;
+- package/service/app layer enforcement;
 - governance self-test;
 - boundary self-test;
 - CI;
-- baseline test/typecheck/lint/build commands;
+- baseline typecheck/lint/test/build;
 - package template;
 - contract generation/drift mechanism;
-- documented repository layout;
-- no architecture-lock violations.
+- repository layout documentation;
+- no architecture-lock violation.
 
 ## Verification baseline
 
 No executable baseline exists before A001.
 
-After A001, record the exact commands, versions, result counts, CI run and merge SHA here.
+After A001, record:
+- Node/pnpm/tool versions;
+- exact commands;
+- pass counts;
+- CI run;
+- final merge SHA;
+- known limitations.
 
 ## Review lessons
 
-Record durable lessons from worker failures, connector/platform failures, test gaps and architecture review here. Never rely on chat-only memory.
+Record durable lessons from worker failures, connector/platform failures, test gaps and architecture reviews here.
 
 ## Successor rule
 
 After every accepted merge:
-
-1. reconcile live GitHub ground truth;
-2. update this file with merge SHA and verification baseline;
-3. update AI_CONTINUATION.md and the Architect handoff;
+1. reconcile GitHub ground truth;
+2. update this file with exact merge SHA and verification baseline;
+3. update AI_CONTINUATION.md and docs/LLM-ARCHITECT-HANDOFF.md;
 4. derive READY items from spec/dependency-graph.md;
-5. select at most three disjoint Work Orders;
-6. record dispatch base SHA and ownership;
-7. perform dependency/lockfile reconciliation serially.
+5. dispatch at most three disjoint items;
+6. record base SHA/ownership;
+7. serialize dependency and lockfile reconciliation.
 
-Never dispatch based on stale status text when GitHub state disagrees.
+Never dispatch from stale status text when live GitHub state disagrees.
