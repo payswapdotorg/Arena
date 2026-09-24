@@ -7,20 +7,21 @@ Default branch: main
 Work-order schema: AWO1.0
 Maximum concurrent workers: 3
 Architecture lock: A1.0
-Current main head: e876327d7b998fce0bcbc5efeb0e3f89d6cb6224
+Current main head: af6c125bb84b01052accde5952f28aeaa0636ecc
 Current authorized item: A001
-All successor items: waiting on dependencies.
+Current live Work Order issue: #1
+All successor items: WAITING_ON_DEPENDENCIES.
 
-A001 must establish the executable foundation, governance checks, package boundaries, CI/test harness and protocol primitives.
+A001 establishes the executable foundation, governance checks, package boundaries, CI/test harness and protocol primitives.
 
 After A001 merges:
-
-1. update spec/PROJECT-STATE.md;
-2. update this file and docs/LLM-ARCHITECT-HANDOFF.md with exact merge SHA and verification baseline;
-3. re-derive READY items from spec/dependency-graph.md;
-4. select at most three pairwise-disjoint Work Orders;
-5. record dispatch base SHA and frozen ownership;
-6. never reinterpret a Work Order from conversation context.
+1. reconcile GitHub ground truth;
+2. update spec/PROJECT-STATE.md;
+3. update this file and docs/LLM-ARCHITECT-HANDOFF.md with exact merge SHA and verification baseline;
+4. derive READY items from spec/dependency-graph.md;
+5. select at most three pairwise-disjoint Work Orders;
+6. record dispatch base SHA and frozen ownership;
+7. never reinterpret a Work Order from conversation context.
 
 Core product invariant:
 
@@ -29,6 +30,9 @@ Agent Capability = f(Body, Model, Skills, Tools, Knowledge, Memory, Environment,
 ```
 
 A model is a cognitive substrate, not the durable identity of a professional Agent Body.
+
+Certification invariant:
+Certification applies to the tested Body × Substrate × Environment × Runtime × Suite composition. A model is never inferred to be a professional agent solely because it can possess a certified Body.
 
 Epoch integration is optional. Arena publishes provider-neutral capability-development artifacts and services; Epoch remains authoritative for its own world, action, constraints, delivery and operational records.
 
