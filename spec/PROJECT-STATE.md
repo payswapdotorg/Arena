@@ -5,15 +5,13 @@ Work Order schema: AWO1.0
 Default branch: main
 Maximum concurrent workers: 3
 
-## Current main head
-
-af6c125bb84b01052accde5952f28aeaa0636ecc
-
 ## Bootstrap status
 
-Repository architecture, governance, requirements, implementation plan, core object specifications, security/data governance, dependency graph and Work Orders are committed.
+Repository architecture, governance, requirements, implementation plan, core object specifications, security/data governance, service boundaries, dependency graph and Work Orders are committed.
 
-Live A001 issue: #1.
+Live A001 Work Order: Issue #1.
+
+Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
 ## Current frontier
 
