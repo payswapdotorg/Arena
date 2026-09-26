@@ -518,6 +518,7 @@ def check_frozen_dependencies_repo(root: Path) -> list[str]:
 
 
 def check_contract_drift_repo(root: Path) -> list[str]:
+    violations: list[str] = []
     generator = root / "scripts" / "generate-contracts.mjs"
     if not generator.is_file():
         return ["[G9-drift] scripts/generate-contracts.mjs is missing"]
@@ -530,8 +531,26 @@ def check_contract_drift_repo(root: Path) -> list[str]:
     )
     if result.returncode != 0:
         detail = (result.stderr or result.stdout).strip()
-        return [f"[G9-drift] contract drift detected: {detail}"]
-    return []
+        violations.append(f"[G9-drift] contract drift detected: {detail}")
+    # Package-level generators (Tech Lead reconciliation, A002 merge):
+    # each domain package may ship scripts/generate-contracts.mjs with the
+    # same --check contract; G9 runs every generator so per-package
+    # contracts/artifacts drift is governed centrally.
+    for pkg_gen in sorted(root.glob("packages/*/scripts/generate-contracts.mjs")):
+        pkg_name = pkg_gen.parent.parent.name
+        r = subprocess.run(
+            ["node", str(pkg_gen), "--check"],
+            capture_output=True,
+            text=True,
+            cwd=str(root),
+            check=False,
+        )
+        if r.returncode != 0:
+            detail = (r.stderr or r.stdout).strip()
+            violations.append(
+                f"[G9-drift] contract drift detected ({pkg_name}): {detail}"
+            )
+    return violations
 
 
 def run_repo_checks(root: Path, base_override: str | None) -> tuple[list[str], dict]:
