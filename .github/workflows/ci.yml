@@ -27,8 +27,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      # Full-history checkout is required so that origin/main exists on
+      # pull_request events (default fetch-depth is 1 and checks out only
+      # the PR merge ref). governance-check resolves the diff base from
+      # main/origin/main; --base remains the manual override.
       - name: Checkout
         uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Set up Node (from .nvmrc)
         uses: actions/setup-node@v7.0.0
