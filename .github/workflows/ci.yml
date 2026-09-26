@@ -1,0 +1,65 @@
+# Arena CI (Work Order A001).
+#
+# Runs the full verification battery on every PR and every push to main:
+# install (frozen lockfile) -> governance -> boundary -> typecheck -> lint
+# -> test -> build.
+#
+# Action refs are pinned to exact release tags (governance check G8 rejects
+# floating refs like @main or bare @v4).
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Battery (install / governance / boundary / typecheck / lint / test / build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node (from .nvmrc)
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable corepack (pnpm pinned via packageManager)
+        run: corepack enable
+
+      - name: Show toolchain
+        run: |
+          node --version
+          pnpm --version
+
+      - name: Install (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Governance check (self-tests + repo checks)
+        run: pnpm governance
+
+      - name: Boundary check (self-tests + repo scan)
+        run: pnpm boundary
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
