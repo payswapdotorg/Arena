@@ -56,7 +56,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 
 ## Current authorized assignment
 
-Wave (Phase 1 — canonical capability objects), dispatched by the Tech Lead from main tip <GOVERNANCE_COMMIT_SHA>:
+Wave (Phase 1 — canonical capability objects), dispatched by the Tech Lead from main tip dcf0cb74ed702297929ed2999fe71b7f6bb19fe2:
 
 - A002 — Artifact identity, versioning, provenance and lineage protocol (packages/artifact-protocol, packages/provenance, contracts/artifacts) — Issue #3
 - A003 — Agent Body, BodyVersion, Cognitive Substrate, Possession, Agent Instance protocol (packages/agent-body, contracts/agent-body) — Issue #4
