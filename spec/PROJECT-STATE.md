@@ -9,23 +9,23 @@ Maximum concurrent workers: 3
 
 Repository architecture, governance, requirements, implementation plan, core object specifications, security/data governance, service boundaries, dependency graph and Work Orders are committed.
 
-A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a, head ca8355d982b10ffadca790a1f90842e5ee7ca358). CI green on GitHub runners (run 36257651225). Bootstrap foundation is executable: governance/boundary checkers, CI battery, package boundaries and protocol-core primitives are live on main.
+A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). CI green on GitHub runners for both (runs 36257651225, 36280569487).
 
-Live wave (Phase 1): A002/A003/A004 — Issues #3/#4/#5. A015 is READY (dependency-satisfied, held by the 3-worker concurrency cap).
+Live wave: A003 (Issue #4, in flight), A004 (Issue #5, re-dispatch in flight after a delivery-channel loss), A009 (unlocked by A002 — dispatch authorized). A015 is READY (dependency-satisfied, cap-held).
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
 ## Current frontier
 
 - A001 MERGED
-- A002 ACTIVE
+- A002 MERGED
 - A003 ACTIVE
 - A004 ACTIVE
 - A005 WAITING_ON_DEPENDENCIES
 - A006 WAITING_ON_DEPENDENCIES
 - A007 WAITING_ON_DEPENDENCIES
 - A008 WAITING_ON_DEPENDENCIES
-- A009 WAITING_ON_DEPENDENCIES
+- A009 ACTIVE
 - A010 WAITING_ON_DEPENDENCIES
 - A011 WAITING_ON_DEPENDENCIES
 - A012 WAITING_ON_DEPENDENCIES
@@ -56,13 +56,13 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 
 ## Current authorized assignment
 
-Wave (Phase 1 — canonical capability objects), dispatched by the Tech Lead from main tip dcf0cb74ed702297929ed2999fe71b7f6bb19fe2:
+Wave in flight, bases recorded at dispatch:
 
-- A002 — Artifact identity, versioning, provenance and lineage protocol (packages/artifact-protocol, packages/provenance, contracts/artifacts) — Issue #3
-- A003 — Agent Body, BodyVersion, Cognitive Substrate, Possession, Agent Instance protocol (packages/agent-body, contracts/agent-body) — Issue #4
-- A004 — Capability Graph and skill taxonomy (packages/capability-graph, contracts/capability) — Issue #5
+- A003 — Agent Body protocol (packages/agent-body, contracts/agent-body) — Issue #4 — base dcf0cb74ed702297929ed2999fe71b7f6bb19fe2
+- A004 — Capability Graph and skill taxonomy (packages/capability-graph, contracts/capability) — Issue #5 — base dcf0cb74ed702297929ed2999fe71b7f6bb19fe2 (re-dispatch; first session's delivery was lost to an ephemeral sandbox before harvest)
+- A009 — Environment protocol (packages/environment-protocol, contracts/environment) — unlocked by A002 merge; dispatch from the post-A002 main tip.
 
-Wave rules: pairwise-disjoint surfaces; zero new external runtime dependencies (existing pnpm catalog only); no root manifest/lockfile edits (Tech Lead serializes reconciliation); Envelope<T>/canonical-JSON primitives reused from @arena/protocol-core; generated contracts + drift checks per the A001 convention.
+Wave rules: pairwise-disjoint surfaces; zero new external runtime dependencies (existing pnpm catalog only); no root manifest/lockfile edits (Tech Lead serializes reconciliation — see d21b4fe for the A002 pattern: lockfile intake + G9 package-generator wiring); Envelope<T>/canonical-JSON primitives reused from @arena/protocol-core; generated contracts + drift checks per the A001 convention, package-level generators wired into G9.
 
 A015 remains READY and is dispatched when a concurrency slot frees.
 
@@ -79,6 +79,10 @@ A001 baseline (see docs/verification-baseline.md for the full record):
 ## Review lessons
 
 Record durable lessons from worker failures, connector/platform failures, test gaps and architecture reviews here.
+
+A002 review (2026-09-26):
+- Worker sessions created outside the normal dispatch flow can have ephemeral per-turn sandboxes: anything on disk is lost when the turn ends. Delivery protocol must emit through the transcript (base64 chunks / heredocs) in the finishing turn, not rely on staging alone. Normal-flow sessions have persistent workspaces and stage via the files API.
+- Serial reconciliation pattern that works: worker commits everything except the root lockfile; Tech Lead runs pnpm install, commits lockfile intake + integration patches (G9 package generators), verifies pristine-clone frozen install, pushes, PR, CI, merge.
 
 A001 review (2026-09-26):
 - Local-green is not runner-green: governance resolve_diff_base failed on PR checkouts because default fetch-depth omits origin/main. Fix: fetch-depth: 0 in ci.yml (commit ca8355d). Lesson: any check that depends on ref shape must be exercised on the runner before merge.

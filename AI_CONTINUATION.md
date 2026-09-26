@@ -7,9 +7,9 @@ Default branch: main
 Work-order schema: AWO1.0
 Maximum concurrent workers: 3
 Architecture lock: A1.0
-Current authorized wave: A002/A003/A004 (Phase 1)
-Current live Work Order issues: #3/#4/#5
-A001 is MERGED: PR #2, merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a, CI run 36257651225 green, verification baseline recorded in docs/verification-baseline.md and spec/PROJECT-STATE.md.
+Current authorized wave: A003/A004/A009 (Phase 1 tail + Phase 2 start)
+Current live Work Order issues: #4/#5 (+ A009 to be opened)
+A001 MERGED: PR #2, merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a. A002 MERGED: PR #6, merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b (worker head ea8081c6 + reconciliation d21b4fe; CI 36280569487 green).
 
 A001 delivered the executable foundation: governance/boundary checkers with self-tests, CI battery on GitHub runners, package layering, the new-package scaffolder, deterministic contract generation with drift checks, and the @arena/protocol-core primitives (ProtocolError, CorrelationId/IdempotencyKey, SchemaRef, canonical JSON + sha256, Envelope<T>).
 
