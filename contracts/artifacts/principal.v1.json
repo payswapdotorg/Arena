@@ -1,0 +1,32 @@
+{
+  "$id": "arena:schema/artifacts/principal@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Tenant-scoped principal (creator/publisher/actor). NEVER a raw provider identity: the closed type enum has no model/provider member and the identifier charset excludes the characters provider identity shapes require (architecture-lock rules 10, 23; docs/architecture.md §15, §17).",
+  "properties": {
+    "principalId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "tenant": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "agent-body",
+        "expert",
+        "user",
+        "service",
+        "system"
+      ]
+    }
+  },
+  "required": [
+    "type",
+    "tenant",
+    "principalId"
+  ],
+  "title": "Arena PrincipalRef v1",
+  "type": "object"
+}

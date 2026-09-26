@@ -1,0 +1,49 @@
+{
+  "$id": "arena:schema/provenance/provenance-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the provenance error taxonomy. Unknown codes are rejected when parsing (PROVENANCE_UNKNOWN_ERROR).",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "PROVENANCE_CYCLE_DETECTED",
+        "PROVENANCE_IDENTITY_CONFLICT",
+        "PROVENANCE_INVALID_PRINCIPAL",
+        "PROVENANCE_INVALID_RECORD",
+        "PROVENANCE_INVALID_REF",
+        "PROVENANCE_INVALID_RIGHTS",
+        "PROVENANCE_INVALID_TIMESTAMP",
+        "PROVENANCE_MISSING_RIGHTS",
+        "PROVENANCE_UNKNOWN_ERROR",
+        "PROVENANCE_UNSUPPORTED_RECORD_VERSION"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena ProvenanceError v1",
+  "type": "object"
+}

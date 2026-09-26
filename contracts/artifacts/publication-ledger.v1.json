@@ -1,0 +1,11 @@
+{
+  "$id": "arena:schema/artifacts/publication-ledger@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Append-only publication history. Pure append operations return new ledgers; records are never edited or reordered. Enforces identity immutability (one digest per identity, forever) and retraction targeting.",
+  "items": {
+    "$ref": "publication.v1.json"
+  },
+  "title": "Arena PublicationLedger v1",
+  "type": "array",
+  "uniqueItems": true
+}

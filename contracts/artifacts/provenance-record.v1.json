@@ -1,0 +1,219 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "lineageEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "parent": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "relation": {
+          "enum": [
+            "adapted-from",
+            "composed-of",
+            "derived-from",
+            "extracted-from"
+          ]
+        }
+      },
+      "required": [
+        "parent",
+        "relation"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "rights": {
+      "additionalProperties": false,
+      "properties": {
+        "commercialUse": {
+          "enum": [
+            "allowed",
+            "requires-license",
+            "prohibited"
+          ]
+        },
+        "customerData": {
+          "enum": [
+            "none",
+            "derived",
+            "contains"
+          ]
+        },
+        "license": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9 .+()\\-]{0,63}$",
+          "type": "string"
+        },
+        "professionalLimitations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "redistribution": {
+          "enum": [
+            "allowed",
+            "tenant-only",
+            "prohibited"
+          ]
+        }
+      },
+      "required": [
+        "license",
+        "commercialUse",
+        "redistribution",
+        "customerData"
+      ],
+      "type": "object"
+    },
+    "transformationLineage": {
+      "additionalProperties": false,
+      "properties": {
+        "inputs": {
+          "items": {
+            "$ref": "#/$defs/artifactRef"
+          },
+          "type": "array"
+        },
+        "transform": {
+          "$ref": "#/$defs/artifactRef"
+        }
+      },
+      "required": [
+        "transform",
+        "inputs"
+      ],
+      "type": "object"
+    },
+    "verificationRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "kind": {
+          "enum": [
+            "attestation",
+            "certification",
+            "evaluation",
+            "verification"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "evidence"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/provenance/provenance-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Full provenance for a material artifact (docs/architecture.md §15): stable identity + version + digest, source/creator (tenant-scoped principal, never a raw provider identity), timestamps (UTC millisecond precision), parent refs (lineage edges), rights metadata (mandatory), transformation lineage and verification refs. Self-references and duplicate parents are rejected at construction.",
+  "properties": {
+    "artifact": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "createdAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "creator": {
+      "$ref": "#/$defs/principal"
+    },
+    "parents": {
+      "items": {
+        "$ref": "#/$defs/lineageEdge"
+      },
+      "type": "array"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "recordedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "rights": {
+      "$ref": "#/$defs/rights"
+    },
+    "transformation": {
+      "$ref": "#/$defs/transformationLineage"
+    },
+    "verification": {
+      "items": {
+        "$ref": "#/$defs/verificationRef"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "artifact",
+    "creator",
+    "createdAt",
+    "recordedAt",
+    "parents",
+    "transformation",
+    "rights",
+    "verification"
+  ],
+  "title": "Arena ProvenanceRecord v1",
+  "type": "object"
+}

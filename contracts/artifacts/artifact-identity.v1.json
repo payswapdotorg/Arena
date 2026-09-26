@@ -1,0 +1,27 @@
+{
+  "$id": "arena:schema/artifacts/artifact-identity@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Stable, provider-neutral identity of a material artifact: tenant-scoped namespace (or the reserved 'public' namespace), name, and a semver-compatible version (major.minor.patch with optional prerelease; build metadata is rejected). Identities are immutable: identity + version + content digest are frozen together on the MaterialArtifact (architecture-lock rules 5, 18).",
+  "properties": {
+    "name": {
+      "pattern": "^[a-z][a-z0-9-]{1,127}$",
+      "type": "string"
+    },
+    "namespace": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "namespace",
+    "name",
+    "version"
+  ],
+  "title": "Arena ArtifactIdentity v1",
+  "type": "object"
+}

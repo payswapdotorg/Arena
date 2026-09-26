@@ -1,0 +1,23 @@
+{
+  "$id": "arena:schema/artifacts/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/artifact-protocol. A SchemaRef matching this enum is a known artifact-protocol schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/artifacts/artifact-identity@1.0.0",
+    "arena:schema/artifacts/artifact-published-event@1.0.0",
+    "arena:schema/artifacts/artifact-ref@1.0.0",
+    "arena:schema/artifacts/artifact-error@1.0.0",
+    "arena:schema/artifacts/content-digest@1.0.0",
+    "arena:schema/artifacts/material-artifact@1.0.0",
+    "arena:schema/artifacts/principal@1.0.0",
+    "arena:schema/artifacts/publication@1.0.0",
+    "arena:schema/artifacts/publication-ledger@1.0.0",
+    "arena:schema/artifacts/publish-artifact-command@1.0.0",
+    "arena:schema/artifacts/retract-publication-command@1.0.0",
+    "arena:schema/artifacts/rights@1.0.0",
+    "arena:schema/artifacts/schema-registry@1.0.0",
+    "arena:schema/artifacts/timestamp@1.0.0"
+  ],
+  "title": "Arena artifact-protocol schema registry v1",
+  "type": "string"
+}

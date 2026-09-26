@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/provenance/record-provenance-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Idempotency-keyed command payload appending a provenance record to the lineage store. Travels inside Envelope<T> (architecture-lock rule 17).",
+  "properties": {
+    "record": {
+      "$ref": "provenance-record.v1.json"
+    }
+  },
+  "required": [
+    "record"
+  ],
+  "title": "Arena record-provenance command payload v1",
+  "type": "object"
+}
