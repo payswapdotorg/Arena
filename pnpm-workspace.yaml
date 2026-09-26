@@ -6,10 +6,15 @@ packages:
   - "bodies/*"
   - "environments/*"
 
+# Frozen dependency policy (A001): every catalog entry is an exact version.
+# Workspace manifests reference these via "catalog:" — no floating ranges.
 catalog:
   "@types/node": "22.20.4"
+  "@eslint/js": "10.0.1"
   eslint: "10.11.0"
+  globals: "17.12.0"
   turbo: "2.11.3"
   typescript: "5.9.3"
+  typescript-eslint: "8.70.1"
   vitest: "5.0.1"
   zod: "4.6.5"

@@ -10,13 +10,21 @@
     "check": "pnpm run check:governance && pnpm run check:boundary",
     "check:governance": "python3 scripts/governance-check.py",
     "check:boundary": "node scripts/boundary-check.mjs",
+    "governance": "python3 scripts/governance-check.py",
+    "boundary": "node scripts/boundary-check.mjs",
+    "contracts:generate": "node scripts/generate-contracts.mjs",
+    "new-package": "node scripts/new-package.mjs",
     "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
+    "lint": "turbo run lint && eslint scripts eslint.config.mjs",
     "test": "turbo run test",
     "build": "turbo run build"
   },
   "devDependencies": {
+    "@eslint/js": "catalog:",
+    "eslint": "catalog:",
+    "globals": "catalog:",
     "turbo": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
   }
 }
