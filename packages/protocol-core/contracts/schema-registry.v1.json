@@ -1,0 +1,13 @@
+{
+  "$id": "arena:schema/protocol/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the core protocol schemas defined by @arena/protocol-core. A SchemaRef matching this enum is a known core schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/protocol/envelope@1.0.0",
+    "arena:schema/protocol/protocol-error@1.0.0",
+    "arena:schema/protocol/schema-ref@1.0.0",
+    "arena:schema/protocol/schema-registry@1.0.0"
+  ],
+  "title": "Arena core schema registry v1",
+  "type": "string"
+}

@@ -1,0 +1,68 @@
+{
+  "$id": "arena:schema/protocol/envelope@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Stable wire envelope for Arena protocol messages. Canonical form is canonical JSON (object keys sorted, no insignificant whitespace); the envelope digest is sha256 over the canonical serialization. idempotencyKey MUST be non-null when kind is \"command\" (architecture-lock rule 17: long-running jobs are idempotent and correlation-addressable).",
+  "properties": {
+    "correlationId": {
+      "description": "Correlation identifier for the causal flow this message belongs to.",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "id": {
+      "description": "Unique envelope instance id (UUIDv4).",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "type": "string"
+    },
+    "idempotencyKey": {
+      "description": "Idempotency key; required (non-null) for command messages.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        }
+      ]
+    },
+    "issuedAt": {
+      "description": "RFC 3339 issuance timestamp.",
+      "format": "date-time",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Message classification.",
+      "enum": [
+        "command",
+        "event",
+        "query",
+        "response"
+      ]
+    },
+    "payload": {
+      "description": "Message payload, addressed by the schema ref."
+    },
+    "schema": {
+      "description": "SchemaRef of the payload schema, in string form.",
+      "pattern": "^arena:schema/[a-z][a-z0-9-]*/[a-z][a-z0-9-]*@\\d+\\.\\d+\\.\\d+$",
+      "type": "string"
+    },
+    "v": {
+      "const": 1,
+      "description": "Envelope wire version."
+    }
+  },
+  "required": [
+    "v",
+    "kind",
+    "schema",
+    "id",
+    "correlationId",
+    "idempotencyKey",
+    "issuedAt",
+    "payload"
+  ],
+  "title": "Arena Envelope v1",
+  "type": "object"
+}
