@@ -1,0 +1,55 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/provenance/verification-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A reference to evidence about an artifact: the verification kind plus the content-addressed evidence artifact. Evaluation and verification are distinct responsibilities (architecture-lock rule 7).",
+  "properties": {
+    "evidence": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "kind": {
+      "enum": [
+        "attestation",
+        "certification",
+        "evaluation",
+        "verification"
+      ]
+    }
+  },
+  "required": [
+    "kind",
+    "evidence"
+  ],
+  "title": "Arena VerificationRef v1",
+  "type": "object"
+}

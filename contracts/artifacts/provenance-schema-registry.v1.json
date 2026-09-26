@@ -1,0 +1,17 @@
+{
+  "$id": "arena:schema/provenance/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/provenance. A SchemaRef matching this enum is a known provenance schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/provenance/lineage-edge@1.0.0",
+    "arena:schema/provenance/provenance-error@1.0.0",
+    "arena:schema/provenance/provenance-record@1.0.0",
+    "arena:schema/provenance/provenance-recorded-event@1.0.0",
+    "arena:schema/provenance/record-provenance-command@1.0.0",
+    "arena:schema/provenance/schema-registry@1.0.0",
+    "arena:schema/provenance/transformation-lineage@1.0.0",
+    "arena:schema/provenance/verification-ref@1.0.0"
+  ],
+  "title": "Arena provenance schema registry v1",
+  "type": "string"
+}

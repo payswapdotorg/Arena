@@ -1,0 +1,8 @@
+{
+  "$id": "arena:schema/artifacts/content-digest@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "sha256 content digest (lowercase hex) over the canonical JSON serialization of an artifact's digest-free view {identity, refs, content}. Computed with @arena/protocol-core digestCanonical — never reimplemented.",
+  "pattern": "^[0-9a-f]{64}$",
+  "title": "Arena ContentDigest v1",
+  "type": "string"
+}

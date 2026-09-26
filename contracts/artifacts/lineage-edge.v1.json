@@ -1,0 +1,55 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/provenance/lineage-edge@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One parent edge of a provenance record: the parent artifact reference plus the lineage relation. Self-references are rejected at record construction.",
+  "properties": {
+    "parent": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "relation": {
+      "enum": [
+        "adapted-from",
+        "composed-of",
+        "derived-from",
+        "extracted-from"
+      ]
+    }
+  },
+  "required": [
+    "parent",
+    "relation"
+  ],
+  "title": "Arena LineageEdge v1",
+  "type": "object"
+}

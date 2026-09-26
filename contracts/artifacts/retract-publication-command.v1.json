@@ -1,0 +1,51 @@
+{
+  "$defs": {
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/artifacts/retract-publication-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Idempotency-keyed command payload appending a retraction record for a published artifact. The referenced publication is never rewritten (append-only, architecture-lock rule 6).",
+  "properties": {
+    "publicationDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "publisher": {
+      "$ref": "#/$defs/principal"
+    }
+  },
+  "required": [
+    "publicationDigest",
+    "publisher"
+  ],
+  "title": "Arena retract-publication command payload v1",
+  "type": "object"
+}

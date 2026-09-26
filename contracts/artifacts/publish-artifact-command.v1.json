@@ -1,0 +1,175 @@
+{
+  "$defs": {
+    "artifactIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "materialArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {},
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/artifactIdentity"
+        },
+        "refs": {
+          "items": {
+            "$ref": "#/$defs/artifactRef"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "identity",
+        "refs",
+        "content",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "rights": {
+      "additionalProperties": false,
+      "properties": {
+        "commercialUse": {
+          "enum": [
+            "allowed",
+            "requires-license",
+            "prohibited"
+          ]
+        },
+        "customerData": {
+          "enum": [
+            "none",
+            "derived",
+            "contains"
+          ]
+        },
+        "license": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9 .+()\\-]{0,63}$",
+          "type": "string"
+        },
+        "professionalLimitations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "redistribution": {
+          "enum": [
+            "allowed",
+            "tenant-only",
+            "prohibited"
+          ]
+        }
+      },
+      "required": [
+        "license",
+        "commercialUse",
+        "redistribution",
+        "customerData"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/artifacts/publish-artifact-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Idempotency-keyed command payload making an artifact public. Travels inside Envelope<T>; the envelope idempotencyKey is REQUIRED non-null for commands (architecture-lock rule 17).",
+  "properties": {
+    "artifact": {
+      "$ref": "#/$defs/materialArtifact"
+    },
+    "publisher": {
+      "$ref": "#/$defs/principal"
+    },
+    "rights": {
+      "$ref": "#/$defs/rights"
+    }
+  },
+  "required": [
+    "artifact",
+    "publisher",
+    "rights"
+  ],
+  "title": "Arena publish-artifact command payload v1",
+  "type": "object"
+}

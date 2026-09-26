@@ -1,0 +1,53 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/provenance/transformation-lineage@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "What transform produced this artifact from which parents: the transform is itself a content-addressed artifact reference; inputs reference the consumed parents (every input must also appear among the record parents).",
+  "properties": {
+    "inputs": {
+      "items": {
+        "$ref": "#/$defs/artifactRef"
+      },
+      "type": "array"
+    },
+    "transform": {
+      "$ref": "#/$defs/artifactRef"
+    }
+  },
+  "required": [
+    "transform",
+    "inputs"
+  ],
+  "title": "Arena TransformationLineage v1",
+  "type": "object"
+}

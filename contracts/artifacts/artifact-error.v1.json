@@ -1,0 +1,53 @@
+{
+  "$id": "arena:schema/artifacts/artifact-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the artifact protocol error taxonomy. Unknown codes are rejected when parsing (ARTIFACT_UNKNOWN_ERROR). Core-level failures still travel as @arena/protocol-core ProtocolError structures.",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "ARTIFACT_ALREADY_PUBLISHED",
+        "ARTIFACT_IDENTITY_CONFLICT",
+        "ARTIFACT_INVALID_ARTIFACT",
+        "ARTIFACT_INVALID_DIGEST",
+        "ARTIFACT_INVALID_IDENTITY",
+        "ARTIFACT_INVALID_PRINCIPAL",
+        "ARTIFACT_INVALID_PUBLICATION",
+        "ARTIFACT_INVALID_RIGHTS",
+        "ARTIFACT_INVALID_TIMESTAMP",
+        "ARTIFACT_MISSING_RIGHTS",
+        "ARTIFACT_TAMPERED",
+        "ARTIFACT_UNKNOWN_ERROR",
+        "ARTIFACT_UNRESOLVED_REF",
+        "ARTIFACT_UNSUPPORTED_RECORD_VERSION"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena ArtifactError v1",
+  "type": "object"
+}

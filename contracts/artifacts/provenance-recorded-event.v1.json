@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/provenance/provenance-recorded-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload emitted when a provenance record is stored. Travels inside Envelope<T> with a correlation id and canonical serialization.",
+  "properties": {
+    "record": {
+      "$ref": "provenance-record.v1.json"
+    }
+  },
+  "required": [
+    "record"
+  ],
+  "title": "Arena provenance-recorded event payload v1",
+  "type": "object"
+}

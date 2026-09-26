@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "artifactIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/artifacts/material-artifact@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The immutable, content-addressed artifact unit: identity, embedded artifact references, arbitrary plain-JSON content, and the sha256 digest over the canonical serialization of the digest-free view. Deep-frozen at creation; no mutation API exists (architecture-lock rules 5, 6, 18).",
+  "properties": {
+    "content": {
+      "description": "Arbitrary plain-JSON material content (canonically serializable)."
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "identity": {
+      "$ref": "#/$defs/artifactIdentity"
+    },
+    "refs": {
+      "items": {
+        "$ref": "#/$defs/artifactRef"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "identity",
+    "refs",
+    "content",
+    "digest"
+  ],
+  "title": "Arena MaterialArtifact v1",
+  "type": "object"
+}

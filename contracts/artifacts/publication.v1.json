@@ -1,0 +1,147 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "rights": {
+      "additionalProperties": false,
+      "properties": {
+        "commercialUse": {
+          "enum": [
+            "allowed",
+            "requires-license",
+            "prohibited"
+          ]
+        },
+        "customerData": {
+          "enum": [
+            "none",
+            "derived",
+            "contains"
+          ]
+        },
+        "license": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9 .+()\\-]{0,63}$",
+          "type": "string"
+        },
+        "professionalLimitations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "redistribution": {
+          "enum": [
+            "allowed",
+            "tenant-only",
+            "prohibited"
+          ]
+        }
+      },
+      "required": [
+        "license",
+        "commercialUse",
+        "redistribution",
+        "customerData"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/artifacts/publication@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Explicit, immutable publication record making an artifact public (architecture-lock rule 12). Append-only (rule 6): retraction appends a NEW record with action \"retract\" whose supersedes field carries the record digest of the superseded publication — the original is never rewritten. Rights metadata is mandatory on the public record (rule 23).",
+  "properties": {
+    "action": {
+      "enum": [
+        "publish",
+        "retract"
+      ]
+    },
+    "artifact": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "publishedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "publisher": {
+      "$ref": "#/$defs/principal"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "rights": {
+      "$ref": "#/$defs/rights"
+    },
+    "supersedes": {
+      "description": "Retract records only: record digest of the superseded publication.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "action",
+    "artifact",
+    "publisher",
+    "rights",
+    "publishedAt"
+  ],
+  "title": "Arena PublicationRecord v1",
+  "type": "object"
+}
