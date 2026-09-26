@@ -1,0 +1,8 @@
+{
+  "$id": "arena:schema/protocol/schema-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Versioned addressing scheme for Arena schemas: arena:schema/<namespace>/<name>@<version>. Versions are exact major.minor.patch (no prerelease/build suffixes in core schemas).",
+  "pattern": "^arena:schema/[a-z][a-z0-9-]*/[a-z][a-z0-9-]*@\\d+\\.\\d+\\.\\d+$",
+  "title": "Arena SchemaRef v1",
+  "type": "string"
+}

@@ -1,0 +1,52 @@
+{
+  "$id": "arena:schema/protocol/protocol-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the Arena protocol error taxonomy. Unknown codes are rejected when parsing (PROTOCOL_UNKNOWN_ERROR_CODE).",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "PROTOCOL_CANONICALIZATION_FAILED",
+        "PROTOCOL_ENVELOPE_TAMPERED",
+        "PROTOCOL_INVALID_CORRELATION_ID",
+        "PROTOCOL_INVALID_ENVELOPE",
+        "PROTOCOL_INVALID_IDEMPOTENCY_KEY",
+        "PROTOCOL_INVALID_JSON",
+        "PROTOCOL_INVALID_SCHEMA_REF",
+        "PROTOCOL_SCHEMA_MISMATCH",
+        "PROTOCOL_UNCLASSIFIED_ERROR",
+        "PROTOCOL_UNKNOWN_ERROR_CODE",
+        "PROTOCOL_UNKNOWN_SCHEMA",
+        "PROTOCOL_UNSUPPORTED_VERSION"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context.",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena ProtocolError v1",
+  "type": "object"
+}
