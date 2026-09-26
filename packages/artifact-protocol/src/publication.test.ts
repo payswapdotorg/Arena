@@ -268,7 +268,7 @@ describe('Publication model (negative — fail closed)', () => {
 
   it('a retraction cannot be retracted', async () => {
     const artifact = await sampleArtifact({ rows: 1 });
-    const { ledger, record } = await publishedLedger(artifact);
+    const { record } = await publishedLedger(artifact);
     const retraction = await retractPublication({ publication: record, publisher: PUBLISHER });
     await expect(
       retractPublication({ publication: retraction, publisher: PUBLISHER }),
