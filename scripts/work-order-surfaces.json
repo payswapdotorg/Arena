@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "description": "Machine-readable work-order owned-surface registry. Derived from spec/work-items.md (AWO1.0 dispatch contract). The governance checker (scripts/governance-check.py) enforces: (1) every changed path in a work-order branch matches at least one surface of SOME work order; (2) concurrently ACTIVE/AUTHORIZED work orders have pairwise-disjoint surfaces.",
+  "semantics": {
+    "globs": "fnmatch-style. '*' matches any characters including '/'. A pattern without '*' is an exact path. A pattern ending in '/*' covers the directory tree beneath the prefix.",
+    "root_manifests": "A001's 'root manifests' surface from spec/work-items.md, expanded to explicit root-level file paths.",
+    "active_statuses": ["ACTIVE", "AUTHORIZED"],
+    "notes": "AUTHORIZED is the dispatch status used by spec/PROJECT-STATE.md while a Work Order is in flight; ACTIVE is the docs/GOVERNANCE.md lifecycle term. Both count as concurrent-active for overlap checks."
+  },
+  "carve_outs": [
+    {
+      "work_order": "A001",
+      "paths": ["docs/repo-layout.md", "docs/verification-baseline.md"],
+      "reason": "Dispatched A001 acceptance criteria item 10 explicitly requires these two files, although spec/work-items.md A001 surfaces do not include docs/*. Recorded here transparently so the ownership check remains machine-auditable; flagged to the Tech Lead as an architecture question in the A001 final report."
+    }
+  ],
+  "work_orders": {
+    "A001": {
+      "surfaces": [
+        "package.json",
+        "pnpm-workspace.yaml",
+        "pnpm-lock.yaml",
+        "turbo.json",
+        "tsconfig.base.json",
+        "tsconfig.json",
+        "eslint.config.mjs",
+        ".eslintrc*",
+        ".prettierrc*",
+        ".prettierignore",
+        ".gitignore",
+        ".npmrc",
+        ".nvmrc",
+        ".editorconfig",
+        "LICENSE",
+        "apps/*",
+        "packages/protocol-core/*",
+        "scripts/*",
+        ".github/*"
+      ]
+    },
+    "A002": { "surfaces": ["packages/artifact-protocol/*", "packages/provenance/*", "contracts/artifacts/*"] },
+    "A003": { "surfaces": ["packages/agent-body/*", "contracts/agent-body/*"] },
+    "A004": { "surfaces": ["packages/capability-graph/*", "contracts/capability/*"] },
+    "A005": { "surfaces": ["packages/capability-case/*", "contracts/capability-case/*"] },
+    "A006": { "surfaces": ["packages/expert-registry/*", "contracts/expert/*"] },
+    "A007": { "surfaces": ["packages/expert-qualification/*", "services/expert-matching/*", "contracts/expert-qualification/*"] },
+    "A008": { "surfaces": ["packages/task-spec/*", "services/task-compiler/*", "contracts/task/*"] },
+    "A009": { "surfaces": ["packages/environment-protocol/*", "contracts/environment/*"] },
+    "A010": { "surfaces": ["services/environment-runner/*", "packages/environment-runtime/*"] },
+    "A011": { "surfaces": ["packages/trajectory/*", "services/trajectory-store/*", "contracts/trajectory/*"] },
+    "A012": { "surfaces": ["packages/evaluation/*", "services/evaluation/*", "contracts/evaluation/*"] },
+    "A013": { "surfaces": ["packages/verification/*", "services/verification/*", "contracts/verification/*"] },
+    "A014": { "surfaces": ["services/artifacts/*", "packages/datasets/*", "contracts/dataset/*"] },
+    "A015": { "surfaces": ["packages/job-protocol/*", "services/job-orchestrator/*", "contracts/events/*"] },
+    "A016": { "surfaces": ["packages/model-substrate/*", "adapters/models/*", "contracts/model-substrate/*"] },
+    "A017": { "surfaces": ["apps/web/src/workbench/*", "packages/workbench/*"] },
+    "A018": { "surfaces": ["apps/web/src/console/*", "packages/control-ui/*"] },
+    "A019": { "surfaces": ["packages/skill-extraction/*", "services/skill-extraction/*"] },
+    "A020": { "surfaces": ["packages/learning/*", "services/learning/*", "contracts/learning/*"] },
+    "A021": { "surfaces": ["packages/body-forge/*", "services/body-forge/*"] },
+    "A022": { "surfaces": ["packages/compatibility/*", "services/compatibility/*"] },
+    "A023": { "surfaces": ["packages/certification/*", "services/certification/*", "contracts/certification/*"] },
+    "A024": { "surfaces": ["packages/body-registry/*", "services/body-registry/*"] },
+    "A025": { "surfaces": ["packages/arena-sdk/*", "services/api/*", "contracts/api/*"] },
+    "A026": { "surfaces": ["adapters/epoch/*"] },
+    "A027": { "surfaces": ["examples/epoch-e2e/*", "tests/epoch-e2e/*", "docs/integrations/*"] },
+    "A028": { "surfaces": ["bodies/software-engineer/*", "environments/software-engineer/*", "examples/software-engineer/*"] },
+    "A029": { "surfaces": ["bodies/structural-engineer/*", "environments/structural-engineer/*", "examples/structural-engineer/*"] },
+    "A030": { "surfaces": ["research/*", "benchmarks/*"] },
+    "A031": { "surfaces": ["services/marketplace-experts/*", "apps/web/src/marketplace/experts/*"] },
+    "A032": { "surfaces": ["services/marketplace-artifacts/*", "apps/web/src/marketplace/artifacts/*"] },
+    "A033": { "surfaces": ["services/billing/*", "packages/entitlements/*"] },
+    "A034": { "surfaces": ["services/security/*", "packages/security/*", "tests/security/*"] },
+    "A035": { "surfaces": ["packages/observability/*", "services/observability/*", "docs/operations/*"] },
+    "A036": { "surfaces": ["deploy/*", "ops/*", "docs/release/*", "tests/performance/*", "release/*"] }
+  }
+}

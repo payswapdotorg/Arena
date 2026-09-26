@@ -1,0 +1,4 @@
+{
+  "$id": "arena:schema/protocol/envelope@1.0.0",
+  "note": "DELIBERATELY TAMPERED FIXTURE — governance self-test G9 requires the drift check to fail on this tree. Do not fix; do not copy into packages/protocol-core/contracts/."
+}
