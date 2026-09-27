@@ -1,0 +1,22 @@
+{
+  "$id": "arena:schema/capability-case/evidence-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A digest-addressed evidence reference: the sha256 content digest of the evidence artifact plus a statement of what the evidence shows. Evidence lists are append-only (architecture-lock rule 6); no API removes or rewrites them.",
+  "properties": {
+    "description": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "digest",
+    "description"
+  ],
+  "title": "Arena evidence reference v1",
+  "type": "object"
+}

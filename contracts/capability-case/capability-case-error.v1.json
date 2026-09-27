@@ -1,0 +1,64 @@
+{
+  "$id": "arena:schema/capability-case/error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the capability-case error taxonomy. Unknown codes are rejected when parsing (CAPABILITY_CASE_UNKNOWN_ERROR).",
+  "properties": {
+    "category": {
+      "enum": [
+        "access",
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "CAPABILITY_CASE_CASE_NOT_FOUND",
+        "CAPABILITY_CASE_CROSS_TENANT_ACCESS",
+        "CAPABILITY_CASE_DUPLICATE_EVIDENCE",
+        "CAPABILITY_CASE_EVIDENCE_REMOVAL",
+        "CAPABILITY_CASE_IDENTITY_CONFLICT",
+        "CAPABILITY_CASE_INVALID_CASE",
+        "CAPABILITY_CASE_INVALID_COMPILATION_TARGET",
+        "CAPABILITY_CASE_INVALID_DIGEST",
+        "CAPABILITY_CASE_INVALID_EVIDENCE",
+        "CAPABILITY_CASE_INVALID_IDENTITY",
+        "CAPABILITY_CASE_INVALID_LIFECYCLE",
+        "CAPABILITY_CASE_INVALID_PRINCIPAL",
+        "CAPABILITY_CASE_INVALID_REF",
+        "CAPABILITY_CASE_INVALID_REQUIREMENTS",
+        "CAPABILITY_CASE_INVALID_STATUS",
+        "CAPABILITY_CASE_INVALID_SUPERSESSION",
+        "CAPABILITY_CASE_INVALID_TIMESTAMP",
+        "CAPABILITY_CASE_INVALID_TRANSITION",
+        "CAPABILITY_CASE_INVALID_VERSION",
+        "CAPABILITY_CASE_TAMPERED",
+        "CAPABILITY_CASE_TERMINAL_STATE",
+        "CAPABILITY_CASE_UNKNOWN_ERROR",
+        "CAPABILITY_CASE_UNSUPPORTED_RECORD_VERSION"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context.",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena CapabilityCaseError v1",
+  "type": "object"
+}

@@ -1,0 +1,154 @@
+{
+  "$defs": {
+    "caseRef": {
+      "additionalProperties": false,
+      "properties": {
+        "caseId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "caseId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "evidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest",
+        "description"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/capability-case/lifecycle-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One append-only lifecycle event: kind, timestamp, actor, the status transition, and the structured data the event commits (appended evidence / the superseding version ref). History is append-only and never rewritten (architecture-lock rule 6).",
+  "properties": {
+    "actor": {
+      "$ref": "#/$defs/principal"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "evidenceAppended": {
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "fromStatus": {
+      "enum": [
+        "draft",
+        "submitted",
+        "triaged",
+        "active",
+        "resolved",
+        "superseded"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "case-created",
+        "case-submitted",
+        "case-triaged",
+        "case-activated",
+        "case-resolved",
+        "case-superseded",
+        "evidence-attached"
+      ]
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "supersededBy": {
+      "$ref": "#/$defs/caseRef"
+    },
+    "toStatus": {
+      "enum": [
+        "draft",
+        "submitted",
+        "triaged",
+        "active",
+        "resolved",
+        "superseded"
+      ]
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "kind",
+    "occurredAt",
+    "actor",
+    "fromStatus",
+    "toStatus"
+  ],
+  "title": "Arena capability-case lifecycle event v1",
+  "type": "object"
+}

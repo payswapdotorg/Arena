@@ -1,0 +1,32 @@
+{
+  "$id": "arena:schema/capability-case/case-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A content-addressed reference to one exact case-version STATE: tenant/caseId identity, semver version, and the sha256 digest of that state (the digest pins the exact lifecycle state because status and history are part of the content).",
+  "properties": {
+    "caseId": {
+      "pattern": "^[a-z][a-z0-9-]{0,127}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "tenant": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant",
+    "caseId",
+    "version",
+    "digest"
+  ],
+  "title": "Arena capability-case version ref v1",
+  "type": "object"
+}
