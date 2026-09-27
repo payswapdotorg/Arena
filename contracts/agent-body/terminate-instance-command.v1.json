@@ -1,0 +1,40 @@
+{
+  "$id": "arena:schema/agent-body/terminate-instance-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Idempotency-keyed command payload terminating an agent instance with a FINAL terminal status (completed/failed/terminated). Travels inside Envelope<T> (architecture-lock rule 17).",
+  "properties": {
+    "instanceId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "possessionDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "reason": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "failed",
+        "terminated"
+      ]
+    },
+    "terminatedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "instanceId",
+    "possessionDigest",
+    "status",
+    "reason",
+    "terminatedAt"
+  ],
+  "title": "Arena terminate-instance command payload v1",
+  "type": "object"
+}

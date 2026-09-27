@@ -1,0 +1,49 @@
+{
+  "$id": "arena:schema/agent-body/agent-instance-terminated-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload emitted when an agent instance reaches a terminal state. Travels inside Envelope<T> with a correlation id and canonical serialization.",
+  "properties": {
+    "instanceId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "possessionDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "termination": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "failed",
+            "terminated"
+          ]
+        },
+        "terminatedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "terminatedAt",
+        "reason"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "instanceId",
+    "possessionDigest",
+    "termination"
+  ],
+  "title": "Arena agent-instance-terminated event payload v1",
+  "type": "object"
+}

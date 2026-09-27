@@ -1,0 +1,36 @@
+{
+  "$id": "arena:schema/agent-body/agent-instance-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One append-only event in an agent instance stream: 1-based contiguous sequence, closed kind vocabulary, millisecond UTC timestamp and an optional plain-JSON payload. The reserved kinds (instance-created, started, state-changed, terminated) are managed exclusively by lifecycle transitions; user code appends observation/action/escalation/error events.",
+  "properties": {
+    "kind": {
+      "enum": [
+        "instance-created",
+        "started",
+        "state-changed",
+        "observation",
+        "action",
+        "escalation",
+        "error",
+        "terminated"
+      ]
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "payload": {},
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "sequence",
+    "kind",
+    "occurredAt"
+  ],
+  "title": "Arena AgentInstanceEvent v1",
+  "type": "object"
+}

@@ -1,0 +1,63 @@
+{
+  "$id": "arena:schema/agent-body/agent-body-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the agent body protocol error taxonomy. Unknown codes are rejected when parsing (AGENT_BODY_UNKNOWN_ERROR). Core-level failures still travel as @arena/protocol-core ProtocolError structures.",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "AGENT_BODY_ARTIFACT_VERSION_CONFLICT",
+        "AGENT_BODY_INSTANCE_TERMINATED",
+        "AGENT_BODY_INVALID_BODY_VERSION",
+        "AGENT_BODY_INVALID_COMPATIBILITY_PROFILE",
+        "AGENT_BODY_INVALID_DIGEST",
+        "AGENT_BODY_INVALID_IDENTITY",
+        "AGENT_BODY_INVALID_INSTANCE",
+        "AGENT_BODY_INVALID_INSTANCE_EVENT",
+        "AGENT_BODY_INVALID_POLICY",
+        "AGENT_BODY_INVALID_POSSESSION",
+        "AGENT_BODY_INVALID_REF",
+        "AGENT_BODY_INVALID_RIGHTS",
+        "AGENT_BODY_INVALID_SUBSTRATE",
+        "AGENT_BODY_INVALID_TIMESTAMP",
+        "AGENT_BODY_INVALID_VERSION",
+        "AGENT_BODY_MISSING_RIGHTS",
+        "AGENT_BODY_POSSESSION_TAMPERED",
+        "AGENT_BODY_PROVIDER_NAME_REJECTED",
+        "AGENT_BODY_SUBSTRATE_ALIAS_FORBIDDEN",
+        "AGENT_BODY_SUBSTRATE_CREDENTIAL_REJECTED",
+        "AGENT_BODY_TAMPERED",
+        "AGENT_BODY_UNKNOWN_ERROR",
+        "AGENT_BODY_UNSUPPORTED_RECORD_VERSION",
+        "AGENT_BODY_VERSION_CONFLICT"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena AgentBodyError v1",
+  "type": "object"
+}

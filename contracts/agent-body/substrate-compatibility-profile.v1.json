@@ -1,0 +1,144 @@
+{
+  "$defs": {
+    "versionedArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/agent-body/substrate-compatibility-profile@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "What a BodyVersion requires from a cognitive substrate (spec AB1.0 Compatibility Profile; requirement R20): required modalities, tool semantics, context characteristics, cost/latency constraints where relevant, required evaluation suites, prohibited substrate conditions and optional substrate-specific adaptations (keyed by substrate CONTENT DIGEST, never by model identity). The closed property set deliberately has NO member that can declare any model as semantically identical to the Body — compatibility is declared per-profile, never as identity (anti-alias rule; requirements R43, R46: certification never infers Substrate = Profession).",
+  "properties": {
+    "contextRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "minContextUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "minContextUnits"
+      ],
+      "type": "object"
+    },
+    "costConstraints": {
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "maxCostPerMillionRequests": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "maxP95LatencyMs": {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "prohibitedConditions": {
+      "items": {
+        "enum": [
+          "stable",
+          "preview",
+          "deprecated",
+          "rate-limited",
+          "region-restricted",
+          "sovereign-only",
+          "capacity-constrained"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "requiredEvaluationSuites": {
+      "items": {
+        "$ref": "#/$defs/versionedArtifactRef"
+      },
+      "type": "array"
+    },
+    "requiredModalities": {
+      "items": {
+        "enum": [
+          "text-input",
+          "text-output",
+          "image-input",
+          "image-output",
+          "audio-input",
+          "audio-output",
+          "video-input",
+          "structured-input",
+          "structured-output"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "requiredToolCalling": {
+      "enum": [
+        "none",
+        "text-protocol",
+        "json-schema",
+        "function-calling"
+      ]
+    },
+    "substrateAdaptations": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "adaptation": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "substrateDigest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "substrateDigest",
+          "adaptation"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "requiredModalities",
+    "requiredToolCalling",
+    "contextRequirements",
+    "requiredEvaluationSuites",
+    "prohibitedConditions",
+    "substrateAdaptations"
+  ],
+  "title": "Arena SubstrateCompatibilityProfile v1",
+  "type": "object"
+}

@@ -1,0 +1,34 @@
+{
+  "$id": "arena:schema/agent-body/model-specific-artifact@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A versioned, content-addressed model-specific artifact bound into a Possession (architecture-lock rule 22: model-specific artifacts may exist but cannot silently redefine Body identity). An (artifactId, artifactVersion) pair is permanently bound to one content digest; behavioral artifacts that materially change professional behavior force a NEW possession version.",
+  "properties": {
+    "artifactId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "artifactVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "materiality": {
+      "enum": [
+        "behavioral",
+        "non-behavioral"
+      ]
+    }
+  },
+  "required": [
+    "artifactId",
+    "artifactVersion",
+    "digest",
+    "materiality"
+  ],
+  "title": "Arena ModelSpecificArtifact v1",
+  "type": "object"
+}
