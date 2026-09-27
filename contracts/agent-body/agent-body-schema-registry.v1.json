@@ -1,0 +1,26 @@
+{
+  "$id": "arena:schema/agent-body/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/agent-body. A SchemaRef matching this enum is a known agent-body schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/agent-body/agent-body@1.0.0",
+    "arena:schema/agent-body/agent-body-error@1.0.0",
+    "arena:schema/agent-body/agent-instance@1.0.0",
+    "arena:schema/agent-body/agent-instance-event@1.0.0",
+    "arena:schema/agent-body/agent-instance-terminated-event@1.0.0",
+    "arena:schema/agent-body/body-version@1.0.0",
+    "arena:schema/agent-body/body-version-ref@1.0.0",
+    "arena:schema/agent-body/cognitive-substrate@1.0.0",
+    "arena:schema/agent-body/create-possession-command@1.0.0",
+    "arena:schema/agent-body/model-specific-artifact@1.0.0",
+    "arena:schema/agent-body/possession@1.0.0",
+    "arena:schema/agent-body/possession-created-event@1.0.0",
+    "arena:schema/agent-body/register-substrate-command@1.0.0",
+    "arena:schema/agent-body/schema-registry@1.0.0",
+    "arena:schema/agent-body/substrate-compatibility-profile@1.0.0",
+    "arena:schema/agent-body/substrate-registered-event@1.0.0",
+    "arena:schema/agent-body/terminate-instance-command@1.0.0"
+  ],
+  "title": "Arena agent-body schema registry v1",
+  "type": "string"
+}

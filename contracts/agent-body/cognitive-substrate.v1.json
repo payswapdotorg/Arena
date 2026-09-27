@@ -1,0 +1,129 @@
+{
+  "$defs": {
+    "contextLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "maxContextUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxOutputUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxContextUnits",
+        "maxOutputUnits"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/agent-body/cognitive-substrate@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Provider-neutral reference to a model/runtime capability (spec AB1.0; architecture-lock rule 2). Identifies: provider adapter (adapterId); model family/id (modelFamily, modelId); model revision; modality profile; tool-calling profile; context/profile limits in adapter-native units; adapter version; and integrity metadata (sha256 over the digest-free view). Credentials NEVER enter canonical objects — credential-shaped field names are rejected at construction (the closed property set below admits no credential field), and provider brand names are rejected in every identifier (rule 10: provider details remain behind adapters). A substrate is distinct from an Agent Body and is never asserted to be one.",
+  "properties": {
+    "adapterId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "adapterVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "conditions": {
+      "items": {
+        "enum": [
+          "stable",
+          "preview",
+          "deprecated",
+          "rate-limited",
+          "region-restricted",
+          "sovereign-only",
+          "capacity-constrained"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "contextLimits": {
+      "$ref": "#/$defs/contextLimits"
+    },
+    "integrity": {
+      "additionalProperties": false,
+      "properties": {
+        "contentDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "digestAlgorithm": {
+          "const": "sha256"
+        }
+      },
+      "required": [
+        "digestAlgorithm",
+        "contentDigest"
+      ],
+      "type": "object"
+    },
+    "modalityProfile": {
+      "items": {
+        "enum": [
+          "text-input",
+          "text-output",
+          "image-input",
+          "image-output",
+          "audio-input",
+          "audio-output",
+          "video-input",
+          "structured-input",
+          "structured-output"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "modelFamily": {
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "modelId": {
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "modelRevision": {
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+      "type": "string"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "toolCallingProfile": {
+      "enum": [
+        "none",
+        "text-protocol",
+        "json-schema",
+        "function-calling"
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "adapterId",
+    "adapterVersion",
+    "modelFamily",
+    "modelId",
+    "modelRevision",
+    "modalityProfile",
+    "toolCallingProfile",
+    "contextLimits",
+    "conditions",
+    "integrity"
+  ],
+  "title": "Arena CognitiveSubstrate v1",
+  "type": "object"
+}
