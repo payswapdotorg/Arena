@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/model-substrate/substrate-upgrade-declared-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload: a substrate upgrade was declared (declare-substrate-upgrade succeeded). Travels inside an Envelope; idempotency key null. Payload schema only — the envelope wire shape is arena:schema/protocol/envelope@1.0.",
+  "properties": {
+    "upgrade": {
+      "$ref": "substrate-upgrade.v1.json"
+    }
+  },
+  "required": [
+    "upgrade"
+  ],
+  "title": "Arena substrate-upgrade-declared-event v1",
+  "type": "object"
+}

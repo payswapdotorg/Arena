@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "versionedArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/model-substrate/substrate-upgrade@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "SubstrateUpgrade declaration (requirement R45): old substrate digest → new substrate digest, with recertification REQUIRED — the field is the literal true, so no value of this shape can claim a recertification-free upgrade. An upgrade NEVER silently rebinds a Possession: the closed property set admits no possession-shaped field (a new Possession version is required — enforced at construction with MODEL_SUBSTRATE_POSSESSION_REBIND_FORBIDDEN). Adaptation artifacts are content-addressed (lock rule 22).",
+  "properties": {
+    "adaptations": {
+      "items": {
+        "$ref": "#/$defs/versionedArtifactRef"
+      },
+      "type": "array"
+    },
+    "declaredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "fromSubstrateDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "recertificationRequired": {
+      "const": true
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "toSubstrateDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "upgradeId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "upgradeId",
+    "fromSubstrateDigest",
+    "toSubstrateDigest",
+    "recertificationRequired",
+    "adaptations",
+    "declaredAt"
+  ],
+  "title": "Arena substrate upgrade v1",
+  "type": "object"
+}

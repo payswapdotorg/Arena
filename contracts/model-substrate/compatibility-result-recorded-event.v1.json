@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/model-substrate/compatibility-result-recorded-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload: a substrate compatibility result was recorded. Travels inside an Envelope; idempotency key null. Payload schema only — the envelope wire shape is arena:schema/protocol/envelope@1.0.",
+  "properties": {
+    "result": {
+      "$ref": "compatibility-result.v1.json"
+    }
+  },
+  "required": [
+    "result"
+  ],
+  "title": "Arena compatibility-result-recorded-event v1",
+  "type": "object"
+}

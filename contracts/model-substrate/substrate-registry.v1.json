@@ -1,0 +1,11 @@
+{
+  "$id": "arena:schema/model-substrate/substrate-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "An append-only snapshot of substrate registration records, in registration order. The in-memory registry is protocol-level; durable ledgers are owned by services.",
+  "items": {
+    "$ref": "substrate-registration.v1.json"
+  },
+  "title": "Arena substrate registry snapshot v1",
+  "type": "array",
+  "uniqueItems": true
+}

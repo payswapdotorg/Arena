@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "versionedArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/model-substrate/compatibility-result@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Typed RESULT record of a substrate compatibility test: outcome (pass / fail / inconclusive — no \"equivalent\" verdict exists), reasons (pass carries none; fail/inconclusive carry at least one) and content-addressed evidence references. Pure result typing — the DECISION logic is A022's engine.",
+  "properties": {
+    "bodyVersionDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evidenceRefs": {
+      "items": {
+        "$ref": "#/$defs/versionedArtifactRef"
+      },
+      "type": "array"
+    },
+    "outcome": {
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive"
+      ]
+    },
+    "reasons": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "substrateDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "testId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "testId",
+    "bodyVersionDigest",
+    "substrateDigest",
+    "outcome",
+    "reasons",
+    "evidenceRefs"
+  ],
+  "title": "Arena substrate compatibility result v1",
+  "type": "object"
+}

@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "contextLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "maxContextUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxOutputUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxContextUnits",
+        "maxOutputUnits"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/model-substrate/adapter-descriptor@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Content-addressed identity of a SubstrateAdapter build: neutral adapter id, adapter semver, the protocol surface version it implements (must be the exact version this registry of contracts describes — unknown versions are rejected), the capability envelope it can register (supported modalities, maximum tool-calling level, context ceiling in adapter-native units), and the sha256 digest over the canonical digest-free view. Same descriptor content ⇒ same digest (registry-style dedup). No provider brand names, no credential-shaped fields — both are rejected at construction.",
+  "properties": {
+    "adapterId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "adapterVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "contextCeiling": {
+      "$ref": "#/$defs/contextLimits"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "protocolVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "supportedModalities": {
+      "items": {
+        "enum": [
+          "text-input",
+          "text-output",
+          "image-input",
+          "image-output",
+          "audio-input",
+          "audio-output",
+          "video-input",
+          "structured-input",
+          "structured-output"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "supportedToolCalling": {
+      "enum": [
+        "none",
+        "text-protocol",
+        "json-schema",
+        "function-calling"
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "adapterId",
+    "adapterVersion",
+    "protocolVersion",
+    "supportedModalities",
+    "supportedToolCalling",
+    "contextCeiling",
+    "digest"
+  ],
+  "title": "Arena model adapter AdapterDescriptor v1",
+  "type": "object"
+}

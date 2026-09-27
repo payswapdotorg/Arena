@@ -1,0 +1,39 @@
+{
+  "$id": "arena:schema/model-substrate/substrate-registration@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Append-only registration record of the SubstrateRegistry: binds a neutral substrate id to a substrate (by content digest) and the adapter descriptor that registered it. Re-registering the same digest under the same id with the same adapter is idempotent; a different descriptor under the same neutral id is a conflict (rejected). The registrationDigest is sha256 over the canonical digest-free view (recordVersion, substrateId, substrateDigest, adapterDigest, registeredAt).",
+  "properties": {
+    "adapterDescriptor": {
+      "$ref": "adapter-descriptor.v1.json"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "registeredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "registrationDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "substrate": {
+      "$ref": "substrate-record.v1.json"
+    },
+    "substrateId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "substrateId",
+    "substrate",
+    "adapterDescriptor",
+    "registeredAt",
+    "registrationDigest"
+  ],
+  "title": "Arena substrate registration record v1",
+  "type": "object"
+}

@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "contextLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "maxContextUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxOutputUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxContextUnits",
+        "maxOutputUnits"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/model-substrate/substrate-registration-descriptor@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The neutral descriptor a SubstrateAdapter accepts in registerSubstrate(descriptor): model family, model id, model revision, modality profile, tool-calling profile, context limits (adapter-native units) and declared conditions. Closed shape; the ADAPTER contributes its own identity. Provider brand names and credential-shaped fields are rejected at construction (architecture-lock rule 10).",
+  "properties": {
+    "conditions": {
+      "items": {
+        "enum": [
+          "stable",
+          "preview",
+          "deprecated",
+          "rate-limited",
+          "region-restricted",
+          "sovereign-only",
+          "capacity-constrained"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "contextLimits": {
+      "$ref": "#/$defs/contextLimits"
+    },
+    "modalityProfile": {
+      "items": {
+        "enum": [
+          "text-input",
+          "text-output",
+          "image-input",
+          "image-output",
+          "audio-input",
+          "audio-output",
+          "video-input",
+          "structured-input",
+          "structured-output"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "modelFamily": {
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "modelId": {
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "modelRevision": {
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+      "type": "string"
+    },
+    "toolCallingProfile": {
+      "enum": [
+        "none",
+        "text-protocol",
+        "json-schema",
+        "function-calling"
+      ]
+    }
+  },
+  "required": [
+    "modelFamily",
+    "modelId",
+    "modelRevision",
+    "modalityProfile",
+    "toolCallingProfile",
+    "contextLimits",
+    "conditions"
+  ],
+  "title": "Arena substrate registration descriptor v1",
+  "type": "object"
+}
