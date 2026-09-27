@@ -1,0 +1,58 @@
+{
+  "$id": "arena:schema/capability/capability-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the capability-graph error taxonomy. Unknown codes are rejected when parsing (CAPABILITY_GRAPH_UNKNOWN_ERROR). Core-level failures still travel as @arena/protocol-core ProtocolError structures.",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "CAPABILITY_GRAPH_CYCLE_DETECTED",
+        "CAPABILITY_GRAPH_IDENTITY_CONFLICT",
+        "CAPABILITY_GRAPH_INVALID_DIGEST",
+        "CAPABILITY_GRAPH_INVALID_EDGE",
+        "CAPABILITY_GRAPH_INVALID_EDGE_KIND",
+        "CAPABILITY_GRAPH_INVALID_ID",
+        "CAPABILITY_GRAPH_INVALID_NODE",
+        "CAPABILITY_GRAPH_INVALID_NODE_KIND",
+        "CAPABILITY_GRAPH_INVALID_PACK",
+        "CAPABILITY_GRAPH_INVALID_PAYLOAD",
+        "CAPABILITY_GRAPH_INVALID_REF",
+        "CAPABILITY_GRAPH_INVALID_SUPERSESSION",
+        "CAPABILITY_GRAPH_INVALID_TIMESTAMP",
+        "CAPABILITY_GRAPH_INVALID_VERSION",
+        "CAPABILITY_GRAPH_NODE_NOT_FOUND",
+        "CAPABILITY_GRAPH_PACK_OVERREACH",
+        "CAPABILITY_GRAPH_TAMPERED",
+        "CAPABILITY_GRAPH_UNKNOWN_ERROR",
+        "CAPABILITY_GRAPH_UNSUPPORTED_RECORD_VERSION"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena CapabilityGraphError v1",
+  "type": "object"
+}

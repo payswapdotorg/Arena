@@ -1,0 +1,163 @@
+{
+  "$id": "arena:schema/capability/skill-payload@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The §3 skill shape: \"A Skill is a versioned artifact with inputs, outputs, prerequisites, evidence, tests and provenance\" — the six payload-side fields here, plus explicit safety metadata (architecture-lock rule 23): professionalLimitations (possibly empty — the point is explicitness) and customerData (none | derived | contains).",
+  "properties": {
+    "category": {
+      "enum": [
+        "declarative-knowledge",
+        "procedural-skill",
+        "tool-skill",
+        "reasoning-decision-pattern",
+        "verification-skill",
+        "communication-escalation-behavior",
+        "domain-method"
+      ]
+    },
+    "customerData": {
+      "enum": [
+        "none",
+        "derived",
+        "contains"
+      ]
+    },
+    "evidence": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[a-z][a-z0-9-]{1,127}$",
+            "type": "string"
+          },
+          "namespace": {
+            "pattern": "^[a-z][a-z0-9-]{1,62}$",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "namespace",
+          "name",
+          "version",
+          "digest"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "inputs": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "outputs": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "prerequisites": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "professionalLimitations": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "summary": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "tests": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[a-z][a-z0-9-]{1,127}$",
+            "type": "string"
+          },
+          "namespace": {
+            "pattern": "^[a-z][a-z0-9-]{1,62}$",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "namespace",
+          "name",
+          "version",
+          "digest"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "inputs",
+    "outputs",
+    "prerequisites",
+    "evidence",
+    "tests",
+    "professionalLimitations",
+    "customerData"
+  ],
+  "title": "Arena skill node payload v1",
+  "type": "object"
+}

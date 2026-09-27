@@ -1,0 +1,221 @@
+{
+  "$defs": {
+    "edge": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "decomposes-into",
+            "requires",
+            "produces",
+            "evaluates",
+            "verifies",
+            "observes-failure-of",
+            "competent-in",
+            "exercised-by",
+            "extends-domain"
+          ]
+        },
+        "payload": {
+          "additionalProperties": false,
+          "properties": {
+            "note": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "payloadSchema": {
+          "pattern": "^arena:schema/[a-z][a-z0-9-]*/[a-z][a-z0-9-]*@\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest"
+          ],
+          "type": "object"
+        },
+        "recordVersion": {
+          "const": 1
+        },
+        "source": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "domain",
+                "capability",
+                "sub-capability",
+                "skill",
+                "tool",
+                "task-family",
+                "evaluator",
+                "verifier",
+                "expert-competency",
+                "observed-failure",
+                "body-version"
+              ]
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        "target": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "domain",
+                "capability",
+                "sub-capability",
+                "skill",
+                "tool",
+                "task-family",
+                "evaluator",
+                "verifier",
+                "expert-competency",
+                "observed-failure",
+                "body-version"
+              ]
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "kind",
+        "source",
+        "target",
+        "payloadSchema",
+        "payload",
+        "provenance",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "edgePayload": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "nodeRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "domain",
+            "capability",
+            "sub-capability",
+            "skill",
+            "tool",
+            "task-family",
+            "evaluator",
+            "verifier",
+            "expert-competency",
+            "observed-failure",
+            "body-version"
+          ]
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "provenanceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "recordDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordDigest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/capability/edge-added-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload emitted when an edge is appended to a capability graph. Travels inside Envelope<T> with a correlation id and canonical serialization.",
+  "properties": {
+    "edge": {
+      "$ref": "#/$defs/edge"
+    }
+  },
+  "required": [
+    "edge"
+  ],
+  "title": "Arena edge-added event payload v1",
+  "type": "object"
+}

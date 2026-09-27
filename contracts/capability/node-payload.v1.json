@@ -1,0 +1,32 @@
+{
+  "$id": "arena:schema/capability/node-payload@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Payload of the titled node kinds (domain, capability, sub-capability, tool, task-family, evaluator, verifier, expert-competency, body-version): a title, an optional description and an optional §3 decomposition category.",
+  "properties": {
+    "category": {
+      "enum": [
+        "declarative-knowledge",
+        "procedural-skill",
+        "tool-skill",
+        "reasoning-decision-pattern",
+        "verification-skill",
+        "communication-escalation-behavior",
+        "domain-method"
+      ]
+    },
+    "description": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "title": "Arena titled node payload v1",
+  "type": "object"
+}

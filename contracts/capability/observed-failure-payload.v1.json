@@ -1,0 +1,36 @@
+{
+  "$id": "arena:schema/capability/observed-failure-payload@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Payload of observed-failure nodes: what was observed, when (UTC millisecond precision) and how severe (explicit severity metadata, lock rule 23). Observed failures feed Capability Cases (requirement R5) and learning (rule 6: historical evidence is append-only).",
+  "properties": {
+    "observedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "minor",
+        "moderate",
+        "major",
+        "critical"
+      ]
+    },
+    "summary": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "observedAt",
+    "severity"
+  ],
+  "title": "Arena observed-failure node payload v1",
+  "type": "object"
+}
