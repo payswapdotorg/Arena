@@ -1,0 +1,52 @@
+{
+  "$id": "arena:schema/environment/filesystem-policy@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Explicit mounts only — there is no blanket write mode. Writing is possible only on individually declared read-write mounts.",
+  "properties": {
+    "mounts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "access": {
+            "enum": [
+              "read-only",
+              "read-write"
+            ]
+          },
+          "mountPath": {
+            "pattern": "^/(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*)?$",
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "initial-state",
+              "ephemeral",
+              "workspace",
+              "evidence"
+            ]
+          }
+        },
+        "required": [
+          "mountPath",
+          "access",
+          "source"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "writeMode": {
+      "enum": [
+        "read-only",
+        "declared-mounts-only"
+      ]
+    }
+  },
+  "required": [
+    "writeMode",
+    "mounts"
+  ],
+  "title": "Arena filesystem policy v1",
+  "type": "object"
+}

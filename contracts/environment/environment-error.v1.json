@@ -1,0 +1,67 @@
+{
+  "$id": "arena:schema/environment/environment-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the environment protocol error taxonomy. Unknown codes are rejected when parsing (ENVIRONMENT_UNKNOWN_ERROR). Core-level failures still travel as @arena/protocol-core ProtocolError structures.",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "ENVIRONMENT_CREDENTIAL_REJECTED",
+        "ENVIRONMENT_INVALID_ACTION_SURFACE",
+        "ENVIRONMENT_INVALID_CHECKPOINT_SEMANTICS",
+        "ENVIRONMENT_INVALID_DEFINITION",
+        "ENVIRONMENT_INVALID_DIGEST",
+        "ENVIRONMENT_INVALID_EVALUATION_HOOKS",
+        "ENVIRONMENT_INVALID_EVIDENCE_OUTPUTS",
+        "ENVIRONMENT_INVALID_FILESYSTEM_POLICY",
+        "ENVIRONMENT_INVALID_IDENTITY",
+        "ENVIRONMENT_INVALID_IMAGE",
+        "ENVIRONMENT_INVALID_NETWORK_POLICY",
+        "ENVIRONMENT_INVALID_OBSERVATION_SURFACE",
+        "ENVIRONMENT_INVALID_REPRODUCIBILITY",
+        "ENVIRONMENT_INVALID_RESOURCE_LIMITS",
+        "ENVIRONMENT_INVALID_RESET_SEMANTICS",
+        "ENVIRONMENT_INVALID_RUN_ADDRESS",
+        "ENVIRONMENT_INVALID_SEED_POLICY",
+        "ENVIRONMENT_INVALID_SECRET_POLICY",
+        "ENVIRONMENT_INVALID_SNAPSHOT",
+        "ENVIRONMENT_INVALID_TIME_LIMITS",
+        "ENVIRONMENT_INVALID_WORKLOAD",
+        "ENVIRONMENT_LEAST_PRIVILEGE_VIOLATION",
+        "ENVIRONMENT_RUNTIME_LEAKAGE",
+        "ENVIRONMENT_TAMPERED",
+        "ENVIRONMENT_UNKNOWN_ERROR",
+        "ENVIRONMENT_UNSUPPORTED_RECORD_VERSION",
+        "ENVIRONMENT_VERSION_CONFLICT"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context.",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena EnvironmentError v1",
+  "type": "object"
+}

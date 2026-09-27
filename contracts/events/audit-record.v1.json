@@ -1,0 +1,31 @@
+{
+  "$id": "arena:schema/events/audit-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One tamper-evident entry in the append-only audit stream: the mutation-audited payload, the chain digest of the previous record (all-zero genesis for #1), and the sha256 digest over the canonical JSON of {payload, previousDigest, sequence} — every audit digest therefore INCLUDES the previous event's digest, so a broken chain fails verification (R28).",
+  "properties": {
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "mutation-audited-event.v1.json"
+    },
+    "previousDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "sequence",
+    "previousDigest",
+    "payload",
+    "digest"
+  ],
+  "title": "Arena AuditRecord v1",
+  "type": "object"
+}

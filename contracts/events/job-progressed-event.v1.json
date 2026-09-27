@@ -1,0 +1,49 @@
+{
+  "$id": "arena:schema/events/job-progressed-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Emitted by executors to report progress on a running job (typed job observability, R33). Never a state machine input.",
+  "properties": {
+    "attempt": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "job-progressed"
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "percent": {
+      "maximum": 100,
+      "minimum": 0,
+      "type": "number"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "jobId",
+    "kind",
+    "attempt"
+  ],
+  "title": "Arena job-progressed event payload v1",
+  "type": "object"
+}

@@ -1,0 +1,20 @@
+{
+  "$id": "arena:schema/environment/workload-admitted-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload emitted when a workload declaration is admitted into an environment version (after the least-privilege check).",
+  "properties": {
+    "environment": {
+      "$ref": "arena:schema/environment/environment-version-ref@1.0.0"
+    },
+    "workload": {
+      "$ref": "arena:schema/environment/workload-declaration@1.0.0"
+    }
+  },
+  "required": [
+    "environment",
+    "workload"
+  ],
+  "title": "Arena workload-admitted event payload v1",
+  "type": "object"
+}

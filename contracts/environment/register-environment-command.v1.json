@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/environment/register-environment-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command payload for registering a versioned, content-addressed environment definition. Travels inside Envelope<T> with a REQUIRED non-null idempotency key (architecture-lock rule 17); registry-style dedup applies on the runner side.",
+  "properties": {
+    "environment": {
+      "$ref": "arena:schema/environment/environment-definition@1.0.0"
+    }
+  },
+  "required": [
+    "environment"
+  ],
+  "title": "Arena register-environment command payload v1",
+  "type": "object"
+}

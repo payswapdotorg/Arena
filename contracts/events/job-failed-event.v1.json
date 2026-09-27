@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "jobAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "endedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "errorClass": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "timed-out",
+            "cancelled"
+          ]
+        },
+        "startedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt",
+        "startedAt",
+        "outcome"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/events/job-failed-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Terminal: the job failed (retries exhausted, or a non-retryable error class, or the timeout policy fired with no retry budget). Carries the full attempt history.",
+  "properties": {
+    "attemptHistory": {
+      "items": {
+        "$ref": "#/$defs/jobAttempt"
+      },
+      "type": "array"
+    },
+    "attempts": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "errorClass": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "failureKind": {
+      "enum": [
+        "error",
+        "timeout"
+      ]
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "job-failed"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "jobId",
+    "kind",
+    "attempts",
+    "failureKind",
+    "errorClass",
+    "message",
+    "attemptHistory"
+  ],
+  "title": "Arena job-failed event payload v1",
+  "type": "object"
+}

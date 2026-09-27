@@ -1,0 +1,65 @@
+{
+  "$id": "arena:schema/events/job-retried-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Emitted when a failed/timed-out attempt is re-queued because the retry policy has budget left and the error class is retryable. The backoff is pure data; the next claim is gated by nextRetryAt.",
+  "properties": {
+    "backoffMs": {
+      "minimum": 0,
+      "type": "number"
+    },
+    "errorClass": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "failedAttempt": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "job-retried"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "nextAttempt": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "nextRetryAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "jobId",
+    "kind",
+    "failedAttempt",
+    "errorClass",
+    "message",
+    "nextAttempt",
+    "backoffMs",
+    "nextRetryAt"
+  ],
+  "title": "Arena job-retried event payload v1",
+  "type": "object"
+}
