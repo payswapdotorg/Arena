@@ -9,9 +9,9 @@ Maximum concurrent workers: 3
 
 Repository architecture, governance, requirements, implementation plan, core object specifications, security/data governance, service boundaries, dependency graph and Work Orders are committed.
 
-A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). A003 MERGED via PR #8 (merge SHA e14b9fff9df0f37bc3982f5724401c55d1410813, worker head 26fdd9ef + Tech Lead reconciliation b2a0f0dd; CI run 36311438667 green on the PR head; post-merge run 36311670948). A004 MERGED via PR #10 (merge SHA cff162b96a7dcc0758b509f666993ca557c4fddb, worker head 422613fe + Tech Lead intake d9e7689 + merge-of-main 6ad2415; PR CI green; acceptance via branch-oracle — worker chat died in a platform generation-window outage after pushing the delivery branch).
+A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). A003 MERGED via PR #8 (merge SHA e14b9fff9df0f37bc3982f5724401c55d1410813, worker head 26fdd9ef + Tech Lead reconciliation b2a0f0dd; CI run 36311438667 green on the PR head; post-merge run 36311670948). A004 MERGED via PR #10 (merge SHA cff162b96a7dcc0758b509f666993ca557c4fddb, worker head 422613fe + Tech Lead intake d9e7689 + merge-of-main 6ad2415; PR CI green; acceptance via branch-oracle — worker chat died in a platform generation-window outage after pushing the delivery branch). A009 MERGED via PR #14 (merge SHA 480dd06563269b29c68b365d13a716009a5d4f87, worker head b887803 + intake baf07db; PR CI green). A015 MERGED via PR #15 (merge SHA 40defadbb56f8727e9540d929b6194e903daff55, worker head 01684ca + intake 14a029c + merge-of-main 959c0c5; PR CI green). A016 MERGED via PR #16 (merge SHA 8a834ad1ba59886bc58e897b8b6abb949ed677c5, worker head 01feb38 + intake 7da9488 + merge-of-main c38544e; PR CI green).
 
-Live wave: A009 (Issue #7, re-dispatched fresh 2026-09-27 evening from the post-A004-governance tip after two sessions lost to the platform generation-window outage — dead pending turns never picked up by the scheduler), A015 (re-dispatched fresh, same base), A016 (READY since A002+A003; dispatched into the slot freed by the A004 merge). A005 and A006 became READY with the A004 merge (dependency graph: A003+A004 → A005, A002+A004 → A006) and dispatch as slots free.
+Live wave: A005 (Issue #12, dispatched 2026-09-27 evening from the post-triple-merge governance tip), A006 (Issue #13, same base), A010 (environment-runner service, prompt built from spec/work-items; same base). Newly READY with the A009+A015+A016 merges: A010, A018, A034 (dependency graph verified).
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
@@ -25,17 +25,16 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A006 READY (A002+A004 merged)
 - A007 WAITING_ON_DEPENDENCIES
 - A008 WAITING_ON_DEPENDENCIES
-- A009 ACTIVE
-- A010 WAITING_ON_DEPENDENCIES
+- A009 MERGED
+- A010 READY (A009+A015 merged)
 - A011 WAITING_ON_DEPENDENCIES
 - A012 WAITING_ON_DEPENDENCIES
 - A013 WAITING_ON_DEPENDENCIES
 - A014 WAITING_ON_DEPENDENCIES
-- A015 READY
-- A016 READY
-- A016 WAITING_ON_DEPENDENCIES
+- A015 MERGED
+- A016 MERGED
 - A017 WAITING_ON_DEPENDENCIES
-- A018 WAITING_ON_DEPENDENCIES
+- A018 READY (A015 merged)
 - A019 WAITING_ON_DEPENDENCIES
 - A020 WAITING_ON_DEPENDENCIES
 - A021 WAITING_ON_DEPENDENCIES
@@ -51,7 +50,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A031 WAITING_ON_DEPENDENCIES
 - A032 WAITING_ON_DEPENDENCIES
 - A033 WAITING_ON_DEPENDENCIES
-- A034 WAITING_ON_DEPENDENCIES
+- A034 READY (A015 merged)
 - A035 WAITING_ON_DEPENDENCIES
 - A036 WAITING_ON_DEPENDENCIES
 
@@ -59,14 +58,18 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 
 Wave in flight, bases recorded at dispatch:
 
-- A004 — MERGED via PR #10 (cff162b). Delivered the @arena/capability-graph package (11 digest-addressed versioned node kinds, typed provenance-bearing edges with a closed kind enum + endpoint matrix, skill-taxonomy DAG with cycle rejection reporting the offending path, pure graph queries, deep-freeze append-only guard, supersession-by-append, DomainPack extension point) + 19 generated contracts under contracts/capability/*.v1.json.
-- A009 — Environment protocol (packages/environment-protocol, contracts/environment) — Issue #7 — re-dispatched fresh from the post-A004-governance main tip (previous pending tasks dropped silently during the generation-window outage)
-- A015 — Durable jobs/events/orchestration (packages/job-protocol, services/job-orchestrator, contracts/events) — re-dispatched fresh, same base
-- A016 — Model substrate registry (packages/model-substrate, adapters/models, contracts/model-substrate) — dispatched into the A004 slot, same base
+- A009 — MERGED via PR #14 (480dd06). Delivered @arena/environment-protocol (ENV1.0: environment declarations with image/build digests, initial state snapshots, seed policy, action/tool surface, observation surface, resource limits, network policy; checkpoint semantics; workload admission) + contracts/environment/*.v1.json. 61 files.
+- A015 — MERGED via PR #15 (40defad). Delivered @arena/job-protocol + services/job-orchestrator (durable jobs, event log, orchestration; envelope wiring with idempotency keys; G9 services/* generator wiring exercised) + contracts/events/*.v1.json. 53 files.
+- A016 — MERGED via PR #16 (8a834ad). Delivered @arena/model-substrate + adapters/models reference adapters (SubstrateAdapter protocol, content-addressed AdapterDescriptor, append-only SubstrateRegistry, compatibility test descriptors, upgrade path types) + contracts/model-substrate/*.v1.json. 61 files.
+
+Next wave (dispatched from the post-triple-merge governance tip):
+- A005 — Capability Case protocol (packages/capability-case, contracts/capability-case) — Issue #12
+- A006 — Expert registry protocol (packages/expert-registry, contracts/expert) — Issue #13
+- A010 — Environment runner service (services/environment-runner, packages/environment-runtime) — unlocked by A009+A015
 
 Wave rules: pairwise-disjoint surfaces; zero new external runtime dependencies (existing pnpm catalog only); no root manifest/lockfile edits (Tech Lead serializes reconciliation — see d21b4fe for the A002 pattern: lockfile intake + G9 package-generator wiring); Envelope<T>/canonical-JSON primitives reused from @arena/protocol-core; generated contracts + drift checks per the A001 convention, package-level generators wired into G9.
 
-Next in queue as slots free: A005 (capability case), A006 (expert registry) — both READY after the A004 merge. The A004 verification baseline: battery green on 7 workspace projects (governance/boundary/typecheck/lint/test/build), pristine frozen-lockfile clone green, PR #10 CI green; 49 delivered files (+12,910 lines), package-level generator auto-wired into G9 (packages/ glob).
+Queue after the current wave: A018 (A015 →), A034 (A015 →), A011 (needs A010), A007/A008 (need A005+A006). The triple-merge verification baseline: battery green on all workspace projects after each merge-of-main lockfile regeneration (A009 intake baf07db; A015 14a029c+959c0c5; A016 7da9488+c38544e), pristine frozen-lockfile clones green, PR CI green on all three.
 
 ## Verification baseline
 
