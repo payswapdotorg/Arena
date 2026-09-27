@@ -1,0 +1,44 @@
+{
+  "$id": "arena:schema/events/job-completed-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Terminal: the running job completed. The orchestrator records the executor-reported result verbatim — it never judges domain outcomes (architecture-lock rule 16).",
+  "properties": {
+    "attempt": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "job-completed"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "result": {
+      "description": "Plain-JSON result as reported by the executor."
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "jobId",
+    "kind",
+    "attempt",
+    "result"
+  ],
+  "title": "Arena job-completed event payload v1",
+  "type": "object"
+}

@@ -1,0 +1,157 @@
+{
+  "$defs": {
+    "jobKind": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "resourceHints": {
+      "additionalProperties": false,
+      "properties": {
+        "cpu": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "memoryMb": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "weight": {
+          "maximum": 1000,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "retryPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "backoffScheduleMs": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "maxAttempts": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "retryableErrorClasses": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "maxAttempts",
+        "backoffScheduleMs",
+        "retryableErrorClasses"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/events/job-definition@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The versioned, content-addressed blueprint of a job kind: kind identity, input schema ref (referenced, never enforced, by this layer — schema authority stays with the owning domain, architecture-lock rule 16), correlation address, idempotency semantics (key scope), timeout policy, retry policy (pure data), priority class and resource hints. The sha256 digest covers the canonical serialization of the digest-free view (registry semantics: same definition content => same digest).",
+  "properties": {
+    "correlationAddress": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}(?:/[a-z][a-z0-9-]{0,63}){0,7}$",
+      "type": "string"
+    },
+    "definitionVersion": {
+      "const": 1
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "idempotency": {
+      "additionalProperties": false,
+      "properties": {
+        "retentionMs": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "scope": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scope"
+      ],
+      "type": "object"
+    },
+    "inputSchema": {
+      "pattern": "^arena:schema/[a-z][a-z0-9-]*/[a-z][a-z0-9-]*@\\d+\\.\\d+\\.\\d+$",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/jobKind"
+    },
+    "priority": {
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "critical"
+      ]
+    },
+    "resourceHints": {
+      "$ref": "#/$defs/resourceHints"
+    },
+    "retry": {
+      "$ref": "#/$defs/retryPolicy"
+    },
+    "timeout": {
+      "additionalProperties": false,
+      "properties": {
+        "timeoutMs": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "timeoutMs"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "definitionVersion",
+    "kind",
+    "inputSchema",
+    "correlationAddress",
+    "idempotency",
+    "timeout",
+    "retry",
+    "priority",
+    "resourceHints",
+    "digest"
+  ],
+  "title": "Arena JobDefinition v1",
+  "type": "object"
+}

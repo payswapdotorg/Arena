@@ -1,0 +1,45 @@
+{
+  "$id": "arena:schema/events/job-started-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Emitted when an attempt is claimed: queued -> running. Carries the 1-based attempt number and the attempt deadline derived from the timeout policy.",
+  "properties": {
+    "attempt": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "job-started"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "timeoutAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "jobId",
+    "kind",
+    "attempt",
+    "timeoutAt"
+  ],
+  "title": "Arena job-started event payload v1",
+  "type": "object"
+}

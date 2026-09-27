@@ -1,0 +1,20 @@
+{
+  "$id": "arena:schema/events/submit-job-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Idempotency-keyed command payload submitting a job. Travels inside Envelope<T> with a REQUIRED non-null idempotency key and the submission correlation id (R27; architecture-lock rule 17).",
+  "properties": {
+    "definition": {
+      "$ref": "job-definition.v1.json"
+    },
+    "input": {
+      "description": "Plain-JSON job input."
+    }
+  },
+  "required": [
+    "definition",
+    "input"
+  ],
+  "title": "Arena submit-job command payload v1",
+  "type": "object"
+}

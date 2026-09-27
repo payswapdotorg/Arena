@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/events/mutation-audited-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The generic consequential-mutation audit event (R28): emitted for EVERY consequential state mutation, naming the actor (principal ref), the mutation, the job id, the correlation id and the envelope id of the domain event it audits. Audit events form their own sha256-chained append-only stream (see audit-record.v1.json).",
+  "properties": {
+    "actor": {
+      "$ref": "#/$defs/principal"
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "envelopeId": {
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "type": "string"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "mutation-audited"
+    },
+    "mutation": {
+      "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*){0,3}$",
+      "type": "string"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "jobId",
+    "kind",
+    "mutation",
+    "actor",
+    "correlationId",
+    "envelopeId"
+  ],
+  "title": "Arena mutation-audited event payload v1",
+  "type": "object"
+}

@@ -1,0 +1,59 @@
+{
+  "$id": "arena:schema/events/job-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the job protocol error taxonomy. Unknown codes are rejected when parsing (JOB_UNKNOWN_ERROR).",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "JOB_AUDIT_CHAIN_BROKEN",
+        "JOB_EVENT_OUT_OF_ORDER",
+        "JOB_EVENT_SEQUENCE_DUPLICATE",
+        "JOB_EVENT_SEQUENCE_GAP",
+        "JOB_IDENTITY_CONFLICT",
+        "JOB_INVALID_ATTEMPT",
+        "JOB_INVALID_DEFINITION",
+        "JOB_INVALID_DIGEST",
+        "JOB_INVALID_EVENT",
+        "JOB_INVALID_IDENTITY",
+        "JOB_INVALID_INPUT",
+        "JOB_INVALID_POLICY",
+        "JOB_INVALID_PRINCIPAL",
+        "JOB_INVALID_RECORD",
+        "JOB_INVALID_TIMESTAMP",
+        "JOB_INVALID_TRANSITION",
+        "JOB_TAMPERED",
+        "JOB_TERMINAL_STATE",
+        "JOB_UNKNOWN_ERROR",
+        "JOB_UNSUPPORTED_RECORD_VERSION"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena JobError v1",
+  "type": "object"
+}

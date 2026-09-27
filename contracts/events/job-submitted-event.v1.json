@@ -1,0 +1,44 @@
+{
+  "$id": "arena:schema/events/job-submitted-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Emitted when a job is submitted (the first event of every job stream). Travels inside Envelope<T> with the correlation id and idempotency key of the submission.",
+  "properties": {
+    "definitionDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "input": {
+      "description": "Plain-JSON job input."
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "job-submitted"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "jobId",
+    "kind",
+    "definitionDigest",
+    "input"
+  ],
+  "title": "Arena job-submitted event payload v1",
+  "type": "object"
+}
