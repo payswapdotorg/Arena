@@ -1,0 +1,31 @@
+{
+  "$id": "arena:schema/environment/time-limits@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The finer-grained time policy: startup budget, cleanup/grace budget (which must fit inside the run wall clock) and the deadline behavior.",
+  "properties": {
+    "cleanupGraceSeconds": {
+      "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "deadlineBehavior": {
+      "enum": [
+        "hard-stop",
+        "grace-then-stop"
+      ]
+    },
+    "startupSeconds": {
+      "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "startupSeconds",
+    "cleanupGraceSeconds",
+    "deadlineBehavior"
+  ],
+  "title": "Arena time limits v1",
+  "type": "object"
+}

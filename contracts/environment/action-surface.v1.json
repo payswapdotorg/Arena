@@ -1,0 +1,71 @@
+{
+  "$id": "arena:schema/environment/action-surface@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The closed set of typed actions a workload may perform plus the tools it may invoke (declared by neutral identifier; at least one action required).",
+  "properties": {
+    "actions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "actionId": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          },
+          "description": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "actionId",
+          "description"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "tools": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+                "type": "string"
+              }
+            ]
+          },
+          "toolId": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "toolId",
+          "description"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "actions",
+    "tools"
+  ],
+  "title": "Arena action/tool surface v1",
+  "type": "object"
+}

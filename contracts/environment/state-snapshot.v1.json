@@ -1,0 +1,45 @@
+{
+  "$defs": {
+    "stateSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "description": "sha256 content digest of the snapshot.",
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "snapshotId": {
+          "description": "Neutral snapshot identifier.",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshotId",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/environment/state-snapshot@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The initial state snapshot declaration: a content-addressed snapshot reference plus the snapshot support flag (checkpoint semantics and snapshot-restore resets require it).",
+  "properties": {
+    "snapshot": {
+      "$ref": "#/$defs/stateSnapshot"
+    },
+    "snapshotSupport": {
+      "enum": [
+        "supported",
+        "not-supported"
+      ]
+    }
+  },
+  "required": [
+    "snapshot",
+    "snapshotSupport"
+  ],
+  "title": "Arena environment initial state v1",
+  "type": "object"
+}

@@ -1,0 +1,70 @@
+{
+  "$id": "arena:schema/environment/workload-declaration@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "What runs inside an environment: trust classification and requirements (references and quotas only). An untrusted workload requiring more than the environment declares is rejected by the least-privilege admission check.",
+  "properties": {
+    "requirements": {
+      "additionalProperties": false,
+      "properties": {
+        "minCpuMillis": {
+          "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "minMemoryMiB": {
+          "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "minWallClockSeconds": {
+          "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "networkHosts": {
+          "items": {
+            "pattern": "^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "secretIds": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "writePaths": {
+          "items": {
+            "pattern": "^/(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*)?$",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "networkHosts",
+        "writePaths",
+        "secretIds",
+        "minCpuMillis",
+        "minMemoryMiB",
+        "minWallClockSeconds"
+      ],
+      "type": "object"
+    },
+    "trust": {
+      "enum": [
+        "trusted",
+        "untrusted"
+      ]
+    }
+  },
+  "required": [
+    "trust",
+    "requirements"
+  ],
+  "title": "Arena workload declaration v1",
+  "type": "object"
+}

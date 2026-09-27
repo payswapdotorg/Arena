@@ -1,0 +1,36 @@
+{
+  "$id": "arena:schema/environment/environment-image@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Image/build digest declaration. The executable substrate is addressed exclusively through content digests — the protocol is runtime-neutral.",
+  "properties": {
+    "buildDigest": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "imageKind": {
+      "enum": [
+        "content-addressed-image",
+        "derived-image"
+      ]
+    }
+  },
+  "required": [
+    "imageKind",
+    "digest",
+    "buildDigest"
+  ],
+  "title": "Arena environment image v1",
+  "type": "object"
+}

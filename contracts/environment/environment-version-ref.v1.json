@@ -1,0 +1,32 @@
+{
+  "$id": "arena:schema/environment/environment-version-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Content-addressed reference to a registered environment version: identity + version + digest.",
+  "properties": {
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "name": {
+      "pattern": "^[a-z][a-z0-9-]{1,127}$",
+      "type": "string"
+    },
+    "namespace": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "namespace",
+    "name",
+    "version",
+    "digest"
+  ],
+  "title": "Arena environment version ref v1",
+  "type": "object"
+}

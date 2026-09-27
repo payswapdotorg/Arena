@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "nondeterminismCapture": {
+      "additionalProperties": false,
+      "properties": {
+        "externalInputs": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "seed": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "timingContext": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "versions": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seed",
+        "versions",
+        "externalInputs",
+        "timingContext"
+      ],
+      "type": "object"
+    },
+    "reproducibilityProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "capture": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/nondeterminismCapture"
+            }
+          ]
+        },
+        "mode": {
+          "enum": [
+            "deterministic",
+            "nondeterministic"
+          ]
+        },
+        "note": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "capture",
+        "note"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/environment/seed-policy@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "How randomness enters the world: the embedded reproducibility profile, the declared seed (null iff unseeded; forbidden for deterministic worlds), its derivation algorithm and the reseeding bound.",
+  "properties": {
+    "note": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        }
+      ]
+    },
+    "reproducibility": {
+      "$ref": "#/$defs/reproducibilityProfile"
+    },
+    "reseedPolicy": {
+      "enum": [
+        "forbidden",
+        "declared-only"
+      ]
+    },
+    "seed": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        }
+      ]
+    },
+    "seedAlgorithm": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "required": [
+    "reproducibility",
+    "seed",
+    "seedAlgorithm",
+    "reseedPolicy",
+    "note"
+  ],
+  "title": "Arena environment seed policy v1",
+  "type": "object"
+}

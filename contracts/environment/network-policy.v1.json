@@ -1,0 +1,48 @@
+{
+  "$id": "arena:schema/environment/network-policy@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Default-deny egress. Egress is possible only through explicit allows; an allow-all mode does not exist in the closed vocabulary.",
+  "properties": {
+    "allows": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "host": {
+            "pattern": "^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$",
+            "type": "string"
+          },
+          "port": {
+            "maximum": 65535,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "protocol": {
+            "enum": [
+              "tcp",
+              "udp",
+              "http",
+              "https"
+            ]
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "protocol"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "egress": {
+      "const": "default-deny"
+    }
+  },
+  "required": [
+    "egress",
+    "allows"
+  ],
+  "title": "Arena network policy v1",
+  "type": "object"
+}
