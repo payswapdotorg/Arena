@@ -1,0 +1,138 @@
+{
+  "$defs": {
+    "agentInstanceEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "instance-created",
+            "started",
+            "state-changed",
+            "observation",
+            "action",
+            "escalation",
+            "error",
+            "terminated"
+          ]
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "payload": {},
+        "sequence": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sequence",
+        "kind",
+        "occurredAt"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/agent-body/agent-instance@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Ephemeral execution of a Possession (spec AB1.0): instance id; possession content digest; environment instance; runtime state; append-only event stream (contiguous sequences, monotonic timestamps); termination status. Terminal states (completed/failed/terminated) are FINAL — lifecycle operations on a terminated instance are rejected, and the object is deep-frozen so in-place mutation throws.",
+  "properties": {
+    "environment": {
+      "additionalProperties": false,
+      "properties": {
+        "environmentId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "environmentVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "instanceId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "snapshotDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "environmentId",
+        "environmentVersion",
+        "instanceId",
+        "snapshotDigest"
+      ],
+      "type": "object"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/agentInstanceEvent"
+      },
+      "type": "array"
+    },
+    "instanceId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "possessionDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "runtimeState": {
+      "enum": [
+        "initialized",
+        "running",
+        "suspended"
+      ]
+    },
+    "termination": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "completed",
+                "failed",
+                "terminated"
+              ]
+            },
+            "terminatedAt": {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "terminatedAt",
+            "reason"
+          ],
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "instanceId",
+    "possessionDigest",
+    "environment",
+    "runtimeState",
+    "events",
+    "termination"
+  ],
+  "title": "Arena AgentInstance v1",
+  "type": "object"
+}

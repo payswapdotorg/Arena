@@ -1,0 +1,787 @@
+{
+  "$defs": {
+    "bodyVersion": {
+      "additionalProperties": false,
+      "properties": {
+        "authorityBoundaries": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "body": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "pattern": "^[a-z][a-z0-9-]{1,127}$",
+              "type": "string"
+            },
+            "tenant": {
+              "pattern": "^[a-z][a-z0-9-]{1,62}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "tenant",
+            "name"
+          ],
+          "type": "object"
+        },
+        "capabilities": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "domainScope": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "environmentRequirements": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "escalation": {
+          "$ref": "#/$defs/escalationPolicy"
+        },
+        "evaluationSuites": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "knowledge": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "type": "array"
+        },
+        "lineage": {
+          "additionalProperties": false,
+          "properties": {
+            "parents": {
+              "items": {
+                "$ref": "#/$defs/bodyVersionRef"
+              },
+              "type": "array"
+            },
+            "supersedes": {
+              "$ref": "#/$defs/bodyVersionRef"
+            }
+          },
+          "required": [
+            "parents"
+          ],
+          "type": "object"
+        },
+        "memoryPolicy": {
+          "$ref": "#/$defs/policyDocument"
+        },
+        "mission": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "planningPolicy": {
+          "$ref": "#/$defs/policyDocument"
+        },
+        "procedures": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "type": "array"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "createdAt": {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+              "type": "string"
+            },
+            "creator": {
+              "$ref": "#/$defs/principal"
+            },
+            "records": {
+              "items": {
+                "$ref": "#/$defs/versionedArtifactRef"
+              },
+              "type": "array"
+            },
+            "rights": {
+              "$ref": "#/$defs/rights"
+            }
+          },
+          "required": [
+            "creator",
+            "createdAt",
+            "rights",
+            "records"
+          ],
+          "type": "object"
+        },
+        "recordVersion": {
+          "const": 1
+        },
+        "role": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "safetyPolicy": {
+          "$ref": "#/$defs/policyDocument"
+        },
+        "skills": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "type": "array"
+        },
+        "substrateCompatibility": {
+          "$ref": "#/$defs/substrateCompatibilityProfile"
+        },
+        "tools": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "type": "array"
+        },
+        "verificationSuites": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "body",
+        "version",
+        "mission",
+        "role",
+        "domainScope",
+        "capabilities",
+        "skills",
+        "knowledge",
+        "tools",
+        "procedures",
+        "memoryPolicy",
+        "planningPolicy",
+        "escalation",
+        "authorityBoundaries",
+        "safetyPolicy",
+        "evaluationSuites",
+        "verificationSuites",
+        "environmentRequirements",
+        "substrateCompatibility",
+        "provenance",
+        "lineage",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "bodyVersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "cognitiveSubstrate": {
+      "additionalProperties": false,
+      "properties": {
+        "adapterId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "adapterVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "enum": [
+              "stable",
+              "preview",
+              "deprecated",
+              "rate-limited",
+              "region-restricted",
+              "sovereign-only",
+              "capacity-constrained"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "contextLimits": {
+          "$ref": "#/$defs/contextLimits"
+        },
+        "integrity": {
+          "additionalProperties": false,
+          "properties": {
+            "contentDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "digestAlgorithm": {
+              "const": "sha256"
+            }
+          },
+          "required": [
+            "digestAlgorithm",
+            "contentDigest"
+          ],
+          "type": "object"
+        },
+        "modalityProfile": {
+          "items": {
+            "enum": [
+              "text-input",
+              "text-output",
+              "image-input",
+              "image-output",
+              "audio-input",
+              "audio-output",
+              "video-input",
+              "structured-input",
+              "structured-output"
+            ]
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "modelFamily": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "modelId": {
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "modelRevision": {
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+          "type": "string"
+        },
+        "recordVersion": {
+          "const": 1
+        },
+        "toolCallingProfile": {
+          "enum": [
+            "none",
+            "text-protocol",
+            "json-schema",
+            "function-calling"
+          ]
+        }
+      },
+      "required": [
+        "recordVersion",
+        "adapterId",
+        "adapterVersion",
+        "modelFamily",
+        "modelId",
+        "modelRevision",
+        "modalityProfile",
+        "toolCallingProfile",
+        "contextLimits",
+        "conditions",
+        "integrity"
+      ],
+      "type": "object"
+    },
+    "contextLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "maxContextUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxOutputUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxContextUnits",
+        "maxOutputUnits"
+      ],
+      "type": "object"
+    },
+    "environmentProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "constraints": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "environmentId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "environmentVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "environmentId",
+        "environmentVersion",
+        "constraints"
+      ],
+      "type": "object"
+    },
+    "escalationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "rules": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "condition": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "target": {
+                "$ref": "#/$defs/principal"
+              }
+            },
+            "required": [
+              "condition",
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "rules"
+      ],
+      "type": "object"
+    },
+    "modelSpecificArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "artifactVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "materiality": {
+          "enum": [
+            "behavioral",
+            "non-behavioral"
+          ]
+        }
+      },
+      "required": [
+        "artifactId",
+        "artifactVersion",
+        "digest",
+        "materiality"
+      ],
+      "type": "object"
+    },
+    "policyBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "bundleId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "bundleVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "policies": {
+          "items": {
+            "$ref": "#/$defs/policyDocument"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "bundleId",
+        "bundleVersion",
+        "policies"
+      ],
+      "type": "object"
+    },
+    "policyDocument": {
+      "additionalProperties": false,
+      "properties": {
+        "policyId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "type": "array"
+        },
+        "statements": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "policyId",
+        "statements"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "rights": {
+      "additionalProperties": false,
+      "properties": {
+        "commercialUse": {
+          "enum": [
+            "allowed",
+            "requires-license",
+            "prohibited"
+          ]
+        },
+        "customerData": {
+          "enum": [
+            "none",
+            "derived",
+            "contains"
+          ]
+        },
+        "license": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9 .+()\\-]{0,63}$",
+          "type": "string"
+        },
+        "professionalLimitations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "redistribution": {
+          "enum": [
+            "allowed",
+            "tenant-only",
+            "prohibited"
+          ]
+        }
+      },
+      "required": [
+        "license",
+        "commercialUse",
+        "redistribution",
+        "customerData"
+      ],
+      "type": "object"
+    },
+    "runtimeProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "configuration": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "object"
+        },
+        "runtimeId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "runtimeVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtimeId",
+        "runtimeVersion",
+        "configuration"
+      ],
+      "type": "object"
+    },
+    "substrateCompatibilityProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "contextRequirements": {
+          "additionalProperties": false,
+          "properties": {
+            "minContextUnits": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "minContextUnits"
+          ],
+          "type": "object"
+        },
+        "costConstraints": {
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "maxCostPerMillionRequests": {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            "maxP95LatencyMs": {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "prohibitedConditions": {
+          "items": {
+            "enum": [
+              "stable",
+              "preview",
+              "deprecated",
+              "rate-limited",
+              "region-restricted",
+              "sovereign-only",
+              "capacity-constrained"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "requiredEvaluationSuites": {
+          "items": {
+            "$ref": "#/$defs/versionedArtifactRef"
+          },
+          "type": "array"
+        },
+        "requiredModalities": {
+          "items": {
+            "enum": [
+              "text-input",
+              "text-output",
+              "image-input",
+              "image-output",
+              "audio-input",
+              "audio-output",
+              "video-input",
+              "structured-input",
+              "structured-output"
+            ]
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "requiredToolCalling": {
+          "enum": [
+            "none",
+            "text-protocol",
+            "json-schema",
+            "function-calling"
+          ]
+        },
+        "substrateAdaptations": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "adaptation": {
+                "$ref": "#/$defs/versionedArtifactRef"
+              },
+              "substrateDigest": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "substrateDigest",
+              "adaptation"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "requiredModalities",
+        "requiredToolCalling",
+        "contextRequirements",
+        "requiredEvaluationSuites",
+        "prohibitedConditions",
+        "substrateAdaptations"
+      ],
+      "type": "object"
+    },
+    "versionedArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/agent-body/possession@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The immutable, digest-bearing binding (spec AB1.0; architecture-lock rule 3): BodyVersion + CognitiveSubstrate + RuntimeProfile + EnvironmentProfile + PolicyBundle + optional ModelSpecificArtifacts, content-addressed by the sha256 digest over the canonical digest-free view. The full body version and substrate are embedded, so the possession digest transitively commits to both. A Possession is a VERSIONED BINDING, not an alias for the model: any component change (substrate upgrade included) produces a different possession digest.",
+  "properties": {
+    "bodyVersion": {
+      "$ref": "#/$defs/bodyVersion"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environment": {
+      "$ref": "#/$defs/environmentProfile"
+    },
+    "modelSpecificArtifacts": {
+      "items": {
+        "$ref": "#/$defs/modelSpecificArtifact"
+      },
+      "type": "array"
+    },
+    "policies": {
+      "$ref": "#/$defs/policyBundle"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "runtime": {
+      "$ref": "#/$defs/runtimeProfile"
+    },
+    "substrate": {
+      "$ref": "#/$defs/cognitiveSubstrate"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "bodyVersion",
+    "substrate",
+    "runtime",
+    "environment",
+    "policies",
+    "modelSpecificArtifacts",
+    "digest"
+  ],
+  "title": "Arena Possession v1",
+  "type": "object"
+}
