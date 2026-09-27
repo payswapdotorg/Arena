@@ -11,7 +11,7 @@ Repository architecture, governance, requirements, implementation plan, core obj
 
 A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). A003 MERGED via PR #8 (merge SHA e14b9fff9df0f37bc3982f5724401c55d1410813, worker head 26fdd9ef + Tech Lead reconciliation b2a0f0dd; CI run 36311438667 green on the PR head; post-merge run 36311670948).
 
-Live wave: A004 (Issue #5, worker queued — first session lost to a sandbox reset before delivery; re-dispatched 2026-09-27 from base 0b8443e), A009 (Issue #7, worker queued — same re-dispatch). A015 is READY and dispatches now that the A003 slot freed (base = post-A003-merge main tip e14b9fff). A016 is READY (A002+A003 merged) and dispatches when the next slot frees.
+Live wave: A004 (Issue #5, worker queued — first session lost to a sandbox reset before delivery; re-dispatched 2026-09-27 from base 0b8443e), A009 (Issue #7, worker queued — same re-dispatch). A015 is READY and dispatches now that the A003 slot freed (base = current main tip bd3bd19, i.e. the A003 merge plus its governance commit). A016 is READY (A002+A003 merged) and dispatches when the next slot frees.
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
@@ -61,7 +61,7 @@ Wave in flight, bases recorded at dispatch:
 
 - A004 — Capability Graph and skill taxonomy (packages/capability-graph, contracts/capability) — Issue #5 — base 0b8443e6e5b214d88fe1111a528675e45cb6f1d9 (re-dispatched 2026-09-27; first session lost to a sandbox reset before delivery)
 - A009 — Environment protocol (packages/environment-protocol, contracts/environment) — Issue #7 — base 0b8443e6e5b214d88fe1111a528675e45cb6f1d9 (re-dispatched 2026-09-27)
-- A015 — Durable jobs/events/orchestration (packages/job-protocol, services/job-orchestrator, contracts/events) — base e14b9fff9df0f37bc3982f5724401c55d1410813 (post-A003-merge main tip; slot freed by the A003 merge)
+- A015 — Durable jobs/events/orchestration (packages/job-protocol, services/job-orchestrator, contracts/events) — base bd3bd19e7058d758c2c8eb047a67888d032a2e81 (current main tip after the A003 governance commit; slot freed by the A003 merge)
 
 Wave rules: pairwise-disjoint surfaces; zero new external runtime dependencies (existing pnpm catalog only); no root manifest/lockfile edits (Tech Lead serializes reconciliation — see d21b4fe for the A002 pattern: lockfile intake + G9 package-generator wiring); Envelope<T>/canonical-JSON primitives reused from @arena/protocol-core; generated contracts + drift checks per the A001 convention, package-level generators wired into G9.
 
