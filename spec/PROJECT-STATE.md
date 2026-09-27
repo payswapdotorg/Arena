@@ -9,9 +9,9 @@ Maximum concurrent workers: 3
 
 Repository architecture, governance, requirements, implementation plan, core object specifications, security/data governance, service boundaries, dependency graph and Work Orders are committed.
 
-A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). CI green on GitHub runners for both (runs 36257651225, 36280569487).
+A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). A003 MERGED via PR #8 (merge SHA e14b9fff9df0f37bc3982f5724401c55d1410813, worker head 26fdd9ef + Tech Lead reconciliation b2a0f0dd; CI run 36311438667 green on the PR head; post-merge run 36311670948).
 
-Live wave: A003 (Issue #4, in flight), A004 (Issue #5, re-dispatch in flight after a delivery-channel loss), A009 (unlocked by A002 — dispatch authorized). A015 is READY (dependency-satisfied, cap-held).
+Live wave: A004 (Issue #5, worker queued — first session lost to a sandbox reset before delivery; re-dispatched 2026-09-27 from base 0b8443e), A009 (Issue #7, worker queued — same re-dispatch). A015 is READY and dispatches now that the A003 slot freed (base = post-A003-merge main tip e14b9fff). A016 is READY (A002+A003 merged) and dispatches when the next slot frees.
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
@@ -19,7 +19,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 
 - A001 MERGED
 - A002 MERGED
-- A003 ACTIVE
+- A003 MERGED
 - A004 ACTIVE
 - A005 WAITING_ON_DEPENDENCIES
 - A006 WAITING_ON_DEPENDENCIES
@@ -32,6 +32,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A013 WAITING_ON_DEPENDENCIES
 - A014 WAITING_ON_DEPENDENCIES
 - A015 READY
+- A016 READY
 - A016 WAITING_ON_DEPENDENCIES
 - A017 WAITING_ON_DEPENDENCIES
 - A018 WAITING_ON_DEPENDENCIES
@@ -58,13 +59,13 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 
 Wave in flight, bases recorded at dispatch:
 
-- A003 — Agent Body protocol (packages/agent-body, contracts/agent-body) — Issue #4 — base dcf0cb74ed702297929ed2999fe71b7f6bb19fe2
-- A004 — Capability Graph and skill taxonomy (packages/capability-graph, contracts/capability) — Issue #5 — base dcf0cb74ed702297929ed2999fe71b7f6bb19fe2 (re-dispatch; first session's delivery was lost to an ephemeral sandbox before harvest)
-- A009 — Environment protocol (packages/environment-protocol, contracts/environment) — unlocked by A002 merge; dispatch from the post-A002 main tip.
+- A004 — Capability Graph and skill taxonomy (packages/capability-graph, contracts/capability) — Issue #5 — base 0b8443e6e5b214d88fe1111a528675e45cb6f1d9 (re-dispatched 2026-09-27; first session lost to a sandbox reset before delivery)
+- A009 — Environment protocol (packages/environment-protocol, contracts/environment) — Issue #7 — base 0b8443e6e5b214d88fe1111a528675e45cb6f1d9 (re-dispatched 2026-09-27)
+- A015 — Durable jobs/events/orchestration (packages/job-protocol, services/job-orchestrator, contracts/events) — base e14b9fff9df0f37bc3982f5724401c55d1410813 (post-A003-merge main tip; slot freed by the A003 merge)
 
 Wave rules: pairwise-disjoint surfaces; zero new external runtime dependencies (existing pnpm catalog only); no root manifest/lockfile edits (Tech Lead serializes reconciliation — see d21b4fe for the A002 pattern: lockfile intake + G9 package-generator wiring); Envelope<T>/canonical-JSON primitives reused from @arena/protocol-core; generated contracts + drift checks per the A001 convention, package-level generators wired into G9.
 
-A015 remains READY and is dispatched when a concurrency slot frees.
+A016 remains READY (A002+A003 merged) and dispatches when the next concurrency slot frees. The A003 verification baseline: battery green on 5 packages (governance/boundary/typecheck/lint/test/build), pristine frozen-lockfile clone green, PR CI run 36311438667 success; 45 delivered files, package-level generator auto-wired into G9 (packages/ glob).
 
 ## Verification baseline
 

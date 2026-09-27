@@ -155,7 +155,7 @@ Arena never directly mutates Epoch authoritative stores.
 
 ## Implementation approach
 
-Foundation status: A001 merged (PR #2, d07a9bee); A002 merged (PR #6, 21dfdbda — artifact-protocol + provenance, 277/277 tests, G9 now governs package-level contract generators). Current wave: A003/A004/A009. Verification baseline: node v22.23.3, pnpm 10.34.5, python 3.12.14; battery install/governance/boundary/typecheck/lint/test/build all exit 0; governance self-test 24/24, boundary self-test 11/11, tests 108/108. Current wave: A002/A003/A004 (Phase 1).
+Foundation status: A001 merged (PR #2, d07a9bee); A002 merged (PR #6, 21dfdbda — artifact-protocol + provenance, G9 governs package-level contract generators); A003 merged (PR #8, e14b9fff — agent-body protocol, worker head 26fdd9ef + reconciliation b2a0f0dd, PR CI 36311438667 green, battery + pristine frozen-lockfile clone green on 5 packages). Current wave: A004/A009/A015; A016 READY for the next free slot. Verification baseline: node 22 (engine-strict >=22 <23), pnpm 10.34.5; battery install/governance/boundary/typecheck/lint/test/build all exit 0.
 
 Use a TypeScript-first monorepo with:
 
