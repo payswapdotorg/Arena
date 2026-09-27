@@ -1,0 +1,35 @@
+{
+  "$id": "arena:schema/capability/domain-pack-applied-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload emitted when a domain pack application is appended to the graph history: pack identity, content digest and the node keys the pack declared (the ownership proof for future supersessions).",
+  "properties": {
+    "declaredNodeKeys": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "packDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "packId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "packVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "packId",
+    "packVersion",
+    "packDigest",
+    "declaredNodeKeys"
+  ],
+  "title": "Arena domain-pack-applied event payload v1",
+  "type": "object"
+}

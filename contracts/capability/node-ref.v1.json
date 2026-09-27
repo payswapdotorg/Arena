@@ -1,0 +1,43 @@
+{
+  "$id": "arena:schema/capability/node-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A content-addressed reference to a capability-graph node: kind (one of the eleven §4 kinds), stable id, semver version and the sha256 digest of the referenced node version. The unit of graph edges and query results.",
+  "properties": {
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[a-z][a-z0-9-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "domain",
+        "capability",
+        "sub-capability",
+        "skill",
+        "tool",
+        "task-family",
+        "evaluator",
+        "verifier",
+        "expert-competency",
+        "observed-failure",
+        "body-version"
+      ]
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "id",
+    "version",
+    "digest"
+  ],
+  "title": "Arena CapabilityNodeRef v1",
+  "type": "object"
+}

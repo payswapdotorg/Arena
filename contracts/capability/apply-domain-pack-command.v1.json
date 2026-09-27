@@ -1,0 +1,791 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "domainPack": {
+      "additionalProperties": false,
+      "properties": {
+        "declaration": {
+          "additionalProperties": false,
+          "properties": {
+            "edges": {
+              "items": {
+                "$ref": "#/$defs/packEdgeDeclaration"
+              },
+              "type": "array"
+            },
+            "environments": {
+              "items": {
+                "$ref": "#/$defs/environmentExtension"
+              },
+              "type": "array"
+            },
+            "evaluators": {
+              "items": {
+                "$ref": "#/$defs/evaluatorDeclaration"
+              },
+              "type": "array"
+            },
+            "skills": {
+              "items": {
+                "$ref": "#/$defs/skillDeclaration"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "skills",
+            "evaluators",
+            "environments",
+            "edges"
+          ],
+          "type": "object"
+        },
+        "packId": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest"
+          ],
+          "type": "object"
+        },
+        "targetDomain": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "const": "domain"
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version"
+          ],
+          "type": "object"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "packId",
+        "version",
+        "targetDomain",
+        "declaration",
+        "provenance"
+      ],
+      "type": "object"
+    },
+    "edgePayload": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "environmentExtension": {
+      "additionalProperties": false,
+      "properties": {
+        "environmentId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "environmentId",
+        "version"
+      ],
+      "type": "object"
+    },
+    "evaluatorDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": false,
+          "properties": {
+            "category": {
+              "enum": [
+                "declarative-knowledge",
+                "procedural-skill",
+                "tool-skill",
+                "reasoning-decision-pattern",
+                "verification-skill",
+                "communication-escalation-behavior",
+                "domain-method"
+              ]
+            },
+            "description": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "type": "object"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest"
+          ],
+          "type": "object"
+        },
+        "supersedes": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "payload"
+      ],
+      "type": "object"
+    },
+    "nodePayload": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "declarative-knowledge",
+            "procedural-skill",
+            "tool-skill",
+            "reasoning-decision-pattern",
+            "verification-skill",
+            "communication-escalation-behavior",
+            "domain-method"
+          ]
+        },
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "type": "object"
+    },
+    "nodeRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "domain",
+            "capability",
+            "sub-capability",
+            "skill",
+            "tool",
+            "task-family",
+            "evaluator",
+            "verifier",
+            "expert-competency",
+            "observed-failure",
+            "body-version"
+          ]
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "packEdgeDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "decomposes-into",
+            "requires",
+            "produces",
+            "evaluates",
+            "verifies",
+            "observes-failure-of",
+            "competent-in",
+            "exercised-by",
+            "extends-domain"
+          ]
+        },
+        "payload": {
+          "additionalProperties": false,
+          "properties": {
+            "note": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest"
+          ],
+          "type": "object"
+        },
+        "source": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "domain",
+                "capability",
+                "sub-capability",
+                "skill",
+                "tool",
+                "task-family",
+                "evaluator",
+                "verifier",
+                "expert-competency",
+                "observed-failure",
+                "body-version"
+              ]
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        "target": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "domain",
+                "capability",
+                "sub-capability",
+                "skill",
+                "tool",
+                "task-family",
+                "evaluator",
+                "verifier",
+                "expert-competency",
+                "observed-failure",
+                "body-version"
+              ]
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind",
+        "source",
+        "target",
+        "provenance"
+      ],
+      "type": "object"
+    },
+    "provenanceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "recordDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordDigest"
+      ],
+      "type": "object"
+    },
+    "skillDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": false,
+          "properties": {
+            "category": {
+              "enum": [
+                "declarative-knowledge",
+                "procedural-skill",
+                "tool-skill",
+                "reasoning-decision-pattern",
+                "verification-skill",
+                "communication-escalation-behavior",
+                "domain-method"
+              ]
+            },
+            "customerData": {
+              "enum": [
+                "none",
+                "derived",
+                "contains"
+              ]
+            },
+            "evidence": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "digest": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  "name": {
+                    "pattern": "^[a-z][a-z0-9-]{1,127}$",
+                    "type": "string"
+                  },
+                  "namespace": {
+                    "pattern": "^[a-z][a-z0-9-]{1,62}$",
+                    "type": "string"
+                  },
+                  "version": {
+                    "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "namespace",
+                  "name",
+                  "version",
+                  "digest"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "inputs": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "description": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "name": {
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "outputs": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "description": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "name": {
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "prerequisites": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "professionalLimitations": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "summary": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "tests": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "digest": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  "name": {
+                    "pattern": "^[a-z][a-z0-9-]{1,127}$",
+                    "type": "string"
+                  },
+                  "namespace": {
+                    "pattern": "^[a-z][a-z0-9-]{1,62}$",
+                    "type": "string"
+                  },
+                  "version": {
+                    "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "namespace",
+                  "name",
+                  "version",
+                  "digest"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "title": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "summary",
+            "inputs",
+            "outputs",
+            "prerequisites",
+            "evidence",
+            "tests",
+            "professionalLimitations",
+            "customerData"
+          ],
+          "type": "object"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest"
+          ],
+          "type": "object"
+        },
+        "supersedes": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "payload",
+        "provenance"
+      ],
+      "type": "object"
+    },
+    "skillPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "declarative-knowledge",
+            "procedural-skill",
+            "tool-skill",
+            "reasoning-decision-pattern",
+            "verification-skill",
+            "communication-escalation-behavior",
+            "domain-method"
+          ]
+        },
+        "customerData": {
+          "enum": [
+            "none",
+            "derived",
+            "contains"
+          ]
+        },
+        "evidence": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "digest": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "name": {
+                "pattern": "^[a-z][a-z0-9-]{1,127}$",
+                "type": "string"
+              },
+              "namespace": {
+                "pattern": "^[a-z][a-z0-9-]{1,62}$",
+                "type": "string"
+              },
+              "version": {
+                "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "namespace",
+              "name",
+              "version",
+              "digest"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "inputs": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "name": {
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "outputs": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "name": {
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "prerequisites": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "professionalLimitations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "summary": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "tests": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "digest": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "name": {
+                "pattern": "^[a-z][a-z0-9-]{1,127}$",
+                "type": "string"
+              },
+              "namespace": {
+                "pattern": "^[a-z][a-z0-9-]{1,62}$",
+                "type": "string"
+              },
+              "version": {
+                "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "namespace",
+              "name",
+              "version",
+              "digest"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "title": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "summary",
+        "inputs",
+        "outputs",
+        "prerequisites",
+        "evidence",
+        "tests",
+        "professionalLimitations",
+        "customerData"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/capability/apply-domain-pack-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Idempotency-keyed command payload applying a domain pack to a capability graph. Packs only append; a pack attempting to supersede or rewrite a node it does not own is rejected (architecture-lock rule 21).",
+  "properties": {
+    "pack": {
+      "$ref": "#/$defs/domainPack"
+    }
+  },
+  "required": [
+    "pack"
+  ],
+  "title": "Arena apply-domain-pack command payload v1",
+  "type": "object"
+}

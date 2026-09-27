@@ -1,0 +1,14 @@
+{
+  "$id": "arena:schema/capability/edge-payload@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Versioned plain-JSON payload of graph edges (addressed by the edge payloadSchema SchemaRef): an optional note.",
+  "properties": {
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "title": "Arena capability edge payload v1",
+  "type": "object"
+}

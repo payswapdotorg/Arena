@@ -1,0 +1,364 @@
+{
+  "$defs": {
+    "appliedDomainPack": {
+      "additionalProperties": false,
+      "properties": {
+        "appliedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "declaredNodeKeys": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pack": {
+          "additionalProperties": false,
+          "properties": {
+            "declaration": {
+              "additionalProperties": false,
+              "properties": {
+                "edges": {
+                  "items": {
+                    "$ref": "#/$defs/packEdgeDeclaration"
+                  },
+                  "type": "array"
+                },
+                "environments": {
+                  "items": {
+                    "$ref": "#/$defs/environmentExtension"
+                  },
+                  "type": "array"
+                },
+                "evaluators": {
+                  "items": {
+                    "$ref": "#/$defs/evaluatorDeclaration"
+                  },
+                  "type": "array"
+                },
+                "skills": {
+                  "items": {
+                    "$ref": "#/$defs/skillDeclaration"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "skills",
+                "evaluators",
+                "environments",
+                "edges"
+              ],
+              "type": "object"
+            },
+            "packId": {
+              "pattern": "^[a-z][a-z0-9-]{1,62}$",
+              "type": "string"
+            },
+            "provenance": {
+              "additionalProperties": false,
+              "properties": {
+                "recordDigest": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "recordDigest"
+              ],
+              "type": "object"
+            },
+            "targetDomain": {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "pattern": "^[a-z][a-z0-9-]{0,127}$",
+                  "type": "string"
+                },
+                "kind": {
+                  "const": "domain"
+                },
+                "version": {
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind",
+                "id",
+                "version"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "packId",
+            "version",
+            "targetDomain",
+            "declaration",
+            "provenance"
+          ],
+          "type": "object"
+        },
+        "packDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "recordVersion": {
+          "const": 1
+        }
+      },
+      "required": [
+        "recordVersion",
+        "pack",
+        "packDigest",
+        "appliedAt",
+        "declaredNodeKeys"
+      ],
+      "type": "object"
+    },
+    "edge": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "decomposes-into",
+            "requires",
+            "produces",
+            "evaluates",
+            "verifies",
+            "observes-failure-of",
+            "competent-in",
+            "exercised-by",
+            "extends-domain"
+          ]
+        },
+        "payload": {
+          "additionalProperties": false,
+          "properties": {
+            "note": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "payloadSchema": {
+          "pattern": "^arena:schema/[a-z][a-z0-9-]*/[a-z][a-z0-9-]*@\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest"
+          ],
+          "type": "object"
+        },
+        "recordVersion": {
+          "const": 1
+        },
+        "source": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "domain",
+                "capability",
+                "sub-capability",
+                "skill",
+                "tool",
+                "task-family",
+                "evaluator",
+                "verifier",
+                "expert-competency",
+                "observed-failure",
+                "body-version"
+              ]
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        "target": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "domain",
+                "capability",
+                "sub-capability",
+                "skill",
+                "tool",
+                "task-family",
+                "evaluator",
+                "verifier",
+                "expert-competency",
+                "observed-failure",
+                "body-version"
+              ]
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "kind",
+        "source",
+        "target",
+        "payloadSchema",
+        "payload",
+        "provenance",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "node": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "domain",
+            "capability",
+            "sub-capability",
+            "skill",
+            "tool",
+            "task-family",
+            "evaluator",
+            "verifier",
+            "expert-competency",
+            "observed-failure",
+            "body-version"
+          ]
+        },
+        "payload": {
+          "description": "Kind-specific payload (skill / observed-failure / titled)."
+        },
+        "payloadSchema": {
+          "pattern": "^arena:schema/[a-z][a-z0-9-]*/[a-z][a-z0-9-]*@\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        },
+        "provenance": {
+          "additionalProperties": false,
+          "properties": {
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest"
+          ],
+          "type": "object"
+        },
+        "supersedes": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "payloadSchema",
+        "payload",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/capability/graph@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The append-only, descriptive Capability Graph: every admitted node, edge and applied domain pack in append order. Descriptive and queryable — it does not replace object authority (architecture.md §4). Historical evidence is append-only and never rewritten (lock rule 6).",
+  "properties": {
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/edge"
+      },
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/node"
+      },
+      "type": "array"
+    },
+    "packs": {
+      "items": {
+        "$ref": "#/$defs/appliedDomainPack"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "nodes",
+    "edges",
+    "packs"
+  ],
+  "title": "Arena CapabilityGraph v1",
+  "type": "object"
+}
