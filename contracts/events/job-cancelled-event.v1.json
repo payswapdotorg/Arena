@@ -1,0 +1,40 @@
+{
+  "$id": "arena:schema/events/job-cancelled-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Terminal: a queued or running job was cancelled.",
+  "properties": {
+    "eventVersion": {
+      "const": 1
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "job-cancelled"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "reason": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "jobId",
+    "kind",
+    "reason"
+  ],
+  "title": "Arena job-cancelled event payload v1",
+  "type": "object"
+}

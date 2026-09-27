@@ -1,0 +1,298 @@
+{
+  "$defs": {
+    "jobAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "endedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "errorClass": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "timed-out",
+            "cancelled"
+          ]
+        },
+        "startedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attempt",
+        "startedAt",
+        "outcome"
+      ],
+      "type": "object"
+    },
+    "jobKind": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "retryPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "backoffScheduleMs": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "maxAttempts": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "retryableErrorClasses": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "maxAttempts",
+        "backoffScheduleMs",
+        "retryableErrorClasses"
+      ],
+      "type": "object"
+    },
+    "timestamp": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "$id": "arena:schema/events/job-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The append-only lifecycle state of one job: queued -> running -> succeeded | failed | cancelled (terminal states are final; mutations after terminal are rejected). Each transition appends one event to the embedded history (deep-frozen, never rewritten). A failed attempt whose retry policy has budget left re-queues the job with a backoff-gated nextRetryAt. Policies are pure data snapshots from the definition.",
+  "properties": {
+    "attemptHistory": {
+      "items": {
+        "$ref": "#/$defs/jobAttempt"
+      },
+      "type": "array"
+    },
+    "attempts": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "cancellation": {
+      "additionalProperties": false,
+      "properties": {
+        "cancelledAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reason": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason",
+        "cancelledAt"
+      ],
+      "type": "object"
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "definitionDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "events": {
+      "description": "Embedded append-only lifecycle event history (mutation-audited events belong to the separate audit stream, never here).",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "job-submitted-event.v1.json"
+          },
+          {
+            "$ref": "job-started-event.v1.json"
+          },
+          {
+            "$ref": "job-progressed-event.v1.json"
+          },
+          {
+            "$ref": "job-retried-event.v1.json"
+          },
+          {
+            "$ref": "job-completed-event.v1.json"
+          },
+          {
+            "$ref": "job-failed-event.v1.json"
+          },
+          {
+            "$ref": "job-cancelled-event.v1.json"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "failure": {
+      "additionalProperties": false,
+      "properties": {
+        "errorClass": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "error",
+            "timeout"
+          ]
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "errorClass",
+        "message"
+      ],
+      "type": "object"
+    },
+    "idempotencyKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "idempotencyScope": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "input": {
+      "description": "Plain-JSON job input (validated against inputSchema by the owning domain, not here)."
+    },
+    "jobId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/jobKind"
+    },
+    "nextRetryAt": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "policy": {
+      "additionalProperties": false,
+      "properties": {
+        "retry": {
+          "$ref": "#/$defs/retryPolicy"
+        },
+        "timeoutMs": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "timeoutMs",
+        "retry"
+      ],
+      "type": "object"
+    },
+    "progress": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "attempt": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "percent": {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "attempt",
+        "at"
+      ],
+      "type": "object"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "result": {
+      "description": "Plain-JSON terminal result (succeeded jobs only)."
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "running",
+        "succeeded",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "submittedAt": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "timeoutAt": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "updatedAt": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "jobId",
+    "definitionDigest",
+    "kind",
+    "correlationId",
+    "idempotencyKey",
+    "idempotencyScope",
+    "input",
+    "policy",
+    "status",
+    "attempts",
+    "attemptHistory",
+    "events",
+    "submittedAt",
+    "updatedAt"
+  ],
+  "title": "Arena JobRecord v1",
+  "type": "object"
+}
