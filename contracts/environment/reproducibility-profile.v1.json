@@ -1,0 +1,72 @@
+{
+  "$defs": {
+    "nondeterminismCapture": {
+      "additionalProperties": false,
+      "properties": {
+        "externalInputs": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "seed": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "timingContext": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "versions": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seed",
+        "versions",
+        "externalInputs",
+        "timingContext"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/environment/reproducibility-profile@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Deterministic preferred. Nondeterminism MUST capture seed, versions, external inputs and relevant timing/context metadata (spec ENV1.0 Reproducibility).",
+  "properties": {
+    "capture": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/nondeterminismCapture"
+        }
+      ]
+    },
+    "mode": {
+      "enum": [
+        "deterministic",
+        "nondeterministic"
+      ]
+    },
+    "note": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "required": [
+    "mode",
+    "capture",
+    "note"
+  ],
+  "title": "Arena reproducibility profile v1",
+  "type": "object"
+}

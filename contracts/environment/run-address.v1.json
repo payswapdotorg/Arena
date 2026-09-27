@@ -1,0 +1,94 @@
+{
+  "$defs": {
+    "environmentVersionRef": {
+      "additionalProperties": false,
+      "description": "Content-addressed reference to a registered environment version.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "taskVersionRef": {
+      "additionalProperties": false,
+      "description": "Versioned task reference (task-spec owns the full surface).",
+      "properties": {
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskId",
+        "version"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/environment/run-address@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Evidence addressability: every run is addressable by task version, environment version (content-addressed), run id, initial snapshot digest, trajectory digest and evidence digests — all required, or construction fails (spec ENV1.0 Evidence).",
+  "properties": {
+    "environmentVersion": {
+      "$ref": "#/$defs/environmentVersionRef"
+    },
+    "evidenceDigests": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "initialSnapshotDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "runId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "taskVersion": {
+      "$ref": "#/$defs/taskVersionRef"
+    },
+    "trajectoryDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "taskVersion",
+    "environmentVersion",
+    "runId",
+    "initialSnapshotDigest",
+    "trajectoryDigest",
+    "evidenceDigests"
+  ],
+  "title": "Arena run address v1",
+  "type": "object"
+}

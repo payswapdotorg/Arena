@@ -1,0 +1,76 @@
+{
+  "$defs": {
+    "hookDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+              "type": "string"
+            }
+          ]
+        },
+        "hookId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "invocationSchema": {
+          "pattern": "^arena:schema/[a-z][a-z0-9-]*/[a-z][a-z0-9-]*@\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "pre-run",
+            "post-run",
+            "on-evidence",
+            "on-completion"
+          ]
+        },
+        "role": {
+          "enum": [
+            "evaluator",
+            "verifier"
+          ]
+        }
+      },
+      "required": [
+        "hookId",
+        "role",
+        "phase",
+        "invocationSchema",
+        "description"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/environment/evaluation-hooks@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Evaluator and verifier hooks bound to the environment — at least one of each required (evaluation and verification are first-class Arena pillars).",
+  "properties": {
+    "evaluators": {
+      "items": {
+        "$ref": "#/$defs/hookDeclaration"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "verifiers": {
+      "items": {
+        "$ref": "#/$defs/hookDeclaration"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "evaluators",
+    "verifiers"
+  ],
+  "title": "Arena evaluation hooks v1",
+  "type": "object"
+}
