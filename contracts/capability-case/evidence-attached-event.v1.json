@@ -1,0 +1,522 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "bodyRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "capabilityNodeRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "domain",
+            "capability",
+            "sub-capability",
+            "skill",
+            "tool",
+            "task-family",
+            "evaluator",
+            "verifier",
+            "expert-competency",
+            "observed-failure",
+            "body-version"
+          ]
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "caseIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "caseId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "caseId"
+      ],
+      "type": "object"
+    },
+    "caseRef": {
+      "additionalProperties": false,
+      "properties": {
+        "caseId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "caseId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "environmentRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "constraints": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "environments": {
+          "items": {
+            "$ref": "#/$defs/artifactRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "environments",
+        "constraints"
+      ],
+      "type": "object"
+    },
+    "evaluationRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "criteria": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "evaluators": {
+          "items": {
+            "$ref": "#/$defs/capabilityNodeRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "evaluators",
+        "criteria"
+      ],
+      "type": "object"
+    },
+    "evidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest",
+        "description"
+      ],
+      "type": "object"
+    },
+    "expertRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "availability": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "competencies": {
+          "items": {
+            "$ref": "#/$defs/capabilityNodeRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "qualifications": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "competencies",
+        "qualifications"
+      ],
+      "type": "object"
+    },
+    "lifecycleEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/principal"
+        },
+        "eventVersion": {
+          "const": 1
+        },
+        "evidenceAppended": {
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "fromStatus": {
+          "enum": [
+            "draft",
+            "submitted",
+            "triaged",
+            "active",
+            "resolved",
+            "superseded"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "case-created",
+            "case-submitted",
+            "case-triaged",
+            "case-activated",
+            "case-resolved",
+            "case-superseded",
+            "evidence-attached"
+          ]
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "supersededBy": {
+          "$ref": "#/$defs/caseRef"
+        },
+        "toStatus": {
+          "enum": [
+            "draft",
+            "submitted",
+            "triaged",
+            "active",
+            "resolved",
+            "superseded"
+          ]
+        }
+      },
+      "required": [
+        "eventVersion",
+        "sequence",
+        "kind",
+        "occurredAt",
+        "actor",
+        "fromStatus",
+        "toStatus"
+      ],
+      "type": "object"
+    },
+    "observedFailure": {
+      "additionalProperties": false,
+      "properties": {
+        "failureNode": {
+          "$ref": "#/$defs/capabilityNodeRef"
+        },
+        "observedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "reproduction": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "summary": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "summary",
+        "observedAt"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "provenanceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "recordDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordDigest"
+      ],
+      "type": "object"
+    },
+    "substrateRef": {
+      "additionalProperties": false,
+      "properties": {
+        "adapterId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "contentDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "modelFamily": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "modelId": {
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "modelRevision": {
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "adapterId",
+        "modelFamily",
+        "modelId",
+        "modelRevision",
+        "contentDigest"
+      ],
+      "type": "object"
+    },
+    "taskRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "allowedTools": {
+          "items": {
+            "$ref": "#/$defs/artifactRef"
+          },
+          "type": "array"
+        },
+        "constraints": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "difficulty": {
+          "enum": [
+            "exploratory",
+            "standard",
+            "routine"
+          ]
+        },
+        "evidenceCriteria": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "forbiddenShortcuts": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "objectives": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "successConditions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "objectives",
+        "constraints",
+        "allowedTools",
+        "forbiddenShortcuts",
+        "successConditions",
+        "evidenceCriteria",
+        "difficulty"
+      ],
+      "type": "object"
+    },
+    "verificationRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "evidenceStandards": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "verifiers": {
+          "items": {
+            "$ref": "#/$defs/capabilityNodeRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "verifiers",
+        "evidenceStandards"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/capability-case/evidence-attached-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload emitted when evidence is appended to a case: the resulting case state and its evidence-attached lifecycle event. Travels inside Envelope<T>.",
+  "properties": {
+    "caseRecord": {
+      "$ref": "#/$defs/case"
+    },
+    "event": {
+      "$ref": "#/$defs/lifecycleEvent"
+    }
+  },
+  "required": [
+    "caseRecord",
+    "event"
+  ],
+  "title": "Arena evidence-attached event payload v1",
+  "type": "object"
+}

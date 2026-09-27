@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "capabilityNodeRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "domain",
+            "capability",
+            "sub-capability",
+            "skill",
+            "tool",
+            "task-family",
+            "evaluator",
+            "verifier",
+            "expert-competency",
+            "observed-failure",
+            "body-version"
+          ]
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/capability-case/verification-requirements@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "What a case requires of VERIFICATION (establishing evidence/proof): verifier bindings and evidence standards. Verification and evaluation are distinct responsibilities (architecture-lock rule 7).",
+  "properties": {
+    "evidenceStandards": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "verifiers": {
+      "items": {
+        "$ref": "#/$defs/capabilityNodeRef"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "verifiers",
+    "evidenceStandards"
+  ],
+  "title": "Arena verification requirements v1",
+  "type": "object"
+}

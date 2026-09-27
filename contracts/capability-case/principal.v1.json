@@ -1,0 +1,32 @@
+{
+  "$id": "arena:schema/capability-case/principal@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The tenant-scoped principal that raised or acted on a case (spec CC1.0 \"source\"). Structurally compatible with @arena/artifact-protocol PrincipalRef; never a raw provider identity (lock rule 10).",
+  "properties": {
+    "principalId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "tenant": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "type": {
+      "enum": [
+        "agent-body",
+        "expert",
+        "user",
+        "service",
+        "system"
+      ]
+    }
+  },
+  "required": [
+    "type",
+    "tenant",
+    "principalId"
+  ],
+  "title": "Arena capability-case principal v1",
+  "type": "object"
+}
