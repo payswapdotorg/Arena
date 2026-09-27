@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/environment/environment-registered-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload emitted when an environment version is registered: the content-addressed environment version ref.",
+  "properties": {
+    "environment": {
+      "$ref": "arena:schema/environment/environment-version-ref@1.0.0"
+    }
+  },
+  "required": [
+    "environment"
+  ],
+  "title": "Arena environment-registered event payload v1",
+  "type": "object"
+}

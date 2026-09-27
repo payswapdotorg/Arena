@@ -1,0 +1,821 @@
+{
+  "$defs": {
+    "actionSurface": {
+      "additionalProperties": false,
+      "properties": {
+        "actions": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "actionId": {
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "type": "string"
+              },
+              "description": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "actionId",
+              "description"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "tools": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+                    "type": "string"
+                  }
+                ]
+              },
+              "toolId": {
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "toolId",
+              "description"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "actions",
+        "tools"
+      ],
+      "type": "object"
+    },
+    "checkpointRef": {
+      "additionalProperties": false,
+      "description": "Content-addressed reference to a checkpoint.",
+      "properties": {
+        "checkpointId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "checkpointId",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "checkpointSemantics": {
+      "additionalProperties": false,
+      "properties": {
+        "retention": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+              "minimum": 1,
+              "type": "integer"
+            }
+          ]
+        },
+        "supported": {
+          "type": "boolean"
+        },
+        "triggers": {
+          "items": {
+            "enum": [
+              "manual",
+              "scheduled",
+              "on-phase"
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "supported",
+        "triggers",
+        "retention"
+      ],
+      "type": "object"
+    },
+    "environmentImage": {
+      "additionalProperties": false,
+      "description": "Image/build digest declaration — runtime-neutral, digest-addressed.",
+      "properties": {
+        "buildDigest": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "imageKind": {
+          "enum": [
+            "content-addressed-image",
+            "derived-image"
+          ]
+        }
+      },
+      "required": [
+        "imageKind",
+        "digest",
+        "buildDigest"
+      ],
+      "type": "object"
+    },
+    "evaluationHooks": {
+      "additionalProperties": false,
+      "properties": {
+        "evaluators": {
+          "items": {
+            "$ref": "#/$defs/hookDeclaration"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "verifiers": {
+          "items": {
+            "$ref": "#/$defs/hookDeclaration"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "evaluators",
+        "verifiers"
+      ],
+      "type": "object"
+    },
+    "evidenceOutputs": {
+      "additionalProperties": false,
+      "properties": {
+        "outputs": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "addressing": {
+                "enum": [
+                  "content-addressed",
+                  "append-only-ledger"
+                ]
+              },
+              "description": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+                    "type": "string"
+                  }
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "trajectory",
+                  "artifacts",
+                  "logs",
+                  "metrics",
+                  "observations",
+                  "environment-state"
+                ]
+              },
+              "outputId": {
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "outputId",
+              "kind",
+              "addressing",
+              "description"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "outputs"
+      ],
+      "type": "object"
+    },
+    "filesystemPolicy": {
+      "additionalProperties": false,
+      "description": "Explicit mounts only; there is no blanket write mode.",
+      "properties": {
+        "mounts": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "access": {
+                "enum": [
+                  "read-only",
+                  "read-write"
+                ]
+              },
+              "mountPath": {
+                "pattern": "^/(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*)?$",
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "initial-state",
+                  "ephemeral",
+                  "workspace",
+                  "evidence"
+                ]
+              }
+            },
+            "required": [
+              "mountPath",
+              "access",
+              "source"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "writeMode": {
+          "enum": [
+            "read-only",
+            "declared-mounts-only"
+          ]
+        }
+      },
+      "required": [
+        "writeMode",
+        "mounts"
+      ],
+      "type": "object"
+    },
+    "hookDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+              "type": "string"
+            }
+          ]
+        },
+        "hookId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "invocationSchema": {
+          "pattern": "^arena:schema/[a-z][a-z0-9-]*/[a-z][a-z0-9-]*@\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "pre-run",
+            "post-run",
+            "on-evidence",
+            "on-completion"
+          ]
+        },
+        "role": {
+          "enum": [
+            "evaluator",
+            "verifier"
+          ]
+        }
+      },
+      "required": [
+        "hookId",
+        "role",
+        "phase",
+        "invocationSchema",
+        "description"
+      ],
+      "type": "object"
+    },
+    "initialState": {
+      "additionalProperties": false,
+      "description": "Initial state snapshot (ref + digest) plus the snapshot support flag.",
+      "properties": {
+        "snapshot": {
+          "$ref": "#/$defs/stateSnapshotRef"
+        },
+        "snapshotSupport": {
+          "enum": [
+            "supported",
+            "not-supported"
+          ]
+        }
+      },
+      "required": [
+        "snapshot",
+        "snapshotSupport"
+      ],
+      "type": "object"
+    },
+    "networkPolicy": {
+      "additionalProperties": false,
+      "description": "Default-deny egress; only explicit allows.",
+      "properties": {
+        "allows": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "host": {
+                "pattern": "^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$",
+                "type": "string"
+              },
+              "port": {
+                "maximum": 65535,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "protocol": {
+                "enum": [
+                  "tcp",
+                  "udp",
+                  "http",
+                  "https"
+                ]
+              }
+            },
+            "required": [
+              "host",
+              "port",
+              "protocol"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "egress": {
+          "const": "default-deny"
+        }
+      },
+      "required": [
+        "egress",
+        "allows"
+      ],
+      "type": "object"
+    },
+    "nondeterminismCapture": {
+      "additionalProperties": false,
+      "description": "The four capture groups required for nondeterminism (spec ENV1.0 Reproducibility).",
+      "properties": {
+        "externalInputs": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "seed": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "timingContext": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        },
+        "versions": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seed",
+        "versions",
+        "externalInputs",
+        "timingContext"
+      ],
+      "type": "object"
+    },
+    "observationSurface": {
+      "additionalProperties": false,
+      "properties": {
+        "observations": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "channel": {
+                "enum": [
+                  "stdout",
+                  "stderr",
+                  "files",
+                  "events",
+                  "metrics",
+                  "state-dump"
+                ]
+              },
+              "description": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+                    "type": "string"
+                  }
+                ]
+              },
+              "observationId": {
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "observationId",
+              "channel",
+              "description"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "observations"
+      ],
+      "type": "object"
+    },
+    "reproducibilityProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "capture": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/nondeterminismCapture"
+            }
+          ]
+        },
+        "mode": {
+          "enum": [
+            "deterministic",
+            "nondeterministic"
+          ]
+        },
+        "note": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "capture",
+        "note"
+      ],
+      "type": "object"
+    },
+    "resetSemantics": {
+      "additionalProperties": false,
+      "properties": {
+        "checkpoint": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/checkpointRef"
+            }
+          ]
+        },
+        "cleanup": {
+          "enum": [
+            "destroy",
+            "retain-evidence"
+          ]
+        },
+        "mode": {
+          "enum": [
+            "recreate",
+            "restore-snapshot",
+            "reset-to-checkpoint"
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "checkpoint",
+        "cleanup"
+      ],
+      "type": "object"
+    },
+    "resourceLimits": {
+      "additionalProperties": false,
+      "description": "Bounded CPU, memory and wall-clock time (zero/negative rejected).",
+      "properties": {
+        "cpuMillis": {
+          "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "memoryMiB": {
+          "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "wallClockSeconds": {
+          "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cpuMillis",
+        "memoryMiB",
+        "wallClockSeconds"
+      ],
+      "type": "object"
+    },
+    "secretPolicy": {
+      "additionalProperties": false,
+      "description": "Secret isolation. Injection points carry references only — secret material never enters canonical objects.",
+      "properties": {
+        "injectionPoints": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "mechanism": {
+                "enum": [
+                  "environment-binding",
+                  "file-mount",
+                  "stream"
+                ]
+              },
+              "mountPath": {
+                "pattern": "^/(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*)?$",
+                "type": "string"
+              },
+              "secretId": {
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "secretId",
+              "mountPath",
+              "mechanism"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "isolation": {
+          "const": "isolation-boundary"
+        }
+      },
+      "required": [
+        "isolation",
+        "injectionPoints"
+      ],
+      "type": "object"
+    },
+    "seedPolicy": {
+      "additionalProperties": false,
+      "description": "Seed policy with the embedded reproducibility profile. Deterministic worlds are seed-free; nondeterministic worlds must capture seed, versions, external inputs and timing/context metadata.",
+      "properties": {
+        "note": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+              "type": "string"
+            }
+          ]
+        },
+        "reproducibility": {
+          "$ref": "#/$defs/reproducibilityProfile"
+        },
+        "reseedPolicy": {
+          "enum": [
+            "forbidden",
+            "declared-only"
+          ]
+        },
+        "seed": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,512}$",
+              "type": "string"
+            }
+          ]
+        },
+        "seedAlgorithm": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9-]{0,63}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "reproducibility",
+        "seed",
+        "seedAlgorithm",
+        "reseedPolicy",
+        "note"
+      ],
+      "type": "object"
+    },
+    "stateSnapshotRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "snapshotId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshotId",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "timeLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "cleanupGraceSeconds": {
+          "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "deadlineBehavior": {
+          "enum": [
+            "hard-stop",
+            "grace-then-stop"
+          ]
+        },
+        "startupSeconds": {
+          "description": "Strictly positive integer (a bound that does not bound is not a bound).",
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "startupSeconds",
+        "cleanupGraceSeconds",
+        "deadlineBehavior"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/environment/environment-definition@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The versioned, content-addressed declaration of an executable world (spec ENV1.0). Carries ALL fifteen declare fields: identity (id/version), image/build digest, initial state snapshot, seed policy, action/tool surface, observation surface, resource limits, network policy, filesystem policy, secret policy, time limits, reset semantics, checkpoint semantics, evidence outputs and evaluator/verifier hooks. The digest is sha256 over the canonical JSON of the digest-free view; the object is deep-frozen with no mutation API.",
+  "properties": {
+    "actionSurface": {
+      "$ref": "#/$defs/actionSurface"
+    },
+    "checkpointSemantics": {
+      "$ref": "#/$defs/checkpointSemantics"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evaluationHooks": {
+      "$ref": "#/$defs/evaluationHooks"
+    },
+    "evidenceOutputs": {
+      "$ref": "#/$defs/evidenceOutputs"
+    },
+    "filesystemPolicy": {
+      "$ref": "#/$defs/filesystemPolicy"
+    },
+    "identity": {
+      "additionalProperties": false,
+      "description": "Stable environment identity (tenant namespace + name).",
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name"
+      ],
+      "type": "object"
+    },
+    "image": {
+      "$ref": "#/$defs/environmentImage"
+    },
+    "initialState": {
+      "$ref": "#/$defs/initialState"
+    },
+    "networkPolicy": {
+      "$ref": "#/$defs/networkPolicy"
+    },
+    "observationSurface": {
+      "$ref": "#/$defs/observationSurface"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the definition record."
+    },
+    "resetSemantics": {
+      "$ref": "#/$defs/resetSemantics"
+    },
+    "resourceLimits": {
+      "$ref": "#/$defs/resourceLimits"
+    },
+    "secretPolicy": {
+      "$ref": "#/$defs/secretPolicy"
+    },
+    "seedPolicy": {
+      "$ref": "#/$defs/seedPolicy"
+    },
+    "timeLimits": {
+      "$ref": "#/$defs/timeLimits"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "identity",
+    "version",
+    "image",
+    "initialState",
+    "seedPolicy",
+    "actionSurface",
+    "observationSurface",
+    "resourceLimits",
+    "networkPolicy",
+    "filesystemPolicy",
+    "secretPolicy",
+    "timeLimits",
+    "resetSemantics",
+    "checkpointSemantics",
+    "evidenceOutputs",
+    "evaluationHooks",
+    "digest"
+  ],
+  "title": "Arena EnvironmentDefinition v1",
+  "type": "object"
+}
