@@ -34,7 +34,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A015 MERGED
 - A016 MERGED
 - A017 WAITING_ON_DEPENDENCIES
-- A018 READY (A015 merged)
+- A018 WAITING_ON_DEPENDENCIES (needs A005 merge)
 - A019 WAITING_ON_DEPENDENCIES
 - A020 WAITING_ON_DEPENDENCIES
 - A021 WAITING_ON_DEPENDENCIES
@@ -50,7 +50,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A031 WAITING_ON_DEPENDENCIES
 - A032 WAITING_ON_DEPENDENCIES
 - A033 WAITING_ON_DEPENDENCIES
-- A034 READY (A015 merged)
+- A034 WAITING_ON_DEPENDENCIES (needs A018/A021/A023/A025)
 - A035 WAITING_ON_DEPENDENCIES
 - A036 WAITING_ON_DEPENDENCIES
 
@@ -65,11 +65,11 @@ Wave in flight, bases recorded at dispatch:
 Next wave (dispatched from the post-triple-merge governance tip):
 - A005 — Capability Case protocol (packages/capability-case, contracts/capability-case) — Issue #12
 - A006 — Expert registry protocol (packages/expert-registry, contracts/expert) — Issue #13
-- A010 — Environment runner service (services/environment-runner, packages/environment-runtime) — unlocked by A009+A015
+- A010 — Environment runner service (services/environment-runner, packages/environment-runtime) — Issue #17 — unlocked by A009+A015
 
 Wave rules: pairwise-disjoint surfaces; zero new external runtime dependencies (existing pnpm catalog only); no root manifest/lockfile edits (Tech Lead serializes reconciliation — see d21b4fe for the A002 pattern: lockfile intake + G9 package-generator wiring); Envelope<T>/canonical-JSON primitives reused from @arena/protocol-core; generated contracts + drift checks per the A001 convention, package-level generators wired into G9.
 
-Queue after the current wave: A018 (A015 →), A034 (A015 →), A011 (needs A010), A007/A008 (need A005+A006). The triple-merge verification baseline: battery green on all workspace projects after each merge-of-main lockfile regeneration (A009 intake baf07db; A015 14a029c+959c0c5; A016 7da9488+c38544e), pristine frozen-lockfile clones green, PR CI green on all three.
+Queue after the current wave (dependency-verified against spec/work-items.md): A011 (trajectory; unlocks with the A010 merge), A018 (console; unlocks with the A005 merge), then A012 (evaluation; needs A005+A011). Dependency note (correction 2026-09-27 20:05): A034 requires A018/A021/A023/A025 — it is NOT ready on A015 alone (an earlier one-directional graph read was wrong; spec/work-items.md is authoritative). The triple-merge verification baseline: battery green on all workspace projects after each merge-of-main lockfile regeneration (A009 intake baf07db; A015 14a029c+959c0c5; A016 7da9488+c38544e), pristine frozen-lockfile clones green, PR CI green on all three.
 
 ## Verification baseline
 
