@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/model-substrate/record-compatibility-result-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command payload: record a substrate compatibility result (typed outcome + evidence refs; the decision is made by the A022 engine, never by this payload). Travels inside an Envelope with a REQUIRED non-null idempotency key (lock rule 17). Payload schema only — the envelope wire shape is arena:schema/protocol/envelope@1.0.",
+  "properties": {
+    "result": {
+      "$ref": "compatibility-result.v1.json"
+    }
+  },
+  "required": [
+    "result"
+  ],
+  "title": "Arena record-compatibility-result-command v1",
+  "type": "object"
+}

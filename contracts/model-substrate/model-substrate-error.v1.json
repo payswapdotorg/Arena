@@ -1,0 +1,63 @@
+{
+  "$id": "arena:schema/model-substrate/model-substrate-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the model substrate error taxonomy. Unknown codes are rejected when parsing (MODEL_SUBSTRATE_UNKNOWN_ERROR).",
+  "properties": {
+    "category": {
+      "enum": [
+        "validation",
+        "encoding",
+        "versioning",
+        "integrity",
+        "unknown"
+      ]
+    },
+    "code": {
+      "enum": [
+        "MODEL_SUBSTRATE_INVALID_IDENTITY",
+        "MODEL_SUBSTRATE_INVALID_REF",
+        "MODEL_SUBSTRATE_INVALID_DIGEST",
+        "MODEL_SUBSTRATE_INVALID_VERSION",
+        "MODEL_SUBSTRATE_INVALID_TIMESTAMP",
+        "MODEL_SUBSTRATE_INVALID_ADAPTER_DESCRIPTOR",
+        "MODEL_SUBSTRATE_INVALID_SUBSTRATE",
+        "MODEL_SUBSTRATE_INVALID_CAPABILITY_PROFILE",
+        "MODEL_SUBSTRATE_INVALID_HEALTH_REPORT",
+        "MODEL_SUBSTRATE_INVALID_REGISTRATION",
+        "MODEL_SUBSTRATE_REGISTRY_CONFLICT",
+        "MODEL_SUBSTRATE_ADAPTER_MISMATCH",
+        "MODEL_SUBSTRATE_CAPABILITY_EXCEEDED",
+        "MODEL_SUBSTRATE_INVALID_COMPATIBILITY_TEST",
+        "MODEL_SUBSTRATE_INVALID_COMPATIBILITY_RESULT",
+        "MODEL_SUBSTRATE_INVALID_UPGRADE",
+        "MODEL_SUBSTRATE_POSSESSION_REBIND_FORBIDDEN",
+        "MODEL_SUBSTRATE_PROVIDER_NAME_REJECTED",
+        "MODEL_SUBSTRATE_CREDENTIAL_REJECTED",
+        "MODEL_SUBSTRATE_SUBSTRATE_ALIAS_FORBIDDEN",
+        "MODEL_SUBSTRATE_TAMPERED",
+        "MODEL_SUBSTRATE_UNSUPPORTED_VERSION",
+        "MODEL_SUBSTRATE_UNKNOWN_ERROR"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context.",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena ModelSubstrateError v1",
+  "type": "object"
+}

@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/model-substrate/substrate-registered-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload: a substrate registration was appended (register-substrate succeeded, or was an idempotent replay). Travels inside an Envelope; idempotency key null. Payload schema only — the envelope wire shape is arena:schema/protocol/envelope@1.0.",
+  "properties": {
+    "registration": {
+      "$ref": "substrate-registration.v1.json"
+    }
+  },
+  "required": [
+    "registration"
+  ],
+  "title": "Arena substrate-registered-event v1",
+  "type": "object"
+}

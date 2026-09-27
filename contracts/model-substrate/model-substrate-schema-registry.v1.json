@@ -1,0 +1,27 @@
+{
+  "$id": "arena:schema/model-substrate/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/model-substrate. A SchemaRef matching this enum is a known model-substrate schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/model-substrate/adapter-descriptor@1.0.0",
+    "arena:schema/model-substrate/substrate-registration-descriptor@1.0.0",
+    "arena:schema/model-substrate/substrate-record@1.0.0",
+    "arena:schema/model-substrate/capability-profile@1.0.0",
+    "arena:schema/model-substrate/adapter-health@1.0.0",
+    "arena:schema/model-substrate/substrate-registration@1.0.0",
+    "arena:schema/model-substrate/substrate-registry@1.0.0",
+    "arena:schema/model-substrate/compatibility-test@1.0.0",
+    "arena:schema/model-substrate/compatibility-result@1.0.0",
+    "arena:schema/model-substrate/substrate-upgrade@1.0.0",
+    "arena:schema/model-substrate/model-substrate-error@1.0.0",
+    "arena:schema/model-substrate/register-substrate-command@1.0.0",
+    "arena:schema/model-substrate/declare-substrate-upgrade-command@1.0.0",
+    "arena:schema/model-substrate/record-compatibility-result-command@1.0.0",
+    "arena:schema/model-substrate/substrate-registered-event@1.0.0",
+    "arena:schema/model-substrate/substrate-upgrade-declared-event@1.0.0",
+    "arena:schema/model-substrate/compatibility-result-recorded-event@1.0.0",
+    "arena:schema/model-substrate/schema-registry@1.0.0"
+  ],
+  "title": "Arena model-substrate schema registry v1",
+  "type": "string"
+}

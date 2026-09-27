@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": [
+    "adapter-neutral-mock/src",
+    "adapter-offline-stub/src",
+    "adapter-neutral-mock/vitest.config.ts",
+    "adapter-offline-stub/vitest.config.ts",
+    "vitest.config.ts"
+  ]
+}

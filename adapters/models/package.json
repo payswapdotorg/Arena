@@ -1,0 +1,23 @@
+{
+  "name": "@arena/adapter-models",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reference model adapters for @arena/model-substrate (Work Order A016). Container workspace package: pnpm-workspace.yaml's 'adapters/*' glob matches adapters/models itself, not the nested adapters/models/* packages, so this package hosts typecheck/lint/test/build for the reference adapters below (see README.md — the glob gap is flagged for Tech Lead root intake).",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p adapter-neutral-mock/tsconfig.build.json && tsc -p adapter-offline-stub/tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/model-substrate": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

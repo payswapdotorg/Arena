@@ -1,0 +1,38 @@
+{
+  "$id": "arena:schema/model-substrate/adapter-health@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Health/integrity report produced by SubstrateAdapter.reportHealth(): current status (closed vocabulary), the UTC millisecond check time, the content digest of the descriptor the report was produced for, and the result of the adapter's integrity self-check. integrityVerified=false is a well-formed report of a FAILED self-check (fail-closed reporting, not a schema violation).",
+  "properties": {
+    "checkedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "descriptorDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "integrityVerified": {
+      "type": "boolean"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "status": {
+      "enum": [
+        "healthy",
+        "degraded",
+        "unavailable"
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "status",
+    "checkedAt",
+    "descriptorDigest",
+    "integrityVerified"
+  ],
+  "title": "Arena adapter health report v1",
+  "type": "object"
+}

@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/model-substrate/register-substrate-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command payload: append a substrate registration to the registry (idempotent per substrate digest + neutral id + adapter descriptor; conflicting re-use of a neutral id is rejected). Travels inside an Envelope with a REQUIRED non-null idempotency key (architecture-lock rule 17). Payload schema only — the envelope wire shape is arena:schema/protocol/envelope@1.0.",
+  "properties": {
+    "registration": {
+      "$ref": "substrate-registration.v1.json"
+    }
+  },
+  "required": [
+    "registration"
+  ],
+  "title": "Arena register-substrate-command v1",
+  "type": "object"
+}

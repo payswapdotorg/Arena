@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "contextLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "maxContextUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "maxOutputUnits": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxContextUnits",
+        "maxOutputUnits"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/model-substrate/capability-profile@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The modality / tool-calling / context profile reported by SubstrateAdapter.probeCapabilities() — the adapter's current envelope in neutral terms (what it can register/probe right now).",
+  "properties": {
+    "conditions": {
+      "items": {
+        "enum": [
+          "stable",
+          "preview",
+          "deprecated",
+          "rate-limited",
+          "region-restricted",
+          "sovereign-only",
+          "capacity-constrained"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "contextLimits": {
+      "$ref": "#/$defs/contextLimits"
+    },
+    "modalityProfile": {
+      "items": {
+        "enum": [
+          "text-input",
+          "text-output",
+          "image-input",
+          "image-output",
+          "audio-input",
+          "audio-output",
+          "video-input",
+          "structured-input",
+          "structured-output"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "toolCallingProfile": {
+      "enum": [
+        "none",
+        "text-protocol",
+        "json-schema",
+        "function-calling"
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "modalityProfile",
+    "toolCallingProfile",
+    "contextLimits",
+    "conditions"
+  ],
+  "title": "Arena substrate capability profile v1",
+  "type": "object"
+}
