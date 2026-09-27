@@ -171,6 +171,40 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/control-ui:
+    dependencies:
+      '@arena/agent-body':
+        specifier: workspace:*
+        version: link:../agent-body
+      '@arena/capability-case':
+        specifier: workspace:*
+        version: link:../capability-case
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../environment-protocol
+      '@arena/job-protocol':
+        specifier: workspace:*
+        version: link:../job-protocol
+      '@arena/model-substrate':
+        specifier: workspace:*
+        version: link:../model-substrate
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/environment-protocol:
     dependencies:
       '@arena/protocol-core':
