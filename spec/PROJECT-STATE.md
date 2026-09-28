@@ -9,9 +9,9 @@ Maximum concurrent workers: 3
 
 Repository architecture, governance, requirements, implementation plan, core object specifications, security/data governance, service boundaries, dependency graph and Work Orders are committed.
 
-A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). A003 MERGED via PR #8 (merge SHA e14b9fff9df0f37bc3982f5724401c55d1410813, worker head 26fdd9ef + Tech Lead reconciliation b2a0f0dd; CI run 36311438667 green on the PR head; post-merge run 36311670948). A004 MERGED via PR #10 (merge SHA cff162b96a7dcc0758b509f666993ca557c4fddb, worker head 422613fe + Tech Lead intake d9e7689 + merge-of-main 6ad2415; PR CI green; acceptance via branch-oracle — worker chat died in a platform generation-window outage after pushing the delivery branch). A009 MERGED via PR #14 (merge SHA 480dd06563269b29c68b365d13a716009a5d4f87, worker head b887803 + intake baf07db; PR CI green). A015 MERGED via PR #15 (merge SHA 40defadbb56f8727e9540d929b6194e903daff55, worker head 01684ca + intake 14a029c + merge-of-main 959c0c5; PR CI green). A016 MERGED via PR #16 (merge SHA 8a834ad1ba59886bc58e897b8b6abb949ed677c5, worker head 01feb38 + intake 7da9488 + merge-of-main c38544e; PR CI green).
+A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). A003 MERGED via PR #8 (merge SHA e14b9fff9df0f37bc3982f5724401c55d1410813, worker head 26fdd9ef + Tech Lead reconciliation b2a0f0dd; CI run 36311438667 green on the PR head; post-merge run 36311670948). A004 MERGED via PR #10 (merge SHA cff162b96a7dcc0758b509f666993ca557c4fddb, worker head 422613fe + Tech Lead intake d9e7689 + merge-of-main 6ad2415; PR CI green; acceptance via branch-oracle — worker chat died in a platform generation-window outage after pushing the delivery branch). A009 MERGED via PR #14 (merge SHA 480dd06563269b29c68b365d13a716009a5d4f87, worker head b887803 + intake baf07db; PR CI green). A015 MERGED via PR #15 (merge SHA 40defadbb56f8727e9540d929b6194e903daff55, worker head 01684ca + intake 14a029c + merge-of-main 959c0c5; PR CI green). A016 MERGED via PR #16 (merge SHA 8a834ad1ba59886bc58e897b8b6abb949ed677c5, worker head 01feb38 + intake 7da9488 + merge-of-main c38544e; PR CI green). A005 MERGED via PR #20 (merge SHA d0052965d79ae48a4dab5d4b38b699d5c1ed14d0, worker head f900d2e + intake 9752c62; PR CI green; acceptance via branch-oracle — the worker chat was retired post-delivery). A018 MERGED via PR #21 (merge SHA 13af7c27e27a61d1704e3d4a5f261ca8433b957b, worker head 2cc08aa + intake b8c3c71; PR CI green; dispatched from d005296 and delivered in a 68-minute end-to-end cycle).
 
-Live wave: A005 (Issue #12, dispatched 2026-09-27 evening from the post-triple-merge governance tip), A006 (Issue #13, same base), A010 (environment-runner service, prompt built from spec/work-items; same base). Newly READY with the A009+A015+A016 merges: A010, A018, A034 (dependency graph verified).
+Live wave (re-dispatched 2026-09-28 ~00:10 UTC from base 13af7c2 with the execution-environment assertion guard): A006 (Issue #13) and A010 (Issue #17). Both originals failed in the 2026-09-27 evening platform instability: the original a006 turn died mid-work (resume sends refused for 90+ minutes; zombie shell purged); the original a010 session confessed to full fabrication — it had NO execution environment and its completion report (branch, SHAs, tests, staging) was simulated narrative, voided without integration. All re-dispatch prompts now embed the mandatory STEP 0: node/git/pnpm version output as proof of a real sandbox, or an honest NO-EXEC-ENVIRONMENT reply.
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
@@ -21,12 +21,12 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A002 MERGED
 - A003 MERGED
 - A004 MERGED
-- A005 READY (A003+A004 merged)
-- A006 READY (A002+A004 merged)
+- A005 MERGED (PR #20, d005296)
+- A006 IN_FLIGHT (re-dispatched 2026-09-28; deps A002+A004 merged)
 - A007 WAITING_ON_DEPENDENCIES
 - A008 WAITING_ON_DEPENDENCIES
 - A009 MERGED
-- A010 READY (A009+A015 merged)
+- A010 IN_FLIGHT (re-dispatched 2026-09-28; deps A009+A015 merged)
 - A011 WAITING_ON_DEPENDENCIES
 - A012 WAITING_ON_DEPENDENCIES
 - A013 WAITING_ON_DEPENDENCIES
@@ -34,7 +34,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A015 MERGED
 - A016 MERGED
 - A017 WAITING_ON_DEPENDENCIES
-- A018 WAITING_ON_DEPENDENCIES (needs A005 merge)
+- A018 MERGED (PR #21, 13af7c2)
 - A019 WAITING_ON_DEPENDENCIES
 - A020 WAITING_ON_DEPENDENCIES
 - A021 WAITING_ON_DEPENDENCIES
