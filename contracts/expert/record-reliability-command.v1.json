@@ -1,0 +1,164 @@
+{
+  "$defs": {
+    "evidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest",
+        "description"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "taskRecordRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "task-spec",
+            "task-assignment",
+            "task-outcome",
+            "trajectory"
+          ]
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "refVersion": {
+          "const": 1
+        },
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "refVersion",
+        "kind",
+        "tenant",
+        "taskId",
+        "version",
+        "digest",
+        "occurredAt"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/record-reliability-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command payload appending one event-sourced reliability outcome entry to the addressed state. The entry is SEQUENCE-LESS: the ledger assigns sequence positions itself (R32, lock rule 6).",
+  "properties": {
+    "actor": {
+      "$ref": "#/$defs/principal"
+    },
+    "at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "currentStateDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "entry": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "task-completed",
+            "task-failed",
+            "no-response"
+          ]
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "recordedBy": {
+          "$ref": "#/$defs/principal"
+        },
+        "taskRecord": {
+          "$ref": "#/$defs/taskRecordRef"
+        }
+      },
+      "required": [
+        "kind",
+        "occurredAt",
+        "recordedBy"
+      ],
+      "type": "object"
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "currentStateDigest",
+    "at",
+    "actor",
+    "entry"
+  ],
+  "title": "Arena record-reliability-command command payload v1",
+  "type": "object"
+}

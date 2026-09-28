@@ -1,0 +1,257 @@
+{
+  "$defs": {
+    "evidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest",
+        "description"
+      ],
+      "type": "object"
+    },
+    "expertRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "expertId": {
+          "pattern": "^expert-[a-z0-9][a-z0-9-]{0,61}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "expertId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "reliabilityEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "entryVersion": {
+          "const": 1
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "task-completed",
+            "task-failed",
+            "no-response"
+          ]
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "recordedBy": {
+          "$ref": "#/$defs/principal"
+        },
+        "sequence": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "taskRecord": {
+          "$ref": "#/$defs/taskRecordRef"
+        }
+      },
+      "required": [
+        "entryVersion",
+        "sequence",
+        "kind",
+        "occurredAt",
+        "recordedBy"
+      ],
+      "type": "object"
+    },
+    "taskRecordRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "task-spec",
+            "task-assignment",
+            "task-outcome",
+            "trajectory"
+          ]
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "refVersion": {
+          "const": 1
+        },
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "refVersion",
+        "kind",
+        "tenant",
+        "taskId",
+        "version",
+        "digest",
+        "occurredAt"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/lifecycle-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One append-only lifecycle event: kind, timestamp, actor, status transition, and the data committed by structured kinds (appended evidence/task records/reliability entries, superseding ref). History is never rewritten (lock rule 6).",
+  "properties": {
+    "actor": {
+      "$ref": "#/$defs/principal"
+    },
+    "eventVersion": {
+      "const": 1
+    },
+    "evidenceAppended": {
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      },
+      "type": "array"
+    },
+    "fromStatus": {
+      "enum": [
+        "draft",
+        "published",
+        "suspended",
+        "retired"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "profile-created",
+        "profile-published",
+        "profile-suspended",
+        "profile-reinstated",
+        "profile-retired",
+        "profile-superseded",
+        "evidence-attached",
+        "task-recorded",
+        "reliability-recorded"
+      ]
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "reliabilityAppended": {
+      "items": {
+        "$ref": "#/$defs/reliabilityEntry"
+      },
+      "type": "array"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "supersededBy": {
+      "$ref": "#/$defs/expertRef"
+    },
+    "taskRecordAppended": {
+      "items": {
+        "$ref": "#/$defs/taskRecordRef"
+      },
+      "type": "array"
+    },
+    "toStatus": {
+      "enum": [
+        "draft",
+        "published",
+        "suspended",
+        "retired"
+      ]
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "kind",
+    "occurredAt",
+    "actor",
+    "fromStatus",
+    "toStatus"
+  ],
+  "title": "Arena expert lifecycle event v1",
+  "type": "object"
+}

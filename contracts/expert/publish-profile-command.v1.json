@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/publish-profile-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command payload applying the DRAFT → PUBLISHED transition to the state addressed by currentStateDigest.",
+  "properties": {
+    "actor": {
+      "$ref": "#/$defs/principal"
+    },
+    "at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "currentStateDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "currentStateDigest",
+    "at",
+    "actor"
+  ],
+  "title": "Arena publish-profile-command command payload v1",
+  "type": "object"
+}

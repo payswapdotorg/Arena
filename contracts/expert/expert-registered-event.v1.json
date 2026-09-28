@@ -1,0 +1,646 @@
+{
+  "$defs": {
+    "availability": {
+      "additionalProperties": false,
+      "properties": {
+        "availabilityVersion": {
+          "const": 1
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "windows": {
+          "items": {
+            "$ref": "#/$defs/availabilityWindow"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "availabilityVersion",
+        "windows"
+      ],
+      "type": "object"
+    },
+    "capabilityNodeRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "domain",
+            "capability",
+            "sub-capability",
+            "skill",
+            "tool",
+            "task-family",
+            "evaluator",
+            "verifier",
+            "expert-competency",
+            "observed-failure",
+            "body-version"
+          ]
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "competency": {
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "capability",
+                "sub-capability",
+                "skill",
+                "expert-competency"
+              ]
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        "competencyVersion": {
+          "const": 1
+        },
+        "domainMetadata": {
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "minProperties": 1,
+          "type": "object"
+        },
+        "domainType": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}(\\.[a-z][a-z0-9-]{0,63})*$",
+          "type": "string"
+        },
+        "proficiency": {
+          "enum": [
+            "introductory",
+            "working",
+            "proficient",
+            "advanced",
+            "distinguished"
+          ]
+        },
+        "proficiencyEvidence": {
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "competencyVersion",
+        "capability",
+        "proficiency",
+        "proficiencyEvidence"
+      ],
+      "type": "object"
+    },
+    "domainScope": {
+      "additionalProperties": false,
+      "properties": {
+        "domains": {
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/capabilityNodeRef"
+              },
+              {
+                "properties": {
+                  "kind": {
+                    "const": "domain"
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "jurisdictions": {
+          "items": {
+            "$ref": "#/$defs/jurisdiction"
+          },
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "$ref": "#/$defs/limitation"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "scopeVersion": {
+          "const": 1
+        }
+      },
+      "required": [
+        "scopeVersion",
+        "domains",
+        "jurisdictions",
+        "limitations"
+      ],
+      "type": "object"
+    },
+    "evidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest",
+        "description"
+      ],
+      "type": "object"
+    },
+    "expertIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "expertId": {
+          "pattern": "^expert-[a-z0-9][a-z0-9-]{0,61}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "expertId"
+      ],
+      "type": "object"
+    },
+    "expertRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "expertId": {
+          "pattern": "^expert-[a-z0-9][a-z0-9-]{0,61}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "expertId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "identityRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "identity-attestation",
+            "contact-attestation",
+            "external-identifier"
+          ]
+        },
+        "locator": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,254}$",
+          "type": "string"
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "refVersion": {
+          "const": 1
+        }
+      },
+      "required": [
+        "refVersion",
+        "kind",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "lifecycleEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "$ref": "#/$defs/principal"
+        },
+        "eventVersion": {
+          "const": 1
+        },
+        "evidenceAppended": {
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          },
+          "type": "array"
+        },
+        "fromStatus": {
+          "enum": [
+            "draft",
+            "published",
+            "suspended",
+            "retired"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "profile-created",
+            "profile-published",
+            "profile-suspended",
+            "profile-reinstated",
+            "profile-retired",
+            "profile-superseded",
+            "evidence-attached",
+            "task-recorded",
+            "reliability-recorded"
+          ]
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "reliabilityAppended": {
+          "items": {
+            "$ref": "#/$defs/reliabilityEntry"
+          },
+          "type": "array"
+        },
+        "sequence": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "supersededBy": {
+          "$ref": "#/$defs/expertRef"
+        },
+        "taskRecordAppended": {
+          "items": {
+            "$ref": "#/$defs/taskRecordRef"
+          },
+          "type": "array"
+        },
+        "toStatus": {
+          "enum": [
+            "draft",
+            "published",
+            "suspended",
+            "retired"
+          ]
+        }
+      },
+      "required": [
+        "eventVersion",
+        "sequence",
+        "kind",
+        "occurredAt",
+        "actor",
+        "fromStatus",
+        "toStatus"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "privacyPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "policyVersion": {
+          "const": 1
+        },
+        "visibility": {
+          "additionalProperties": false,
+          "properties": {
+            "availability": {
+              "enum": [
+                "public",
+                "tenant-internal"
+              ]
+            },
+            "competencies": {
+              "enum": [
+                "public",
+                "tenant-internal"
+              ]
+            },
+            "domainScope": {
+              "enum": [
+                "public",
+                "tenant-internal"
+              ]
+            },
+            "evidence": {
+              "enum": [
+                "public",
+                "tenant-internal"
+              ]
+            },
+            "identityRefs": {
+              "enum": [
+                "public",
+                "tenant-internal"
+              ]
+            },
+            "qualifications": {
+              "enum": [
+                "public",
+                "tenant-internal"
+              ]
+            },
+            "reliability": {
+              "enum": [
+                "public",
+                "tenant-internal"
+              ]
+            },
+            "taskHistory": {
+              "enum": [
+                "public",
+                "tenant-internal"
+              ]
+            }
+          },
+          "required": [
+            "identityRefs",
+            "competencies",
+            "qualifications",
+            "evidence",
+            "taskHistory",
+            "reliability",
+            "availability",
+            "domainScope"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "policyVersion",
+        "visibility"
+      ],
+      "type": "object"
+    },
+    "qualification": {
+      "additionalProperties": false,
+      "properties": {
+        "credential": {
+          "$ref": "#/$defs/credentialRef"
+        },
+        "evidence": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "jurisdiction": {
+          "$ref": "#/$defs/jurisdiction"
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "qualificationVersion": {
+          "const": 1
+        },
+        "status": {
+          "enum": [
+            "claimed",
+            "attested",
+            "verified",
+            "expired",
+            "revoked",
+            "disputed"
+          ]
+        },
+        "validFrom": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "validUntil": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "qualificationVersion",
+        "credential",
+        "evidence",
+        "status"
+      ],
+      "type": "object"
+    },
+    "reliabilityEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "entryVersion": {
+          "const": 1
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "task-completed",
+            "task-failed",
+            "no-response"
+          ]
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "recordedBy": {
+          "$ref": "#/$defs/principal"
+        },
+        "sequence": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "taskRecord": {
+          "$ref": "#/$defs/taskRecordRef"
+        }
+      },
+      "required": [
+        "entryVersion",
+        "sequence",
+        "kind",
+        "occurredAt",
+        "recordedBy"
+      ],
+      "type": "object"
+    },
+    "taskRecordRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "task-spec",
+            "task-assignment",
+            "task-outcome",
+            "trajectory"
+          ]
+        },
+        "occurredAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "refVersion": {
+          "const": 1
+        },
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "refVersion",
+        "kind",
+        "tenant",
+        "taskId",
+        "version",
+        "digest",
+        "occurredAt"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/expert-registered-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event payload emitted when a fresh expert profile is admitted to the registry: the admitted state and its profile-created lifecycle event.",
+  "properties": {
+    "event": {
+      "$ref": "#/$defs/lifecycleEvent"
+    },
+    "profile": {
+      "$ref": "#/$defs/profile"
+    }
+  },
+  "required": [
+    "profile",
+    "event"
+  ],
+  "title": "Arena expert-registered-event event payload v1",
+  "type": "object"
+}
