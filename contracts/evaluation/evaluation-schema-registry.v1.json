@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/evaluation/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/evaluation. A SchemaRef matching this enum is a known evaluation-protocol schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/evaluation/evaluator-descriptor@1.0.0",
+    "arena:schema/evaluation/evaluation-criteria@1.0.0",
+    "arena:schema/evaluation/evaluation-error@1.0.0",
+    "arena:schema/evaluation/evaluation-record@1.0.0",
+    "arena:schema/evaluation/evaluation-recorded-event@1.0.0",
+    "arena:schema/evaluation/run-evaluation-command@1.0.0",
+    "arena:schema/evaluation/schema-registry@1.0.0"
+  ],
+  "title": "Arena evaluation-protocol schema registry v1",
+  "type": "string"
+}
