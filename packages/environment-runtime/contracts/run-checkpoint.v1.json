@@ -1,0 +1,55 @@
+{
+  "$id": "arena:schema/environment-runtime/run-checkpoint@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A content-addressed checkpoint of a run world: snapshot digest, per-run sequence number, world step index and recorded-at timestamp. Restore validates the ref chain — a foreign run checkpoint can never restore this run world.",
+  "properties": {
+    "checkpointVersion": {
+      "const": 1
+    },
+    "digest": {
+      "description": "sha256 over the canonical serialization of the digest-free view.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "recordedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "runId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "sequence": {
+      "description": "1-based, contiguous per run.",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "snapshotDigest": {
+      "description": "Content address of the snapshotted world state.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "stepIndex": {
+      "description": "World position captured by the snapshot.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "tenantId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "checkpointVersion",
+    "runId",
+    "tenantId",
+    "sequence",
+    "snapshotDigest",
+    "stepIndex",
+    "recordedAt",
+    "digest"
+  ],
+  "title": "Arena environment-runtime RunCheckpoint v1",
+  "type": "object"
+}

@@ -1,0 +1,26 @@
+{
+  "$id": "arena:schema/environment-runtime/admission-decision@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The pure outcome of an admission check: a run is admitted only if its declared isolation envelope (A009 policy types) fits the target environment bounds; every least-privilege / quota violation is enumerated.",
+  "properties": {
+    "admitted": {
+      "description": "True exactly when violations is empty.",
+      "type": "boolean"
+    },
+    "violations": {
+      "description": "Every quota / least-privilege violation (empty when admitted).",
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "admitted",
+    "violations"
+  ],
+  "title": "Arena environment-runtime AdmissionDecision v1",
+  "type": "object"
+}

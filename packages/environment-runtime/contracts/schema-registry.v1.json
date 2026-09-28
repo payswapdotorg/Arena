@@ -1,0 +1,32 @@
+{
+  "$id": "arena:schema/environment-runtime/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas defined by @arena/environment-runtime. A SchemaRef matching this enum is a known environment-runtime schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/environment-runtime/run-record@1.0.0",
+    "arena:schema/environment-runtime/run-state@1.0.0",
+    "arena:schema/environment-runtime/runtime-error@1.0.0",
+    "arena:schema/environment-runtime/run-checkpoint@1.0.0",
+    "arena:schema/environment-runtime/admission-decision@1.0.0",
+    "arena:schema/environment-runtime/run-result@1.0.0",
+    "arena:schema/environment-runtime/environment-event-log@1.0.0",
+    "arena:schema/environment-runtime/schema-registry@1.0.0",
+    "arena:schema/environment-runtime/run-submitted-event@1.0.0",
+    "arena:schema/environment-runtime/admission-decided-event@1.0.0",
+    "arena:schema/environment-runtime/state-transitioned-event@1.0.0",
+    "arena:schema/environment-runtime/workload-progressed-event@1.0.0",
+    "arena:schema/environment-runtime/checkpoint-recorded-event@1.0.0",
+    "arena:schema/environment-runtime/checkpoint-restored-event@1.0.0",
+    "arena:schema/environment-runtime/run-result-produced-event@1.0.0",
+    "arena:schema/environment-runtime/submit-run-command@1.0.0",
+    "arena:schema/environment-runtime/start-run-command@1.0.0",
+    "arena:schema/environment-runtime/advance-run-command@1.0.0",
+    "arena:schema/environment-runtime/checkpoint-run-command@1.0.0",
+    "arena:schema/environment-runtime/restore-run-command@1.0.0",
+    "arena:schema/environment-runtime/complete-run-command@1.0.0",
+    "arena:schema/environment-runtime/fail-run-command@1.0.0",
+    "arena:schema/environment-runtime/cleanup-run-command@1.0.0"
+  ],
+  "title": "Arena environment-runtime schema registry v1",
+  "type": "string"
+}

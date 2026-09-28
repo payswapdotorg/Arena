@@ -1,0 +1,49 @@
+{
+  "$id": "arena:schema/environment-runtime/restore-run-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Orchestrator to runner command: reset the world to a recorded checkpoint of THIS run (foreign-run checkpoints are rejected).",
+  "properties": {
+    "checkpoint": {
+      "additionalProperties": false,
+      "description": "The checkpoint ref to restore (must be recorded by this run).",
+      "properties": {
+        "runId": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "snapshotDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runId",
+        "sequence",
+        "snapshotDigest"
+      ],
+      "type": "object"
+    },
+    "runId": {
+      "description": "The tenant-scoped run the command addresses.",
+      "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "tenantId": {
+      "description": "The issuing tenant — must own the run (R29).",
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "runId",
+    "tenantId",
+    "checkpoint"
+  ],
+  "title": "Arena environment-runtime restore-run command v1",
+  "type": "object"
+}

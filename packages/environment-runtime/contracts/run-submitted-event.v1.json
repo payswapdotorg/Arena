@@ -1,0 +1,67 @@
+{
+  "$id": "arena:schema/environment-runtime/run-submitted-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The first event of every run stream: the content-addressed run record was created.",
+  "properties": {
+    "eventVersion": {
+      "const": 1,
+      "description": "Runtime event wire version."
+    },
+    "jobRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "kind": {
+      "const": "run-submitted"
+    },
+    "occurredAt": {
+      "description": "Canonical ms-UTC occurrence timestamp.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "recordDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "runId": {
+      "description": "The tenant-scoped run this event belongs to.",
+      "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "seed": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "type": "string"
+        }
+      ]
+    },
+    "sequence": {
+      "description": "1-based monotonic sequence within this run stream.",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "tenantId": {
+      "description": "The owning tenant (tenant-scoped streams).",
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "runId",
+    "tenantId",
+    "kind",
+    "recordDigest",
+    "jobRef",
+    "seed"
+  ],
+  "title": "Arena environment-runtime run-submitted event v1",
+  "type": "object"
+}
