@@ -1,0 +1,81 @@
+{
+  "$id": "arena:schema/expert/error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the expert-registry error taxonomy. Unknown codes are rejected when parsing. EXPERT_AUTHORITY_FIELD_REJECTED and EXPERT_PII_FIELD_REJECTED are the lock-rule-9 separation-of-concerns screens.",
+  "properties": {
+    "category": {
+      "enum": [
+        "validation",
+        "encoding",
+        "versioning",
+        "integrity",
+        "access",
+        "unknown"
+      ]
+    },
+    "code": {
+      "enum": [
+        "EXPERT_AUTHORITY_FIELD_REJECTED",
+        "EXPERT_CROSS_TENANT_ACCESS",
+        "EXPERT_DUPLICATE_EVIDENCE",
+        "EXPERT_EVIDENCE_REMOVAL",
+        "EXPERT_EXPERT_NOT_FOUND",
+        "EXPERT_IDENTITY_CONFLICT",
+        "EXPERT_INVALID_AVAILABILITY",
+        "EXPERT_INVALID_COMPETENCY",
+        "EXPERT_INVALID_CREDENTIAL_REF",
+        "EXPERT_INVALID_DIGEST",
+        "EXPERT_INVALID_DOMAIN_METADATA",
+        "EXPERT_INVALID_DOMAIN_PACK",
+        "EXPERT_INVALID_DOMAIN_SCOPE",
+        "EXPERT_INVALID_EVIDENCE",
+        "EXPERT_INVALID_IDENTITY",
+        "EXPERT_INVALID_IDENTITY_REF",
+        "EXPERT_INVALID_JURISDICTION",
+        "EXPERT_INVALID_LIFECYCLE",
+        "EXPERT_INVALID_LIMITATION",
+        "EXPERT_INVALID_PRINCIPAL",
+        "EXPERT_INVALID_PRIVACY_POLICY",
+        "EXPERT_INVALID_PROFILE",
+        "EXPERT_INVALID_PUBLIC_VIEW",
+        "EXPERT_INVALID_QUALIFICATION",
+        "EXPERT_INVALID_RELIABILITY",
+        "EXPERT_INVALID_REF",
+        "EXPERT_INVALID_STATUS",
+        "EXPERT_INVALID_SUPERSESSION",
+        "EXPERT_INVALID_TASK_HISTORY",
+        "EXPERT_INVALID_TIMESTAMP",
+        "EXPERT_INVALID_TRANSITION",
+        "EXPERT_INVALID_VERSION",
+        "EXPERT_PII_FIELD_REJECTED",
+        "EXPERT_RELIABILITY_MUTATION",
+        "EXPERT_TAMPERED",
+        "EXPERT_TASK_HISTORY_REMOVAL",
+        "EXPERT_TERMINAL_STATE",
+        "EXPERT_UNKNOWN_DOMAIN_COMPETENCY_TYPE",
+        "EXPERT_UNKNOWN_ERROR",
+        "EXPERT_UNSUPPORTED_RECORD_VERSION"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context.",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena expert-registry error v1",
+  "type": "object"
+}

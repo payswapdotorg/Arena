@@ -1,0 +1,50 @@
+{
+  "$id": "arena:schema/expert/task-record-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A content-addressed reference to one task-history record (task spec, assignment, outcome or trajectory), scoped to the profile tenant (lock rule 11).",
+  "properties": {
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "task-spec",
+        "task-assignment",
+        "task-outcome",
+        "trajectory"
+      ]
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "refVersion": {
+      "const": 1
+    },
+    "taskId": {
+      "pattern": "^[a-z][a-z0-9-]{0,127}$",
+      "type": "string"
+    },
+    "tenant": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "refVersion",
+    "kind",
+    "tenant",
+    "taskId",
+    "version",
+    "digest",
+    "occurredAt"
+  ],
+  "title": "Arena task record ref v1",
+  "type": "object"
+}

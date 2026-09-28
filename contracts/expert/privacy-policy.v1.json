@@ -1,0 +1,81 @@
+{
+  "$id": "arena:schema/expert/privacy-policy@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The explicit per-group privacy marking governing public-view derivation (lock rule 23: privacy is explicit metadata). Every §8 content group must be declared public or tenant-internal.",
+  "properties": {
+    "policyVersion": {
+      "const": 1
+    },
+    "visibility": {
+      "additionalProperties": false,
+      "properties": {
+        "availability": {
+          "enum": [
+            "public",
+            "tenant-internal"
+          ]
+        },
+        "competencies": {
+          "enum": [
+            "public",
+            "tenant-internal"
+          ]
+        },
+        "domainScope": {
+          "enum": [
+            "public",
+            "tenant-internal"
+          ]
+        },
+        "evidence": {
+          "enum": [
+            "public",
+            "tenant-internal"
+          ]
+        },
+        "identityRefs": {
+          "enum": [
+            "public",
+            "tenant-internal"
+          ]
+        },
+        "qualifications": {
+          "enum": [
+            "public",
+            "tenant-internal"
+          ]
+        },
+        "reliability": {
+          "enum": [
+            "public",
+            "tenant-internal"
+          ]
+        },
+        "taskHistory": {
+          "enum": [
+            "public",
+            "tenant-internal"
+          ]
+        }
+      },
+      "required": [
+        "identityRefs",
+        "competencies",
+        "qualifications",
+        "evidence",
+        "taskHistory",
+        "reliability",
+        "availability",
+        "domainScope"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "policyVersion",
+    "visibility"
+  ],
+  "title": "Arena expert privacy policy v1",
+  "type": "object"
+}

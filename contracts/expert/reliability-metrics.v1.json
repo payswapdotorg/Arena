@@ -1,0 +1,40 @@
+{
+  "$id": "arena:schema/expert/reliability-metrics@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The DERIVED reliability measurement (R32): completed/failed/no-response counters folded from the append-only ledger. Counters are recomputed from history — never directly mutable, never declarable on a profile (lock rule 6).",
+  "properties": {
+    "lastEventAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "metricsVersion": {
+      "const": 1
+    },
+    "noResponse": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "tasksCompleted": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "tasksFailed": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "totalEvents": {
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "metricsVersion",
+    "tasksCompleted",
+    "tasksFailed",
+    "noResponse",
+    "totalEvents"
+  ],
+  "title": "Arena reliability metrics v1",
+  "type": "object"
+}

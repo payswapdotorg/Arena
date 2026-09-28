@@ -1,0 +1,22 @@
+{
+  "$id": "arena:schema/expert/evidence-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A digest-addressed evidence reference. Evidence is append-only (architecture-lock rule 6).",
+  "properties": {
+    "description": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "digest",
+    "description"
+  ],
+  "title": "Arena evidence ref v1",
+  "type": "object"
+}

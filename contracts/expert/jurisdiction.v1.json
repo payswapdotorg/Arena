@@ -1,0 +1,25 @@
+{
+  "$id": "arena:schema/expert/jurisdiction@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A typed ISO 3166 jurisdiction (country + optional subdivision). Professional-scope metadata, not personal location data (§8 domain/jurisdiction).",
+  "properties": {
+    "country": {
+      "pattern": "^[A-Z]{2}$",
+      "type": "string"
+    },
+    "jurisdictionVersion": {
+      "const": 1
+    },
+    "region": {
+      "pattern": "^[A-Z0-9]{1,3}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "jurisdictionVersion",
+    "country"
+  ],
+  "title": "Arena jurisdiction v1",
+  "type": "object"
+}

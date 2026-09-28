@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "availabilityWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "type": "string"
+        },
+        "dayOfWeek": {
+          "maximum": 7,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "endUtc": {
+          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+          "type": "string"
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "recurrence": {
+          "enum": [
+            "daily",
+            "weekly",
+            "one-time"
+          ]
+        },
+        "startUtc": {
+          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+          "type": "string"
+        },
+        "windowVersion": {
+          "const": 1
+        }
+      },
+      "required": [
+        "windowVersion",
+        "recurrence",
+        "startUtc",
+        "endUtc"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/availability@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The expert availability record: >= 1 typed windows (daily / weekly with ISO day 1-7 / one-time with an exact calendar date), all times UTC HH:MM.",
+  "properties": {
+    "availabilityVersion": {
+      "const": 1
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "windows": {
+      "items": {
+        "$ref": "#/$defs/availabilityWindow"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "availabilityVersion",
+    "windows"
+  ],
+  "title": "Arena expert availability v1",
+  "type": "object"
+}
