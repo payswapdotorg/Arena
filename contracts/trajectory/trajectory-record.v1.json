@@ -1,0 +1,29 @@
+{
+  "$id": "arena:schema/trajectory/trajectory-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Header + entries + chainHead: the frozen aggregate of a trajectory. The chainHead is the FINAL DIGEST OVER THE FULL CHAIN (the last entry stepDigest, or the header digest when empty) — the trajectory digest referenced by the run evidence address. Append-only; frozen at completion.",
+  "properties": {
+    "chainHead": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "entries": {
+      "description": "Ordered entry stream, sequences 1..n contiguous.",
+      "items": {
+        "$ref": "arena:schema/trajectory/trajectory-entry@1.0.0"
+      },
+      "type": "array"
+    },
+    "header": {
+      "$ref": "arena:schema/trajectory/trajectory-header@1.0.0"
+    }
+  },
+  "required": [
+    "header",
+    "entries",
+    "chainHead"
+  ],
+  "title": "Arena TrajectoryRecord v1",
+  "type": "object"
+}

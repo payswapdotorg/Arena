@@ -1,0 +1,43 @@
+{
+  "$id": "arena:schema/trajectory/append-trajectory-entry-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: append one entry. Carries the DIGEST-FREE entry view — the store computes the chained stepDigest itself and never trusts caller-side digests. Commands carry a REQUIRED non-null idempotency key (lock rule 17).",
+  "properties": {
+    "kind": {
+      "enum": [
+        "action",
+        "observation",
+        "checkpoint",
+        "error",
+        "completion"
+      ]
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "payload": {
+      "description": "Typed payload per kind.",
+      "type": "object"
+    },
+    "sequence": {
+      "description": "Strictly positive integer (sequences are 1-based).",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "trajectoryId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "trajectoryId",
+    "sequence",
+    "kind",
+    "payload",
+    "occurredAt"
+  ],
+  "title": "Arena append-trajectory-entry-command v1",
+  "type": "object"
+}
