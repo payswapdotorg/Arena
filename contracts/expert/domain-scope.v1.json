@@ -1,0 +1,149 @@
+{
+  "$defs": {
+    "capabilityNodeRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "domain",
+            "capability",
+            "sub-capability",
+            "skill",
+            "tool",
+            "task-family",
+            "evaluator",
+            "verifier",
+            "expert-competency",
+            "observed-failure",
+            "body-version"
+          ]
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "jurisdiction": {
+      "additionalProperties": false,
+      "properties": {
+        "country": {
+          "pattern": "^[A-Z]{2}$",
+          "type": "string"
+        },
+        "jurisdictionVersion": {
+          "const": 1
+        },
+        "region": {
+          "pattern": "^[A-Z0-9]{1,3}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "jurisdictionVersion",
+        "country"
+      ],
+      "type": "object"
+    },
+    "limitation": {
+      "additionalProperties": false,
+      "properties": {
+        "appliesUntil": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "class": {
+          "enum": [
+            "safety",
+            "privacy",
+            "licensing",
+            "professional-scope",
+            "jurisdictional",
+            "capacity"
+          ]
+        },
+        "jurisdiction": {
+          "$ref": "#/$defs/jurisdiction"
+        },
+        "limitationVersion": {
+          "const": 1
+        },
+        "statement": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "limitationVersion",
+        "class",
+        "statement"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/domain-scope@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The expert domain/jurisdiction scope: >= 1 capability-graph domain node refs, 0+ typed jurisdictions, >= 1 explicit professional limitations (lock rule 23).",
+  "properties": {
+    "domains": {
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/capabilityNodeRef"
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "domain"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "jurisdictions": {
+      "items": {
+        "$ref": "#/$defs/jurisdiction"
+      },
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "$ref": "#/$defs/limitation"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "scopeVersion": {
+      "const": 1
+    }
+  },
+  "required": [
+    "scopeVersion",
+    "domains",
+    "jurisdictions",
+    "limitations"
+  ],
+  "title": "Arena expert domain scope v1",
+  "type": "object"
+}

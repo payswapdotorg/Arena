@@ -1,0 +1,63 @@
+{
+  "$defs": {
+    "jurisdiction": {
+      "additionalProperties": false,
+      "properties": {
+        "country": {
+          "pattern": "^[A-Z]{2}$",
+          "type": "string"
+        },
+        "jurisdictionVersion": {
+          "const": 1
+        },
+        "region": {
+          "pattern": "^[A-Z0-9]{1,3}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "jurisdictionVersion",
+        "country"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/limitation@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One explicit professional limitation over the closed class vocabulary (safety, privacy, licensing, professional-scope, jurisdictional, capacity) — architecture-lock rule 23.",
+  "properties": {
+    "appliesUntil": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "class": {
+      "enum": [
+        "safety",
+        "privacy",
+        "licensing",
+        "professional-scope",
+        "jurisdictional",
+        "capacity"
+      ]
+    },
+    "jurisdiction": {
+      "$ref": "#/$defs/jurisdiction"
+    },
+    "limitationVersion": {
+      "const": 1
+    },
+    "statement": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "limitationVersion",
+    "class",
+    "statement"
+  ],
+  "title": "Arena professional limitation v1",
+  "type": "object"
+}

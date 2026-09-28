@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "expertRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "expertId": {
+          "pattern": "^expert-[a-z0-9][a-z0-9-]{0,61}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "expertId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/supersede-profile-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command payload marking the addressed state superseded by a new profile version (strictly higher semver, same logical expert).",
+  "properties": {
+    "actor": {
+      "$ref": "#/$defs/principal"
+    },
+    "at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "currentStateDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "superseding": {
+      "$ref": "#/$defs/expertRef"
+    }
+  },
+  "required": [
+    "currentStateDigest",
+    "at",
+    "actor",
+    "superseding"
+  ],
+  "title": "Arena supersede-profile-command command payload v1",
+  "type": "object"
+}

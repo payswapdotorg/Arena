@@ -1,0 +1,37 @@
+{
+  "$id": "arena:schema/expert/identity-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A declared identity reference: digest-addressed attestation plus optional neutral locator. Personal data NEVER appears inline on a profile (PII minimization, §8 identity); the locator charset excludes email/phone shapes by construction.",
+  "properties": {
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "identity-attestation",
+        "contact-attestation",
+        "external-identifier"
+      ]
+    },
+    "locator": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,254}$",
+      "type": "string"
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "refVersion": {
+      "const": 1
+    }
+  },
+  "required": [
+    "refVersion",
+    "kind",
+    "digest"
+  ],
+  "title": "Arena declared identity ref v1",
+  "type": "object"
+}

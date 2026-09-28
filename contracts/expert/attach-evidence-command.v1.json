@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "evidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest",
+        "description"
+      ],
+      "type": "object"
+    },
+    "principal": {
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert/attach-evidence-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command payload appending digest-addressed evidence refs (>= 1) to the addressed state (lock rule 6: evidence is append-only; there is no removal command).",
+  "properties": {
+    "actor": {
+      "$ref": "#/$defs/principal"
+    },
+    "at": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "currentStateDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "note": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "currentStateDigest",
+    "at",
+    "actor",
+    "evidence"
+  ],
+  "title": "Arena attach-evidence-command command payload v1",
+  "type": "object"
+}
