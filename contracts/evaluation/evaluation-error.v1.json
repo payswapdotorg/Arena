@@ -1,0 +1,63 @@
+{
+  "$id": "arena:schema/evaluation/evaluation-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Wire-safe structured form of an EvaluationError: closed EVALUATION_* code set, core category mapping, strictly validating parse (unknown codes rejected).",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "EVALUATION_CRITERION_MISMATCH",
+        "EVALUATION_DUPLICATE_CRITERION",
+        "EVALUATION_IDEMPOTENCY_CONFLICT",
+        "EVALUATION_IDENTITY_CONFLICT",
+        "EVALUATION_INVALID_AGGREGATION",
+        "EVALUATION_INVALID_CRITERIA",
+        "EVALUATION_INVALID_DESCRIPTOR",
+        "EVALUATION_INVALID_DIGEST",
+        "EVALUATION_INVALID_IDENTITY",
+        "EVALUATION_INVALID_INPUT_CONTRACT",
+        "EVALUATION_INVALID_KIND",
+        "EVALUATION_INVALID_PROVENANCE",
+        "EVALUATION_INVALID_RECORD",
+        "EVALUATION_INVALID_REPRODUCIBILITY",
+        "EVALUATION_INVALID_SCHEMA_REF",
+        "EVALUATION_INVALID_TIMESTAMP",
+        "EVALUATION_INVALID_VERDICT",
+        "EVALUATION_NOT_FOUND",
+        "EVALUATION_TAMPERED",
+        "EVALUATION_THRESHOLD_OUT_OF_RANGE",
+        "EVALUATION_TIMESTAMP_REGRESSION",
+        "EVALUATION_UNKNOWN_ERROR",
+        "EVALUATION_UNSUPPORTED_RECORD_VERSION",
+        "EVALUATION_VERSION_CONFLICT"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena EvaluationError v1",
+  "type": "object"
+}

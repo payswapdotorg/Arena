@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "criterionEntry": {
+      "additionalProperties": false,
+      "description": "One ordered criterion: id, strictly positive weight, explicit description, and a content-addressed target ref (the digest of the object the criterion judges).",
+      "properties": {
+        "criterionId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "description": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "targetRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "weight": {
+          "description": "Strictly positive finite weight (normalized by weighted-sum aggregation).",
+          "exclusiveMinimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "criterionId",
+        "weight",
+        "description",
+        "targetRef"
+      ],
+      "type": "object"
+    },
+    "thresholds": {
+      "additionalProperties": false,
+      "description": "The judgment bar of the aggregate: for weighted-sum/pass-threshold a fraction in (0, 1]; for rubric-level an integer level in [1, 5].",
+      "properties": {
+        "passAt": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "passAt"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/evaluation/evaluation-criteria@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The explicit, versioned, content-addressed criteria object judgment runs against: ordered criterion entries (id, weight, description, target ref), a closed aggregation policy (weighted-sum | pass-threshold | rubric-level) and thresholds. Criterion ids are unique; same criteria ⇒ same digest; any content change ⇒ a different digest.",
+  "properties": {
+    "aggregation": {
+      "enum": [
+        "weighted-sum",
+        "pass-threshold",
+        "rubric-level"
+      ]
+    },
+    "criteriaId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "entries": {
+      "description": "Ordered criterion list; criterion ids unique within the object.",
+      "items": {
+        "$ref": "#/$defs/criterionEntry"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the criteria shape."
+    },
+    "thresholds": {
+      "$ref": "#/$defs/thresholds"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "criteriaId",
+    "version",
+    "entries",
+    "aggregation",
+    "thresholds",
+    "digest"
+  ],
+  "title": "Arena EvaluationCriteria v1",
+  "type": "object"
+}

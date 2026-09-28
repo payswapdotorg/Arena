@@ -1,0 +1,198 @@
+{
+  "$defs": {
+    "evaluatorProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of the evaluator declaration.",
+      "properties": {
+        "authoredBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "submittedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "authoredBy",
+        "submittedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "inputContract": {
+      "additionalProperties": false,
+      "description": "The evaluator input contract: MANDATORY digest refs to the judged A005 CapabilityCase and A011 TrajectoryRecord (chain head), plus OPTIONAL A003 BodyVersion / A016 substrate digest pins (null when unbound). The referenced types are bound by digest, never redefined.",
+      "properties": {
+        "bodyRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "caseRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "substrateRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "trajectoryRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "caseRef",
+        "trajectoryRef",
+        "bodyRef",
+        "substrateRef"
+      ],
+      "type": "object"
+    },
+    "reproducibility": {
+      "additionalProperties": false,
+      "description": "Reproducibility characteristics (EV1.0): deterministic? seeded? requires-human? A deterministic evaluator cannot require human judgment.",
+      "properties": {
+        "deterministic": {
+          "type": "boolean"
+        },
+        "requiresHuman": {
+          "type": "boolean"
+        },
+        "seeded": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "deterministic",
+        "seeded",
+        "requiresHuman"
+      ],
+      "type": "object"
+    },
+    "schemaRef": {
+      "additionalProperties": false,
+      "description": "Versioned SchemaRef (A001 core shape): arena:schema/<namespace>/<name>@<major.minor.patch>.",
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/evaluation/evaluator-descriptor@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The content-addressed, versioned declaration of an evaluator: id, version, kind (the CLOSED EV1.0 enum — unknown kinds rejected), input contract (digest refs to the judged CapabilityCase + TrajectoryRecord plus optional body/substrate pins), criteria ref, output schema ref, reproducibility characteristics, confidence/limitations and provenance. Same descriptor ⇒ same digest; any change ⇒ a new version (the digest changes and same-id+version re-registration is a conflict). Deep-frozen, no mutation API.",
+  "properties": {
+    "confidence": {
+      "description": "Calibrated confidence in the evaluator judgments, in [0, 1].",
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "criteriaRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evaluatorId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "inputs": {
+      "$ref": "#/$defs/inputContract"
+    },
+    "kind": {
+      "enum": [
+        "deterministic-test",
+        "model-based",
+        "expert",
+        "rubric",
+        "simulation",
+        "comparative",
+        "adversarial"
+      ]
+    },
+    "limitations": {
+      "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+      "type": "string"
+    },
+    "outputSchema": {
+      "$ref": "#/$defs/schemaRef"
+    },
+    "provenance": {
+      "$ref": "#/$defs/evaluatorProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the descriptor shape."
+    },
+    "reproducibility": {
+      "$ref": "#/$defs/reproducibility"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "evaluatorId",
+    "version",
+    "kind",
+    "inputs",
+    "criteriaRef",
+    "outputSchema",
+    "reproducibility",
+    "confidence",
+    "limitations",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena EvaluatorDescriptor v1",
+  "type": "object"
+}

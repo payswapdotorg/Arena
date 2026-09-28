@@ -1,0 +1,39 @@
+{
+  "$id": "arena:schema/evaluation/run-evaluation-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: run one evaluation. Carries the digest refs of the evaluator descriptor, the case, the trajectory and the run seed; the fabric resolves refs, runs the evaluator hook and emits evaluation-recorded-event. Commands carry a REQUIRED non-null idempotency key (architecture-lock rule 17).",
+  "properties": {
+    "caseRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evaluatorRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "seed": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "type": "string"
+        }
+      ]
+    },
+    "trajectoryRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "evaluatorRef",
+    "caseRef",
+    "trajectoryRef",
+    "seed"
+  ],
+  "title": "Arena run-evaluation-command v1",
+  "type": "object"
+}

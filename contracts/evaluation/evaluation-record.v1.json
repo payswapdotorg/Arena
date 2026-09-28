@@ -1,0 +1,195 @@
+{
+  "$defs": {
+    "aggregateOutcome": {
+      "additionalProperties": false,
+      "description": "The aggregate judgment: one score per the aggregation policy plus the outcome label against thresholds.passAt — a JUDGMENT, never an evidence claim (lock rule 7).",
+      "properties": {
+        "outcome": {
+          "enum": [
+            "meets-criteria",
+            "below-criteria"
+          ]
+        },
+        "score": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "score",
+        "outcome"
+      ],
+      "type": "object"
+    },
+    "criterionVerdict": {
+      "additionalProperties": false,
+      "description": "One per-criterion verdict: criterion id, score (domain per aggregation policy: [0,1] for weighted-sum, {0,1} for pass-threshold, integer [1,5] for rubric-level), optional judgment label, optional notes.",
+      "properties": {
+        "criterionId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "judgment": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "score": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "criterionId",
+        "score",
+        "judgment",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "recordProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of one evaluation run.",
+      "properties": {
+        "executedBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "recordedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "executedBy",
+        "recordedAt",
+        "notes"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/evaluation/evaluation-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The append-once result record of one evaluation run: evaluator descriptor digest, case ref, trajectory digest ref, criteria digest ref, seed, ONE verdict per criterion, the aggregate outcome computed purely per the aggregation policy (a JUDGMENT — never an evidence claim; lock rule 7), confidence, limitations, started/finished-at and provenance. Frozen on creation; pure replayable construction from inputs; identical inputs + identical seed ⇒ identical record digest (score stability under rerun).",
+  "properties": {
+    "aggregate": {
+      "$ref": "#/$defs/aggregateOutcome"
+    },
+    "caseRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "confidence": {
+      "description": "Calibrated confidence in this specific result, in [0, 1].",
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "criteriaRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evaluatorRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "finishedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "limitations": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        }
+      ]
+    },
+    "provenance": {
+      "$ref": "#/$defs/recordProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the record shape."
+    },
+    "seed": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "type": "string"
+        }
+      ]
+    },
+    "startedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "trajectoryRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "verdicts": {
+      "description": "One verdict per criterion, in criteria order.",
+      "items": {
+        "$ref": "#/$defs/criterionVerdict"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "evaluatorRef",
+    "caseRef",
+    "trajectoryRef",
+    "criteriaRef",
+    "seed",
+    "verdicts",
+    "aggregate",
+    "confidence",
+    "limitations",
+    "startedAt",
+    "finishedAt",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena EvaluationRecord v1",
+  "type": "object"
+}
