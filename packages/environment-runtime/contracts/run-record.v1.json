@@ -1,0 +1,261 @@
+{
+  "$id": "arena:schema/environment-runtime/run-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The content-addressed declaration of an environment run: tenant-scoped run id, content-addressed environment ref (A009 EnvironmentVersionRef), A015 job reference, initial snapshot digest, deterministic seed, submitted-at timestamp and the isolation envelope (A009 ResourceLimits / NetworkPolicy / FilesystemPolicy / SecretPolicy). The digest is sha256 over the canonical serialization of the digest-free view; same inputs produce the same digest, any change produces a new one.",
+  "properties": {
+    "digest": {
+      "description": "sha256 over the canonical serialization of the digest-free view.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environment": {
+      "additionalProperties": false,
+      "description": "A009 EnvironmentVersionRef — the executable world pinned by content digest.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "filesystemEnvelope": {
+      "additionalProperties": false,
+      "description": "A009 FilesystemPolicy — explicit mounts only; no blanket write mode exists.",
+      "properties": {
+        "mounts": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "access": {
+                "enum": [
+                  "read-only",
+                  "read-write"
+                ]
+              },
+              "mountPath": {
+                "pattern": "^/(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*)?$",
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "initial-state",
+                  "ephemeral",
+                  "workspace",
+                  "evidence"
+                ]
+              }
+            },
+            "required": [
+              "mountPath",
+              "access",
+              "source"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "writeMode": {
+          "enum": [
+            "read-only",
+            "declared-mounts-only"
+          ]
+        }
+      },
+      "required": [
+        "writeMode",
+        "mounts"
+      ],
+      "type": "object"
+    },
+    "initialSnapshotDigest": {
+      "description": "Digest of the initial state snapshot the run starts from.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "jobRef": {
+      "description": "A015 job id whose workload this run executes.",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "networkEnvelope": {
+      "additionalProperties": false,
+      "description": "A009 NetworkPolicy — default-deny egress with explicit allows only.",
+      "properties": {
+        "allows": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "host": {
+                "pattern": "^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$",
+                "type": "string"
+              },
+              "port": {
+                "maximum": 65535,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "protocol": {
+                "enum": [
+                  "tcp",
+                  "udp",
+                  "http",
+                  "https"
+                ]
+              }
+            },
+            "required": [
+              "host",
+              "port",
+              "protocol"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "egress": {
+          "const": "default-deny"
+        }
+      },
+      "required": [
+        "egress",
+        "allows"
+      ],
+      "type": "object"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Run record wire version."
+    },
+    "resourceEnvelope": {
+      "additionalProperties": false,
+      "description": "A009 ResourceLimits — the declared resource envelope (must fit the environment bound).",
+      "properties": {
+        "cpuMillis": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "memoryMiB": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "wallClockSeconds": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cpuMillis",
+        "memoryMiB",
+        "wallClockSeconds"
+      ],
+      "type": "object"
+    },
+    "runId": {
+      "description": "Tenant-scoped run id (<tenant>/<run-key>) — the tenant is part of the address and of the digest.",
+      "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "secretEnvelope": {
+      "additionalProperties": false,
+      "description": "A009 SecretPolicy — reference-only injection points; secret VALUES never enter canonical objects.",
+      "properties": {
+        "injectionPoints": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "mechanism": {
+                "enum": [
+                  "environment-binding",
+                  "file-mount",
+                  "stream"
+                ]
+              },
+              "mountPath": {
+                "pattern": "^/(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*)?$",
+                "type": "string"
+              },
+              "secretId": {
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "secretId",
+              "mountPath",
+              "mechanism"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "isolation": {
+          "const": "isolation-boundary"
+        }
+      },
+      "required": [
+        "isolation",
+        "injectionPoints"
+      ],
+      "type": "object"
+    },
+    "seed": {
+      "description": "The deterministic seed (null when the environment admits none).",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "type": "string"
+        }
+      ]
+    },
+    "submittedAt": {
+      "description": "Canonical ms-UTC submission timestamp.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "tenantId": {
+      "description": "The owning tenant; must equal the run id tenant half.",
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "runId",
+    "tenantId",
+    "environment",
+    "jobRef",
+    "initialSnapshotDigest",
+    "seed",
+    "submittedAt",
+    "resourceEnvelope",
+    "networkEnvelope",
+    "filesystemEnvelope",
+    "secretEnvelope",
+    "digest"
+  ],
+  "title": "Arena environment-runtime RunRecord v1",
+  "type": "object"
+}

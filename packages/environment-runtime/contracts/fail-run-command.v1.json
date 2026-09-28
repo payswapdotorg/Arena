@@ -1,0 +1,35 @@
+{
+  "$id": "arena:schema/environment-runtime/fail-run-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Orchestrator to runner command: fail the run with a typed error class (provisioning/ready/running/checkpointing to failed).",
+  "properties": {
+    "errorClass": {
+      "description": "Neutral error class (e.g. workload-error).",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "runId": {
+      "description": "The tenant-scoped run the command addresses.",
+      "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "tenantId": {
+      "description": "The issuing tenant — must own the run (R29).",
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "runId",
+    "tenantId",
+    "errorClass",
+    "message"
+  ],
+  "title": "Arena environment-runtime fail-run command v1",
+  "type": "object"
+}

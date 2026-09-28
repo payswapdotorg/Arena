@@ -1,0 +1,70 @@
+{
+  "$id": "arena:schema/environment-runtime/runtime-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the environment-runtime error taxonomy. Unknown codes are rejected when parsing (ENVIRONMENT_RUNTIME_UNKNOWN_ERROR). Illegal lifecycle transitions carry the offending from/to states in details.",
+  "properties": {
+    "category": {
+      "enum": [
+        "validation",
+        "encoding",
+        "versioning",
+        "integrity",
+        "unknown"
+      ]
+    },
+    "code": {
+      "enum": [
+        "ENVIRONMENT_RUNTIME_ADMISSION_REJECTED",
+        "ENVIRONMENT_RUNTIME_CHECKPOINT_REJECTED",
+        "ENVIRONMENT_RUNTIME_CREDENTIAL_REJECTED",
+        "ENVIRONMENT_RUNTIME_EVENT_OUT_OF_ORDER",
+        "ENVIRONMENT_RUNTIME_EVENT_SEQUENCE_DUPLICATE",
+        "ENVIRONMENT_RUNTIME_EVENT_SEQUENCE_GAP",
+        "ENVIRONMENT_RUNTIME_IDENTITY_CONFLICT",
+        "ENVIRONMENT_RUNTIME_ILLEGAL_TRANSITION",
+        "ENVIRONMENT_RUNTIME_INVALID_ADMISSION_VIEW",
+        "ENVIRONMENT_RUNTIME_INVALID_CHECKPOINT",
+        "ENVIRONMENT_RUNTIME_INVALID_ENVIRONMENT_REF",
+        "ENVIRONMENT_RUNTIME_INVALID_EVENT",
+        "ENVIRONMENT_RUNTIME_INVALID_FILESYSTEM_ENVELOPE",
+        "ENVIRONMENT_RUNTIME_INVALID_JOB_REF",
+        "ENVIRONMENT_RUNTIME_INVALID_NETWORK_ENVELOPE",
+        "ENVIRONMENT_RUNTIME_INVALID_RECORD",
+        "ENVIRONMENT_RUNTIME_INVALID_RESOURCE_ENVELOPE",
+        "ENVIRONMENT_RUNTIME_INVALID_RUN_ID",
+        "ENVIRONMENT_RUNTIME_INVALID_RUN_RESULT",
+        "ENVIRONMENT_RUNTIME_INVALID_SECRET_ENVELOPE",
+        "ENVIRONMENT_RUNTIME_INVALID_SEED",
+        "ENVIRONMENT_RUNTIME_INVALID_SNAPSHOT_DIGEST",
+        "ENVIRONMENT_RUNTIME_INVALID_TENANT",
+        "ENVIRONMENT_RUNTIME_INVALID_TIMESTAMP",
+        "ENVIRONMENT_RUNTIME_RUNTIME_LEAKAGE",
+        "ENVIRONMENT_RUNTIME_RUN_RESULT_INCOMPLETE",
+        "ENVIRONMENT_RUNTIME_TAMPERED",
+        "ENVIRONMENT_RUNTIME_TENANT_ISOLATION_VIOLATION",
+        "ENVIRONMENT_RUNTIME_TIME_LIMIT_EXCEEDED",
+        "ENVIRONMENT_RUNTIME_UNKNOWN_ERROR"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context (e.g. from/to states).",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena EnvironmentRuntimeError v1",
+  "type": "object"
+}

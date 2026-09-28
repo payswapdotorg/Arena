@@ -1,0 +1,260 @@
+{
+  "$id": "arena:schema/environment-runtime/submit-run-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Orchestrator to runner command: declare and admit a run. The command envelope requires a non-null idempotency key (lock rule 17); re-submission with the same key and record digest is idempotent.",
+  "properties": {
+    "declaration": {
+      "additionalProperties": false,
+      "properties": {
+        "environment": {
+          "additionalProperties": false,
+          "description": "The content-addressed environment the run targets.",
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "name": {
+              "pattern": "^[a-z][a-z0-9-]{1,127}$",
+              "type": "string"
+            },
+            "namespace": {
+              "pattern": "^[a-z][a-z0-9-]{1,62}$",
+              "type": "string"
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace",
+            "name",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        "filesystemEnvelope": {
+          "additionalProperties": false,
+          "properties": {
+            "mounts": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "access": {
+                    "enum": [
+                      "read-only",
+                      "read-write"
+                    ]
+                  },
+                  "mountPath": {
+                    "pattern": "^/(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*)?$",
+                    "type": "string"
+                  },
+                  "source": {
+                    "enum": [
+                      "initial-state",
+                      "ephemeral",
+                      "workspace",
+                      "evidence"
+                    ]
+                  }
+                },
+                "required": [
+                  "mountPath",
+                  "access",
+                  "source"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "writeMode": {
+              "enum": [
+                "read-only",
+                "declared-mounts-only"
+              ]
+            }
+          },
+          "required": [
+            "writeMode"
+          ],
+          "type": "object"
+        },
+        "initialSnapshotDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "jobRef": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "networkEnvelope": {
+          "additionalProperties": false,
+          "properties": {
+            "allows": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "host": {
+                    "pattern": "^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$",
+                    "type": "string"
+                  },
+                  "port": {
+                    "maximum": 65535,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "protocol": {
+                    "enum": [
+                      "tcp",
+                      "udp",
+                      "http",
+                      "https"
+                    ]
+                  }
+                },
+                "required": [
+                  "host",
+                  "port",
+                  "protocol"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "egress": {
+              "const": "default-deny"
+            }
+          },
+          "required": [
+            "egress"
+          ],
+          "type": "object"
+        },
+        "resourceEnvelope": {
+          "additionalProperties": false,
+          "properties": {
+            "cpuMillis": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "memoryMiB": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "wallClockSeconds": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "cpuMillis",
+            "memoryMiB",
+            "wallClockSeconds"
+          ],
+          "type": "object"
+        },
+        "runKey": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "secretEnvelope": {
+          "additionalProperties": false,
+          "properties": {
+            "injectionPoints": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "mechanism": {
+                    "enum": [
+                      "environment-binding",
+                      "file-mount",
+                      "stream"
+                    ]
+                  },
+                  "mountPath": {
+                    "pattern": "^/(?:[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*)?$",
+                    "type": "string"
+                  },
+                  "secretId": {
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "secretId",
+                  "mountPath",
+                  "mechanism"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "isolation": {
+              "const": "isolation-boundary"
+            }
+          },
+          "required": [
+            "isolation"
+          ],
+          "type": "object"
+        },
+        "seed": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+              "type": "string"
+            }
+          ]
+        },
+        "taskVersion": {
+          "additionalProperties": false,
+          "properties": {
+            "taskId": {
+              "pattern": "^[a-z][a-z0-9-]{0,63}$",
+              "type": "string"
+            },
+            "version": {
+              "pattern": "^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "taskId",
+            "version"
+          ],
+          "type": "object"
+        },
+        "tenantId": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runKey",
+        "tenantId",
+        "environment",
+        "jobRef",
+        "taskVersion",
+        "initialSnapshotDigest",
+        "seed",
+        "resourceEnvelope",
+        "networkEnvelope",
+        "filesystemEnvelope",
+        "secretEnvelope"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "declaration"
+  ],
+  "title": "Arena environment-runtime submit-run command v1",
+  "type": "object"
+}

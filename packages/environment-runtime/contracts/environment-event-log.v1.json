@@ -1,0 +1,62 @@
+{
+  "$id": "arena:schema/environment-runtime/environment-event-log@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The structured, append-only, cross-run event log: every lifecycle transition, admission decision, checkpoint record, workload step and cleanup as an Envelope<RuntimeEvent>. Per-run sequences are contiguous 1..n; kinds follow the closed adjacency; timestamps are monotonic per run; nothing may follow a cleaned run.",
+  "properties": {
+    "entries": {
+      "description": "Envelope<RuntimeEvent> wire forms, append order.",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "correlationId": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+            "type": "string"
+          },
+          "issuedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "description": "A RuntimeEvent payload (one of the event schemas)."
+          },
+          "schema": {
+            "pattern": "^arena:schema/environment-runtime/[a-z][a-z0-9-]*@1\\.0\\.0$",
+            "type": "string"
+          },
+          "v": {
+            "const": 1
+          }
+        },
+        "required": [
+          "v",
+          "kind",
+          "schema",
+          "id",
+          "correlationId",
+          "idempotencyKey",
+          "issuedAt",
+          "payload"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "entries"
+  ],
+  "title": "Arena environment-runtime EnvironmentEventLog v1",
+  "type": "object"
+}

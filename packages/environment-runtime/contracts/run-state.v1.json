@@ -1,0 +1,148 @@
+{
+  "$id": "arena:schema/environment-runtime/run-state@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The event-sourced projection of a run current world: lifecycle status, transition/applied-event counters, world position (step + simulated elapsed), recorded checkpoint chain and the produced result digest. Snapshots are pure folds over the EnvironmentEventLog and are verified by replay.",
+  "properties": {
+    "admitted": {
+      "description": "Admission outcome (null = not decided yet).",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "appliedEvents": {
+      "description": "Sequence of the last applied event.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "checkpoints": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "recordedAt": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "type": "string"
+          },
+          "sequence": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "snapshotDigest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "stepIndex": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "sequence",
+          "snapshotDigest",
+          "stepIndex",
+          "recordedAt"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "enteredStatusAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "lastEventAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "recordDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "restoredToCheckpoint": {
+      "description": "Sequence of the checkpoint the world was last restored to.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "minimum": 1,
+          "type": "integer"
+        }
+      ]
+    },
+    "resultDigest": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "runId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "stateVersion": {
+      "const": 1
+    },
+    "status": {
+      "description": "Current lifecycle status (gate 3 state machine).",
+      "enum": [
+        "requested",
+        "provisioning",
+        "ready",
+        "running",
+        "checkpointing",
+        "completed",
+        "failed",
+        "timed-out",
+        "cleaned"
+      ]
+    },
+    "tenantId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "transitions": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "worldElapsedMs": {
+      "description": "Simulated elapsed workload milliseconds.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "worldStep": {
+      "description": "World position: workload steps taken (0 = initial snapshot).",
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "stateVersion",
+    "runId",
+    "tenantId",
+    "recordDigest",
+    "status",
+    "transitions",
+    "appliedEvents",
+    "lastEventAt",
+    "enteredStatusAt",
+    "admitted",
+    "worldStep",
+    "worldElapsedMs",
+    "checkpoints",
+    "restoredToCheckpoint",
+    "resultDigest"
+  ],
+  "title": "Arena environment-runtime RunStateSnapshot v1",
+  "type": "object"
+}

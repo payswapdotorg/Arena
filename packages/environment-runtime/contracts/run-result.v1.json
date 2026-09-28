@@ -1,0 +1,132 @@
+{
+  "$id": "arena:schema/environment-runtime/run-result@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The evidence-addressable outcome of a COMPLETED run, binding A009 RunAddress (task version, environment version, run id, initial snapshot digest, trajectory digest, evidence digests — ALL required; a missing digest fails construction).",
+  "properties": {
+    "digest": {
+      "description": "sha256 over the canonical serialization of the digest-free view.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "finalState": {
+      "const": "completed",
+      "description": "Only completed runs produce results."
+    },
+    "finishedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "recordDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "resultVersion": {
+      "const": 1
+    },
+    "runAddress": {
+      "additionalProperties": false,
+      "description": "A009 RunAddress — the full evidence address of the run.",
+      "properties": {
+        "environmentVersion": {
+          "additionalProperties": false,
+          "description": "The content-addressed environment version the run executed.",
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "name": {
+              "pattern": "^[a-z][a-z0-9-]{1,127}$",
+              "type": "string"
+            },
+            "namespace": {
+              "pattern": "^[a-z][a-z0-9-]{1,62}$",
+              "type": "string"
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace",
+            "name",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        "evidenceDigests": {
+          "description": "Digests of every produced evidence output (>= 1).",
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "initialSnapshotDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "runId": {
+          "description": "The tenant-LOCAL run key (A009 neutral id).",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "taskVersion": {
+          "additionalProperties": false,
+          "properties": {
+            "taskId": {
+              "pattern": "^[a-z][a-z0-9-]{0,63}$",
+              "type": "string"
+            },
+            "version": {
+              "pattern": "^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "taskId",
+            "version"
+          ],
+          "type": "object"
+        },
+        "trajectoryDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskVersion",
+        "environmentVersion",
+        "runId",
+        "initialSnapshotDigest",
+        "trajectoryDigest",
+        "evidenceDigests"
+      ],
+      "type": "object"
+    },
+    "runId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "tenantId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "resultVersion",
+    "runId",
+    "tenantId",
+    "recordDigest",
+    "finalState",
+    "finishedAt",
+    "runAddress",
+    "digest"
+  ],
+  "title": "Arena environment-runtime RunResult v1",
+  "type": "object"
+}

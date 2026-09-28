@@ -224,6 +224,31 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/environment-runtime:
+    dependencies:
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../environment-protocol
+      '@arena/job-protocol':
+        specifier: workspace:*
+        version: link:../job-protocol
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/expert-registry:
     dependencies:
       '@arena/protocol-core':
@@ -308,6 +333,34 @@ importers:
       '@arena/artifact-protocol':
         specifier: workspace:*
         version: link:../artifact-protocol
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/environment-runner:
+    dependencies:
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../../packages/environment-protocol
+      '@arena/environment-runtime':
+        specifier: workspace:*
+        version: link:../../packages/environment-runtime
+      '@arena/job-protocol':
+        specifier: workspace:*
+        version: link:../../packages/job-protocol
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4

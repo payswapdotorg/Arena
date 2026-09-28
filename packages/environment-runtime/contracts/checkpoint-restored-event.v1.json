@@ -1,0 +1,60 @@
+{
+  "$id": "arena:schema/environment-runtime/checkpoint-restored-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The world was reset to a recorded checkpoint of THIS run (validated ref chain) and continues from the restored world position.",
+  "properties": {
+    "checkpointSequence": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "eventVersion": {
+      "const": 1,
+      "description": "Runtime event wire version."
+    },
+    "kind": {
+      "const": "checkpoint-restored"
+    },
+    "occurredAt": {
+      "description": "Canonical ms-UTC occurrence timestamp.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "restoredStepIndex": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "runId": {
+      "description": "The tenant-scoped run this event belongs to.",
+      "pattern": "^[a-z][a-z0-9-]{1,62}/[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "sequence": {
+      "description": "1-based monotonic sequence within this run stream.",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "snapshotDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "tenantId": {
+      "description": "The owning tenant (tenant-scoped streams).",
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "eventVersion",
+    "sequence",
+    "occurredAt",
+    "runId",
+    "tenantId",
+    "kind",
+    "checkpointSequence",
+    "snapshotDigest",
+    "restoredStepIndex"
+  ],
+  "title": "Arena environment-runtime checkpoint-restored event v1",
+  "type": "object"
+}
