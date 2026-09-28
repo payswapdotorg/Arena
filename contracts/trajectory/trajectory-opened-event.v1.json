@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/trajectory/trajectory-opened-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event envelope payload emitted when a trajectory is opened (the store's authoritative, content-addressed header).",
+  "properties": {
+    "header": {
+      "$ref": "arena:schema/trajectory/trajectory-header@1.0.0"
+    }
+  },
+  "required": [
+    "header"
+  ],
+  "title": "Arena trajectory-opened-event v1",
+  "type": "object"
+}

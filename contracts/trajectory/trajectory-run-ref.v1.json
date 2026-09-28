@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "environmentVersionRef": {
+      "additionalProperties": false,
+      "description": "Content-addressed environment version (A009 shape, digest-pinned).",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "taskVersionRef": {
+      "additionalProperties": false,
+      "description": "A009 TaskVersionRef shape (type-only reuse — the guard lives in @arena/trajectory).",
+      "properties": {
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskId",
+        "version"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/trajectory/trajectory-run-ref@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The run binding of a trajectory: the four RunAddress-shaped digest refs that exist before the run produces anything (task version, environment version, run id, initial snapshot digest), plus the optional A010 RunRecord digest pin. The trajectory digest and evidence digests are OUTPUTS bound downstream by the RunResult — binding them here would be circular.",
+  "properties": {
+    "environmentVersion": {
+      "$ref": "#/$defs/environmentVersionRef"
+    },
+    "initialSnapshotDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "runId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}\\/[a-z][a-z0-9-]{0,63}$|^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "runRecordDigest": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "taskVersion": {
+      "$ref": "#/$defs/taskVersionRef"
+    }
+  },
+  "required": [
+    "taskVersion",
+    "environmentVersion",
+    "runId",
+    "initialSnapshotDigest",
+    "runRecordDigest"
+  ],
+  "title": "Arena TrajectoryRunRef v1",
+  "type": "object"
+}

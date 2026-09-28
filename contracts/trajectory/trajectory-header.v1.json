@@ -1,0 +1,147 @@
+{
+  "$defs": {
+    "environmentVersionRef": {
+      "additionalProperties": false,
+      "description": "Content-addressed environment version (A009 shape, digest-pinned).",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "taskVersionRef": {
+      "additionalProperties": false,
+      "description": "A009 TaskVersionRef shape (type-only reuse — the guard lives in @arena/trajectory).",
+      "properties": {
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^[0-9A-Za-z][0-9A-Za-z._-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskId",
+        "version"
+      ],
+      "type": "object"
+    },
+    "trajectoryRunRef": {
+      "additionalProperties": false,
+      "description": "The run binding: the four input parts of the run evidence address (task version, environment version, run id, initial snapshot digest) plus the optional A010 RunRecord digest pin. The trajectory/evidence OUTPUT digests are bound downstream by the RunResult.",
+      "properties": {
+        "environmentVersion": {
+          "$ref": "#/$defs/environmentVersionRef"
+        },
+        "initialSnapshotDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "runId": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}\\/[a-z][a-z0-9-]{0,63}$|^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "runRecordDigest": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "taskVersion": {
+          "$ref": "#/$defs/taskVersionRef"
+        }
+      },
+      "required": [
+        "taskVersion",
+        "environmentVersion",
+        "runId",
+        "initialSnapshotDigest",
+        "runRecordDigest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/trajectory/trajectory-header@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The content-addressed declaration of a trajectory: trajectory id, run binding (four digest refs), agent/body ref (digest — a model is a cognitive substrate, NOT the durable identity), substrate ref (digest), started-at, seed. The digest is sha256 over the canonical JSON of the digest-free view; same header ⇒ same digest. Deep-frozen with no mutation API.",
+  "properties": {
+    "agentBodyRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the header shape."
+    },
+    "run": {
+      "$ref": "#/$defs/trajectoryRunRef"
+    },
+    "seed": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "type": "string"
+        }
+      ]
+    },
+    "startedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "substrateRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "trajectoryId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "trajectoryId",
+    "run",
+    "agentBodyRef",
+    "substrateRef",
+    "startedAt",
+    "seed",
+    "digest"
+  ],
+  "title": "Arena TrajectoryHeader v1",
+  "type": "object"
+}

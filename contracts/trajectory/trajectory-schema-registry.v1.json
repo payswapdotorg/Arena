@@ -1,0 +1,19 @@
+{
+  "$id": "arena:schema/trajectory/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/trajectory. A SchemaRef matching this enum is a known trajectory-protocol schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/trajectory/append-trajectory-entry-command@1.0.0",
+    "arena:schema/trajectory/open-trajectory-command@1.0.0",
+    "arena:schema/trajectory/schema-registry@1.0.0",
+    "arena:schema/trajectory/trajectory-entry@1.0.0",
+    "arena:schema/trajectory/trajectory-entry-appended-event@1.0.0",
+    "arena:schema/trajectory/trajectory-error@1.0.0",
+    "arena:schema/trajectory/trajectory-header@1.0.0",
+    "arena:schema/trajectory/trajectory-opened-event@1.0.0",
+    "arena:schema/trajectory/trajectory-record@1.0.0",
+    "arena:schema/trajectory/trajectory-run-ref@1.0.0"
+  ],
+  "title": "Arena trajectory-protocol schema registry v1",
+  "type": "string"
+}

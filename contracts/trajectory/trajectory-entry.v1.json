@@ -1,0 +1,169 @@
+{
+  "$defs": {
+    "actionPayload": {
+      "additionalProperties": false,
+      "description": "An action the agent took: action id + canonical JSON input.",
+      "properties": {
+        "actionId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "input": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "description": "Plain canonical-JSON object (arguments).",
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "actionId",
+        "input"
+      ],
+      "type": "object"
+    },
+    "checkpointPayload": {
+      "additionalProperties": false,
+      "description": "An environment checkpoint reached at this step (A010 digest refs).",
+      "properties": {
+        "checkpointId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "snapshotDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "checkpointId",
+        "snapshotDigest"
+      ],
+      "type": "object"
+    },
+    "completionPayload": {
+      "additionalProperties": false,
+      "description": "The terminal entry: outcome (A010 outcome vocabulary) + evidence output digests.",
+      "properties": {
+        "evidenceDigests": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "outcome": {
+          "enum": [
+            "completed",
+            "failed",
+            "timed-out"
+          ]
+        }
+      },
+      "required": [
+        "outcome",
+        "evidenceDigests"
+      ],
+      "type": "object"
+    },
+    "errorPayload": {
+      "additionalProperties": false,
+      "description": "An error encountered mid-run (recoverable — the run may continue).",
+      "properties": {
+        "code": {
+          "pattern": "^[A-Z][A-Z0-9_]{0,127}$",
+          "type": "string"
+        },
+        "message": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "observationPayload": {
+      "additionalProperties": false,
+      "description": "An observation the agent received (A009 observation-surface channel vocabulary).",
+      "properties": {
+        "channel": {
+          "enum": [
+            "stdout",
+            "stderr",
+            "files",
+            "events",
+            "metrics",
+            "state-dump"
+          ]
+        },
+        "content": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "observationId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observationId",
+        "channel",
+        "content"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/trajectory/trajectory-entry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One append-only, ordered step of a trajectory. Sequences are 1-based and contiguous (gaps, duplicates and regressions rejected); occurred-at timestamps are monotonically non-decreasing; the stepDigest is the CHAINED digest over { sequence, kind, payload, occurredAt, prevDigest } — entry N commits to entry N-1, entry 1 anchors at the header digest. A completion entry freezes the trajectory.",
+  "properties": {
+    "kind": {
+      "enum": [
+        "action",
+        "observation",
+        "checkpoint",
+        "error",
+        "completion"
+      ]
+    },
+    "occurredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "payload": {
+      "description": "Typed payload per kind (discriminated by `kind`).",
+      "type": "object"
+    },
+    "prevDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "sequence": {
+      "description": "Strictly positive integer (sequences are 1-based).",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "stepDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sequence",
+    "kind",
+    "payload",
+    "occurredAt",
+    "prevDigest",
+    "stepDigest"
+  ],
+  "title": "Arena TrajectoryEntry v1",
+  "type": "object"
+}

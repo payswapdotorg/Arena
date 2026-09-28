@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/trajectory/open-trajectory-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: open a trajectory against a validated header. Commands carry a REQUIRED non-null idempotency key (architecture-lock rule 17); the store treats (idempotency key, trajectory id) as the idempotent open address.",
+  "properties": {
+    "header": {
+      "$ref": "arena:schema/trajectory/trajectory-header@1.0.0"
+    }
+  },
+  "required": [
+    "header"
+  ],
+  "title": "Arena open-trajectory-command v1",
+  "type": "object"
+}
