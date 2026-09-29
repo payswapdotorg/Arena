@@ -14,7 +14,7 @@ import {
 const D1 = 'abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234';
 const D2 = 'efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678';
 const D3 = 'ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012';
-const D10 = 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttest';
+const D10 = 'abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234';
 
 function makeRecord(overrides: Partial<CompatibilityRecord> = {}): CompatibilityRecord {
   const base: CompatibilityRecord = {
@@ -26,6 +26,8 @@ function makeRecord(overrides: Partial<CompatibilityRecord> = {}): Compatibility
     verdict: 'compatible',
     reasons: [],
     details: {},
+    tenantId: 'test-tenant',
+    workspaceId: 'test-workspace',
   };
   return { ...base, ...overrides };
 }
@@ -229,13 +231,13 @@ describe('Compatibility Registry', () => {
 
   it('should reject records with invalid digests (fail closed)', () => {
     expect(() =>
-      registry.register(makeRecord({ recordDigest: 'invalid-digest-format' as any })),
+      registry.register(makeRecord({ recordDigest: 'invalid-digest-format' as unknown })),
     ).toThrow('invalid compatibility record structure');
   });
 
   it('should reject records with unknown verdicts (fail closed)', () => {
     expect(() =>
-      registry.register(makeRecord({ recordDigest: D10, verdict: 'maybe' as any })),
+      registry.register(makeRecord({ recordDigest: D10, verdict: 'maybe' as unknown })),
     ).toThrow('invalid compatibility record structure');
   });
 });

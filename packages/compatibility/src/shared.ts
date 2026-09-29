@@ -4,18 +4,6 @@
  */
 
 import { deepFreeze, isContentDigest, isVersionedArtifactRef } from '@arena/agent-body';
-import type {
-  SubstrateCompatibilityProfile,
-  CognitiveSubstrate,
-  BodyVersionRef,
-} from '@arena/agent-body';
-
-// Re-export key types from agent-body for convenience
-export type {
-  SubstrateCompatibilityProfile,
-  CognitiveSubstrate,
-  BodyVersionRef,
-} from '@arena/agent-body';
 
 // Compatibility verdict vocabulary (closed, never scores)
 export const COMPATIBILITY_VERDICTS = Object.freeze([
