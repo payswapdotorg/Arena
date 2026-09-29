@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/expert-qualification/match-completed-response@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Response envelope payload: the authoritative match result of a match-experts query.",
+  "properties": {
+    "result": {
+      "$ref": "arena:schema/expert-qualification/match-result@1.0.0"
+    }
+  },
+  "required": [
+    "result"
+  ],
+  "title": "Arena match-completed-response v1",
+  "type": "object"
+}

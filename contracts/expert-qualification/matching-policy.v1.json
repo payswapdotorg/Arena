@@ -1,0 +1,50 @@
+{
+  "$id": "arena:schema/expert-qualification/matching-policy@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The versioned, deterministic, pure rules of the matching fabric: maxCandidates (the result cap), includePartialMatches (partial candidates appear WITH explicit unmatched reasons) and availabilityRequired (fail closed on availability conflicts). The RANKING is fixed and deterministic — fully-satisfying candidates first, then satisfied-count descending, then evidence depth descending, then tie-break by content digest — with NO aggregate quality score and NO reputation input anywhere (spec/quality-model.md).",
+  "properties": {
+    "availabilityRequired": {
+      "type": "boolean"
+    },
+    "description": {
+      "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "includePartialMatches": {
+      "type": "boolean"
+    },
+    "maxCandidates": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "policyId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "policyVersion": {
+      "const": 1,
+      "description": "Wire version of the matching-policy shape."
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "policyVersion",
+    "policyId",
+    "version",
+    "description",
+    "maxCandidates",
+    "includePartialMatches",
+    "availabilityRequired",
+    "digest"
+  ],
+  "title": "Arena MatchingPolicy v1",
+  "type": "object"
+}

@@ -1,0 +1,246 @@
+{
+  "$defs": {
+    "credentialRef": {
+      "additionalProperties": false,
+      "description": "A professional credential reference (structurally @arena/expert-registry CredentialRefView): kind, neutral opaque reference and optional issuing organization.",
+      "properties": {
+        "issuer": {
+          "maxLength": 255,
+          "minLength": 1,
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "professional-license",
+            "certification",
+            "degree",
+            "training-certificate",
+            "credential-attestation",
+            "external-credential"
+          ]
+        },
+        "reference": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,254}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "reference"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert-qualification/qualification-evidence@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A typed, digest-addressed evidence record backing a competency claim over the CLOSED four-member kind vocabulary (credential refs from the A006 expert registry, work-product refs, verification refs via the A013 verification protocol, evaluation refs via the A012 evaluation protocol). Append-only (lock rule 6): records are immutable, content-addressed (same record => same digest), and supersession APPENDS via the supersedes digest — the superseded record is never edited. observedAt is the recency dimension bound by qualification policies. QUALIFICATION IS DATA, NEVER AUTHORIZATION (lock rule 9).",
+  "oneOf": [
+    {
+      "additionalProperties": false,
+      "description": "The credential-ref evidence variant. Payload: a professional credential reference (A006-shaped).",
+      "properties": {
+        "credential": {
+          "$ref": "#/$defs/credentialRef"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "const": "credential-ref"
+        },
+        "note": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "observedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "recordVersion": {
+          "const": 1,
+          "description": "Wire version of the evidence record shape."
+        },
+        "supersedes": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "kind",
+        "observedAt",
+        "credential",
+        "digest"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "description": "The work-product-ref evidence variant. Payload: a digest-addressed work product with a human-auditable description.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "const": "work-product-ref"
+        },
+        "note": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "observedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "recordVersion": {
+          "const": 1,
+          "description": "Wire version of the evidence record shape."
+        },
+        "supersedes": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "workProduct": {
+          "additionalProperties": false,
+          "description": "A digest-addressed work product reference (the A006 EvidenceRef convention).",
+          "properties": {
+            "description": {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            },
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "digest",
+            "description"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "kind",
+        "observedAt",
+        "workProduct",
+        "digest"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "description": "The verification-ref evidence variant. Payload: an A013 verification-record reference with its derived outcome.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "const": "verification-ref"
+        },
+        "note": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "observedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "recordVersion": {
+          "const": 1,
+          "description": "Wire version of the evidence record shape."
+        },
+        "supersedes": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "verification": {
+          "additionalProperties": false,
+          "description": "A reference to an A013 VerificationRecord by content digest plus its DERIVED outcome (pass | fail | unknown) — data ABOUT the record; the A013 fabric stays the authority.",
+          "properties": {
+            "outcome": {
+              "enum": [
+                "pass",
+                "fail",
+                "unknown"
+              ]
+            },
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest",
+            "outcome"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "kind",
+        "observedAt",
+        "verification",
+        "digest"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "description": "The evaluation-ref evidence variant. Payload: an A012 evaluation-record reference.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "evaluation": {
+          "additionalProperties": false,
+          "description": "A reference to an A012 EvaluationRecord by content digest.",
+          "properties": {
+            "recordDigest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "recordDigest"
+          ],
+          "type": "object"
+        },
+        "kind": {
+          "const": "evaluation-ref"
+        },
+        "note": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "observedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "recordVersion": {
+          "const": 1,
+          "description": "Wire version of the evidence record shape."
+        },
+        "supersedes": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "kind",
+        "observedAt",
+        "evaluation",
+        "digest"
+      ],
+      "type": "object"
+    }
+  ],
+  "title": "Arena QualificationEvidence v1"
+}
