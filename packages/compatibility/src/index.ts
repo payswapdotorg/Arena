@@ -16,7 +16,8 @@ export type {
 } from '@arena/agent-body';
 
 // Export error types
-export type { CompatibilityError, CompatibilityErrorCode } from './errors.js';
+export { CompatibilityError } from './errors.js';
+export type { CompatibilityErrorCode } from './errors.js';
 
 // Version exports
 export { COMPATIBILITY_VERDICTS } from './shared.js';

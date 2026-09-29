@@ -6,6 +6,10 @@
 import { createCompatibilityService } from '../src/service.js';
 import { toSubstrateCompatibilityProfile } from '@arena/agent-body';
 
+// Valid 64-char lowercase hex content digests (content-addressed substrate identity)
+const SUBSTRATE_DIGEST_A = 'aaaa1111aaaa1111aaaa1111aaaa1111aaaa1111aaaa1111aaaa1111aaaa1111';
+const SUBSTRATE_DIGEST_B = 'bbbb2222bbbb2222bbbb2222bbbb2222bbbb2222bbbb2222bbbb2222bbbb2222';
+
 // Mock test data
 const mockSubstrate = {
   recordVersion: 1,
@@ -23,7 +27,7 @@ const mockSubstrate = {
   conditions: ['stable'],
   integrity: {
     digestAlgorithm: 'sha256',
-    contentDigest: 'mock-digest',
+    contentDigest: SUBSTRATE_DIGEST_A,
   },
 };
 
@@ -53,7 +57,7 @@ describe('Compatibility Service', () => {
 
     expect(record.recordVersion).toBe(1);
     expect(record.bodyVersionRef).toBe('body-version-ref');
-    expect(record.substrateRef).toBe(mockSubstrate.integrity.contentDigest);
+    expect(record.substrateRef).toBe(SUBSTRATE_DIGEST_A);
     expect(record.verdict).toBe('compatible');
     expect(record.reasons).toHaveLength(0);
   });
@@ -69,7 +73,7 @@ describe('Compatibility Service', () => {
       ...mockSubstrate,
       integrity: {
         ...mockSubstrate.integrity,
-        contentDigest: 'substrate-limited',
+        contentDigest: SUBSTRATE_DIGEST_B,
       },
       modelId: 'test-model-limited',
       modalityProfile: ['text-input'],
@@ -89,8 +93,8 @@ describe('Compatibility Service', () => {
     expect(records).toHaveLength(2);
     expect(records[0]?.verdict).toBe('compatible');
     expect(records[1]?.verdict).toBe('compatible');
-    expect(records[0]?.substrateRef).toBe(mockSubstrate.integrity.contentDigest);
-    expect(records[1]?.substrateRef).toBe('substrate-limited');
+    expect(records[0]?.substrateRef).toBe(SUBSTRATE_DIGEST_A);
+    expect(records[1]?.substrateRef).toBe(SUBSTRATE_DIGEST_B);
   });
 
   it('should get body history', async () => {
@@ -112,7 +116,7 @@ describe('Compatibility Service', () => {
 
     const history = service.getHistory({ bodyVersionRef: 'body-version-ref' });
     expect(history).toHaveLength(1);
-    expect(history[0].bodyVersionRef).toBe('body-version-ref');
+    expect(history[0]?.bodyVersionRef).toBe('body-version-ref');
   });
 
   it('should get substrate history', async () => {
@@ -132,9 +136,9 @@ describe('Compatibility Service', () => {
       }
     );
 
-    const history = service.getHistory({ substrateRef: 'substrate-ref' });
+    const history = service.getHistory({ substrateRef: SUBSTRATE_DIGEST_A });
     expect(history).toHaveLength(1);
-    expect(history[0].substrateRef).toBe('substrate-ref');
+    expect(history[0]?.substrateRef).toBe(SUBSTRATE_DIGEST_A);
   });
 
   it('should get latest compatibility', async () => {
@@ -154,10 +158,10 @@ describe('Compatibility Service', () => {
       }
     );
 
-    const latest = service.getLatest('body-version-ref', 'substrate-ref');
+    const latest = service.getLatest('body-version-ref', SUBSTRATE_DIGEST_A);
     expect(latest).toBeDefined();
     expect(latest?.bodyVersionRef).toBe('body-version-ref');
-    expect(latest?.substrateRef).toBe('substrate-ref');
+    expect(latest?.substrateRef).toBe(SUBSTRATE_DIGEST_A);
   });
 
   it('should check compatibility', async () => {

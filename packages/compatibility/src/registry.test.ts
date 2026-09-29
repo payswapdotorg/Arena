@@ -11,8 +11,8 @@ import {
 
 // Mock test data - using valid content digests (64-char lowercase hex)
 const D1 = 'abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234';
-const D2 = 'efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678';
-const D10 = 'abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234';
+const D2 = 'efab5678efab5678efab5678efab5678efab5678efab5678efab5678efab5678';
+const D10 = 'feed0123feed0123feed0123feed0123feed0123feed0123feed0123feed0123';
 
 function makeRecord(overrides: Partial<CompatibilityRecord> = {}): CompatibilityRecord {
   const base: CompatibilityRecord = {
@@ -229,13 +229,13 @@ describe('Compatibility Registry', () => {
 
   it('should reject records with invalid digests (fail closed)', () => {
     expect(() =>
-      registry.register(makeRecord({ recordDigest: 'invalid-digest-format' as unknown })),
+      registry.register(makeRecord({ recordDigest: 'invalid-digest-format' as unknown as string })),
     ).toThrow('invalid compatibility record structure');
   });
 
   it('should reject records with unknown verdicts (fail closed)', () => {
     expect(() =>
-      registry.register(makeRecord({ recordDigest: D10, verdict: 'maybe' as unknown })),
+      registry.register(makeRecord({ recordDigest: D10, verdict: 'maybe' as unknown as CompatibilityRecord['verdict'] })),
     ).toThrow('invalid compatibility record structure');
   });
 });

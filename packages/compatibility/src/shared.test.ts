@@ -151,22 +151,22 @@ describe('Compatibility Shared Utilities', () => {
 
     it('should validate required modalities', () => {
       expect(() => toSubstrateCompatibilityProfile({
-        requiredModalities: ['text-input' as unknown],
-      })).toThrow();
+        requiredModalities: ['text-input'],
+      } as unknown as Parameters<typeof toSubstrateCompatibilityProfile>[0])).toThrow();
     });
 
     it('should validate tool calling levels', () => {
       expect(() => toSubstrateCompatibilityProfile({
         requiredModalities: ['text-input'],
-        requiredToolCalling: 'invalid-level' as unknown,
-      })).toThrow();
+        requiredToolCalling: 'invalid-level',
+      } as unknown as Parameters<typeof toSubstrateCompatibilityProfile>[0])).toThrow();
     });
 
     it('should validate context requirements', () => {
       expect(() => toSubstrateCompatibilityProfile({
         requiredModalities: ['text-input'],
-        contextRequirements: { minContextUnits: -1 } as unknown,
-      })).toThrow();
+        contextRequirements: { minContextUnits: -1 },
+      } as unknown as Parameters<typeof toSubstrateCompatibilityProfile>[0])).toThrow();
     });
   });
 });

@@ -8,12 +8,38 @@
  * - Statistics
  */
 
-import { 
-  CompatibilityRegistry, 
+import {
+  CompatibilityRegistry,
   createCompatibilityRegistry,
   type CompatibilityRecord,
   CompatibilityError
 } from '@arena/compatibility';
+import { createHash } from 'node:crypto';
+
+/** Deterministic content digest over the record's identity fields (sha256 hex — satisfies isContentDigest). */
+function computeRecordDigest(
+  bodyVersionRef: string,
+  substrateRef: string,
+  result: import('@arena/compatibility').CompatibilityResult,
+  evaluatedAt: string,
+  parentDigest: string | undefined,
+  tenantId: string | undefined,
+  workspaceId: string | undefined,
+): string {
+  return createHash('sha256')
+    .update(JSON.stringify({
+      recordVersion: 1,
+      bodyVersionRef,
+      substrateRef,
+      verdict: result.verdict,
+      reasons: result.reasons,
+      evaluatedAt,
+      parentDigest: parentDigest ?? null,
+      tenantId: tenantId ?? null,
+      workspaceId: workspaceId ?? null,
+    }))
+    .digest('hex');
+}
 
 /** Service compatibility registry interface */
 export interface ServiceCompatibilityRegistry {
@@ -85,8 +111,8 @@ export interface ServiceCompatibilityRegistry {
 /** Service compatibility registry implementation */
 export class ServiceCompatibilityRegistryImpl implements ServiceCompatibilityRegistry {
   private readonly registry: CompatibilityRegistry;
-  private readonly tenantId?: string;
-  private readonly workspaceId?: string;
+  private readonly tenantId: string | undefined;
+  private readonly workspaceId: string | undefined;
 
   constructor(
     registry?: CompatibilityRegistry,
@@ -124,15 +150,30 @@ export class ServiceCompatibilityRegistryImpl implements ServiceCompatibilityReg
     workspaceId?: string,
   ): CompatibilityRecord {
     try {
-      return this.registry.createAndRecord(
+      const effectiveTenantId = tenantId ?? this.tenantId;
+      const effectiveWorkspaceId = workspaceId ?? this.workspaceId;
+      const record: CompatibilityRecord = {
+        recordVersion: 1,
+        recordDigest: computeRecordDigest(
+          bodyVersionRef,
+          substrateRef,
+          result,
+          evaluatedAt,
+          parentDigest,
+          effectiveTenantId,
+          effectiveWorkspaceId,
+        ),
         bodyVersionRef,
         substrateRef,
-        result,
         evaluatedAt,
-        parentDigest,
-        tenantId || this.tenantId,
-        workspaceId || this.workspaceId,
-      );
+        verdict: result.verdict,
+        reasons: result.reasons,
+        details: result.details,
+        ...(parentDigest !== undefined ? { parentDigest } : {}),
+        ...(effectiveTenantId !== undefined ? { tenantId: effectiveTenantId } : {}),
+        ...(effectiveWorkspaceId !== undefined ? { workspaceId: effectiveWorkspaceId } : {}),
+      };
+      return this.registry.register(record);
     } catch (error) {
       if (error instanceof CompatibilityError) {
         throw new CompatibilityError(error.code, {

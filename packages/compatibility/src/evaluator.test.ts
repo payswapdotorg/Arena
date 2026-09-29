@@ -84,7 +84,7 @@ describe('Compatibility Evaluator', () => {
     const result = await evaluateBodySubstrateCompatibility(bodyProfile, substrate);
 
     expect(result.verdict).toBe('incompatible-with-reasons');
-    expect(result.reasons).toContain('insufficient context capacity');
+    expect(result.reasons.join(' | ')).toContain('insufficient context capacity');
   });
 
   it('should detect tool calling incompatibility', async () => {
@@ -109,7 +109,7 @@ describe('Compatibility Evaluator', () => {
     const result = await evaluateBodySubstrateCompatibility(bodyProfile, substrate);
 
     expect(result.verdict).toBe('incompatible-with-reasons');
-    expect(result.reasons).toContain('insufficient tool-calling level');
+    expect(result.reasons.join(' | ')).toContain('insufficient tool-calling level');
   });
 
   it('should detect prohibited substrate conditions', async () => {
@@ -226,8 +226,8 @@ describe('Compatibility Evaluator', () => {
     const results = await evaluateMultipleSubstrates(bodyProfile, substrates);
 
     expect(results).toHaveLength(2);
-    expect(results[0].verdict).toBe('compatible');
-    expect(results[1].verdict).toBe('incompatible-with-reasons');
+    expect(results[0]?.verdict).toBe('compatible');
+    expect(results[1]?.verdict).toBe('incompatible-with-reasons');
   });
 
   it('should check compatibility with boolean shortcut', async () => {
