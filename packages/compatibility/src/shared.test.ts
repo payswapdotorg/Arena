@@ -108,7 +108,7 @@ describe('Compatibility Shared Utilities', () => {
 
     it('should reject missing required fields', () => {
       const incompleteRecord = { ...validRecord };
-      delete (incompleteRecord as any).bodyVersionRef;
+      delete (incompleteRecord as Record<string, unknown>).bodyVersionRef;
       expect(isCompatibilityRecord(incompleteRecord)).toBe(false);
     });
 

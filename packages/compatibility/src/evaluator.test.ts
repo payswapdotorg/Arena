@@ -4,23 +4,14 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { CompatibilityRegistry } from '../src/registry.js';
 import {
   evaluateBodySubstrateCompatibility,
   evaluateMultipleSubstrates,
   isCompatible,
 } from '../src/evaluator.js';
-import { createCompatibilityRegistry } from '../src/registry.js';
-import { createCompatibilityResult } from '../src/shared.js';
 import { toSubstrateCompatibilityProfile, toCognitiveSubstrate } from '@arena/agent-body';
 
 describe('Compatibility Evaluator', () => {
-  let registry: CompatibilityRegistry;
-
-  beforeEach(() => {
-    registry = createCompatibilityRegistry();
-  });
-
   it('should evaluate basic compatibility', async () => {
     const bodyProfile = toSubstrateCompatibilityProfile({
       requiredModalities: ['text-input'],

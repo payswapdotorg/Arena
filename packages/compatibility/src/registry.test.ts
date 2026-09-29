@@ -4,16 +4,13 @@
  */
 
 import { CompatibilityRegistry } from '../src/registry.js';
-import { CompatibilityError } from '../src/errors.js';
 import {
   type CompatibilityRecord,
-  createCompatibilityResult,
 } from '../src/shared.js';
 
 // Mock test data - using valid content digests (64-char lowercase hex)
 const D1 = 'abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234';
 const D2 = 'efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678efgh5678';
-const D3 = 'ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012ijkl9012';
 const D10 = 'abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234';
 
 function makeRecord(overrides: Partial<CompatibilityRecord> = {}): CompatibilityRecord {
@@ -52,8 +49,8 @@ describe('Compatibility Registry', () => {
     const record = makeRecord({ tenantId: 'tenant-1', workspaceId: 'workspace-1' });
     const registered = registry.register(record);
     
-    expect((registered as any).tenantId).toBe('tenant-1');
-    expect((registered as any).workspaceId).toBe('workspace-1');
+    expect((registered as Record<string, unknown>).tenantId).toBe('tenant-1');
+    expect((registered as Record<string, unknown>).workspaceId).toBe('workspace-1');
   });
 
   it('should get records by digest', () => {
