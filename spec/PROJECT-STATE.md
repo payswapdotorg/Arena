@@ -13,7 +13,7 @@ A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002
 
 A012 MERGED via PR #26 (merge SHA 0cb1b90611a093858f5e3101cda189fd530de5b4, worker head 6b05363 + intake ed05333; PR CI green on ed05333; delivered @arena/evaluation + services/evaluation + contracts/evaluation — EvaluatorDescriptor, EvaluationCriteria, EvaluationRecord, evaluator registry + reference fabric; a 35-minute dispatch-to-push cycle, 76-minute dispatch-to-merge; acceptance via branch-oracle, worker chat retired post-merge).
 
-A013 MERGED via PR #28 (merge SHA 02c71552ef, worker head 4388033 + intake 9238836; PR CI green on 9238836; battery all-green at the TL station: ownership clean, 54 files +10143 lines, @arena/verification 165 tests/13 files + services/verification 51 tests/5 files, contract drift clean on 7 schemas; worker chat 5397113a). Live wave: the A007/A014/A019 fan-out (full 3-slot, pairwise-disjoint) dispatched 2026-09-29 ~04:5X UTC from the post-governance main tip (A007 needs A005+A006+A013 all merged; A014 needs A002+A011+A012+A013 all merged; A019 needs A011+A012+A013+A004 all merged). Next unlocks: A008 on the A007 merge; A020 on the A019 merge; A021 after A019+A020; A023 needs A013+A022+A014.
+A013 MERGED via PR #28 (merge SHA 02c71552ef, worker head 4388033 + intake 9238836; PR CI green on 9238836; battery all-green at the TL station; worker chat 5397113a). A019 MERGED via PR #32 (merge SHA 95f8e3cc6a, worker head b56cef7 + intake 7d3f2c9; station battery all-green: ownership clean, 37 files +6933 lines, @arena/skill-extraction 89 tests + services/skill-extraction 34 tests, all 14 existing suites unchanged green; the R17 validated gate enforced with REAL A011/A012/A013 guards; worker chat e6f03d58; a 35-minute dispatch-to-push, 59-minute dispatch-to-merge cycle). Live wave: A007 + A014 in flight (from 6a8abdc) + A020 dispatched from the post-A019-governance tip (A020 needs A011+A012+A013+A019 — all merged). Next unlocks: A008 on the A007 merge; A021 after A019+A020 (needs A003+A004 MERGED too); A023 needs A013+A022+A014.
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
@@ -37,7 +37,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A016 MERGED
 - A017 WAITING_ON_DEPENDENCIES
 - A018 MERGED (PR #21, 13af7c2)
-- A019 WAITING_ON_DEPENDENCIES
+- A019 MERGED (PR #32, 95f8e3c; worker head b56cef7 + intake 7d3f2c9)
 - A020 WAITING_ON_DEPENDENCIES
 - A021 WAITING_ON_DEPENDENCIES
 - A022 WAITING_ON_DEPENDENCIES
