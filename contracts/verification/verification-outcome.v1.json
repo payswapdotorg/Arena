@@ -1,0 +1,37 @@
+{
+  "$defs": {
+    "outcomeSemantics": {
+      "additionalProperties": false,
+      "description": "The declared meaning of each outcome for THIS verifier (EV1.0: a verifier declares pass/fail/unknown semantics). All three declarations are mandatory non-empty text.",
+      "properties": {
+        "fail": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "pass": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "unknown": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pass",
+        "fail",
+        "unknown"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/verification/verification-outcome@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "#/$defs/outcomeSemantics"
+    }
+  ],
+  "description": "The outcome semantics object: the declared meaning of pass, fail and unknown for a specific verifier (EV1.0: \"A verifier declares required evidence, method, pass/fail/unknown semantics and reproducibility policy\"). The outcome vocabulary itself is the closed enum pass | fail | unknown — it has no quantitative members and cannot carry graded values (architecture-lock rule 7).",
+  "title": "Arena verification-outcome v1"
+}

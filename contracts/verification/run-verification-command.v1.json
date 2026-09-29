@@ -1,0 +1,110 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "description": "A002 artifact reference (reused validator, never redefined): namespace/name/version identity plus the sha256 content digest of the referenced material artifact.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "evidenceProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of one evidence artifact (R14): who produced it, when, with what notes.",
+      "properties": {
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "producedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "producedBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "producedBy",
+        "producedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "evidenceReference": {
+      "additionalProperties": false,
+      "description": "A provenance-bearing, digest-addressed reference to one evidence artifact: the evidence kind the artifact claims to carry (open, charset-validated vocabulary), the A002 artifact reference, and the evidence provenance.",
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "evidenceKind": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/evidenceProvenance"
+        }
+      },
+      "required": [
+        "evidenceKind",
+        "artifact",
+        "provenance"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/verification/run-verification-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: run one verification. Carries the digest ref of the verifier descriptor and the run evidence bundle; the fabric resolves and validates the evidence, runs the verifier hook, derives the outcome and emits verification-recorded-event. Commands carry a REQUIRED non-null idempotency key (architecture-lock rule 17).",
+  "properties": {
+    "evidence": {
+      "description": "The run evidence bundle.",
+      "items": {
+        "$ref": "#/$defs/evidenceReference"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "verifierRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "verifierRef",
+    "evidence"
+  ],
+  "title": "Arena run-verification-command v1",
+  "type": "object"
+}

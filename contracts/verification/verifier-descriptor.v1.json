@@ -1,0 +1,272 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "description": "A002 artifact reference (reused validator, never redefined): namespace/name/version identity plus the sha256 content digest of the referenced material artifact.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "evidenceRequirement": {
+      "additionalProperties": false,
+      "description": "One clause of a verifier required-evidence declaration: the evidence kind demanded, the claim the evidence must support, and optional pins (exact artifact ref, required producing principal).",
+      "properties": {
+        "artifact": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/artifactRef"
+            }
+          ]
+        },
+        "claim": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "evidenceKind": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "requiredProducer": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9-]{0,63}$",
+              "type": "string"
+            }
+          ]
+        },
+        "requirementId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirementId",
+        "evidenceKind",
+        "claim",
+        "artifact",
+        "requiredProducer"
+      ],
+      "type": "object"
+    },
+    "outcomeSemantics": {
+      "additionalProperties": false,
+      "description": "The declared meaning of each outcome for THIS verifier (EV1.0: a verifier declares pass/fail/unknown semantics). All three declarations are mandatory non-empty text.",
+      "properties": {
+        "fail": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "pass": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "unknown": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pass",
+        "fail",
+        "unknown"
+      ],
+      "type": "object"
+    },
+    "reproducibility": {
+      "additionalProperties": false,
+      "description": "Reproducibility policy (EV1.0): deterministic | seeded-stochastic | provider-dependent, with the seed and parameters recorded when applicable. A deterministic verifier carries no seed; a seeded-stochastic verifier MUST record its seed.",
+      "properties": {
+        "parameters": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "policy": {
+          "enum": [
+            "deterministic",
+            "seeded-stochastic",
+            "provider-dependent"
+          ]
+        },
+        "seed": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "policy",
+        "seed",
+        "parameters"
+      ],
+      "type": "object"
+    },
+    "schemaRef": {
+      "additionalProperties": false,
+      "description": "Versioned SchemaRef (A001 core shape): arena:schema/<namespace>/<name>@<major.minor.patch>.",
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "verifierProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of the verifier declaration.",
+      "properties": {
+        "authoredBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "submittedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "authoredBy",
+        "submittedAt",
+        "notes"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/verification/verifier-descriptor@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The content-addressed, versioned declaration of a verifier: id, version, method (the CLOSED EV1.0 enum — unknown methods rejected), the required-evidence declaration (kind, claim, optional artifact pin, optional producer pin per requirement; unique ids; non-empty), the declared pass/fail/unknown semantics (all three mandatory), the reproducibility policy (deterministic | seeded-stochastic | provider-dependent, seed recorded when applicable), input/output schema refs and provenance. Same descriptor ⇒ same digest; any change ⇒ a new version (the digest changes and same-id+version re-registration is a conflict). Deep-frozen, no mutation API.",
+  "properties": {
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "inputSchema": {
+      "$ref": "#/$defs/schemaRef"
+    },
+    "method": {
+      "enum": [
+        "unit_integration_test",
+        "deterministic_formal_check",
+        "constraint_check",
+        "simulation",
+        "measurement",
+        "inspection",
+        "expert_review",
+        "evidence_provenance_validation"
+      ]
+    },
+    "outcomeSemantics": {
+      "$ref": "#/$defs/outcomeSemantics"
+    },
+    "outputSchema": {
+      "$ref": "#/$defs/schemaRef"
+    },
+    "provenance": {
+      "$ref": "#/$defs/verifierProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the descriptor shape."
+    },
+    "reproducibility": {
+      "$ref": "#/$defs/reproducibility"
+    },
+    "requiredEvidence": {
+      "description": "The required-evidence declaration; requirement ids unique within it.",
+      "items": {
+        "$ref": "#/$defs/evidenceRequirement"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "verifierId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "verifierId",
+    "version",
+    "method",
+    "requiredEvidence",
+    "outcomeSemantics",
+    "reproducibility",
+    "inputSchema",
+    "outputSchema",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena VerifierDescriptor v1",
+  "type": "object"
+}
