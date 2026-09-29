@@ -12,8 +12,7 @@ import {
   CompatibilityRegistry, 
   createCompatibilityRegistry,
   type CompatibilityRecord,
-  CompatibilityError,
-  type CompatibilityErrorCode
+  CompatibilityError
 } from '@arena/compatibility';
 
 /** Service compatibility registry interface */
@@ -125,7 +124,7 @@ export class ServiceCompatibilityRegistryImpl implements ServiceCompatibilityReg
     workspaceId?: string,
   ): CompatibilityRecord {
     try {
-      return this.registry.createAndRegister(
+      return this.registry.createAndRecord(
         bodyVersionRef,
         substrateRef,
         result,

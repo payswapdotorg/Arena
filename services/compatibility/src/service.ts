@@ -13,8 +13,7 @@ import {
   createCompatibilityRegistry,
   type SubstrateCompatibilityProfile,
   type CognitiveSubstrate,
-  type CompatibilityRecord,
-  type EvaluateAndRecordOptions
+  type CompatibilityRecord
 } from '@arena/compatibility';
 import { 
   CompatibilityEngine, 
@@ -117,11 +116,10 @@ export class CompatibilityServiceImpl implements CompatibilityService {
       idempotencyKey?: string;
     } = {},
   ): Promise<CompatibilityRecord> {
-    const correlationId = toCorrelationId(options.correlationId);
-    const idempotencyKey = toIdempotencyKey(options.idempotencyKey);
+    const _idempotencyKey = toIdempotencyKey(options.idempotencyKey);
 
     // Check for existing record with same idempotency key
-    if (idempotencyKey) {
+    if (_idempotencyKey) {
       // In a real implementation, we'd check for existing records with this idempotency key
       // For now, we'll just proceed with the evaluation
     }
@@ -139,7 +137,9 @@ export class CompatibilityServiceImpl implements CompatibilityService {
         this.workspaceId,
       );
     } catch (error) {
-      throw new Error(`Compatibility evaluation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Compatibility evaluation failed: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        cause: error,
+      });
     }
   }
 
@@ -153,8 +153,7 @@ export class CompatibilityServiceImpl implements CompatibilityService {
       idempotencyKey?: string;
     } = {},
   ): Promise<readonly CompatibilityRecord[]> {
-    const correlationId = toCorrelationId(options.correlationId);
-    const idempotencyKey = toIdempotencyKey(options.idempotencyKey);
+    const _idempotencyKey = toIdempotencyKey(options.idempotencyKey);
 
     const records: CompatibilityRecord[] = [];
 
@@ -164,7 +163,7 @@ export class CompatibilityServiceImpl implements CompatibilityService {
           bodyVersionRef,
           bodyProfile,
           substrate,
-          { correlationId, idempotencyKey: `${idempotencyKey}-${substrate.modelId}` },
+          { idempotencyKey: `${_idempotencyKey}-${substrate.modelId}` },
         );
         records.push(record);
       } catch (error) {
@@ -191,22 +190,20 @@ export class CompatibilityServiceImpl implements CompatibilityService {
   /** Get compatibility history for a body version */
   async getBodyCompatibilityHistory(
     bodyVersionRef: string,
-    options: {
+    _options: {
       correlationId?: string;
     } = {},
   ): Promise<readonly CompatibilityRecord[]> {
-    const correlationId = toCorrelationId(options.correlationId);
     return this.registry.getBodyCompatibilityHistory(bodyVersionRef);
   }
 
   /** Get compatibility history for a substrate */
   async getSubstrateCompatibilityHistory(
     substrateRef: string,
-    options: {
+    _options: {
       correlationId?: string;
     } = {},
   ): Promise<readonly CompatibilityRecord[]> {
-    const correlationId = toCorrelationId(options.correlationId);
     return this.registry.getSubstrateCompatibilityHistory(substrateRef);
   }
 
@@ -214,17 +211,16 @@ export class CompatibilityServiceImpl implements CompatibilityService {
   async getLatestCompatibilityRecord(
     bodyVersionRef: string,
     substrateRef: string,
-    options: {
+    _options: {
       correlationId?: string;
     } = {},
   ): Promise<CompatibilityRecord | undefined> {
-    const correlationId = toCorrelationId(options.correlationId);
     return this.registry.getLatestRecord(bodyVersionRef, substrateRef);
   }
 
   /** Get service statistics */
   async getStatistics(
-    options: {
+    _options: {
       correlationId?: string;
     } = {},
   ): Promise<{
@@ -233,8 +229,6 @@ export class CompatibilityServiceImpl implements CompatibilityService {
     recordsByTenant: Record<string, number>;
     recordsByWorkspace: Record<string, number>;
   }> {
-    const correlationId = toCorrelationId(options.correlationId);
-    
     const allRecords = this.registry.listRecords();
     const recordsByVerdict: Record<string, number> = {};
     const recordsByTenant: Record<string, number> = {};
