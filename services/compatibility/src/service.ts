@@ -14,7 +14,8 @@ import {
   type CompatibilityResult,
   type SubstrateCompatibilityProfile,
   type CognitiveSubstrate,
-  type CompatibilityRecord
+  type CompatibilityRecord,
+  type EvaluateAndRecordOptions
 } from '@arena/compatibility';
 import { 
   CompatibilityEngine, 
@@ -108,15 +109,23 @@ export function createCompatibilityService(
       const idempotency = toIdempotencyKey(idempotencyKey);
 
       try {
+        const options: EvaluateAndRecordOptions = {
+          evaluatedAt: new Date().toISOString(),
+        };
+        
+        if (tenantId !== undefined) {
+          options.tenantId = tenantId;
+        }
+        
+        if (workspaceId !== undefined) {
+          options.workspaceId = workspaceId;
+        }
+
         const result = await engine.evaluateAndRecord(
           bodyVersionRef,
           bodyProfile,
           substrate,
-          {
-            evaluatedAt: new Date().toISOString(),
-            ...(tenantId !== undefined ? { tenantId } : {}),
-            ...(workspaceId !== undefined ? { workspaceId } : {}),
-          }
+          options
         );
 
         // Log the operation (would be replaced with actual logging)
@@ -149,15 +158,23 @@ export function createCompatibilityService(
         const records: CompatibilityRecord[] = [];
 
         for (const substrate of substrates) {
+          const options: EvaluateAndRecordOptions = {
+            evaluatedAt: new Date().toISOString(),
+          };
+          
+          if (tenantId !== undefined) {
+            options.tenantId = tenantId;
+          }
+          
+          if (workspaceId !== undefined) {
+            options.workspaceId = workspaceId;
+          }
+
           const record = await engine.evaluateAndRecord(
             bodyVersionRef,
             bodyProfile,
             substrate,
-            {
-              evaluatedAt: new Date().toISOString(),
-              ...(tenantId !== undefined ? { tenantId } : {}),
-              ...(workspaceId !== undefined ? { workspaceId } : {}),
-            }
+            options
           );
           records.push(record);
         }
@@ -208,10 +225,10 @@ export function createCompatibilityService(
 
       // Filter by time range
       if (from || to) {
-        records = registry.listRecordsByTimeRange({ 
-          from: from ? from : undefined, 
-          to: to ? to : undefined 
-        });
+        const range: { from?: string; to?: string } = {};
+        if (from) range.from = from;
+        if (to) range.to = to;
+        records = registry.listRecordsByTimeRange(range);
       }
 
       return records;
