@@ -71,158 +71,190 @@ export interface ServiceCompatibilityRegistry {
   /** Get record count */
   getRecordCount(): number;
 
-  /** Get service statistics */
-  getStats(): {
+  /** Clear all records */
+  clear(): void;
+
+  /** Get registry statistics */
+  getStatistics(): {
     totalRecords: number;
     recordsByVerdict: Record<string, number>;
+    recordsByTenant: Record<string, number>;
+    recordsByWorkspace: Record<string, number>;
   };
-
-  /** Clear all records (for testing) */
-  clear(): void;
 }
 
-/**
- * Create a service compatibility registry.
- */
-export function createServiceCompatibilityRegistry(): ServiceCompatibilityRegistry {
-  const registry = createCompatibilityRegistry();
+/** Service compatibility registry implementation */
+export class ServiceCompatibilityRegistryImpl implements ServiceCompatibilityRegistry {
+  private readonly registry: CompatibilityRegistry;
+  private readonly tenantId?: string;
+  private readonly workspaceId?: string;
 
-  return {
-    register(record: CompatibilityRecord): CompatibilityRecord {
-      try {
-        return registry.register(record);
-      } catch (error) {
-        if (error instanceof CompatibilityError) {
-          throw error; // Re-throw known errors
-        }
-        
-        // Wrap unknown errors
-        throw new CompatibilityError('INVALID_RECORD' as CompatibilityErrorCode, {
-          message: 'Failed to register compatibility record',
-          details: { 
-            originalError: error instanceof Error ? error.message : 'Unknown error',
-            recordDigest: record.recordDigest,
-          },
+  constructor(
+    registry?: CompatibilityRegistry,
+    tenantId?: string,
+    workspaceId?: string,
+  ) {
+    this.registry = registry ?? createCompatibilityRegistry();
+    this.tenantId = tenantId;
+    this.workspaceId = workspaceId;
+  }
+
+  /** Register a compatibility record with error handling */
+  register(record: CompatibilityRecord): CompatibilityRecord {
+    try {
+      return this.registry.register(record);
+    } catch (error) {
+      if (error instanceof CompatibilityError) {
+        throw new CompatibilityError(error.code, {
+          message: `Failed to register compatibility record: ${error.message}`,
+          details: error.details,
         });
       }
-    },
+      throw error;
+    }
+  }
 
-    createAndRegister(
-      bodyVersionRef: string,
-      substrateRef: string,
-      result: import('@arena/compatibility').CompatibilityResult,
-      evaluatedAt: string,
-      parentDigest?: string,
-      tenantId?: string,
-      workspaceId?: string,
-    ): CompatibilityRecord {
-      try {
-        // Create the record manually
-        const record: CompatibilityRecord = {
-          recordVersion: 1,
-          recordDigest: `generated-${Date.now()}`, // Placeholder - would be properly computed
-          bodyVersionRef,
-          substrateRef,
-          evaluatedAt,
-          verdict: result.verdict,
-          reasons: result.reasons,
-          details: result.details,
-          parentDigest,
-        };
-
-        if (tenantId !== undefined) {
-          (record as any).tenantId = tenantId;
-        }
-        if (workspaceId !== undefined) {
-          (record as any).workspaceId = workspaceId;
-        }
-
-        return registry.register(record);
-      } catch (error) {
-        if (error instanceof CompatibilityError) {
-          throw error; // Re-throw known errors
-        }
-        
-        // Wrap unknown errors
-        throw new CompatibilityError('INVALID_RECORD' as CompatibilityErrorCode, {
-          message: 'Failed to create and register compatibility record',
-          details: { 
-            originalError: error instanceof Error ? error.message : 'Unknown error',
-            bodyVersionRef,
-            substrateRef,
-          },
+  /** Create and register a compatibility record with error handling */
+  createAndRegister(
+    bodyVersionRef: string,
+    substrateRef: string,
+    result: import('@arena/compatibility').CompatibilityResult,
+    evaluatedAt: string,
+    parentDigest?: string,
+    tenantId?: string,
+    workspaceId?: string,
+  ): CompatibilityRecord {
+    try {
+      return this.registry.createAndRegister(
+        bodyVersionRef,
+        substrateRef,
+        result,
+        evaluatedAt,
+        parentDigest,
+        tenantId || this.tenantId,
+        workspaceId || this.workspaceId,
+      );
+    } catch (error) {
+      if (error instanceof CompatibilityError) {
+        throw new CompatibilityError(error.code, {
+          message: `Failed to create compatibility record: ${error.message}`,
+          details: error.details,
         });
       }
-    },
+      throw error;
+    }
+  }
 
-    getRecord(digest: string): CompatibilityRecord | undefined {
-      return registry.getRecord(digest);
-    },
+  /** Get a record by digest */
+  getRecord(digest: string): CompatibilityRecord | undefined {
+    return this.registry.getRecord(digest);
+  }
 
-    listRecordsByBody(bodyVersionRef: string): readonly CompatibilityRecord[] {
-      return registry.listRecordsByBody(bodyVersionRef);
-    },
+  /** Get all records for a body version */
+  listRecordsByBody(bodyVersionRef: string): readonly CompatibilityRecord[] {
+    return this.registry.listRecordsByBody(bodyVersionRef);
+  }
 
-    listRecordsBySubstrate(substrateRef: string): readonly CompatibilityRecord[] {
-      return registry.listRecordsBySubstrate(substrateRef);
-    },
+  /** Get all records for a substrate */
+  listRecordsBySubstrate(substrateRef: string): readonly CompatibilityRecord[] {
+    return this.registry.listRecordsBySubstrate(substrateRef);
+  }
 
-    listRecordsByTenant(tenantId: string): readonly CompatibilityRecord[] {
-      return registry.listRecordsByTenant(tenantId);
-    },
+  /** Get records for a specific tenant */
+  listRecordsByTenant(tenantId: string): readonly CompatibilityRecord[] {
+    return this.registry.listRecordsByTenant(tenantId);
+  }
 
-    listRecordsByWorkspace(workspaceId: string): readonly CompatibilityRecord[] {
-      return registry.listRecordsByWorkspace(workspaceId);
-    },
+  /** Get records for a specific workspace */
+  listRecordsByWorkspace(workspaceId: string): readonly CompatibilityRecord[] {
+    return this.registry.listRecordsByWorkspace(workspaceId);
+  }
 
-    listRecords(): readonly CompatibilityRecord[] {
-      return registry.listRecords();
-    },
+  /** Get all records */
+  listRecords(): readonly CompatibilityRecord[] {
+    return this.registry.listRecords();
+  }
 
-    listRecordsByVerdict(verdict: string): readonly CompatibilityRecord[] {
-      return registry.listRecordsByVerdict(verdict);
-    },
+  /** Get records by verdict */
+  listRecordsByVerdict(verdict: string): readonly CompatibilityRecord[] {
+    return this.registry.listRecordsByVerdict(verdict);
+  }
 
-    listRecordsByTimeRange(range: { from?: string; to?: string }): readonly CompatibilityRecord[] {
-      return registry.listRecordsByTimeRange(range);
-    },
+  /** Get records by time range */
+  listRecordsByTimeRange(range: { from?: string; to?: string }): readonly CompatibilityRecord[] {
+    return this.registry.listRecordsByTimeRange(range);
+  }
 
-    getLatestRecord(bodyVersionRef: string, substrateRef: string): CompatibilityRecord | undefined {
-      return registry.getLatestRecord(bodyVersionRef, substrateRef);
-    },
+  /** Get the most recent record for a body/substrate pair */
+  getLatestRecord(bodyVersionRef: string, substrateRef: string): CompatibilityRecord | undefined {
+    return this.registry.getLatestRecord(bodyVersionRef, substrateRef);
+  }
 
-    getBodyCompatibilityHistory(bodyVersionRef: string): readonly CompatibilityRecord[] {
-      return registry.getBodyCompatibilityHistory(bodyVersionRef);
-    },
+  /** Get compatibility history for a body version */
+  getBodyCompatibilityHistory(bodyVersionRef: string): readonly CompatibilityRecord[] {
+    return this.registry.getBodyCompatibilityHistory(bodyVersionRef);
+  }
 
-    getSubstrateCompatibilityHistory(substrateRef: string): readonly CompatibilityRecord[] {
-      return registry.getSubstrateCompatibilityHistory(substrateRef);
-    },
+  /** Get substrate compatibility history */
+  getSubstrateCompatibilityHistory(substrateRef: string): readonly CompatibilityRecord[] {
+    return this.registry.getSubstrateCompatibilityHistory(substrateRef);
+  }
 
-    hasRecord(digest: string): boolean {
-      return registry.hasRecord(digest);
-    },
+  /** Check if a record exists */
+  hasRecord(digest: string): boolean {
+    return this.registry.hasRecord(digest);
+  }
 
-    getRecordCount(): number {
-      return registry.getRecordCount();
-    },
+  /** Get record count */
+  getRecordCount(): number {
+    return this.registry.getRecordCount();
+  }
 
-    getStats() {
-      const allRecords = registry.listRecords();
-      const verdictCounts: Record<string, number> = {};
+  /** Clear all records */
+  clear(): void {
+    this.registry.clear();
+  }
 
-      for (const record of allRecords) {
-        verdictCounts[record.verdict] = (verdictCounts[record.verdict] || 0) + 1;
+  /** Get registry statistics */
+  getStatistics(): {
+    totalRecords: number;
+    recordsByVerdict: Record<string, number>;
+    recordsByTenant: Record<string, number>;
+    recordsByWorkspace: Record<string, number>;
+  } {
+    const records = this.listRecords();
+    const recordsByVerdict: Record<string, number> = {};
+    const recordsByTenant: Record<string, number> = {};
+    const recordsByWorkspace: Record<string, number> = {};
+
+    for (const record of records) {
+      // Count by verdict
+      recordsByVerdict[record.verdict] = (recordsByVerdict[record.verdict] || 0) + 1;
+
+      // Count by tenant
+      if (record.tenantId) {
+        recordsByTenant[record.tenantId] = (recordsByTenant[record.tenantId] || 0) + 1;
       }
 
-      return {
-        totalRecords: allRecords.length,
-        recordsByVerdict: verdictCounts,
-      };
-    },
+      // Count by workspace
+      if (record.workspaceId) {
+        recordsByWorkspace[record.workspaceId] = (recordsByWorkspace[record.workspaceId] || 0) + 1;
+      }
+    }
 
-    clear(): void {
-      registry.clear();
-    },
-  };
+    return {
+      totalRecords: records.length,
+      recordsByVerdict,
+      recordsByTenant,
+      recordsByWorkspace,
+    };
+  }
+}
+
+/** Create a service compatibility registry */
+export function createServiceCompatibilityRegistry(
+  tenantId?: string,
+  workspaceId?: string,
+): ServiceCompatibilityRegistry {
+  return new ServiceCompatibilityRegistryImpl(undefined, tenantId, workspaceId);
 }

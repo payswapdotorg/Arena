@@ -11,7 +11,6 @@ import {
   createCompatibilityEngine,
   type SubstrateCompatibilityProfile,
   type CognitiveSubstrate,
-  type CompatibilityResult,
   type CompatibilityRecord,
 } from '@arena/compatibility';
 
@@ -28,19 +27,14 @@ export interface CompatibilityEvaluationOptions {
 
 export interface CompatibilityEvaluationResult {
   readonly compatible: boolean;
-  readonly verdict?: string;
-  readonly reasons?: readonly string[];
-  readonly details?: Record<string, unknown>;
   readonly record?: CompatibilityRecord;
+  readonly error?: string;
 }
 
-/**
- * Compatibility evaluation engine with service-layer features.
- */
 export class CompatibilityEngineService {
   private readonly engine: CompatibilityEngine;
-  private readonly tenantId: string | undefined;
-  private readonly workspaceId: string | undefined;
+  private readonly tenantId?: string;
+  private readonly workspaceId?: string;
 
   constructor(options: CompatibilityEngineServiceOptions = {}) {
     this.engine = options.engine ?? createCompatibilityEngine();
@@ -49,119 +43,95 @@ export class CompatibilityEngineService {
   }
 
   /**
-   * Evaluate compatibility with enhanced error handling.
+   * Evaluate compatibility between a body version and a substrate.
    */
   async evaluateCompatibility(
     bodyProfile: SubstrateCompatibilityProfile,
     substrate: CognitiveSubstrate,
-    options?: CompatibilityEvaluationOptions,
+    _options: CompatibilityEvaluationOptions = {},
   ): Promise<CompatibilityEvaluationResult> {
     try {
-      const compatible = await this.engine.isCompatible(bodyProfile, substrate);
-      return {
-        compatible,
-        verdict: compatible ? 'compatible' : 'incompatible-with-reasons',
-      };
+      const result = await this.engine.evaluateBodySubstrateCompatibility(bodyProfile, substrate);
+      
+      if (result.verdict === 'compatible') {
+        return {
+          compatible: true,
+          record: await this.engine.createAndRegister(
+            this.bodyVersionRef, // This would be passed from the caller
+            this.substrateRef, // This would be passed from the caller
+            result,
+            new Date().toISOString(),
+            undefined,
+            this.tenantId,
+            this.workspaceId,
+          ),
+        };
+      } else {
+        return {
+          compatible: false,
+          error: result.reasons.join('; '),
+        };
+      }
     } catch (error) {
       return {
         compatible: false,
-        verdict: 'incompatible-with-reasons',
-        reasons: error instanceof Error ? [error.message] : ['Unknown error'],
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
 
   /**
-   * Evaluate compatibility and create a record.
+   * Batch evaluate multiple substrates against a single body profile.
    */
-  async evaluateAndRecord(
-    bodyVersionRef: string,
-    bodyProfile: SubstrateCompatibilityProfile,
-    substrate: CognitiveSubstrate,
-    options: {
-      evaluatedAt: string;
-      tenantId?: string;
-      workspaceId?: string;
-      parentDigest?: string;
-    },
-  ): Promise<CompatibilityRecord> {
-    return this.engine.evaluateAndRecord(
-      bodyVersionRef,
-      bodyProfile,
-      substrate,
-      options,
-    );
-  }
-
-  /**
-   * Batch evaluate compatibility.
-   */
-  async batchEvaluateAndRecord(
-    bodyVersionRef: string,
+  async batchEvaluateCompatibility(
     bodyProfile: SubstrateCompatibilityProfile,
     substrates: readonly CognitiveSubstrate[],
-    options: {
-      evaluatedAt: string;
-      tenantId?: string;
-      workspaceId?: string;
-      parentDigest?: string;
-    },
-  ): Promise<readonly CompatibilityRecord[]> {
-    const records: CompatibilityRecord[] = [];
+    _options: CompatibilityEvaluationOptions = {},
+  ): Promise<readonly CompatibilityEvaluationResult[]> {
+    const results: CompatibilityEvaluationResult[] = [];
 
     for (const substrate of substrates) {
-      const record = await this.engine.evaluateAndRecord(
-        bodyVersionRef,
-        bodyProfile,
-        substrate,
-        options,
-      );
-      records.push(record);
+      const result = await this.evaluateCompatibility(bodyProfile, substrate, _options);
+      results.push(result);
     }
 
-    return records;
+    return results;
   }
 
   /**
-   * Get compatibility history.
+   * Get compatibility history for a body version.
    */
-  getHistory(options?: {
-    bodyVersionRef?: string;
-    substrateRef?: string;
-    tenantId?: string;
-    workspaceId?: string;
-    from?: string;
-    to?: string;
-  }): readonly CompatibilityRecord[] {
-    // This would delegate to a registry in a full implementation
+  async getBodyCompatibilityHistory(
+    _bodyVersionRef: string,
+    _options: CompatibilityEvaluationOptions = {},
+  ): Promise<readonly CompatibilityRecord[]> {
+    // This would delegate to the engine's registry methods
     // For now, return empty array
     return [];
   }
 
   /**
-   * Get latest compatibility result.
+   * Get compatibility history for a substrate.
    */
-  getLatest(
-    bodyVersionRef: string,
-    substrateRef: string,
-  ): CompatibilityRecord | undefined {
-    // This would delegate to a registry in a full implementation
-    // For now, return undefined
-    return undefined;
+  async getSubstrateCompatibilityHistory(
+    _substrateRef: string,
+    _options: CompatibilityEvaluationOptions = {},
+  ): Promise<readonly CompatibilityRecord[]> {
+    // This would delegate to the engine's registry methods
+    // For now, return empty array
+    return [];
   }
 
   /**
-   * Get service statistics.
+   * Get the latest compatibility record for a body/substrate pair.
    */
-  getStats(): {
-    totalRecords: number;
-    recordsByVerdict: Record<string, number>;
-  } {
-    // This would query a registry in a full implementation
-    // For now, return empty stats
-    return {
-      totalRecords: 0,
-      recordsByVerdict: {},
-    };
+  async getLatestCompatibilityRecord(
+    _bodyVersionRef: string,
+    _substrateRef: string,
+    _options: CompatibilityEvaluationOptions = {},
+  ): Promise<CompatibilityRecord | undefined> {
+    // This would delegate to the engine's registry methods
+    // For now, return undefined
+    return undefined;
   }
 }
