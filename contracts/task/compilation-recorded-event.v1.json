@@ -1,0 +1,23 @@
+{
+  "$id": "arena:schema/task/compilation-recorded-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "EVENT payload: the resulting CompilationRecord plus the emitted TaskSpec proposals.",
+  "properties": {
+    "record": {
+      "$ref": "arena:schema/task/compilation-record@1.0.0"
+    },
+    "specs": {
+      "items": {
+        "$ref": "arena:schema/task/task-spec@1.0.0"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "record",
+    "specs"
+  ],
+  "title": "Arena compilation-recorded-event payload v1",
+  "type": "object"
+}

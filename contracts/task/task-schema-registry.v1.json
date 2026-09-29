@@ -1,0 +1,17 @@
+{
+  "$id": "arena:schema/task/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/task-spec. A SchemaRef matching this enum is a known task-spec schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/task/task-spec@1.0.0",
+    "arena:schema/task/task-class@1.0.0",
+    "arena:schema/task/compilation-policy@1.0.0",
+    "arena:schema/task/compilation-record@1.0.0",
+    "arena:schema/task/run-compilation-command@1.0.0",
+    "arena:schema/task/compilation-recorded-event@1.0.0",
+    "arena:schema/task/error@1.0.0",
+    "arena:schema/task/schema-registry@1.0.0"
+  ],
+  "title": "Arena task-spec schema registry v1",
+  "type": "string"
+}

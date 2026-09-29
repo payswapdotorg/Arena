@@ -1,0 +1,20 @@
+{
+  "$id": "arena:schema/task/task-class@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The CLOSED eleven-class task vocabulary (spec/task-spec.md TS1.0 \"Task classes\"). The spec's 'recovery/failure' maps to the kebab-case 'recovery-failure' (the id charset is lowercase kebab).",
+  "enum": [
+    "demonstration",
+    "correction",
+    "critique",
+    "preference",
+    "diagnosis",
+    "long-horizon-execution",
+    "tool-use",
+    "environment-exploration",
+    "adversarial",
+    "benchmark",
+    "recovery-failure"
+  ],
+  "title": "Arena task-class vocabulary v1",
+  "type": "string"
+}

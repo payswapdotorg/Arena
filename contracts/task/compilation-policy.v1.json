@@ -1,0 +1,681 @@
+{
+  "$id": "arena:schema/task/compilation-policy@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The versioned, content-addressed rule set the TaskCompiler compiles Capability Cases under (requirement R6). Cross-field rules: the LAST class-selection rule must be the 'always' matcher (total function); rules that can select 'long-horizon-execution' REQUIRE declared longHorizon evidence; compilableStatuses is a non-empty subset of the A005 compilable set {triaged, active} (narrow-only).",
+  "properties": {
+    "classSelection": {
+      "additionalProperties": false,
+      "properties": {
+        "rules": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "class": {
+                "enum": [
+                  "demonstration",
+                  "correction",
+                  "critique",
+                  "preference",
+                  "diagnosis",
+                  "long-horizon-execution",
+                  "tool-use",
+                  "environment-exploration",
+                  "adversarial",
+                  "benchmark",
+                  "recovery-failure"
+                ],
+                "type": "string"
+              },
+              "count": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "difficulty": {
+                "enum": [
+                  "exploratory",
+                  "standard",
+                  "routine"
+                ],
+                "type": "string"
+              },
+              "matcher": {
+                "enum": [
+                  "always",
+                  "difficulty-is",
+                  "tools-present",
+                  "shortcuts-present",
+                  "evidence-at-least"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "matcher",
+              "class"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "rules"
+      ],
+      "type": "object"
+    },
+    "dataRights": {
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "enum": [
+            "private-tenant",
+            "tenant-shareable",
+            "arena-internal",
+            "public"
+          ],
+          "type": "string"
+        },
+        "licensing": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            }
+          ]
+        },
+        "privacyNotes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "classification",
+        "licensing",
+        "privacyNotes"
+      ],
+      "type": "object"
+    },
+    "description": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "difficulty": {
+      "additionalProperties": false,
+      "properties": {
+        "declaredClass": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "exploratory",
+                "standard",
+                "routine"
+              ],
+              "type": "string"
+            }
+          ]
+        },
+        "mode": {
+          "enum": [
+            "from-case",
+            "declared"
+          ],
+          "type": "string"
+        },
+        "scale": {
+          "enum": [
+            "arena:task-difficulty@1"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "mode",
+        "scale",
+        "declaredClass"
+      ],
+      "type": "object"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "eligibility": {
+      "additionalProperties": false,
+      "properties": {
+        "compilableStatuses": {
+          "items": {
+            "enum": [
+              "triaged",
+              "active"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "minimumEvidenceCount": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "compilableStatuses",
+        "minimumEvidenceCount"
+      ],
+      "type": "object"
+    },
+    "environment": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            }
+          ]
+        },
+        "seed": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            }
+          ]
+        },
+        "selection": {
+          "enum": [
+            "first",
+            "each"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "selection",
+        "seed",
+        "note"
+      ],
+      "type": "object"
+    },
+    "expertQualification": {
+      "additionalProperties": false,
+      "properties": {
+        "declared": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "competencies": {
+                  "items": {
+                    "allOf": [
+                      {
+                        "additionalProperties": false,
+                        "properties": {
+                          "digest": {
+                            "pattern": "^[0-9a-f]{64}$",
+                            "type": "string"
+                          },
+                          "id": {
+                            "pattern": "^[a-z][a-z0-9-]{0,127}$",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "domain",
+                              "capability",
+                              "sub-capability",
+                              "skill",
+                              "tool",
+                              "task-family",
+                              "evaluator",
+                              "verifier",
+                              "expert-competency",
+                              "observed-failure",
+                              "body-version"
+                            ],
+                            "type": "string"
+                          },
+                          "version": {
+                            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "id",
+                          "version",
+                          "digest"
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "capability",
+                              "sub-capability",
+                              "skill"
+                            ]
+                          }
+                        },
+                        "type": "object"
+                      }
+                    ]
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "expectations": {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "qualificationPolicy": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "digest": {
+                          "pattern": "^[0-9a-f]{64}$",
+                          "type": "string"
+                        },
+                        "policyId": {
+                          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                          "type": "string"
+                        },
+                        "version": {
+                          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "policyId",
+                        "version",
+                        "digest"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "competencies",
+                "qualificationPolicy",
+                "expectations"
+              ],
+              "type": "object"
+            }
+          ]
+        },
+        "expectations": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "mode": {
+          "enum": [
+            "from-target-capability",
+            "declare"
+          ],
+          "type": "string"
+        },
+        "qualificationPolicy": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "digest": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "policyId": {
+                  "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                  "type": "string"
+                },
+                "version": {
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "policyId",
+                "version",
+                "digest"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "declared",
+        "expectations",
+        "qualificationPolicy"
+      ],
+      "type": "object"
+    },
+    "fieldMapping": {
+      "additionalProperties": false,
+      "properties": {
+        "constraints": {
+          "additionalProperties": false,
+          "properties": {
+            "additional": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "mode": {
+              "enum": [
+                "pass-through",
+                "union"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "type": "object"
+        },
+        "expectedOutputs": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "enum": [
+                "from-success-conditions",
+                "declared"
+              ],
+              "type": "string"
+            },
+            "outputs": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "type": "object"
+        },
+        "instructions": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "const": "template"
+            },
+            "template": {
+              "description": "Placeholders restricted to: {caseId} {domain} {capability} {objectives} {difficulty} {evidenceCount}",
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "mode",
+            "template"
+          ],
+          "type": "object"
+        },
+        "objectives": {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "mode": {
+              "enum": [
+                "pass-through",
+                "first"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "type": "object"
+        },
+        "permittedTools": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "enum": [
+                "pass-through",
+                "none"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "type": "object"
+        },
+        "prohibitedShortcuts": {
+          "additionalProperties": false,
+          "properties": {
+            "additional": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "mode": {
+              "enum": [
+                "pass-through",
+                "union"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "objectives",
+        "constraints",
+        "prohibitedShortcuts",
+        "permittedTools",
+        "expectedOutputs",
+        "instructions"
+      ],
+      "type": "object"
+    },
+    "identity": {
+      "additionalProperties": false,
+      "properties": {
+        "initialVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "taskIdPrefix": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskIdPrefix",
+        "initialVersion"
+      ],
+      "type": "object"
+    },
+    "longHorizon": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "intermediateStateEvidence": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "recoveryCriteria": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "intermediateStateEvidence",
+            "recoveryCriteria"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "policyId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "policyVersion": {
+      "const": 1
+    },
+    "quality": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "dimension": {
+            "enum": [
+              "realistic-context",
+              "discriminative-difficulty",
+              "observable-success",
+              "reproducible-evaluation",
+              "low-leakage",
+              "clear-provenance",
+              "declared-limitations"
+            ],
+            "type": "string"
+          },
+          "justification": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "provenance": {
+            "additionalProperties": false,
+            "properties": {
+              "ref": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "compilation-policy",
+                  "case-evidence",
+                  "expert-declaration"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "source",
+              "ref"
+            ],
+            "type": "object"
+          },
+          "satisfied": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "dimension",
+          "satisfied",
+          "justification",
+          "provenance"
+        ],
+        "type": "object"
+      },
+      "maxItems": 7,
+      "minItems": 7,
+      "type": "array"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "policyVersion",
+    "policyId",
+    "version",
+    "description",
+    "eligibility",
+    "classSelection",
+    "difficulty",
+    "fieldMapping",
+    "environment",
+    "identity",
+    "expertQualification",
+    "quality",
+    "longHorizon",
+    "dataRights",
+    "digest"
+  ],
+  "title": "Arena CompilationPolicy v1",
+  "type": "object"
+}

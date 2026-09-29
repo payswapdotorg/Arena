@@ -1,0 +1,72 @@
+{
+  "$id": "arena:schema/task/error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the task-spec protocol error taxonomy. Unknown codes are rejected when parsing (TASK_SPEC_UNKNOWN_ERROR).",
+  "properties": {
+    "category": {
+      "enum": [
+        "access",
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "TASK_SPEC_CASE_NOT_FOUND",
+        "TASK_SPEC_CROSS_FIELD_CONSISTENCY",
+        "TASK_SPEC_CROSS_TENANT_ACCESS",
+        "TASK_SPEC_IDEMPOTENCY_CONFLICT",
+        "TASK_SPEC_IDENTITY_CONFLICT",
+        "TASK_SPEC_INVALID_BINDING",
+        "TASK_SPEC_INVALID_CLASS",
+        "TASK_SPEC_INVALID_CLASS_SELECTION",
+        "TASK_SPEC_INVALID_DATA_RIGHTS",
+        "TASK_SPEC_INVALID_DIFF",
+        "TASK_SPEC_INVALID_DIFFICULTY",
+        "TASK_SPEC_INVALID_DIGEST",
+        "TASK_SPEC_INVALID_ENVIRONMENT",
+        "TASK_SPEC_INVALID_FIELD_MAPPING",
+        "TASK_SPEC_INVALID_IDENTITY",
+        "TASK_SPEC_INVALID_POLICY",
+        "TASK_SPEC_INVALID_PROVENANCE",
+        "TASK_SPEC_INVALID_QUALITY",
+        "TASK_SPEC_INVALID_RECORD",
+        "TASK_SPEC_INVALID_REF",
+        "TASK_SPEC_INVALID_REQUIREMENTS",
+        "TASK_SPEC_INVALID_SPEC",
+        "TASK_SPEC_INVALID_SUPERSESSION",
+        "TASK_SPEC_INVALID_TIMESTAMP",
+        "TASK_SPEC_INVALID_VERSION",
+        "TASK_SPEC_POLICY_NOT_FOUND",
+        "TASK_SPEC_TASK_NOT_FOUND",
+        "TASK_SPEC_TAMPERED",
+        "TASK_SPEC_UNKNOWN_ERROR",
+        "TASK_SPEC_UNSUPPORTED_RECORD_VERSION",
+        "TASK_SPEC_VERSION_CONFLICT"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context.",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena TaskSpecError v1",
+  "type": "object"
+}
