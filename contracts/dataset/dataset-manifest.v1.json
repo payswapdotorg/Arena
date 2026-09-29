@@ -1,0 +1,272 @@
+{
+  "$defs": {
+    "artifactIdentity": {
+      "additionalProperties": false,
+      "description": "A002 artifact identity (reused validator, never redefined): namespace/name/semver. The reserved `public` namespace is the global scope; every other namespace is a tenant scope.",
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "artifactRef": {
+      "additionalProperties": false,
+      "description": "A002 artifact reference (reused validator, never redefined): namespace/name/version identity plus the sha256 content digest of the referenced material artifact.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "datasetEntry": {
+      "additionalProperties": false,
+      "description": "One declared dataset entry: a content-addressed A002 artifact reference plus its closed role in the dataset (input/output/eval/split).",
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "role": {
+          "enum": [
+            "input",
+            "output",
+            "eval",
+            "split"
+          ]
+        }
+      },
+      "required": [
+        "role",
+        "artifact"
+      ],
+      "type": "object"
+    },
+    "lineageEdge": {
+      "additionalProperties": false,
+      "description": "One dataset lineage edge (docs/architecture.md §15): a content-addressed parent reference plus the A002 provenance lineage relation. The relation vocabulary is the closed @arena/provenance set, reused verbatim.",
+      "properties": {
+        "parent": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "relation": {
+          "enum": [
+            "adapted-from",
+            "composed-of",
+            "derived-from",
+            "extracted-from"
+          ]
+        }
+      },
+      "required": [
+        "parent",
+        "relation"
+      ],
+      "type": "object"
+    },
+    "principalRef": {
+      "additionalProperties": false,
+      "description": "A002 tenant-scoped principal (reused validator): the source/creator of a dataset. Never a raw provider identity.",
+      "properties": {
+        "principalId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "agent-body",
+            "expert",
+            "user",
+            "service",
+            "system"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "tenant",
+        "principalId"
+      ],
+      "type": "object"
+    },
+    "rightsMetadata": {
+      "additionalProperties": false,
+      "description": "A002 rights metadata (reused validator, never redefined; architecture-lock rule 23): license, commercial use, redistribution and customer-data policies, plus optional professional limitations.",
+      "properties": {
+        "commercialUse": {
+          "enum": [
+            "allowed",
+            "requires-license",
+            "prohibited"
+          ]
+        },
+        "customerData": {
+          "enum": [
+            "none",
+            "derived",
+            "contains"
+          ]
+        },
+        "license": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9 .+()\\-]{0,63}$",
+          "type": "string"
+        },
+        "professionalLimitations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "redistribution": {
+          "enum": [
+            "allowed",
+            "tenant-only",
+            "prohibited"
+          ]
+        }
+      },
+      "required": [
+        "license",
+        "commercialUse",
+        "redistribution",
+        "customerData"
+      ],
+      "type": "object"
+    },
+    "verificationRef": {
+      "additionalProperties": false,
+      "description": "A verification/evaluation evidence reference: kind `evaluation` carries A012 evaluation-record digests; kinds `verification`/`attestation` carry A013 verification-record digests. The kind vocabulary is the closed @arena/provenance set.",
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "kind": {
+          "enum": [
+            "attestation",
+            "certification",
+            "evaluation",
+            "verification"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "evidence"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/dataset/dataset-manifest@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A versioned, content-addressed packaging of a DATASET (R14, R23): the dataset identity (A002 ArtifactIdentity), the declared entries (artifact refs by digest + role), dataset-level provenance per docs/architecture.md §15 (source/creator, timestamps, parent refs with lineage relations, mandatory rights metadata, verification/evaluation refs), the entries checksum (sha256 over the canonically sorted entry list) and the manifest digest (sha256 over the canonical digest-free view). Immutable and deep-frozen; tamper detection fails closed.",
+  "properties": {
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "entries": {
+      "description": "The declared entries (at least one). The same artifact may appear under multiple roles; each (role, artifact) pair is declared once.",
+      "items": {
+        "$ref": "#/$defs/datasetEntry"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "entriesChecksum": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "identity": {
+      "$ref": "#/$defs/artifactIdentity"
+    },
+    "manifestVersion": {
+      "const": 1
+    },
+    "provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "createdAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "creator": {
+          "$ref": "#/$defs/principalRef"
+        },
+        "parents": {
+          "description": "Parent refs (parent datasets or artifacts), with relations.",
+          "items": {
+            "$ref": "#/$defs/lineageEdge"
+          },
+          "type": "array"
+        },
+        "rights": {
+          "$ref": "#/$defs/rightsMetadata"
+        },
+        "verification": {
+          "description": "Verification/evaluation evidence refs (A012 evaluation-record digests via kind `evaluation`; A013 verification-record digests via kind `verification`/`attestation`).",
+          "items": {
+            "$ref": "#/$defs/verificationRef"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "creator",
+        "createdAt",
+        "parents",
+        "rights",
+        "verification"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "manifestVersion",
+    "identity",
+    "entries",
+    "provenance",
+    "entriesChecksum",
+    "digest"
+  ],
+  "title": "Arena dataset manifest v1",
+  "type": "object"
+}

@@ -1,0 +1,13 @@
+{
+  "$id": "arena:schema/dataset/dataset-entry-role@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The closed vocabulary of dataset entry roles (packages/datasets/src/entry.ts): input (upstream artifact), output (produced/derived artifact), eval (A012 evaluation-record artifact), split (split/subset marker artifact).",
+  "enum": [
+    "input",
+    "output",
+    "eval",
+    "split"
+  ],
+  "title": "Arena dataset entry-role vocabulary v1",
+  "type": "string"
+}

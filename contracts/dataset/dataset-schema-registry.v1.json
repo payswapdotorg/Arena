@@ -1,0 +1,15 @@
+{
+  "$id": "arena:schema/dataset/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/datasets. A SchemaRef matching this enum is a known dataset schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/dataset/dataset-manifest@1.0.0",
+    "arena:schema/dataset/dataset-bundle@1.0.0",
+    "arena:schema/dataset/dataset-entry-role@1.0.0",
+    "arena:schema/dataset/lineage-edge@1.0.0",
+    "arena:schema/dataset/publication-ops@1.0.0",
+    "arena:schema/dataset/schema-registry@1.0.0"
+  ],
+  "title": "Arena dataset schema registry v1",
+  "type": "string"
+}
