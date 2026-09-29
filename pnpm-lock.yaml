@@ -133,6 +133,31 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/body-forge:
+    dependencies:
+      '@arena/agent-body':
+        specifier: workspace:*
+        version: link:../agent-body
+      '@arena/capability-graph':
+        specifier: workspace:*
+        version: link:../capability-graph
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/capability-case:
     dependencies:
       '@arena/protocol-core':
@@ -536,6 +561,49 @@ importers:
       '@arena/datasets':
         specifier: workspace:*
         version: link:../../packages/datasets
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/body-forge:
+    dependencies:
+      '@arena/body-forge':
+        specifier: workspace:*
+        version: link:../../packages/body-forge
+      '@arena/learning':
+        specifier: workspace:*
+        version: link:../../packages/learning
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+      '@arena/skill-extraction':
+        specifier: workspace:*
+        version: link:../../packages/skill-extraction
+    devDependencies:
+      '@arena/agent-body':
+        specifier: workspace:*
+        version: link:../../packages/agent-body
+      '@arena/capability-graph':
+        specifier: workspace:*
+        version: link:../../packages/capability-graph
+      '@arena/evaluation':
+        specifier: workspace:*
+        version: link:../../packages/evaluation
+      '@arena/trajectory':
+        specifier: workspace:*
+        version: link:../../packages/trajectory
+      '@arena/verification':
+        specifier: workspace:*
+        version: link:../../packages/verification
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4
