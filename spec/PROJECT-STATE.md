@@ -13,7 +13,7 @@ A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002
 
 A012 MERGED via PR #26 (merge SHA 0cb1b90611a093858f5e3101cda189fd530de5b4, worker head 6b05363 + intake ed05333; PR CI green on ed05333; delivered @arena/evaluation + services/evaluation + contracts/evaluation — EvaluatorDescriptor, EvaluationCriteria, EvaluationRecord, evaluator registry + reference fabric; a 35-minute dispatch-to-push cycle, 76-minute dispatch-to-merge; acceptance via branch-oracle, worker chat retired post-merge).
 
-A013 MERGED via PR #28 (merge SHA 02c71552ef, worker head 4388033 + intake 9238836; PR CI green on 9238836; battery all-green at the TL station; worker chat 5397113a). A019 MERGED via PR #32 (merge SHA 95f8e3cc6a, worker head b56cef7 + intake 7d3f2c9; station battery all-green: ownership clean, 37 files +6933 lines, @arena/skill-extraction 89 tests + services/skill-extraction 34 tests, all 14 existing suites unchanged green; the R17 validated gate enforced with REAL A011/A012/A013 guards; worker chat e6f03d58; a 35-minute dispatch-to-push, 59-minute dispatch-to-merge cycle). Live wave: A007 + A014 in flight (from 6a8abdc) + A020 dispatched from the post-A019-governance tip (A020 needs A011+A012+A013+A019 — all merged). Next unlocks: A008 on the A007 merge; A021 after A019+A020 (needs A003+A004 MERGED too); A023 needs A013+A022+A014.
+A013 MERGED via PR #28 (merge SHA 02c71552ef, worker head 4388033 + intake 9238836; PR CI green on 9238836; battery all-green at the TL station; worker chat 5397113a). A019 MERGED via PR #32 (merge SHA 95f8e3cc6a, worker head b56cef7 + intake 7d3f2c9; station battery all-green; worker chat e6f03d58; a 35-minute dispatch-to-push cycle). A014 MERGED via PR #34 (merge SHA d3cf60af62, worker head d7e2d1e + remediation 084377e + intake; station battery all-green after one ARCHITECT REQUIRE-CHANGES round: typecheck TS7053 in contracts.parity.test.ts fixed on the same branch with full battery re-run; 48 files +7703 lines, @arena/datasets 89 tests + @arena/artifact-service 75 tests, all existing suites green; worker chat 776d1b01). Live wave: A007 + A014 in flight (from 6a8abdc) + A020 dispatched from the post-A019-governance tip (A020 needs A011+A012+A013+A019 — all merged). Next unlocks: A008 on the A007 merge; A021 after A019+A020 (needs A003+A004 MERGED too); A023 needs A013+A022+A014.
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
@@ -32,7 +32,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A011 MERGED (PR #24, ee57532; worker head 15620f8 + intake b5f7f46)
 - A012 MERGED (PR #26, 0cb1b906; worker head 6b05363 + intake ed05333)
 - A013 MERGED (PR #28, 02c7155; worker head 4388033 + intake 9238836)
-- A014 WAITING_ON_DEPENDENCIES
+- A014 MERGED (PR #34, d3cf60a; worker head d7e2d1e + remediation 084377e)
 - A015 MERGED
 - A016 MERGED
 - A017 WAITING_ON_DEPENDENCIES
