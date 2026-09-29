@@ -1,0 +1,62 @@
+{
+  "$id": "arena:schema/verification/verification-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Wire-safe structured form of a VerificationError: closed VERIFICATION_* code set, core category mapping, strictly validating parse (unknown codes rejected).",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "VERIFICATION_DUPLICATE_REQUIREMENT",
+        "VERIFICATION_EVIDENCE_MISMATCH",
+        "VERIFICATION_IDEMPOTENCY_CONFLICT",
+        "VERIFICATION_IDENTITY_CONFLICT",
+        "VERIFICATION_INVALID_DESCRIPTOR",
+        "VERIFICATION_INVALID_DIGEST",
+        "VERIFICATION_INVALID_EVIDENCE",
+        "VERIFICATION_INVALID_IDENTITY",
+        "VERIFICATION_INVALID_METHOD",
+        "VERIFICATION_INVALID_OUTCOME",
+        "VERIFICATION_INVALID_PROVENANCE",
+        "VERIFICATION_INVALID_RECORD",
+        "VERIFICATION_INVALID_REPRODUCIBILITY",
+        "VERIFICATION_INVALID_REQUIREMENT",
+        "VERIFICATION_INVALID_SCHEMA_REF",
+        "VERIFICATION_INVALID_TIMESTAMP",
+        "VERIFICATION_NOT_FOUND",
+        "VERIFICATION_REQUIREMENT_MISMATCH",
+        "VERIFICATION_TAMPERED",
+        "VERIFICATION_TIMESTAMP_REGRESSION",
+        "VERIFICATION_UNKNOWN_ERROR",
+        "VERIFICATION_UNSUPPORTED_RECORD_VERSION",
+        "VERIFICATION_VERSION_CONFLICT"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena VerificationError v1",
+  "type": "object"
+}

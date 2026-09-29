@@ -1,0 +1,279 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "description": "A002 artifact reference (reused validator, never redefined): namespace/name/version identity plus the sha256 content digest of the referenced material artifact.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "evidenceProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of one evidence artifact (R14): who produced it, when, with what notes.",
+      "properties": {
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "producedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "producedBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "producedBy",
+        "producedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "evidenceReference": {
+      "additionalProperties": false,
+      "description": "A provenance-bearing, digest-addressed reference to one evidence artifact: the evidence kind the artifact claims to carry (open, charset-validated vocabulary), the A002 artifact reference, and the evidence provenance.",
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "evidenceKind": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/evidenceProvenance"
+        }
+      },
+      "required": [
+        "evidenceKind",
+        "artifact",
+        "provenance"
+      ],
+      "type": "object"
+    },
+    "recordProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of one verification run.",
+      "properties": {
+        "executedBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "recordedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "executedBy",
+        "recordedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "requirementSupport": {
+      "additionalProperties": false,
+      "description": "One requirement support status: present-supported | present-unsupported | present-unverified | present-indeterminate | missing. A closed vocabulary with no quantitative members; missing requirements cannot name evidence, present statuses must.",
+      "properties": {
+        "evidenceDigest": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "requirementId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "present-supported",
+            "present-unsupported",
+            "present-unverified",
+            "present-indeterminate",
+            "missing"
+          ]
+        }
+      },
+      "required": [
+        "requirementId",
+        "status",
+        "evidenceDigest",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "unknownCause": {
+      "additionalProperties": false,
+      "description": "The structured WHY of an unknown outcome: a closed reason taxonomy member plus the deterministic detail listing the driving requirement ids. REQUIRED iff the outcome is unknown; MUST be null otherwise.",
+      "properties": {
+        "detail": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "missing-evidence",
+            "unverifiable-provenance",
+            "method-limitation"
+          ]
+        }
+      },
+      "required": [
+        "reason",
+        "detail"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/verification/verification-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The append-once record of one verification run: verifier descriptor digest, the evidence bundle (provenance-bearing, digest-addressed A002 artifact references), the evidence-support summary (one closed-vocabulary status per declared requirement), the DERIVED outcome (pass | fail | unknown — computed purely from the support summary, never caller-supplied, never numerical or graded — lock rule 7), the DERIVED structured unknown cause (required iff unknown), correlation id + idempotency key, the COMPUTED input digest over {verifierRef, evidence}, timestamps and run provenance. Frozen on creation; pure replayable construction; identical inputs ⇒ identical record digest.",
+  "properties": {
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evidence": {
+      "description": "The run evidence bundle; extra evidence beyond the requirements is recorded for audit.",
+      "items": {
+        "$ref": "#/$defs/evidenceReference"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "evidenceSupport": {
+      "description": "One support entry per declared requirement, in descriptor order.",
+      "items": {
+        "$ref": "#/$defs/requirementSupport"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "finishedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "idempotencyKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "inputDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "outcome": {
+      "description": "The derived outcome — a closed three-member vocabulary, never a quantitative value.",
+      "enum": [
+        "pass",
+        "fail",
+        "unknown"
+      ]
+    },
+    "provenance": {
+      "$ref": "#/$defs/recordProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the record shape."
+    },
+    "startedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "unknownCause": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/unknownCause"
+        }
+      ]
+    },
+    "verifierRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "verifierRef",
+    "evidence",
+    "evidenceSupport",
+    "outcome",
+    "unknownCause",
+    "correlationId",
+    "idempotencyKey",
+    "inputDigest",
+    "startedAt",
+    "finishedAt",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena VerificationRecord v1",
+  "type": "object"
+}

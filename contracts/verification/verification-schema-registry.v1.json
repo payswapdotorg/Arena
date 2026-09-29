@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/verification/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/verification. A SchemaRef matching this enum is a known verification-protocol schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/verification/verifier-descriptor@1.0.0",
+    "arena:schema/verification/verification-error@1.0.0",
+    "arena:schema/verification/verification-outcome@1.0.0",
+    "arena:schema/verification/verification-record@1.0.0",
+    "arena:schema/verification/verification-recorded-event@1.0.0",
+    "arena:schema/verification/run-verification-command@1.0.0",
+    "arena:schema/verification/schema-registry@1.0.0"
+  ],
+  "title": "Arena verification-protocol schema registry v1",
+  "type": "string"
+}

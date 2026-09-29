@@ -387,6 +387,28 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/verification:
+    dependencies:
+      '@arena/artifact-protocol':
+        specifier: workspace:*
+        version: link:../artifact-protocol
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   services/environment-runner:
     dependencies:
       '@arena/environment-protocol':
@@ -473,6 +495,31 @@ importers:
       '@arena/trajectory':
         specifier: workspace:*
         version: link:../../packages/trajectory
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/verification:
+    dependencies:
+      '@arena/artifact-protocol':
+        specifier: workspace:*
+        version: link:../../packages/artifact-protocol
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+      '@arena/verification':
+        specifier: workspace:*
+        version: link:../../packages/verification
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
