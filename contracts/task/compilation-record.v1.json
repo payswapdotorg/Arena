@@ -1,0 +1,130 @@
+{
+  "$id": "arena:schema/task/compilation-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The append-only, idempotency-keyed record of one compilation run (lock rule 17). Records what a run proposed; pins nothing — specs are proposals until pinned, and the case is never mutated (lock rule 6).",
+  "properties": {
+    "caseRef": {
+      "additionalProperties": false,
+      "properties": {
+        "caseId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "caseId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "compilationKey": {
+      "description": "The idempotency key that authorized the run.",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "compiledAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "correlationId": {
+      "description": "Correlation identifier of the causal flow.",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "emittedSpecs": {
+      "description": "Content-addressed refs of the emitted TaskSpec proposals.",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "taskId": {
+            "pattern": "^[a-z][a-z0-9-]{0,127}$",
+            "type": "string"
+          },
+          "tenant": {
+            "pattern": "^[a-z][a-z0-9-]{1,62}$",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant",
+          "taskId",
+          "version",
+          "digest"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "policyRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "policyId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "policyId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "targetDigest": {
+      "description": "The A005 TaskCompilationTarget digest the run consumed.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "compilationKey",
+    "correlationId",
+    "caseRef",
+    "targetDigest",
+    "policyRef",
+    "emittedSpecs",
+    "compiledAt",
+    "digest"
+  ],
+  "title": "Arena CompilationRecord v1",
+  "type": "object"
+}

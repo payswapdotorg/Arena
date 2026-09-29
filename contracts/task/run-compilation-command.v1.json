@@ -1,0 +1,51 @@
+{
+  "$id": "arena:schema/task/run-compilation-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "COMMAND payload (travels inside @arena/protocol-core Envelope<T> with a REQUIRED non-null idempotency key — lock rule 17): compile one registered case (by content digest) under one registered compilation policy. Timestamps are explicit inputs — the reference fabric takes no clock reads.",
+  "properties": {
+    "caseDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "compiledAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "derivedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "policyRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "policyId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "policyId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "caseDigest",
+    "policyRef",
+    "derivedAt",
+    "compiledAt"
+  ],
+  "title": "Arena run-compilation-command payload v1",
+  "type": "object"
+}

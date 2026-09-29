@@ -1,0 +1,763 @@
+{
+  "$id": "arena:schema/task/task-spec@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The versioned, content-addressed reproducible unit of work (spec/task-spec.md TS1.0; docs/architecture.md §6). Carries every TS1.0 structure field plus long-horizon evidence (REQUIRED for the long-horizon-execution class), the seven declared quality dimensions and the derivation provenance. Cross-field rules (enforced by the guards): private-tenant data rights forbid cross-tenant reuse; the pinned initial-state environment must be among the required environment declarations; supersession targets the same logical task at strictly lower semver precedence.",
+  "properties": {
+    "capabilityLabels": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9-]{0,63}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "completionCriteria": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "constraints": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "dataRights": {
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "enum": [
+            "private-tenant",
+            "tenant-shareable",
+            "arena-internal",
+            "public"
+          ],
+          "type": "string"
+        },
+        "crossTenantReuse": {
+          "type": "boolean"
+        },
+        "licensing": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            }
+          ]
+        },
+        "privacyNotes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            }
+          ]
+        },
+        "tenantScope": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "classification",
+        "tenantScope",
+        "crossTenantReuse",
+        "licensing",
+        "privacyNotes"
+      ],
+      "type": "object"
+    },
+    "derivedFrom": {
+      "additionalProperties": false,
+      "properties": {
+        "caseRef": {
+          "additionalProperties": false,
+          "properties": {
+            "caseId": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "tenant": {
+              "pattern": "^[a-z][a-z0-9-]{1,62}$",
+              "type": "string"
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "tenant",
+            "caseId",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        "policyRef": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "policyId": {
+              "pattern": "^[a-z][a-z0-9-]{0,63}$",
+              "type": "string"
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "policyId",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "caseRef",
+        "policyRef"
+      ],
+      "type": "object"
+    },
+    "difficulty": {
+      "additionalProperties": false,
+      "properties": {
+        "class": {
+          "enum": [
+            "exploratory",
+            "standard",
+            "routine"
+          ],
+          "type": "string"
+        },
+        "scale": {
+          "enum": [
+            "arena:task-difficulty@1"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "scale",
+        "class"
+      ],
+      "type": "object"
+    },
+    "digest": {
+      "description": "sha256 over the canonical serialization of the digest-free view.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "domain": {
+      "allOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "id": {
+              "pattern": "^[a-z][a-z0-9-]{0,127}$",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "domain",
+                "capability",
+                "sub-capability",
+                "skill",
+                "tool",
+                "task-family",
+                "evaluator",
+                "verifier",
+                "expert-competency",
+                "observed-failure",
+                "body-version"
+              ],
+              "type": "string"
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "domain"
+              ]
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "environmentRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "constraints": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "environments": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "digest": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "name": {
+                "pattern": "^[a-z][a-z0-9-]{1,127}$",
+                "type": "string"
+              },
+              "namespace": {
+                "pattern": "^[a-z][a-z0-9-]{1,62}$",
+                "type": "string"
+              },
+              "version": {
+                "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "namespace",
+              "name",
+              "version",
+              "digest"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "environments",
+        "constraints"
+      ],
+      "type": "object"
+    },
+    "evaluatorBindings": {
+      "description": "A012 EvaluatorDescriptor digest triples (lock rule 7: distinct).",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "descriptorDigest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "evaluatorId": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evaluatorId",
+          "version",
+          "descriptorDigest"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "evidenceCriteria": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "expectedOutputs": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "expertQualificationRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "competencies": {
+          "items": {
+            "allOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "digest": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  "id": {
+                    "pattern": "^[a-z][a-z0-9-]{0,127}$",
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "domain",
+                      "capability",
+                      "sub-capability",
+                      "skill",
+                      "tool",
+                      "task-family",
+                      "evaluator",
+                      "verifier",
+                      "expert-competency",
+                      "observed-failure",
+                      "body-version"
+                    ],
+                    "type": "string"
+                  },
+                  "version": {
+                    "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id",
+                  "version",
+                  "digest"
+                ],
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "capability",
+                      "sub-capability",
+                      "skill"
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "expectations": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "qualificationPolicy": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "digest": {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                "policyId": {
+                  "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                  "type": "string"
+                },
+                "version": {
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "policyId",
+                "version",
+                "digest"
+              ],
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "required": [
+        "competencies",
+        "qualificationPolicy",
+        "expectations"
+      ],
+      "type": "object"
+    },
+    "identity": {
+      "additionalProperties": false,
+      "properties": {
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "taskId"
+      ],
+      "type": "object"
+    },
+    "initialState": {
+      "additionalProperties": false,
+      "properties": {
+        "environment": {
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "name": {
+              "pattern": "^[a-z][a-z0-9-]{1,127}$",
+              "type": "string"
+            },
+            "namespace": {
+              "pattern": "^[a-z][a-z0-9-]{1,62}$",
+              "type": "string"
+            },
+            "version": {
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "namespace",
+            "name",
+            "version",
+            "digest"
+          ],
+          "type": "object"
+        },
+        "note": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            }
+          ]
+        },
+        "seed": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minLength": 1,
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "environment",
+        "seed",
+        "note"
+      ],
+      "type": "object"
+    },
+    "instructions": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "longHorizonEvidence": {
+      "description": "Intermediate state + recoveries as first-class evidence. REQUIRED for long-horizon-execution; permitted for recovery-failure; null otherwise.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "intermediateStateEvidence": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "recoveryCriteria": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "intermediateStateEvidence",
+            "recoveryCriteria"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "objectives": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "permittedTools": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[a-z][a-z0-9-]{1,127}$",
+            "type": "string"
+          },
+          "namespace": {
+            "pattern": "^[a-z][a-z0-9-]{1,62}$",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "namespace",
+          "name",
+          "version",
+          "digest"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "prohibitedShortcuts": {
+      "description": "FIRST-CLASS field: shortcut resistance is a TS1.0 quality dimension.",
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "quality": {
+      "description": "EXACTLY one declaration per dimension — all seven, no duplicates, none missing.",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "dimension": {
+            "enum": [
+              "realistic-context",
+              "discriminative-difficulty",
+              "observable-success",
+              "reproducible-evaluation",
+              "low-leakage",
+              "clear-provenance",
+              "declared-limitations"
+            ],
+            "type": "string"
+          },
+          "justification": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "provenance": {
+            "additionalProperties": false,
+            "properties": {
+              "ref": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "compilation-policy",
+                  "case-evidence",
+                  "expert-declaration"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "source",
+              "ref"
+            ],
+            "type": "object"
+          },
+          "satisfied": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "dimension",
+          "satisfied",
+          "justification",
+          "provenance"
+        ],
+        "type": "object"
+      },
+      "maxItems": 7,
+      "minItems": 7,
+      "type": "array"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version."
+    },
+    "supersedes": {
+      "additionalProperties": false,
+      "description": "Append-only supersession: the version this one replaces.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "taskId",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "taskClass": {
+      "enum": [
+        "demonstration",
+        "correction",
+        "critique",
+        "preference",
+        "diagnosis",
+        "long-horizon-execution",
+        "tool-use",
+        "environment-exploration",
+        "adversarial",
+        "benchmark",
+        "recovery-failure"
+      ],
+      "type": "string"
+    },
+    "verifierBindings": {
+      "description": "A013 VerifierDescriptor digest triples (lock rule 7: distinct).",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "descriptorDigest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "verifierId": {
+            "pattern": "^[a-z][a-z0-9-]{0,63}$",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "verifierId",
+          "version",
+          "descriptorDigest"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "version": {
+      "description": "Semver version of this task version (no build metadata).",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "identity",
+    "version",
+    "taskClass",
+    "capabilityLabels",
+    "difficulty",
+    "domain",
+    "initialState",
+    "instructions",
+    "objectives",
+    "constraints",
+    "permittedTools",
+    "prohibitedShortcuts",
+    "expectedOutputs",
+    "completionCriteria",
+    "evidenceCriteria",
+    "longHorizonEvidence",
+    "environmentRequirements",
+    "evaluatorBindings",
+    "verifierBindings",
+    "expertQualificationRequirements",
+    "quality",
+    "dataRights",
+    "derivedFrom",
+    "digest"
+  ],
+  "title": "Arena TaskSpec v1",
+  "type": "object"
+}
