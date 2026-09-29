@@ -13,7 +13,7 @@ A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002
 
 A012 MERGED via PR #26 (merge SHA 0cb1b90611a093858f5e3101cda189fd530de5b4, worker head 6b05363 + intake ed05333; PR CI green on ed05333; delivered @arena/evaluation + services/evaluation + contracts/evaluation — EvaluatorDescriptor, EvaluationCriteria, EvaluationRecord, evaluator registry + reference fabric; a 35-minute dispatch-to-push cycle, 76-minute dispatch-to-merge; acceptance via branch-oracle, worker chat retired post-merge).
 
-A013 MERGED via PR #28 (merge SHA 02c71552ef, worker head 4388033 + intake 9238836; PR CI green on 9238836; battery all-green at the TL station; worker chat 5397113a). A019 MERGED via PR #32 (merge SHA 95f8e3cc6a, worker head b56cef7 + intake 7d3f2c9; station battery all-green; worker chat e6f03d58; a 35-minute dispatch-to-push cycle). A014 MERGED via PR #34 (merge SHA d3cf60af62, worker head d7e2d1e + remediation 084377e + intake; station battery all-green after one ARCHITECT REQUIRE-CHANGES round: typecheck TS7053 in contracts.parity.test.ts fixed on the same branch with full battery re-run; 48 files +7703 lines, @arena/datasets 89 tests + @arena/artifact-service 75 tests, all existing suites green; worker chat 776d1b01). Live wave: A007 + A014 in flight (from 6a8abdc) + A020 dispatched from the post-A019-governance tip (A020 needs A011+A012+A013+A019 — all merged). Next unlocks: A008 on the A007 merge; A021 after A019+A020 (needs A003+A004 MERGED too); A023 needs A013+A022+A014.
+A013 MERGED via PR #28 (merge SHA 02c71552ef, worker head 4388033 + intake 9238836; PR CI green on 9238836; battery all-green at the TL station; worker chat 5397113a). A019 MERGED via PR #32 (merge SHA 95f8e3cc6a, worker head b56cef7 + intake 7d3f2c9; station battery all-green; worker chat e6f03d58; a 35-minute dispatch-to-push cycle). A014 MERGED via PR #34 (merge SHA d3cf60af62, worker head d7e2d1e + remediation 084377e + intake; station battery all-green after one ARCHITECT REQUIRE-CHANGES round: typecheck TS7053 in contracts.parity.test.ts fixed on the same branch with full battery re-run; 48 files +7703 lines, @arena/datasets 89 tests + @arena/artifact-service 75 tests, all existing suites green; worker chat 776d1b01). A007 MERGED via PR #36 (merge SHA eaebedd853, worker head 178e4ca + intake; station battery all-green: ownership clean, 63 files +13750 lines, @arena/expert-qualification 127 tests + @arena/expert-matching 46 tests; a branch-collision with a recovered prior attempt (334a03e) was honestly disclosed and resolved via force-with-lease; worker chat 1820bed0). Live wave: A007 + A014 in flight (from 6a8abdc) + A020 dispatched from the post-A019-governance tip (A020 needs A011+A012+A013+A019 — all merged). Next unlocks: A008 on the A007 merge; A021 after A019+A020 (needs A003+A004 MERGED too); A023 needs A013+A022+A014.
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
@@ -25,7 +25,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A004 MERGED
 - A005 MERGED (PR #20, d005296)
 - A006 MERGED (PR #22, 603050f)
-- A007 WAITING_ON_DEPENDENCIES
+- A007 MERGED (PR #36, eaebedd; worker head 178e4ca)
 - A008 WAITING_ON_DEPENDENCIES
 - A009 MERGED
 - A010 MERGED (PR #23, 6b8352c; worker head b1997c1 + intake 95989c7 + lockfile regen 38868ff)
