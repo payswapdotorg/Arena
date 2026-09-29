@@ -40,6 +40,7 @@ export interface CompatibilityServiceConfig {
 export interface CompatibilityService {
   /** Evaluate compatibility and create a record */
   evaluateAndRecord(
+    bodyVersionRef: string,
     bodyProfile: SubstrateCompatibilityProfile,
     substrate: CognitiveSubstrate,
     options?: {
@@ -50,6 +51,7 @@ export interface CompatibilityService {
 
   /** Batch evaluate compatibility */
   batchEvaluateAndRecord(
+    bodyVersionRef: string,
     bodyProfile: SubstrateCompatibilityProfile,
     substrates: readonly CognitiveSubstrate[],
     options?: {
@@ -96,6 +98,7 @@ export function createCompatibilityService(
 
   return {
     async evaluateAndRecord(
+      bodyVersionRef: string,
       bodyProfile: SubstrateCompatibilityProfile,
       substrate: CognitiveSubstrate,
       options = {}
@@ -105,7 +108,7 @@ export function createCompatibilityService(
       const idempotency = toIdempotencyKey(idempotencyKey);
 
       try {
-        const result = await engine.evaluateAndRecord(bodyProfile, substrate, {
+        const result = await engine.evaluateAndRecord(bodyVersionRef, bodyProfile, substrate, {
           evaluatedAt: new Date().toISOString(),
           tenantId: tenantId,
           workspaceId: workspaceId,
@@ -115,7 +118,7 @@ export function createCompatibilityService(
         if (process.env.NODE_ENV !== 'test') {
           console.log(`[CompatibilityService] Evaluation completed: ${correlation}`, {
             verdict: result.verdict,
-            bodyVersionRef: 'placeholder', // Would come from actual body
+            bodyVersionRef: bodyVersionRef,
             substrateRef: substrate.integrity.contentDigest,
           });
         }
@@ -128,6 +131,7 @@ export function createCompatibilityService(
     },
 
     async batchEvaluateAndRecord(
+      bodyVersionRef: string,
       bodyProfile: SubstrateCompatibilityProfile,
       substrates: readonly CognitiveSubstrate[],
       options = {}
@@ -137,21 +141,26 @@ export function createCompatibilityService(
       const idempotency = toIdempotencyKey(idempotencyKey);
 
       try {
-        const results = await engine.batchEvaluateAndRecord(bodyProfile, substrates, {
-          evaluatedAt: new Date().toISOString(),
-          tenantId: tenantId,
-          workspaceId: workspaceId,
-        });
+        const records: CompatibilityRecord[] = [];
 
-        // Log the operation
+        for (const substrate of substrates) {
+          const record = await engine.evaluateAndRecord(bodyVersionRef, bodyProfile, substrate, {
+            evaluatedAt: new Date().toISOString(),
+            tenantId: tenantId,
+            workspaceId: workspaceId,
+          });
+          records.push(record);
+        }
+
+        // Log the operation (would be replaced with actual logging)
         if (process.env.NODE_ENV !== 'test') {
           console.log(`[CompatibilityService] Batch evaluation completed: ${correlation}`, {
-            count: results.length,
-            verdicts: results.map(r => r.verdict),
+            count: records.length,
+            bodyVersionRef: bodyVersionRef,
           });
         }
 
-        return results;
+        return records;
       } catch (error) {
         console.error(`[CompatibilityService] Batch evaluation failed: ${correlation}`, error);
         throw error;
@@ -159,50 +168,37 @@ export function createCompatibilityService(
     },
 
     getHistory(
-      bodyVersionRef,
-      substrateRef,
+      bodyVersionRef?: string,
+      substrateRef?: string,
       options = {}
     ): readonly CompatibilityRecord[] {
-      const { tenantId: queryTenantId, workspaceId: queryWorkspaceId, from, to } = options;
-      const tenantId = queryTenantId ?? config.tenantId;
-      const workspaceId = queryWorkspaceId ?? config.workspaceId;
+      const { tenantId, workspaceId, from, to } = options;
+      
+      let records = registry.listRecords();
 
-      let records: CompatibilityRecord[] = [];
-
-      // Filter by body version if specified
+      // Filter by body version
       if (bodyVersionRef) {
-        records = [...registry.listRecordsByBody(bodyVersionRef)];
-      }
-      // Filter by substrate if specified
-      else if (substrateRef) {
-        records = [...registry.listRecordsBySubstrate(substrateRef)];
-      }
-      // Get all records
-      else {
-        records = [...registry.listRecords()];
+        records = records.filter(record => record.bodyVersionRef === bodyVersionRef);
       }
 
-      // Apply tenant/workspace filtering
+      // Filter by substrate ref
+      if (substrateRef) {
+        records = records.filter(record => record.substrateRef === substrateRef);
+      }
+
+      // Filter by tenant
       if (tenantId) {
-        records = records.filter(record => 
-          'tenantId' in record && record.tenantId === tenantId
-        );
+        records = records.filter(record => record.tenantId === tenantId);
       }
 
+      // Filter by workspace
       if (workspaceId) {
-        records = records.filter(record => 
-          'workspaceId' in record && record.workspaceId === workspaceId
-        );
+        records = records.filter(record => record.workspaceId === workspaceId);
       }
 
-      // Apply time range filtering
+      // Filter by time range
       if (from || to) {
-        records = registry.listRecordsByTimeRange({ 
-          from: from as any, 
-          to: to as any 
-        }).filter(record =>
-          records.some(r => r.recordDigest === record.recordDigest)
-        );
+        records = registry.listRecordsByTimeRange({ from, to });
       }
 
       return records;
@@ -215,17 +211,21 @@ export function createCompatibilityService(
       return registry.getLatestRecord(bodyVersionRef, substrateRef);
     },
 
-    getStats() {
-      const allRecords = registry.listRecords();
-      const verdictCounts: Record<string, number> = {};
+    getStats(): {
+      totalRecords: number;
+      recordsByVerdict: Record<string, number>;
+    } {
+      const totalRecords = registry.getRecordCount();
+      const recordsByVerdict: Record<string, number> = {};
 
-      for (const record of allRecords) {
-        verdictCounts[record.verdict] = (verdictCounts[record.verdict] || 0) + 1;
-      }
+      // Count records by verdict
+      registry.listRecords().forEach(record => {
+        recordsByVerdict[record.verdict] = (recordsByVerdict[record.verdict] || 0) + 1;
+      });
 
       return {
-        totalRecords: allRecords.length,
-        recordsByVerdict: verdictCounts,
+        totalRecords,
+        recordsByVerdict,
       };
     },
   };
