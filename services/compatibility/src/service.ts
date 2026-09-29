@@ -108,11 +108,16 @@ export function createCompatibilityService(
       const idempotency = toIdempotencyKey(idempotencyKey);
 
       try {
-        const result = await engine.evaluateAndRecord(bodyVersionRef, bodyProfile, substrate, {
-          evaluatedAt: new Date().toISOString(),
-          tenantId: tenantId,
-          workspaceId: workspaceId,
-        });
+        const result = await engine.evaluateAndRecord(
+          bodyVersionRef,
+          bodyProfile,
+          substrate,
+          {
+            evaluatedAt: new Date().toISOString(),
+            ...(tenantId !== undefined ? { tenantId } : {}),
+            ...(workspaceId !== undefined ? { workspaceId } : {}),
+          }
+        );
 
         // Log the operation (would be replaced with actual logging)
         if (process.env.NODE_ENV !== 'test') {
@@ -144,11 +149,16 @@ export function createCompatibilityService(
         const records: CompatibilityRecord[] = [];
 
         for (const substrate of substrates) {
-          const record = await engine.evaluateAndRecord(bodyVersionRef, bodyProfile, substrate, {
-            evaluatedAt: new Date().toISOString(),
-            tenantId: tenantId,
-            workspaceId: workspaceId,
-          });
+          const record = await engine.evaluateAndRecord(
+            bodyVersionRef,
+            bodyProfile,
+            substrate,
+            {
+              evaluatedAt: new Date().toISOString(),
+              ...(tenantId !== undefined ? { tenantId } : {}),
+              ...(workspaceId !== undefined ? { workspaceId } : {}),
+            }
+          );
           records.push(record);
         }
 
@@ -198,7 +208,10 @@ export function createCompatibilityService(
 
       // Filter by time range
       if (from || to) {
-        records = registry.listRecordsByTimeRange({ from, to });
+        records = registry.listRecordsByTimeRange({ 
+          from: from ? from : undefined, 
+          to: to ? to : undefined 
+        });
       }
 
       return records;
