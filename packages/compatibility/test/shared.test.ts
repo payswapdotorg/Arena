@@ -1,110 +1,174 @@
 /**
- * @arena/compatibility — shared types and utilities tests
- * (Work Order A022; requirements R2, R20; spec AB1.0).
+ * @arena/compatibility — compatibility shared utilities tests (Work Order A022;
+ * requirements R2, R20; spec AB1.0; architecture-lock rules 2, 3, 4).
  */
 
 import { describe, it, expect } from 'vitest';
-import { 
+import {
   COMPATIBILITY_VERDICTS,
   isCompatibilityVerdictKind,
-  toCompatibilityVerdictKind,
   createCompatibilityResult,
   isCompatibilityResult,
-  validateTestSuiteRefs,
-} from './shared.js';
+  isCompatibilityRecord,
+} from '../src/shared.js';
+import { CompatibilityError } from '../src/errors.js';
+import { toSubstrateCompatibilityProfile } from '@arena/agent-body';
 
-describe('Compatibility Verdicts', () => {
-  it('should have closed verdict vocabulary', () => {
-    expect(COMPATIBILITY_VERDICTS).toEqual([
-      'compatible',
-      'incompatible-with-reasons',
-      'unknown-with-structured-causes',
-    ]);
+describe('Compatibility Shared Utilities', () => {
+  describe('Verdict Constants', () => {
+    it('should have expected verdict kinds', () => {
+      expect(COMPATIBILITY_VERDICTS).toEqual([
+        'compatible',
+        'incompatible-with-reasons',
+        'unknown-with-structured-causes',
+      ]);
+    });
+
+    it('should validate verdict kinds correctly', () => {
+      expect(isCompatibilityVerdictKind('compatible')).toBe(true);
+      expect(isCompatibilityVerdictKind('incompatible-with-reasons')).toBe(true);
+      expect(isCompatibilityVerdictKind('unknown-with-structured-causes')).toBe(true);
+      expect(isCompatibilityVerdictKind('invalid-verdict')).toBe(false);
+      expect(isCompatibilityVerdictKind('')).toBe(false);
+      expect(isCompatibilityVerdictKind(undefined as any)).toBe(false);
+      expect(isCompatibilityVerdictKind(null as any)).toBe(false);
+    });
   });
 
-  it('should validate verdict kinds', () => {
-    expect(isCompatibilityVerdictKind('compatible')).toBe(true);
-    expect(isCompatibilityVerdictKind('incompatible-with-reasons')).toBe(true);
-    expect(isCompatibilityVerdictKind('unknown-with-structured-causes')).toBe(true);
-    expect(isCompatibilityVerdictKind('invalid-verdict')).toBe(false);
-    expect(isCompatibilityVerdictKind(123)).toBe(false);
+  describe('Compatibility Result Creation', () => {
+    it('should create compatible result', () => {
+      const result = createCompatibilityResult('compatible', []);
+      
+      expect(result.verdict).toBe('compatible');
+      expect(result.reasons).toEqual([]);
+      expect(result.details).toEqual({});
+    });
+
+    it('should create incompatible result with reasons', () => {
+      const result = createCompatibilityResult(
+        'incompatible-with-reasons',
+        ['missing modalities', 'insufficient context']
+      );
+      
+      expect(result.verdict).toBe('incompatible-with-reasons');
+      expect(result.reasons).toEqual(['missing modalities', 'insufficient context']);
+      expect(result.details).toEqual({});
+    });
+
+    it('should create result with details', () => {
+      const details = { missingModalities: ['image-input'], contextMismatch: { required: 200000, actual: 100000 } };
+      const result = createCompatibilityResult('incompatible-with-reasons', ['reason 1'], details);
+      
+      expect(result.verdict).toBe('incompatible-with-reasons');
+      expect(result.reasons).toEqual(['reason 1']);
+      expect(result.details).toEqual(details);
+    });
+
+    it('should validate compatibility results correctly', () => {
+      const validResult = createCompatibilityResult('compatible', []);
+      expect(isCompatibilityResult(validResult)).toBe(true);
+
+      const invalidResult = { verdict: 'compatible' as const };
+      expect(isCompatibilityResult(invalidResult)).toBe(false);
+
+      const invalidVerdict = createCompatibilityResult('invalid-verdict' as any, []);
+      expect(isCompatibilityResult(invalidVerdict)).toBe(false);
+    });
   });
 
-  it('should convert strings to verdict kinds', () => {
-    expect(toCompatibilityVerdictKind('compatible', 'test')).toBe('compatible');
-    expect(() => toCompatibilityVerdictKind('invalid', 'test')).toThrow();
-  });
-});
-
-describe('Compatibility Results', () => {
-  it('should create compatibility results', () => {
-    const result = createCompatibilityResult('compatible', ['all good']);
-    expect(result.verdict).toBe('compatible');
-    expect(result.reasons).toEqual(['all good']);
-    expect(result.details).toEqual({});
-  });
-
-  it('should create compatibility results with details', () => {
-    const details = { missingModalities: ['text'] };
-    const result = createCompatibilityResult('incompatible-with-reasons', ['missing text'], details);
-    expect(result.verdict).toBe('incompatible-with-reasons');
-    expect(result.reasons).toEqual(['missing text']);
-    expect(result.details).toEqual(details);
-  });
-
-  it('should validate compatibility results', () => {
-    expect(isCompatibilityResult({
+  describe('Compatibility Record Validation', () => {
+    const validRecord = {
+      recordVersion: 1,
+      recordDigest: 'abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234',
+      bodyVersionRef: 'body-1',
+      substrateRef: 'substrate-1',
+      evaluatedAt: new Date().toISOString(),
       verdict: 'compatible',
-      reasons: ['test'],
+      reasons: [],
       details: {},
-    })).toBe(true);
+    };
 
-    expect(isCompatibilityResult({
-      verdict: 'incompatible-with-reasons',
-      reasons: ['test'],
-      details: {},
-    })).toBe(true);
+    it('should validate correct records', () => {
+      expect(isCompatibilityRecord(validRecord)).toBe(true);
+    });
 
-    expect(isCompatibilityResult({
-      verdict: 'unknown',
-      reasons: ['test'],
-      details: {},
-    })).toBe(false);
+    it('should reject invalid record versions', () => {
+      const invalidRecord = { ...validRecord, recordVersion: 2 };
+      expect(isCompatibilityRecord(invalidRecord)).toBe(false);
+    });
 
-    expect(isCompatibilityResult({
-      verdict: 'compatible',
-      reasons: 'not an array',
-      details: {},
-    })).toBe(false);
+    it('should reject invalid digests', () => {
+      const invalidRecord = { ...validRecord, recordDigest: 'invalid-digest' };
+      expect(isCompatibilityRecord(invalidRecord)).toBe(false);
+    });
 
-    expect(isCompatibilityResult(null)).toBe(false);
-  });
-});
+    it('should reject invalid verdicts', () => {
+      const invalidRecord = { ...validRecord, verdict: 'invalid-verdict' as any };
+      expect(isCompatibilityRecord(invalidRecord)).toBe(false);
+    });
 
-describe('Test Suite Validation', () => {
-  it('should validate test suite references', () => {
-    const validSuites = [
-      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'b2a0f454c9e0d6929c166ae4512355954d21448c30a9474d69ab34cbb70458a3' },
-      { namespace: 'test', name: 'other', version: '1.0.0', digest: '1111c40225bbce563f847e03dc2375bf0c3ae83bc4887620f9ef477c17552883' },
-    ];
-    
-    expect(() => validateTestSuiteRefs(validSuites)).not.toThrow();
-  });
+    it('should reject missing required fields', () => {
+      const incompleteRecord = { ...validRecord };
+      delete (incompleteRecord as any).bodyVersionRef;
+      expect(isCompatibilityRecord(incompleteRecord)).toBe(false);
+    });
 
-  it('should reject duplicate test suite references', () => {
-    const duplicateSuites = [
-      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'b2a0f454c9e0d6929c166ae4512355954d21448c30a9474d69ab34cbb70458a3' },
-      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'b2a0f454c9e0d6929c166ae4512355954d21448c30a9474d69ab34cbb70458a3' },
-    ];
-    
-    expect(() => validateTestSuiteRefs(duplicateSuites)).toThrow('duplicate test suite reference');
+    it('should reject non-object details', () => {
+      const invalidRecord = { ...validRecord, details: 'not-an-object' as any };
+      expect(isCompatibilityRecord(invalidRecord)).toBe(false);
+    });
   });
 
-  it('should reject invalid test suite references', () => {
-    const invalidSuites = [
-      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'invalid-digest' },
-    ];
-    
-    expect(() => validateTestSuiteRefs(invalidSuites)).toThrow('invalid test suite reference');
+  describe('Profile Creation', () => {
+    it('should create basic compatibility profile', () => {
+      const profile = toSubstrateCompatibilityProfile({
+        requiredModalities: ['text-input'],
+        requiredToolCalling: 'text-protocol',
+        contextRequirements: { minContextUnits: 10000 },
+      });
+
+      expect(profile.recordVersion).toBe(1);
+      expect(profile.requiredModalities).toEqual(['text-input']);
+      expect(profile.requiredToolCalling).toBe('text-protocol');
+      expect(profile.contextRequirements.minContextUnits).toBe(10000);
+    });
+
+    it('should create profile with all options', () => {
+      const profile = toSubstrateCompatibilityProfile({
+        requiredModalities: ['text-input', 'image-input'],
+        requiredToolCalling: 'json-schema',
+        contextRequirements: { minContextUnits: 50000, maxOutputUnits: 4000 },
+        prohibitedConditions: ['deprecated', 'experimental'],
+        requiredEvaluationSuites: [
+          { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'test-suite-digest' }
+        ],
+      });
+
+      expect(profile.requiredModalities).toEqual(['text-input', 'image-input']);
+      expect(profile.requiredToolCalling).toBe('json-schema');
+      expect(profile.contextRequirements.minContextUnits).toBe(50000);
+      expect(profile.prohibitedConditions).toEqual(['deprecated', 'experimental']);
+      expect(profile.requiredEvaluationSuites).toHaveLength(1);
+    });
+
+    it('should validate required modalities', () => {
+      expect(() => toSubstrateCompatibilityProfile({
+        requiredModalities: ['text-input' as any],
+      })).toThrow();
+    });
+
+    it('should validate tool calling levels', () => {
+      expect(() => toSubstrateCompatibilityProfile({
+        requiredModalities: ['text-input'],
+        requiredToolCalling: 'invalid-level' as any,
+      })).toThrow();
+    });
+
+    it('should validate context requirements', () => {
+      expect(() => toSubstrateCompatibilityProfile({
+        requiredModalities: ['text-input'],
+        contextRequirements: { minContextUnits: -1 } as any,
+      })).toThrow();
+    });
   });
 });

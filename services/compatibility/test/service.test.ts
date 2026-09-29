@@ -3,7 +3,7 @@
  * requirements R2, R20; spec AB1.0; architecture-lock rules 2, 3, 4).
  */
 
-import { createCompatibilityService } from './service.js';
+import { createCompatibilityService } from '../src/service.js';
 import { toSubstrateCompatibilityProfile } from '@arena/agent-body';
 
 // Mock test data

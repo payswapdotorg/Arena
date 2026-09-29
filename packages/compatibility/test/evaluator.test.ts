@@ -7,9 +7,9 @@ import {
   toSubstrateCompatibilityProfile,
   createCognitiveSubstrate,
 } from '@arena/agent-body';
-import { evaluateBodySubstrateCompatibility, evaluateMultipleSubstrates, isCompatible } from './evaluator.js';
-import { CompatibilityError } from './errors.js';
-import type { CompatibilityResult } from './shared.js';
+import { evaluateBodySubstrateCompatibility, evaluateMultipleSubstrates, isCompatible } from '../src/evaluator.js';
+import { CompatibilityError } from '../src/errors.js';
+import type { CompatibilityResult } from '../src/shared.js';
 
 describe('Compatibility Evaluation', () => {
   it('should evaluate compatible substrate', async () => {

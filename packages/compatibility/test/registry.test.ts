@@ -3,12 +3,12 @@
  * requirements R2, R20; spec AB1.0; architecture-lock rules 2, 3, 4).
  */
 
-import { CompatibilityRegistry } from './registry.js';
-import { CompatibilityError } from './errors.js';
+import { CompatibilityRegistry } from '../src/registry.js';
+import { CompatibilityError } from '../src/errors.js';
 import {
   type CompatibilityRecord,
   createCompatibilityResult,
-} from './shared.js';
+} from '../src/shared.js';
 
 // Mock test data - using valid content digests (64-char lowercase hex)
 const D1 = 'abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234';
