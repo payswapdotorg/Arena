@@ -1,0 +1,65 @@
+{
+  "$defs": {
+    "unknownCause": {
+      "additionalProperties": false,
+      "description": "The structured WHY of an unknown outcome: a closed reason taxonomy member plus the deterministic detail naming the driving stage ids. REQUIRED iff the verdict is unknown; MUST be null otherwise.",
+      "properties": {
+        "detail": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "missing-evidence",
+            "evidence-mismatch",
+            "invalid-evidence",
+            "method-limitation",
+            "tenant-mismatch"
+          ]
+        }
+      },
+      "required": [
+        "reason",
+        "detail"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/certification/certification-outcome@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The verdict discipline: the closed suite-verdict vocabulary (satisfied | not-satisfied | unknown — never a score), the closed unknown-cause reason taxonomy and the closed per-stage machine reasons. Derivation is pure: any failed stage ⇒ not-satisfied; else any unknown stage ⇒ unknown (fail-closed); else satisfied.",
+  "properties": {
+    "reasons": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "unknownCause": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/unknownCause"
+        }
+      ]
+    },
+    "verdict": {
+      "enum": [
+        "satisfied",
+        "not-satisfied",
+        "unknown"
+      ]
+    }
+  },
+  "required": [
+    "verdict",
+    "unknownCause",
+    "reasons"
+  ],
+  "title": "Arena certification-outcome v1",
+  "type": "object"
+}

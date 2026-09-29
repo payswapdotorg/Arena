@@ -1,0 +1,27 @@
+{
+  "$id": "arena:schema/certification/certification-level@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The quality-model certification levels — lifecycle states of a SCOPED claim, never universal professional ratings. The grant vocabulary is DEVELOPMENT | CANDIDATE | CERTIFIED; CONDITIONAL is derived from declared constraints; REVOKED is never granted by a run (it is the effective state of a prior claim after an append-only revocation).",
+  "properties": {
+    "grantable": {
+      "description": "True for DEVELOPMENT | CANDIDATE | CERTIFIED (the grant vocabulary).",
+      "type": "boolean"
+    },
+    "level": {
+      "enum": [
+        "DEVELOPMENT",
+        "CANDIDATE",
+        "CERTIFIED",
+        "CONDITIONAL",
+        "REVOKED"
+      ]
+    }
+  },
+  "required": [
+    "level",
+    "grantable"
+  ],
+  "title": "Arena certification-level v1",
+  "type": "object"
+}
