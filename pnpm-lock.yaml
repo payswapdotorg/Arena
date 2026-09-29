@@ -365,6 +365,37 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/skill-extraction:
+    dependencies:
+      '@arena/capability-graph':
+        specifier: workspace:*
+        version: link:../capability-graph
+      '@arena/evaluation':
+        specifier: workspace:*
+        version: link:../evaluation
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+      '@arena/trajectory':
+        specifier: workspace:*
+        version: link:../trajectory
+      '@arena/verification':
+        specifier: workspace:*
+        version: link:../verification
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/trajectory:
     dependencies:
       '@arena/environment-protocol':
@@ -474,6 +505,40 @@ importers:
         specifier: workspace:*
         version: link:../../packages/protocol-core
     devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/skill-extraction:
+    dependencies:
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+      '@arena/skill-extraction':
+        specifier: workspace:*
+        version: link:../../packages/skill-extraction
+    devDependencies:
+      '@arena/capability-graph':
+        specifier: workspace:*
+        version: link:../../packages/capability-graph
+      '@arena/evaluation':
+        specifier: workspace:*
+        version: link:../../packages/evaluation
+      '@arena/trajectory':
+        specifier: workspace:*
+        version: link:../../packages/trajectory
+      '@arena/verification':
+        specifier: workspace:*
+        version: link:../../packages/verification
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4
