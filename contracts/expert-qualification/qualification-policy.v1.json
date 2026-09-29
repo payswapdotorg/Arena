@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "conflictRule": {
+      "additionalProperties": false,
+      "description": "One conflict rule: evidence of the declared kind (for verification refs, optionally restricted to a declared derived outcome) revokes the qualification regardless of positive evidence (spec/quality-model.md conflicts/limitations).",
+      "properties": {
+        "evidenceKind": {
+          "enum": [
+            "credential-ref",
+            "work-product-ref",
+            "verification-ref",
+            "evaluation-ref"
+          ]
+        },
+        "outcome": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "pass",
+                "fail",
+                "unknown"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "evidenceKind",
+        "outcome"
+      ],
+      "type": "object"
+    },
+    "policyRequirement": {
+      "additionalProperties": false,
+      "description": "One evidence requirement of a qualification policy: the evidence kind and the minimum FRESH count required at evaluation time.",
+      "properties": {
+        "evidenceKind": {
+          "enum": [
+            "credential-ref",
+            "work-product-ref",
+            "verification-ref",
+            "evaluation-ref"
+          ]
+        },
+        "minimumCount": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "requirementId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirementId",
+        "evidenceKind",
+        "minimumCount"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert-qualification/qualification-policy@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The versioned, content-addressed rules stating WHAT EVIDENCE QUALIFIES a competency claim: per-kind minimum FRESH counts (requirement ids unique), the freshness window (recency bound), the validity window (renewal/decay) and the conflict rules (evidence that revokes regardless of positive evidence). Same policy => same digest; changing a policy requires a new version. The policy is DATA about evidence adjudication — it grants NOTHING (lock rule 9).",
+  "properties": {
+    "conflictEvidence": {
+      "description": "Conflict rules; (evidenceKind, outcome) pairs unique.",
+      "items": {
+        "$ref": "#/$defs/conflictRule"
+      },
+      "type": "array"
+    },
+    "description": {
+      "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "freshnessWindowDays": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "policyId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "policyVersion": {
+      "const": 1,
+      "description": "Wire version of the policy shape."
+    },
+    "requirements": {
+      "description": "The evidence requirements; requirement ids unique within the policy.",
+      "items": {
+        "$ref": "#/$defs/policyRequirement"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "validityWindowDays": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "policyVersion",
+    "policyId",
+    "version",
+    "description",
+    "requirements",
+    "freshnessWindowDays",
+    "validityWindowDays",
+    "conflictEvidence",
+    "digest"
+  ],
+  "title": "Arena QualificationPolicy v1",
+  "type": "object"
+}

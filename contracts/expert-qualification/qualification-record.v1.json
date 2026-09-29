@@ -1,0 +1,146 @@
+{
+  "$defs": {
+    "requirementOutcome": {
+      "additionalProperties": false,
+      "description": "The per-requirement sufficiency evidence: the policy demand, the evidence supply (present/fresh counts, supersession-resolved) and the satisfied flag. Counts and booleans ONLY — no scores, no aggregates (spec/quality-model.md).",
+      "properties": {
+        "evidenceKind": {
+          "enum": [
+            "credential-ref",
+            "work-product-ref",
+            "verification-ref",
+            "evaluation-ref"
+          ]
+        },
+        "freshCount": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "presentCount": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "requiredCount": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "requirementId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "satisfied": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "requirementId",
+        "evidenceKind",
+        "requiredCount",
+        "presentCount",
+        "freshCount",
+        "satisfied",
+        "reason"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert-qualification/qualification-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The COMPUTED qualification state of one claim under one declared policy at one fixed time: the closed status vocabulary (qualified | unqualified | stale | expired | revoked), the per-requirement sufficiency outcomes (counts + freshness, no scores), the qualifying and conflict evidence digests, the validity window (present iff qualified) and the supersession chain. Derived by the PURE engine (conflict first, freshness next, sufficiency last); expiry APPENDS decay records and never rewrites history (lock rule 6). QUALIFICATION IS DATA, NEVER AUTHORIZATION (lock rule 9) — the record is an input to matching and audit, nothing more.",
+  "properties": {
+    "claimDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "conflictEvidence": {
+      "description": "The conflict evidence digests that drove a revocation (sorted).",
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evaluatedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "note": {
+      "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+      "type": "string"
+    },
+    "policyDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "qualifyingEvidence": {
+      "description": "The fresh evidence digests that satisfied requirements (sorted).",
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the record shape."
+    },
+    "requirementOutcomes": {
+      "description": "One outcome per declared policy requirement, in policy order. EMPTY iff the status is expired (decay records document the lapse, not a fresh evaluation).",
+      "items": {
+        "$ref": "#/$defs/requirementOutcome"
+      },
+      "type": "array"
+    },
+    "status": {
+      "description": "Data about the evidence lifecycle of a claim; no member is a permission (lock rule 9).",
+      "enum": [
+        "qualified",
+        "unqualified",
+        "stale",
+        "expired",
+        "revoked"
+      ]
+    },
+    "supersedes": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "validFrom": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "validUntil": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "claimDigest",
+    "policyDigest",
+    "status",
+    "evaluatedAt",
+    "requirementOutcomes",
+    "qualifyingEvidence",
+    "conflictEvidence",
+    "digest"
+  ],
+  "title": "Arena QualificationRecord v1",
+  "type": "object"
+}

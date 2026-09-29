@@ -1,0 +1,198 @@
+{
+  "$defs": {
+    "matchCandidate": {
+      "additionalProperties": false,
+      "description": "One ranked candidate: the expert, the aggregate-free counters derived from the entries (satisfiedCount/evidenceCount are structural counts of per-requirement evidence, not quality scores) and the per-requirement entries.",
+      "properties": {
+        "evidenceCount": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "expertId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,254}$",
+          "type": "string"
+        },
+        "perRequirement": {
+          "items": {
+            "$ref": "#/$defs/perRequirementEntry"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "satisfiedAll": {
+          "type": "boolean"
+        },
+        "satisfiedCount": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expertId",
+        "tenant",
+        "satisfiedAll",
+        "satisfiedCount",
+        "evidenceCount",
+        "perRequirement"
+      ],
+      "type": "object"
+    },
+    "perRequirementEntry": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/satisfiedEntry"
+        },
+        {
+          "$ref": "#/$defs/unsatisfiedEntry"
+        }
+      ]
+    },
+    "satisfiedEntry": {
+      "additionalProperties": false,
+      "description": "A SATISFIED per-requirement entry: the matched proficiency, the matched claim, the in-force qualification record and the qualifying evidence digests.",
+      "properties": {
+        "claimDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "evidenceDigests": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "matchedProficiency": {
+          "enum": [
+            "introductory",
+            "working",
+            "proficient",
+            "advanced",
+            "distinguished"
+          ]
+        },
+        "recordDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "requirementId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "satisfied": {
+          "const": true
+        }
+      },
+      "required": [
+        "requirementId",
+        "satisfied",
+        "matchedProficiency",
+        "claimDigest",
+        "recordDigest",
+        "evidenceDigests"
+      ],
+      "type": "object"
+    },
+    "unsatisfiedEntry": {
+      "additionalProperties": false,
+      "description": "An UNSATISFIED per-requirement entry: the explicit unmatched reason from the closed vocabulary (no silent best-effort).",
+      "properties": {
+        "evidenceDigests": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "maxItems": 0,
+          "type": "array"
+        },
+        "requirementId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "satisfied": {
+          "const": false
+        },
+        "unmatchedReason": {
+          "enum": [
+            "no-competency-claim",
+            "qualification-missing",
+            "qualification-unqualified",
+            "qualification-stale",
+            "qualification-expired",
+            "qualification-revoked",
+            "proficiency-below-threshold",
+            "domain-mismatch",
+            "jurisdiction-mismatch",
+            "availability-conflict"
+          ]
+        }
+      },
+      "required": [
+        "requirementId",
+        "satisfied",
+        "evidenceDigests",
+        "unmatchedReason"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert-qualification/match-result@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The deterministic result of one match run: ranked candidates, each carrying FOR EACH request requirement the satisfaction evidence (matched claim digest, in-force qualification record digest, qualifying evidence digests) or an EXPLICIT unmatched reason from the closed vocabulary — no silent best-effort, no aggregate score. requirementsUnmet lists the request requirements NO returned candidate satisfies; truncated flags a cap-driven cut. Content-addressed.",
+  "properties": {
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/matchCandidate"
+      },
+      "type": "array"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evaluatedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "matchingPolicyDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "requestDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "requirementsUnmet": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9-]{0,63}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "resultVersion": {
+      "const": 1,
+      "description": "Wire version of the result shape."
+    },
+    "truncated": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "resultVersion",
+    "requestDigest",
+    "matchingPolicyDigest",
+    "evaluatedAt",
+    "candidates",
+    "requirementsUnmet",
+    "truncated",
+    "digest"
+  ],
+  "title": "Arena MatchResult v1",
+  "type": "object"
+}

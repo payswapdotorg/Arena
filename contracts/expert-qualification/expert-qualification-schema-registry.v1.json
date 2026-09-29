@@ -1,0 +1,24 @@
+{
+  "$id": "arena:schema/expert-qualification/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/expert-qualification. A SchemaRef matching this enum is a known expert-qualification-protocol schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/expert-qualification/qualification-evidence@1.0.0",
+    "arena:schema/expert-qualification/competency-claim@1.0.0",
+    "arena:schema/expert-qualification/qualification-policy@1.0.0",
+    "arena:schema/expert-qualification/qualification-record@1.0.0",
+    "arena:schema/expert-qualification/qualified-expert@1.0.0",
+    "arena:schema/expert-qualification/match-request@1.0.0",
+    "arena:schema/expert-qualification/matching-policy@1.0.0",
+    "arena:schema/expert-qualification/match-result@1.0.0",
+    "arena:schema/expert-qualification/error@1.0.0",
+    "arena:schema/expert-qualification/qualify-claim-command@1.0.0",
+    "arena:schema/expert-qualification/record-qualification-expiry-command@1.0.0",
+    "arena:schema/expert-qualification/qualification-recorded-event@1.0.0",
+    "arena:schema/expert-qualification/match-experts-query@1.0.0",
+    "arena:schema/expert-qualification/match-completed-response@1.0.0",
+    "arena:schema/expert-qualification/schema-registry@1.0.0"
+  ],
+  "title": "Arena expert-qualification-protocol schema registry v1",
+  "type": "string"
+}

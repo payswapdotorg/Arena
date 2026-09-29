@@ -1,0 +1,20 @@
+{
+  "$id": "arena:schema/expert-qualification/match-experts-query@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Query envelope payload: match one request under one matching policy. Queries are pure — no idempotency key is required (lock rule 17 command discipline applies to mutations).",
+  "properties": {
+    "policy": {
+      "$ref": "arena:schema/expert-qualification/matching-policy@1.0.0"
+    },
+    "request": {
+      "$ref": "arena:schema/expert-qualification/match-request@1.0.0"
+    }
+  },
+  "required": [
+    "request",
+    "policy"
+  ],
+  "title": "Arena match-experts-query v1",
+  "type": "object"
+}

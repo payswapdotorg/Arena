@@ -1,0 +1,31 @@
+{
+  "$id": "arena:schema/expert-qualification/qualify-claim-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: evaluate one competency claim under one qualification policy at one fixed time. Carries the digest refs of the claim and the policy, the evaluation time (determinism anchor) and the renew flag (true to supersede the latest record of the claim). Commands carry a REQUIRED non-null idempotency key (architecture-lock rule 17).",
+  "properties": {
+    "claimRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evaluatedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "policyRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "renew": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "claimRef",
+    "policyRef",
+    "evaluatedAt",
+    "renew"
+  ],
+  "title": "Arena qualify-claim-command v1",
+  "type": "object"
+}

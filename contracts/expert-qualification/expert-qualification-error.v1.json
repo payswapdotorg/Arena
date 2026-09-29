@@ -1,0 +1,62 @@
+{
+  "$id": "arena:schema/expert-qualification/error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Wire-safe structured form of an ExpertQualificationError: closed EXPERT_QUALIFICATION_* code set, core category mapping, strictly validating parse (unknown codes rejected). No code grants, implies or records a permission (lock rule 9).",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "EXPERT_QUALIFICATION_DUPLICATE_EVIDENCE",
+        "EXPERT_QUALIFICATION_DUPLICATE_REQUIREMENT",
+        "EXPERT_QUALIFICATION_IDEMPOTENCY_CONFLICT",
+        "EXPERT_QUALIFICATION_IDENTITY_CONFLICT",
+        "EXPERT_QUALIFICATION_INVALID_CLAIM",
+        "EXPERT_QUALIFICATION_INVALID_DIGEST",
+        "EXPERT_QUALIFICATION_INVALID_EVIDENCE",
+        "EXPERT_QUALIFICATION_INVALID_EXPERT_CARD",
+        "EXPERT_QUALIFICATION_INVALID_IDENTITY",
+        "EXPERT_QUALIFICATION_INVALID_MATCHING_POLICY",
+        "EXPERT_QUALIFICATION_INVALID_POLICY",
+        "EXPERT_QUALIFICATION_INVALID_RECORD",
+        "EXPERT_QUALIFICATION_INVALID_REF",
+        "EXPERT_QUALIFICATION_INVALID_REQUEST",
+        "EXPERT_QUALIFICATION_INVALID_RESULT",
+        "EXPERT_QUALIFICATION_INVALID_TIMESTAMP",
+        "EXPERT_QUALIFICATION_MISSING_EVIDENCE",
+        "EXPERT_QUALIFICATION_NOT_FOUND",
+        "EXPERT_QUALIFICATION_SUPERSESSION_CONFLICT",
+        "EXPERT_QUALIFICATION_TAMPERED",
+        "EXPERT_QUALIFICATION_UNKNOWN_ERROR",
+        "EXPERT_QUALIFICATION_UNSUPPORTED_RECORD_VERSION",
+        "EXPERT_QUALIFICATION_VERSION_CONFLICT"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena ExpertQualificationError v1",
+  "type": "object"
+}

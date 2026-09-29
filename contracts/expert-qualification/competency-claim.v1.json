@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "capabilityRef": {
+      "additionalProperties": false,
+      "description": "A content-addressed Capability Graph node reference (the A006/A004 view). Matching compares these refs EXACTLY (kind:id@version#digest) — content-addressed matching.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "capability",
+            "sub-capability",
+            "skill",
+            "expert-competency",
+            "domain"
+          ]
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert-qualification/competency-claim@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "An expert's claim on a capability/skill node ref with a typed proficiency level (A006's closed vocabulary) and the evidence digests backing it (>= 1, unique — an evidence-free claim is structurally not a claim, R7). Content-addressed, immutable; tenant-scoped (lock rule 11); re-claiming APPENDS a superseding claim (lock rule 6).",
+  "properties": {
+    "capability": {
+      "$ref": "#/$defs/capabilityRef"
+    },
+    "claimVersion": {
+      "const": 1,
+      "description": "Wire version of the claim shape."
+    },
+    "declaredAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evidence": {
+      "description": "The evidence digests backing the claim (unique).",
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "expertId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,254}$",
+      "type": "string"
+    },
+    "proficiency": {
+      "enum": [
+        "introductory",
+        "working",
+        "proficient",
+        "advanced",
+        "distinguished"
+      ]
+    },
+    "supersedes": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "tenant": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claimVersion",
+    "expertId",
+    "tenant",
+    "capability",
+    "proficiency",
+    "evidence",
+    "declaredAt",
+    "digest"
+  ],
+  "title": "Arena CompetencyClaim v1",
+  "type": "object"
+}

@@ -1,0 +1,22 @@
+{
+  "$id": "arena:schema/expert-qualification/record-qualification-expiry-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: append the decay record for a qualification whose validity window has elapsed (expiry NEVER rewrites history — this appends the expired record that supersedes the lapsed one). Commands carry a REQUIRED non-null idempotency key (architecture-lock rule 17).",
+  "properties": {
+    "claimRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evaluatedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "claimRef",
+    "evaluatedAt"
+  ],
+  "title": "Arena record-qualification-expiry-command v1",
+  "type": "object"
+}

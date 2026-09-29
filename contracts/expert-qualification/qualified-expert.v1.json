@@ -1,0 +1,154 @@
+{
+  "$defs": {
+    "availabilityWindow": {
+      "additionalProperties": false,
+      "description": "One typed availability window (structurally @arena/expert-registry AvailabilityWindow): daily/weekly/one-time recurrences with HH:MM-HH:MM UTC intervals.",
+      "properties": {
+        "date": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "type": "string"
+        },
+        "dayOfWeek": {
+          "maximum": 7,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "endUtc": {
+          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+          "type": "string"
+        },
+        "recurrence": {
+          "enum": [
+            "daily",
+            "weekly",
+            "one-time"
+          ]
+        },
+        "startUtc": {
+          "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+          "type": "string"
+        },
+        "windowVersion": {
+          "const": 1
+        }
+      },
+      "required": [
+        "windowVersion",
+        "recurrence",
+        "startUtc",
+        "endUtc"
+      ],
+      "type": "object"
+    },
+    "capabilityRef": {
+      "additionalProperties": false,
+      "description": "A content-addressed Capability Graph node reference (the A006/A004 view). Matching compares these refs EXACTLY (kind:id@version#digest) — content-addressed matching.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,127}$",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "capability",
+            "sub-capability",
+            "skill",
+            "expert-competency",
+            "domain"
+          ]
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "jurisdiction": {
+      "additionalProperties": false,
+      "description": "A typed ISO 3166 jurisdiction (structurally @arena/expert-registry JurisdictionView). Professional-scope metadata, not personal location data.",
+      "properties": {
+        "country": {
+          "pattern": "^[A-Z]{2}$",
+          "type": "string"
+        },
+        "jurisdictionVersion": {
+          "const": 1
+        },
+        "region": {
+          "pattern": "^[A-Z0-9]{1,3}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "jurisdictionVersion",
+        "country"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/expert-qualification/qualified-expert@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The tenant-scoped matching-side view of an expert (structurally compatible with A006 profile data, consumed as DATA — never modified): neutral expert id, tenant scope, declared domain node refs, typed jurisdictions and typed availability windows. Carries NO quality aggregate and NO task history — matching ranks by per-requirement qualification evidence only (spec/quality-model.md).",
+  "properties": {
+    "availability": {
+      "description": "The typed availability windows (0+ — no availability declared).",
+      "items": {
+        "$ref": "#/$defs/availabilityWindow"
+      },
+      "type": "array"
+    },
+    "cardVersion": {
+      "const": 1,
+      "description": "Wire version of the expert-card shape."
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "domainRefs": {
+      "description": "The capability-graph DOMAIN nodes the expert scope covers (0+).",
+      "items": {
+        "$ref": "#/$defs/capabilityRef"
+      },
+      "type": "array"
+    },
+    "expertId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,254}$",
+      "type": "string"
+    },
+    "jurisdictions": {
+      "description": "The typed jurisdictions the expert scope covers (0+).",
+      "items": {
+        "$ref": "#/$defs/jurisdiction"
+      },
+      "type": "array"
+    },
+    "tenant": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "cardVersion",
+    "expertId",
+    "tenant",
+    "domainRefs",
+    "jurisdictions",
+    "availability",
+    "digest"
+  ],
+  "title": "Arena QualifiedExpertCard v1",
+  "type": "object"
+}
