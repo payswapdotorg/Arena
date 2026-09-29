@@ -1,0 +1,22 @@
+{
+  "$id": "arena:schema/learning/run-experiment-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: run one learning experiment. Carries the digest ref of the ExperimentDescriptor and the experiment key (idempotency key); the engine resolves the descriptor, executes the pure comparison/attribution/verdict computation over the supplied arm records and emits experiment-completed-event. Commands carry a REQUIRED non-null idempotency key (architecture-lock rule 17).",
+  "properties": {
+    "descriptorRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "experimentKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "descriptorRef",
+    "experimentKey"
+  ],
+  "title": "Arena run-experiment-command v1",
+  "type": "object"
+}

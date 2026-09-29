@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "liftConditions": {
+      "additionalProperties": false,
+      "description": "The five Q1.0 success conditions, each explicitly evaluated (never implied).",
+      "properties": {
+        "evaluatorVersionChangesAccounted": {
+          "type": "boolean"
+        },
+        "pinnedPopulationImprovement": {
+          "type": "boolean"
+        },
+        "protectedCapabilityRegressionMeasured": {
+          "type": "boolean"
+        },
+        "survivesVerificationAudit": {
+          "type": "boolean"
+        },
+        "uncertaintyReported": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pinnedPopulationImprovement",
+        "survivesVerificationAudit",
+        "evaluatorVersionChangesAccounted",
+        "protectedCapabilityRegressionMeasured",
+        "uncertaintyReported"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/learning/capability-lift-verdict@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The Q1.0 five-condition verdict: lift-demonstrated ONLY when (1) the target capability improves on a pinned evaluation population, (2) the improvement survives a verification audit, (3) evaluator/version changes are accounted for, (4) regression on protected capabilities is measured, and (5) uncertainty/variance is reported where material. Otherwise not-demonstrated / inconclusive-unless-controlled / regression-detected. CLOSED VOCABULARY, NEVER A SCORE.",
+  "properties": {
+    "basis": {
+      "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+      "type": "string"
+    },
+    "conditions": {
+      "$ref": "#/$defs/liftConditions"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the verdict shape."
+    },
+    "verdict": {
+      "enum": [
+        "lift-demonstrated",
+        "not-demonstrated",
+        "inconclusive-unless-controlled",
+        "regression-detected"
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "verdict",
+    "conditions",
+    "basis"
+  ],
+  "title": "Arena CapabilityLiftVerdict v1",
+  "type": "object"
+}

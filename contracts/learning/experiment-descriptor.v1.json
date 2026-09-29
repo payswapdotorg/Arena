@@ -1,0 +1,369 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "description": "The A002-shaped artifact reference: namespace/name/version + content digest. The referenced object is bound BY DIGEST, never redefined here.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "capabilityNodeRef": {
+      "additionalProperties": false,
+      "description": "A content-addressed reference to an A004 capability node (the REAL capability-graph shape): kind/id/version + digest.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "kind": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "descriptorProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of the experiment declaration.",
+      "properties": {
+        "authoredBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "submittedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "authoredBy",
+        "submittedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "interventionArtifact": {
+      "additionalProperties": false,
+      "description": "One intervention artifact: a typed A002-shaped ref PLUS the EXPLICIT changed surface from the LE1.0 nine. An intervention with an undeclared (missing) or ambiguous (outside the closed vocabulary) changed surface is REJECTED.",
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "changedSurface": {
+          "enum": [
+            "skills",
+            "procedures",
+            "retrieval-knowledge",
+            "tool-configuration",
+            "memory-policy",
+            "evaluator-verifier",
+            "substrate",
+            "model-specific-adaptation",
+            "body-composition"
+          ]
+        }
+      },
+      "required": [
+        "artifact",
+        "changedSurface"
+      ],
+      "type": "object"
+    },
+    "metricDeclaration": {
+      "additionalProperties": false,
+      "description": "One declared outcome metric: id, description and a CLOSED direction (what \"improves\" means for Q1.0 condition 1).",
+      "properties": {
+        "description": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "higher-is-better",
+            "lower-is-better"
+          ]
+        },
+        "metricId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metricId",
+        "description",
+        "direction"
+      ],
+      "type": "object"
+    },
+    "protectedCapability": {
+      "additionalProperties": false,
+      "description": "One protected capability: the A004 node ref plus the metric id and direction with which regression is measured in both arms (Q1.0 condition 4).",
+      "properties": {
+        "direction": {
+          "enum": [
+            "higher-is-better",
+            "lower-is-better"
+          ]
+        },
+        "metricId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/capabilityNodeRef"
+        }
+      },
+      "required": [
+        "ref",
+        "metricId",
+        "direction"
+      ],
+      "type": "object"
+    },
+    "taskVersionRef": {
+      "additionalProperties": false,
+      "description": "The A009-shaped task/version ref (the same form A011 trajectory headers pin).",
+      "properties": {
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^[0-9A-Za-z][0-9A-Za-z._:-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskId",
+        "version"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/learning/experiment-descriptor@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The content-addressed, versioned declaration of a learning experiment (LE1.0 Experiment): experiment id/version; target capability (A004-shaped ref); baseline Body/Model/Runtime digest pins; intervention artifacts with EXPLICIT changed surfaces from the LE1.0 nine (undeclared/ambiguous surfaces are rejected); pinned task population; A012 evaluation-suite digests; A013 verification-suite digests; environment versions; outcome metric declarations with closed directions; uncertainty/statistical method; protected capabilities (Q1.0 condition 4); provenance. Same descriptor ⇒ same digest; any change ⇒ a new version. Deep-frozen, no mutation API.",
+  "properties": {
+    "baseline": {
+      "additionalProperties": false,
+      "description": "The baseline composition (LE1.0 baseline Body/Model/Runtime): digest-addressed pins, each nullable when unbound.",
+      "properties": {
+        "bodyRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "runtimeRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "substrateRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "bodyRef",
+        "substrateRef",
+        "runtimeRef"
+      ],
+      "type": "object"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environmentVersions": {
+      "description": "The pinned content-addressed environment versions.",
+      "items": {
+        "$ref": "#/$defs/artifactRef"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "evaluationSuiteRefs": {
+      "description": "A012 EvaluationCriteria/EvaluatorDescriptor digests.",
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "experimentId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "interventions": {
+      "description": "The intervention artifacts (≥1); artifact digests unique within the descriptor.",
+      "items": {
+        "$ref": "#/$defs/interventionArtifact"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "outcomeMetrics": {
+      "description": "The declared outcome metrics (ids unique).",
+      "items": {
+        "$ref": "#/$defs/metricDeclaration"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "protectedCapabilities": {
+      "description": "The protected capabilities whose regression the experiment must measure; declaring none prevents lift-demonstrated (Q1.0 condition 4 fails closed).",
+      "items": {
+        "$ref": "#/$defs/protectedCapability"
+      },
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/descriptorProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the descriptor shape."
+    },
+    "targetCapability": {
+      "$ref": "#/$defs/capabilityNodeRef"
+    },
+    "taskPopulation": {
+      "description": "The pinned task population (Q1.0 condition 1: improvement is measured on a PINNED evaluation population).",
+      "items": {
+        "$ref": "#/$defs/taskVersionRef"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "uncertainty": {
+      "additionalProperties": false,
+      "description": "The declared uncertainty/statistical method (LE1.0) — how variance is computed and reported.",
+      "properties": {
+        "method": {
+          "enum": [
+            "none",
+            "analytic-variance",
+            "bootstrap",
+            "paired-permutation"
+          ]
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "verificationSuiteRefs": {
+      "description": "A013 VerifierDescriptor digests.",
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "experimentId",
+    "version",
+    "targetCapability",
+    "baseline",
+    "interventions",
+    "taskPopulation",
+    "evaluationSuiteRefs",
+    "verificationSuiteRefs",
+    "environmentVersions",
+    "outcomeMetrics",
+    "uncertainty",
+    "protectedCapabilities",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena ExperimentDescriptor v1",
+  "type": "object"
+}

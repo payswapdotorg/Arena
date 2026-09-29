@@ -1,0 +1,240 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "description": "The A002-shaped artifact reference: namespace/name/version + content digest. The referenced object is bound BY DIGEST, never redefined here.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "capabilityNodeRef": {
+      "additionalProperties": false,
+      "description": "A content-addressed reference to an A004 capability node (the REAL capability-graph shape): kind/id/version + digest.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "kind": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "taskVersionRef": {
+      "additionalProperties": false,
+      "description": "The A009-shaped task/version ref (the same form A011 trajectory headers pin).",
+      "properties": {
+        "taskId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^[0-9A-Za-z][0-9A-Za-z._:-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskId",
+        "version"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/learning/calibration-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The LE1.0 Calibration record: where later-observed outcomes exist, the predicted confidence/score is compared with the observed outcome and the APPLICABILITY CONTEXT is preserved (target capability ref, pinned task population, pinned environment versions — the context in which the prediction applies).",
+  "properties": {
+    "applicability": {
+      "additionalProperties": false,
+      "description": "The preserved applicability context: where the prediction applies (target capability, pinned task population, pinned environment versions).",
+      "properties": {
+        "environmentVersions": {
+          "items": {
+            "$ref": "#/$defs/artifactRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "targetCapability": {
+          "$ref": "#/$defs/capabilityNodeRef"
+        },
+        "taskPopulation": {
+          "items": {
+            "$ref": "#/$defs/taskVersionRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "targetCapability",
+        "taskPopulation",
+        "environmentVersions"
+      ],
+      "type": "object"
+    },
+    "calibrationId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "experimentRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "metricId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "observed": {
+      "additionalProperties": false,
+      "description": "The later-observed outcome: closed vocabulary (improved | not-improved | regressed | inconclusive) plus the observed delta (null when none).",
+      "properties": {
+        "delta": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "improved",
+            "not-improved",
+            "regressed",
+            "inconclusive"
+          ]
+        }
+      },
+      "required": [
+        "outcome",
+        "delta"
+      ],
+      "type": "object"
+    },
+    "observedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "predicted": {
+      "additionalProperties": false,
+      "description": "The prediction: confidence in [0, 1] plus the predicted delta (null when none).",
+      "properties": {
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "delta": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "required": [
+        "confidence",
+        "delta"
+      ],
+      "type": "object"
+    },
+    "provenance": {
+      "additionalProperties": false,
+      "description": "Provenance of the calibration observation.",
+      "properties": {
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "recordedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "recordedBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordedBy",
+        "recordedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the calibration shape."
+    }
+  },
+  "required": [
+    "recordVersion",
+    "calibrationId",
+    "experimentRef",
+    "metricId",
+    "predicted",
+    "observed",
+    "applicability",
+    "observedAt",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena CalibrationRecord v1",
+  "type": "object"
+}

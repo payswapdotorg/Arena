@@ -1,0 +1,363 @@
+{
+  "$defs": {
+    "armRunRefs": {
+      "additionalProperties": false,
+      "description": "The RUN references of one arm: A011 trajectory digests (chain heads), A012 evaluation-record digests, A013 verification-record digests.",
+      "properties": {
+        "evaluations": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "trajectories": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "verifications": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "trajectories",
+        "evaluations",
+        "verifications"
+      ],
+      "type": "object"
+    },
+    "metricComparison": {
+      "additionalProperties": false,
+      "description": "The computed comparison of one declared outcome metric between the arms: values, delta (intervention - baseline), and improved/regressed per the declared direction.",
+      "properties": {
+        "baselineValue": {
+          "type": "number"
+        },
+        "delta": {
+          "type": "number"
+        },
+        "direction": {
+          "enum": [
+            "higher-is-better",
+            "lower-is-better"
+          ]
+        },
+        "improved": {
+          "type": "boolean"
+        },
+        "interventionValue": {
+          "type": "number"
+        },
+        "metricId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "regressed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "metricId",
+        "direction",
+        "baselineValue",
+        "interventionValue",
+        "delta",
+        "improved",
+        "regressed"
+      ],
+      "type": "object"
+    },
+    "metricMeasurement": {
+      "additionalProperties": false,
+      "description": "One measured outcome metric value for one arm, with the reported variance (null when unreported — Q1.0 condition 5 fails closed).",
+      "properties": {
+        "metricId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "variance": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minimum": 0,
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "required": [
+        "metricId",
+        "value",
+        "variance"
+      ],
+      "type": "object"
+    },
+    "protectedCapabilityCheck": {
+      "additionalProperties": false,
+      "description": "The computed regression check for one declared protected capability; measured=false when either arm did not supply the measurement (Q1.0 condition 4 then fails).",
+      "properties": {
+        "baselineValue": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "capabilityRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "delta": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "direction": {
+          "enum": [
+            "higher-is-better",
+            "lower-is-better"
+          ]
+        },
+        "interventionValue": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "measured": {
+          "type": "boolean"
+        },
+        "metricId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "regressed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "capabilityRef",
+        "metricId",
+        "direction",
+        "baselineValue",
+        "interventionValue",
+        "delta",
+        "regressed",
+        "measured"
+      ],
+      "type": "object"
+    },
+    "runProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of one experiment run.",
+      "properties": {
+        "executedBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "recordedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "executedBy",
+        "recordedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "uncertaintyReport": {
+      "additionalProperties": false,
+      "description": "The reported uncertainty of a run: the declared method plus per-metric variance values (Q1.0 condition 5).",
+      "properties": {
+        "entries": {
+          "items": {
+            "$ref": "#/$defs/uncertaintyReportEntry"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "method": {
+          "enum": [
+            "none",
+            "analytic-variance",
+            "bootstrap",
+            "paired-permutation"
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "entries"
+      ],
+      "type": "object"
+    },
+    "uncertaintyReportEntry": {
+      "additionalProperties": false,
+      "description": "One uncertainty report entry: both arms' reported variances per metric (null when unreported).",
+      "properties": {
+        "baselineVariance": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minimum": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "interventionVariance": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "minimum": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "metricId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metricId",
+        "baselineVariance",
+        "interventionVariance"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/learning/experiment-run-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The APPEND-ONCE result record of one learning experiment run: the experiment key (idempotency) + correlation id, the descriptor digest, both arms' RUN references (A011 trajectory digests / A012 evaluation-record digests / A013 verification-record digests), the collected outcome metrics of both arms, the computed comparison, the reported uncertainty, the protected-capability regression checks, the ATTRIBUTION analysis and the capability-lift verdict. Immutable, content-addressed; historical evidence is append-only and never rewritten by learning (lock rule 6).",
+  "properties": {
+    "attribution": {
+      "$ref": "arena:schema/learning/attribution-result@1.0.0"
+    },
+    "baseline": {
+      "$ref": "#/$defs/armRunRefs"
+    },
+    "baselineMetrics": {
+      "items": {
+        "$ref": "#/$defs/metricMeasurement"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "comparison": {
+      "description": "The computed per-metric comparison (declared order).",
+      "items": {
+        "$ref": "#/$defs/metricComparison"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "descriptorRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "experimentKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "intervention": {
+      "$ref": "#/$defs/armRunRefs"
+    },
+    "interventionMetrics": {
+      "items": {
+        "$ref": "#/$defs/metricMeasurement"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "protectedCapabilityChecks": {
+      "items": {
+        "$ref": "#/$defs/protectedCapabilityCheck"
+      },
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/runProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the record shape."
+    },
+    "uncertainty": {
+      "$ref": "#/$defs/uncertaintyReport"
+    },
+    "verdict": {
+      "$ref": "arena:schema/learning/capability-lift-verdict@1.0.0"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "experimentKey",
+    "correlationId",
+    "descriptorRef",
+    "baseline",
+    "intervention",
+    "baselineMetrics",
+    "interventionMetrics",
+    "comparison",
+    "uncertainty",
+    "protectedCapabilityChecks",
+    "attribution",
+    "verdict",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena ExperimentRunRecord v1",
+  "type": "object"
+}

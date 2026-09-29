@@ -1,0 +1,18 @@
+{
+  "$id": "arena:schema/learning/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/learning. A SchemaRef matching this enum is a known learning-protocol schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/learning/experiment-descriptor@1.0.0",
+    "arena:schema/learning/intervention@1.0.0",
+    "arena:schema/learning/experiment-run-record@1.0.0",
+    "arena:schema/learning/attribution-result@1.0.0",
+    "arena:schema/learning/capability-lift-verdict@1.0.0",
+    "arena:schema/learning/calibration-record@1.0.0",
+    "arena:schema/learning/run-experiment-command@1.0.0",
+    "arena:schema/learning/experiment-completed-event@1.0.0",
+    "arena:schema/learning/schema-registry@1.0.0"
+  ],
+  "title": "Arena learning-protocol schema registry v1",
+  "type": "string"
+}

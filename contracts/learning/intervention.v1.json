@@ -1,0 +1,62 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "description": "The A002-shaped artifact reference: namespace/name/version + content digest. The referenced object is bound BY DIGEST, never redefined here.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/learning/intervention@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One intervention artifact: a typed A002-shaped artifact ref (namespace/name/version + content digest) plus the EXPLICIT changed surface from the LE1.0 nine. \"The changed surface must be explicit\" — an intervention with an undeclared (missing) or ambiguous (outside the closed vocabulary) changed surface is REJECTED at descriptor construction.",
+  "properties": {
+    "artifact": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "changedSurface": {
+      "description": "The EXPLICIT LE1.0 surface this artifact changes (closed vocabulary of nine).",
+      "enum": [
+        "skills",
+        "procedures",
+        "retrieval-knowledge",
+        "tool-configuration",
+        "memory-policy",
+        "evaluator-verifier",
+        "substrate",
+        "model-specific-adaptation",
+        "body-composition"
+      ]
+    }
+  },
+  "required": [
+    "artifact",
+    "changedSurface"
+  ],
+  "title": "Arena InterventionArtifact v1",
+  "type": "object"
+}
