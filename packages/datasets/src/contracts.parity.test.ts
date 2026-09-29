@@ -162,8 +162,11 @@ describe('generated contract parity — datasets', () => {
 
   it('the publication-ops contract mirrors the A002 publication action set', () => {
     expect(publicationOpsSchema['type']).toBe('object');
+    // Schema view of a oneOf variant: declares every key the test indexes
+    // (properties.op const + the closed-world additionalProperties flag).
     const oneOf = publicationOpsSchema['oneOf'] as {
       properties: Record<string, { const?: string }>;
+      additionalProperties?: boolean;
     }[];
     expect(oneOf).toHaveLength(2);
     const opConsts = oneOf.map((variant) => variant['properties']['op']?.['const']);
