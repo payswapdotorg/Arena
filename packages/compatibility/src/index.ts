@@ -20,21 +20,21 @@ export * from './errors.js';
 export * from './evaluator.js';
 export * from './registry.js';
 
+import { digestCanonical } from '@arena/protocol-core';
+import { toContentDigest } from '@arena/agent-body';
 import { COMPATIBILITY_ERROR_CODES } from './errors.js';
-import { COMPATIBILITY_VERDICTS } from './shared.js';
-import { 
-  CompatibilityRegistry, 
-  createCompatibilityRegistry 
+import {
+  CompatibilityRegistry,
+  createCompatibilityRegistry,
 } from './registry.js';
-import { 
-  evaluateBodySubstrateCompatibility, 
-  evaluateMultipleSubstrates, 
-  isCompatible 
+import {
+  evaluateBodySubstrateCompatibility,
+  isCompatible,
 } from './evaluator.js';
-import type { 
+import type {
   SubstrateCompatibilityProfile,
   CognitiveSubstrate,
-  CompatibilityRecord
+  CompatibilityRecord,
 } from './shared.js';
 
 /** Version of this package's protocol surface. */
@@ -58,6 +58,18 @@ export const COMPATIBILITY_SCHEMA_REGISTRY: Readonly<Record<string, string>> = O
   CompatibilityResult: '1.0.0',
 });
 
+/** Options for one evaluation-and-record command. */
+export interface EvaluateAndRecordOptions {
+  /** Fixed evaluated-at (ISO-8601 UTC); defaults to the run clock. */
+  readonly evaluatedAt?: string;
+  /** Tenant scoping for the record (optional). */
+  readonly tenantId?: string;
+  /** Workspace scoping for the record (optional). */
+  readonly workspaceId?: string;
+  /** Parent record digest for lineage (optional). */
+  readonly parentDigest?: string;
+}
+
 /**
  * CompatibilityEngine — the main compatibility evaluation orchestrator.
  * Combines evaluation logic with record management.
@@ -71,41 +83,50 @@ export class CompatibilityEngine {
 
   /**
    * Evaluate compatibility and create a record.
+   *
+   * The record digest is the sha256 content digest over the canonical
+   * serialization of the digest-free record view (content-addressed
+   * lineage, reproducible for identical inputs).
    */
   async evaluateAndRecord(
+    bodyVersionRef: string,
     bodyProfile: SubstrateCompatibilityProfile,
     substrate: CognitiveSubstrate,
-    options: {
-      evaluatedAt?: string;
-      tenantId?: string;
-      workspaceId?: string;
-      parentDigest?: string;
-    } = {},
+    options: EvaluateAndRecordOptions = {},
   ): Promise<CompatibilityRecord> {
     const { evaluatedAt = new Date().toISOString(), tenantId, workspaceId, parentDigest } = options;
-    
+
     // Evaluate compatibility
     const result = await evaluateBodySubstrateCompatibility(bodyProfile, substrate);
-    
-    // Create record manually and register it
-    const record: CompatibilityRecord = {
+
+    // Build the digest-free record view and derive the content digest
+    const view: Record<string, unknown> = {
       recordVersion: 1,
-      recordDigest: 'placeholder-digest', // This would be computed properly
-      bodyVersionRef: 'body-version-ref-placeholder',
+      bodyVersionRef,
       substrateRef: substrate.integrity.contentDigest,
       evaluatedAt,
       verdict: result.verdict,
       reasons: result.reasons,
       details: result.details,
-      parentDigest,
+      ...(parentDigest !== undefined ? { parentDigest } : {}),
+      ...(tenantId !== undefined ? { tenantId } : {}),
+      ...(workspaceId !== undefined ? { workspaceId } : {}),
     };
+    const recordDigest = toContentDigest(await digestCanonical(view));
 
-    if (tenantId !== undefined) {
-      (record as any).tenantId = tenantId;
-    }
-    if (workspaceId !== undefined) {
-      (record as any).workspaceId = workspaceId;
-    }
+    const record: CompatibilityRecord = {
+      recordVersion: 1,
+      recordDigest,
+      bodyVersionRef,
+      substrateRef: substrate.integrity.contentDigest,
+      evaluatedAt,
+      verdict: result.verdict,
+      reasons: result.reasons,
+      details: result.details,
+      ...(parentDigest !== undefined ? { parentDigest } : {}),
+      ...(tenantId !== undefined ? { tenantId } : {}),
+      ...(workspaceId !== undefined ? { workspaceId } : {}),
+    };
 
     return this.registry.register(record);
   }
@@ -114,23 +135,21 @@ export class CompatibilityEngine {
    * Batch evaluate and record multiple substrates.
    */
   async batchEvaluateAndRecord(
+    bodyVersionRef: string,
     bodyProfile: SubstrateCompatibilityProfile,
     substrates: readonly CognitiveSubstrate[],
-    options: {
-      evaluatedAt?: string;
-      tenantId?: string;
-      workspaceId?: string;
-    } = {},
+    options: EvaluateAndRecordOptions = {},
   ): Promise<readonly CompatibilityRecord[]> {
-    const { evaluatedAt = new Date().toISOString(), tenantId, workspaceId } = options;
+    const { evaluatedAt, tenantId, workspaceId, parentDigest } = options;
     const records: CompatibilityRecord[] = [];
 
     for (const substrate of substrates) {
-      const record = await this.evaluateAndRecord(bodyProfile, substrate, {
-        evaluatedAt,
-        tenantId: tenantId as string | undefined,
-        workspaceId: workspaceId as string | undefined,
-      } as any);
+      const record = await this.evaluateAndRecord(bodyVersionRef, bodyProfile, substrate, {
+        ...(evaluatedAt !== undefined ? { evaluatedAt } : {}),
+        ...(tenantId !== undefined ? { tenantId } : {}),
+        ...(workspaceId !== undefined ? { workspaceId } : {}),
+        ...(parentDigest !== undefined ? { parentDigest } : {}),
+      });
       records.push(record);
     }
 

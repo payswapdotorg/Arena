@@ -11,7 +11,7 @@ import {
   createCompatibilityResult,
   isCompatibilityResult,
   validateTestSuiteRefs,
-} from './shared';
+} from './shared.js';
 
 describe('Compatibility Verdicts', () => {
   it('should have closed verdict vocabulary', () => {

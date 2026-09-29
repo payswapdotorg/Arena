@@ -69,6 +69,8 @@ export interface CompatibilityRecord {
   readonly reasons: readonly string[];
   readonly details: Record<string, unknown>;
   readonly parentDigest?: string | undefined;
+  readonly tenantId?: string | undefined;
+  readonly workspaceId?: string | undefined;
 }
 
 // Structural check for compatibility record

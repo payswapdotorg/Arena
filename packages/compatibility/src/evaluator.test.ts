@@ -1,24 +1,24 @@
 /**
  * @arena/compatibility — compatibility evaluation tests
  * (Work Order A022; requirements R2, R20; spec AB1.0).
+ *
+ * All fixtures use the REAL closed vocabularies from @arena/agent-body:
+ * SUBSTRATE_MODALITIES ('text-input', 'text-output', ...),
+ * TOOL_CALLING_LEVELS ('none', 'text-protocol', 'json-schema',
+ * 'function-calling') and SUBSTRATE_CONDITIONS ('stable', 'preview', ...).
  */
 
 import { describe, it, expect } from 'vitest';
-import { 
-  evaluateBodySubstrateCompatibility, 
+import {
+  evaluateBodySubstrateCompatibility,
   evaluateMultipleSubstrates,
   isCompatible,
-  CompatibilityEvaluationContext 
-} from './evaluator';
-import { 
+} from './evaluator.js';
+import {
   toSubstrateCompatibilityProfile,
-  SubstrateCompatibilityProfile,
   createCognitiveSubstrate,
-  SubstrateModality,
-  ToolCallingLevel,
-  SubstrateCondition
+  type CognitiveSubstrate,
 } from '@arena/agent-body';
-import { createCompatibilityRegistry } from './registry';
 
 // Real substrate data using the actual API
 const mockSubstrate = await createCognitiveSubstrate({
@@ -66,7 +66,7 @@ describe('Compatibility Evaluation', () => {
     });
 
     const result = await evaluateBodySubstrateCompatibility(profile, mockSubstrate);
-    
+
     expect(result.verdict).toBe('compatible');
     expect(result.reasons).toHaveLength(0);
   });
@@ -79,10 +79,10 @@ describe('Compatibility Evaluation', () => {
     });
 
     const result = await evaluateBodySubstrateCompatibility(profile, mockSubstrate);
-    
+
     expect(result.verdict).toBe('incompatible-with-reasons');
     expect(result.reasons).toContain('missing required modalities: audio-input');
-    expect(result.details?.missingModalities).toEqual(['audio-input']);
+    expect(result.details.missingModalities).toEqual(['audio-input']);
   });
 
   it('should evaluate incompatible substrate - insufficient tool calling', async () => {
@@ -93,7 +93,7 @@ describe('Compatibility Evaluation', () => {
     });
 
     const result = await evaluateBodySubstrateCompatibility(profile, mockSubstrateLimited);
-    
+
     expect(result.verdict).toBe('incompatible-with-reasons');
     expect(result.reasons).toContain('insufficient tool-calling level: required json-schema, substrate provides text-protocol');
   });
@@ -106,7 +106,7 @@ describe('Compatibility Evaluation', () => {
     });
 
     const result = await evaluateBodySubstrateCompatibility(profile, mockSubstrate);
-    
+
     expect(result.verdict).toBe('incompatible-with-reasons');
     expect(result.reasons).toContain('insufficient context capacity: required 200000, substrate provides 100000');
   });
@@ -120,12 +120,15 @@ describe('Compatibility Evaluation', () => {
     });
 
     const result = await evaluateBodySubstrateCompatibility(profile, mockSubstrateLimited);
-    
+
     expect(result.verdict).toBe('incompatible-with-reasons');
     expect(result.reasons).toContain('prohibited conditions present: preview');
   });
 
-  it('should evaluate with unknown verdict when test suites are missing', async () => {
+  it('should treat declarative evaluation suites as certification inputs, not capability failures', async () => {
+    // Spec AB1.0: required evaluation suites are declarative certification
+    // prerequisites evaluated by the certification services — the capability
+    // predicate itself stays honest about what it can decide.
     const profile = toSubstrateCompatibilityProfile({
       requiredModalities: ['text-input'],
       requiredToolCalling: 'text-protocol',
@@ -135,15 +138,10 @@ describe('Compatibility Evaluation', () => {
       ],
     });
 
-    const context: CompatibilityEvaluationContext = {
-      registry: createCompatibilityRegistry(),
-      adapters: [],
-    };
+    const result = await evaluateBodySubstrateCompatibility(profile, mockSubstrate);
 
-    const result = await evaluateBodySubstrateCompatibility(profile, mockSubstrate, { context });
-    
-    expect(result.verdict).toBe('unknown-with-structured-causes');
-    expect(result.reasons).toContain('missing required test suites: test/suite@1.0.0');
+    expect(result.verdict).toBe('compatible');
+    expect(result.reasons).toHaveLength(0);
   });
 
   it('should evaluate with fail-closed behavior', async () => {
@@ -159,6 +157,30 @@ describe('Compatibility Evaluation', () => {
     const resultUnknown = await evaluateBodySubstrateCompatibility(profile, mockSubstrate, { failClosed: false });
     expect(resultUnknown.verdict).toBe('unknown-with-structured-causes');
   });
+
+  it('should omit details when includeDetails is false', async () => {
+    const profile = toSubstrateCompatibilityProfile({
+      requiredModalities: ['text-input', 'audio-input'],
+      requiredToolCalling: 'text-protocol',
+      contextRequirements: { minContextUnits: 10000 },
+    });
+
+    const result = await evaluateBodySubstrateCompatibility(profile, mockSubstrate, { includeDetails: false });
+    expect(result.verdict).toBe('incompatible-with-reasons');
+    expect(result.details).toEqual({});
+  });
+
+  it('should reject an invalid substrate (fail closed)', async () => {
+    const profile = toSubstrateCompatibilityProfile({
+      requiredModalities: ['text-input'],
+      requiredToolCalling: 'text-protocol',
+      contextRequirements: { minContextUnits: 10000 },
+    });
+
+    await expect(
+      evaluateBodySubstrateCompatibility(profile, { not: 'a substrate' } as unknown as CognitiveSubstrate),
+    ).rejects.toThrow('COMPATIBILITY_INVALID_INPUT');
+  });
 });
 
 describe('Batch Evaluation', () => {
@@ -173,9 +195,9 @@ describe('Batch Evaluation', () => {
     const results = await evaluateMultipleSubstrates(profile, substrates);
 
     expect(results).toHaveLength(3);
-    expect(results[0].verdict).toBe('compatible'); // mockSubstrate
-    expect(results[1].verdict).toBe('compatible'); // mockSubstrateLimited (text-input + text-protocol is enough)
-    expect(results[2].verdict).toBe('incompatible-with-reasons'); // mockSubstrateMissing (no tool calling)
+    expect(results[0]?.verdict).toBe('compatible'); // mockSubstrate
+    expect(results[1]?.verdict).toBe('compatible'); // mockSubstrateLimited (text-input + text-protocol is enough)
+    expect(results[2]?.verdict).toBe('incompatible-with-reasons'); // mockSubstrateMissing (no tool calling)
   });
 });
 

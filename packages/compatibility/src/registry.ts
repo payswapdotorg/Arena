@@ -7,11 +7,11 @@
  */
 
 import { toContentDigest, deepFreeze } from '@arena/agent-body';
-import { 
-  createCompatibilityResult, 
-  type CompatibilityRecord, 
+import { digestCanonical } from '@arena/protocol-core';
+import {
+  type CompatibilityRecord,
   type CompatibilityResult,
-  isCompatibilityRecord
+  isCompatibilityRecord,
 } from './shared.js';
 import { CompatibilityError, COMPATIBILITY_ERROR_CODES } from './errors.js';
 
@@ -26,6 +26,8 @@ export class CompatibilityRegistry {
 
   /**
    * Register a compatibility record (append-only, content-addressed).
+   * Invalid records are rejected fail-closed; duplicate digests dedup to
+   * the stored record.
    */
   register(record: CompatibilityRecord): CompatibilityRecord {
     if (!isCompatibilityRecord(record)) {
@@ -54,9 +56,11 @@ export class CompatibilityRegistry {
   }
 
   /**
-   * Create and register a compatibility record.
+   * Create and register a compatibility record. The record digest is the
+   * sha256 content digest over the canonical serialization of the
+   * digest-free record view (content-addressed lineage).
    */
-  createAndRegister(
+  async createAndRegister(
     bodyVersionRef: string,
     substrateRef: string,
     result: CompatibilityResult,
@@ -64,33 +68,35 @@ export class CompatibilityRegistry {
     parentDigest?: string,
     tenantId?: string,
     workspaceId?: string,
-  ): CompatibilityRecord {
-    const record: CompatibilityRecord = {
+  ): Promise<CompatibilityRecord> {
+    const view: Record<string, unknown> = {
       recordVersion: 1,
-      recordDigest: toContentDigest(JSON.stringify({
-        bodyVersionRef,
-        substrateRef,
-        result,
-        evaluatedAt,
-        parentDigest,
-        tenantId,
-        workspaceId,
-      })),
       bodyVersionRef,
       substrateRef,
       evaluatedAt,
       verdict: result.verdict,
       reasons: result.reasons,
       details: result.details,
-      parentDigest: parentDigest as string | undefined,
+      ...(parentDigest !== undefined ? { parentDigest } : {}),
+      ...(tenantId !== undefined ? { tenantId } : {}),
+      ...(workspaceId !== undefined ? { workspaceId } : {}),
     };
 
-    if (tenantId !== undefined) {
-      (record as any).tenantId = tenantId;
-    }
-    if (workspaceId !== undefined) {
-      (record as any).workspaceId = workspaceId;
-    }
+    const recordDigest = toContentDigest(await digestCanonical(view));
+
+    const record: CompatibilityRecord = {
+      recordVersion: 1,
+      recordDigest,
+      bodyVersionRef,
+      substrateRef,
+      evaluatedAt,
+      verdict: result.verdict,
+      reasons: result.reasons,
+      details: result.details,
+      ...(parentDigest !== undefined ? { parentDigest } : {}),
+      ...(tenantId !== undefined ? { tenantId } : {}),
+      ...(workspaceId !== undefined ? { workspaceId } : {}),
+    };
 
     return this.register(record);
   }
@@ -108,7 +114,7 @@ export class CompatibilityRegistry {
   listRecordsByBody(bodyVersionRef: string): readonly CompatibilityRecord[] {
     const digests = this.bodyIndex.get(bodyVersionRef);
     if (!digests) return [];
-    
+
     return [...digests]
       .map(digest => this.records.get(digest))
       .filter((record): record is CompatibilityRecord => record !== undefined);
@@ -120,7 +126,7 @@ export class CompatibilityRegistry {
   listRecordsBySubstrate(substrateRef: string): readonly CompatibilityRecord[] {
     const digests = this.substrateIndex.get(substrateRef);
     if (!digests) return [];
-    
+
     return [...digests]
       .map(digest => this.records.get(digest))
       .filter((record): record is CompatibilityRecord => record !== undefined);
@@ -132,7 +138,7 @@ export class CompatibilityRegistry {
   listRecordsByTenant(tenantId: string): readonly CompatibilityRecord[] {
     const digests = this.tenantIndex.get(tenantId);
     if (!digests) return [];
-    
+
     return [...digests]
       .map(digest => this.records.get(digest))
       .filter((record): record is CompatibilityRecord => record !== undefined);
@@ -144,7 +150,7 @@ export class CompatibilityRegistry {
   listRecordsByWorkspace(workspaceId: string): readonly CompatibilityRecord[] {
     const digests = this.workspaceIndex.get(workspaceId);
     if (!digests) return [];
-    
+
     return [...digests]
       .map(digest => this.records.get(digest))
       .filter((record): record is CompatibilityRecord => record !== undefined);
@@ -185,9 +191,9 @@ export class CompatibilityRegistry {
     const records = this.listRecordsByBody(bodyVersionRef).filter(
       record => record.substrateRef === substrateRef
     );
-    
+
     if (records.length === 0) return undefined;
-    
+
     // Return the most recent (last in ledger order)
     return records[records.length - 1];
   }
@@ -244,17 +250,17 @@ export class CompatibilityRegistry {
     this.substrateIndex.set(record.substrateRef, substrateSet);
 
     // Tenant index (if present)
-    if ('tenantId' in record) {
-      const tenantSet = this.tenantIndex.get(record.tenantId as string) ?? new Set<string>();
+    if (record.tenantId !== undefined) {
+      const tenantSet = this.tenantIndex.get(record.tenantId) ?? new Set<string>();
       tenantSet.add(record.recordDigest);
-      this.tenantIndex.set(record.tenantId as string, tenantSet);
+      this.tenantIndex.set(record.tenantId, tenantSet);
     }
 
     // Workspace index (if present)
-    if ('workspaceId' in record) {
-      const workspaceSet = this.workspaceIndex.get(record.workspaceId as string) ?? new Set<string>();
+    if (record.workspaceId !== undefined) {
+      const workspaceSet = this.workspaceIndex.get(record.workspaceId) ?? new Set<string>();
       workspaceSet.add(record.recordDigest);
-      this.workspaceIndex.set(record.workspaceId as string, workspaceSet);
+      this.workspaceIndex.set(record.workspaceId, workspaceSet);
     }
   }
 }

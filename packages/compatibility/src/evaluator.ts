@@ -9,24 +9,16 @@
 import {
   type SubstrateCompatibilityProfile,
   type CognitiveSubstrate,
-  toSubstrateCompatibilityProfile,
   isSubstrateCompatibilityProfile,
+  isCognitiveSubstrate,
+  TOOL_CALLING_LEVELS,
 } from '@arena/agent-body';
-import {
-  type SubstrateRegistry,
-  type SubstrateAdapter,
-} from '@arena/model-substrate';
-import { createCompatibilityResult, isCompatibilityVerdictKind, COMPATIBILITY_VERDICTS } from './shared.js';
+import { createCompatibilityResult } from './shared.js';
 import { CompatibilityError, COMPATIBILITY_ERROR_CODES } from './errors.js';
 import type { CompatibilityResult, CompatibilityVerdictKind } from './shared.js';
 
-// Import isCognitiveSubstrate from the correct location
-import { isCognitiveSubstrate } from '@arena/agent-body';
-
 // Evaluation context
 export interface CompatibilityEvaluationContext {
-  readonly registry: SubstrateRegistry;
-  readonly adapters: readonly SubstrateAdapter[];
   readonly tenantId?: string;
   readonly workspaceId?: string;
 }
@@ -40,23 +32,24 @@ export interface CompatibilityEvaluationOptions {
 
 /**
  * Evaluate compatibility between a body version's requirements and a substrate's capabilities.
- * 
+ *
  * This is a pure capability predicate, never an identity claim. It evaluates:
  * - Required modalities match
  * - Required tool-calling level is supported
  * - Context requirements are met
- * - Cost constraints are satisfied (if declared)
- * - Required test suites are available
  * - Prohibited conditions are absent
- * - Substrate-specific adaptations are applicable
+ *
+ * Cost constraints, required evaluation suites and substrate adaptations are
+ * declarative certification inputs (spec AB1.0) — they are carried on the
+ * profile for the certification services and are NOT evaluated here.
  */
 export async function evaluateBodySubstrateCompatibility(
   bodyProfile: SubstrateCompatibilityProfile,
   substrate: CognitiveSubstrate,
   options: CompatibilityEvaluationOptions = {},
 ): Promise<CompatibilityResult> {
-  const { context, includeDetails = true, failClosed = true } = options;
-  
+  const { includeDetails = true, failClosed = true } = options;
+
   // Validate inputs
   if (!isSubstrateCompatibilityProfile(bodyProfile)) {
     throw new CompatibilityError(COMPATIBILITY_ERROR_CODES.INVALID_INPUT, {
@@ -64,7 +57,7 @@ export async function evaluateBodySubstrateCompatibility(
       details: { profile: bodyProfile },
     });
   }
-  
+
   if (!isCognitiveSubstrate(substrate)) {
     throw new CompatibilityError(COMPATIBILITY_ERROR_CODES.INVALID_INPUT, {
       message: 'invalid cognitive substrate',
@@ -76,20 +69,20 @@ export async function evaluateBodySubstrateCompatibility(
   const details: Record<string, unknown> = {};
 
   // 1. Check required modalities
+  const substrateModalities = new Set<string>(substrate.modalityProfile);
   const missingModalities = bodyProfile.requiredModalities.filter(
-    (required: string) => !substrate.modalityProfile.includes(required as any)
+    (required) => !substrateModalities.has(required),
   );
-  
+
   if (missingModalities.length > 0) {
     reasons.push(`missing required modalities: ${missingModalities.join(', ')}`);
     details.missingModalities = missingModalities;
   }
 
-  // 2. Check required tool-calling level
-  const toolLevels = ['none', 'text-protocol', 'json-schema', 'function-calling'];
-  const requiredLevelIndex = toolLevels.indexOf(bodyProfile.requiredToolCalling);
-  const substrateLevelIndex = toolLevels.indexOf(substrate.toolCallingProfile);
-  
+  // 2. Check required tool-calling level (closed, ordered vocabulary)
+  const requiredLevelIndex = TOOL_CALLING_LEVELS.indexOf(bodyProfile.requiredToolCalling);
+  const substrateLevelIndex = TOOL_CALLING_LEVELS.indexOf(substrate.toolCallingProfile);
+
   if (substrateLevelIndex < requiredLevelIndex) {
     reasons.push(`insufficient tool-calling level: required ${bodyProfile.requiredToolCalling}, substrate provides ${substrate.toolCallingProfile}`);
     details.toolCallingMismatch = {
@@ -107,69 +100,22 @@ export async function evaluateBodySubstrateCompatibility(
     };
   }
 
-  // 4. Check cost constraints (if declared)
-  if (bodyProfile.costConstraints) {
-    // Note: CognitiveSubstrate doesn't have costPerMillionRequests field in real API
-    // This constraint cannot be evaluated against the substrate itself
-    // It would need to be evaluated against adapter pricing information
-  }
-
-  // 5. Check prohibited conditions
+  // 4. Check prohibited conditions
+  const substrateConditions = new Set<string>(substrate.conditions);
   const prohibitedConditions = bodyProfile.prohibitedConditions.filter(
-    (prohibited: string) => substrate.conditions.includes(prohibited as any)
+    (prohibited) => substrateConditions.has(prohibited),
   );
-  
+
   if (prohibitedConditions.length > 0) {
     reasons.push(`prohibited conditions present: ${prohibitedConditions.join(', ')}`);
     details.prohibitedConditions = prohibitedConditions;
   }
 
-  // 6. Check required test suites (if registry provided)
-  if (context?.registry) {
-    const missingTestSuites: string[] = [];
-    for (const suiteRef of bodyProfile.requiredEvaluationSuites) {
-      // Note: SubstrateRegistry doesn't have hasTestSuite method in real API
-      // This would need to be implemented or adapted
-      const exists = false; // Placeholder - real implementation needed
-      if (!exists) {
-        missingTestSuites.push(`${suiteRef.namespace}/${suiteRef.name}@${suiteRef.version}`);
-      }
-    }
-    
-    if (missingTestSuites.length > 0) {
-      reasons.push(`missing required test suites: ${missingTestSuites.join(', ')}`);
-      details.missingTestSuites = missingTestSuites;
-    }
-  }
-
-  // 7. Check substrate-specific adaptations
-  const applicableAdaptations = bodyProfile.substrateAdaptations.filter(
-    (adaptation) => adaptation.substrateDigest === substrate.integrity.contentDigest
-  );
-  
-  if (applicableAdaptations.length > 0 && context?.registry) {
-    const missingAdaptations: string[] = [];
-    for (const adaptation of applicableAdaptations) {
-      // Note: SubstrateRegistry doesn't have hasTestSuite method in real API
-      const exists = false; // Placeholder - real implementation needed
-      if (!exists) {
-        missingAdaptations.push(`${adaptation.adaptation.namespace}/${adaptation.adaptation.name}@${adaptation.adaptation.version}`);
-      }
-    }
-    
-    if (missingAdaptations.length > 0) {
-      reasons.push(`missing required adaptations: ${missingAdaptations.join(', ')}`);
-      details.missingAdaptations = missingAdaptations;
-    }
-  }
-
   // Determine verdict based on failures
   let verdict: CompatibilityVerdictKind;
-  
+
   if (reasons.length === 0) {
     verdict = 'compatible';
-  } else if (context?.registry && (details.missingTestSuites || details.missingAdaptations)) {
-    verdict = 'unknown-with-structured-causes';
   } else {
     verdict = failClosed ? 'incompatible-with-reasons' : 'unknown-with-structured-causes';
   }
@@ -187,7 +133,7 @@ export async function evaluateMultipleSubstrates(
   options: CompatibilityEvaluationOptions = {},
 ): Promise<readonly CompatibilityResult[]> {
   const results: CompatibilityResult[] = [];
-  
+
   for (const substrate of substrates) {
     try {
       const result = await evaluateBodySubstrateCompatibility(bodyProfile, substrate, options);
@@ -208,13 +154,13 @@ export async function evaluateMultipleSubstrates(
       }
     }
   }
-  
+
   return results;
 }
 
 /**
- * Check if a substrate is compatible with a body profile (boolean shortcut). 
- * 
+ * Check if a substrate is compatible with a body profile (boolean shortcut).
+ *
  * WARNING: This is a convenience function only. For detailed analysis,
  * use evaluateBodySubstrateCompatibility() which provides reasons and details.
  */
