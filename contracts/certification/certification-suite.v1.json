@@ -1,0 +1,318 @@
+{
+  "$defs": {
+    "artifactPin": {
+      "additionalProperties": false,
+      "description": "An A002-style artifact reference pin: namespace/name/version identity plus the sha256 digest of the pinned material (dataset manifests, test suites).",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "environmentRequirement": {
+      "additionalProperties": false,
+      "description": "A composition-stage environment pin (id + version).",
+      "properties": {
+        "environmentId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "environmentVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "environmentId",
+        "environmentVersion"
+      ],
+      "type": "object"
+    },
+    "runtimeRequirement": {
+      "additionalProperties": false,
+      "description": "A composition-stage runtime pin (id + version).",
+      "properties": {
+        "runtimeId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "runtimeVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtimeId",
+        "runtimeVersion"
+      ],
+      "type": "object"
+    },
+    "schemaRef": {
+      "additionalProperties": false,
+      "description": "Versioned SchemaRef (A001 core shape): arena:schema/<namespace>/<name>@<major.minor.patch>.",
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    },
+    "suiteProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of the suite declaration.",
+      "properties": {
+        "authoredBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "submittedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "authoredBy",
+        "submittedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "suiteStage": {
+      "additionalProperties": false,
+      "description": "One suite stage: the closed kind (evaluation | verification | compatibility | dataset | composition) plus the pins that kind requires. Evaluation stages carry evaluatorRef + criteriaRef; verification stages carry verifierRef; dataset stages carry datasetRef; composition stages carry environment/runtime requirements; compatibility stages carry optional required test-suite pins. Foreign pins are rejected by the TS constructor.",
+      "properties": {
+        "criteriaRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "datasetRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/artifactPin"
+            }
+          ]
+        },
+        "environmentRequirement": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/environmentRequirement"
+            }
+          ]
+        },
+        "evaluatorRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "kind": {
+          "enum": [
+            "evaluation",
+            "verification",
+            "compatibility",
+            "dataset",
+            "composition"
+          ]
+        },
+        "requiredTestSuites": {
+          "items": {
+            "$ref": "#/$defs/artifactPin"
+          },
+          "type": "array"
+        },
+        "runtimeRequirement": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/runtimeRequirement"
+            }
+          ]
+        },
+        "stageId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "verifierRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "stageId",
+        "kind",
+        "evaluatorRef",
+        "criteriaRef",
+        "verifierRef",
+        "requiredTestSuites",
+        "datasetRef",
+        "environmentRequirement",
+        "runtimeRequirement"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/certification/certification-suite@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The content-addressed, versioned declaration of a certification suite: the ORDERED stage composition pinning the exact A012 evaluator+criteria digests, A013 verifier digests, A022 compatibility requirements, A014 dataset refs and environment/runtime composition requirements; the grant level (DEVELOPMENT | CANDIDATE | CERTIFIED — a suite declaring constraints grants CONDITIONAL), the professional-limitations notice, the supersedes lineage and provenance. Same suite ⇒ same digest; any change ⇒ a new version. The suite digest is the \"revision X\" of the certification statement.",
+  "properties": {
+    "constraints": {
+      "description": "Declared constraints — a satisfied run grants CONDITIONAL instead of levelGrant.",
+      "items": {
+        "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "inputSchema": {
+      "$ref": "#/$defs/schemaRef"
+    },
+    "levelGrant": {
+      "enum": [
+        "DEVELOPMENT",
+        "CANDIDATE",
+        "CERTIFIED"
+      ]
+    },
+    "limitations": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        }
+      ]
+    },
+    "outputSchema": {
+      "$ref": "#/$defs/schemaRef"
+    },
+    "provenance": {
+      "$ref": "#/$defs/suiteProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the suite shape."
+    },
+    "stages": {
+      "description": "The stage composition; stage ids unique within it.",
+      "items": {
+        "$ref": "#/$defs/suiteStage"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "suiteId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "supersedes": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "version": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "suiteId",
+    "version",
+    "levelGrant",
+    "stages",
+    "constraints",
+    "limitations",
+    "supersedes",
+    "inputSchema",
+    "outputSchema",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena CertificationSuite v1",
+  "type": "object"
+}

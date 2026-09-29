@@ -1,0 +1,213 @@
+{
+  "$defs": {
+    "bodyVersionRef": {
+      "additionalProperties": false,
+      "description": "A003 BodyVersionRef (reused validator, never redefined): tenant/name/version identity plus the sha256 digest of the body version.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "environmentProfile": {
+      "additionalProperties": false,
+      "description": "A003 EnvironmentProfileView (component E of the certification statement).",
+      "properties": {
+        "constraints": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "environmentId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "environmentVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "environmentId",
+        "environmentVersion",
+        "constraints"
+      ],
+      "type": "object"
+    },
+    "runtimeProfile": {
+      "additionalProperties": false,
+      "description": "A003 RuntimeProfileView (component R of the certification statement): neutral runtime identity + closed scalar configuration map.",
+      "properties": {
+        "configuration": {
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "object"
+        },
+        "runtimeId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "runtimeVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtimeId",
+        "runtimeVersion",
+        "configuration"
+      ],
+      "type": "object"
+    },
+    "subject": {
+      "additionalProperties": false,
+      "description": "The COMPOSITION UNDER TEST — the B/V × M × E × R half of the design-law statement. Every component is REQUIRED: a substrate-only subject is unrepresentable (architecture-lock rule 4; requirement R46).",
+      "properties": {
+        "bodyVersionRef": {
+          "$ref": "#/$defs/bodyVersionRef"
+        },
+        "environmentRef": {
+          "$ref": "#/$defs/environmentProfile"
+        },
+        "possessionRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "runtimeProfile": {
+          "$ref": "#/$defs/runtimeProfile"
+        },
+        "substrateRef": {
+          "$ref": "#/$defs/substrateRef"
+        },
+        "tenantId": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9-]{1,62}$",
+              "type": "string"
+            }
+          ]
+        },
+        "workspaceId": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9.-]{0,63}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "bodyVersionRef",
+        "substrateRef",
+        "environmentRef",
+        "runtimeProfile",
+        "possessionRef",
+        "tenantId",
+        "workspaceId"
+      ],
+      "type": "object"
+    },
+    "substrateRef": {
+      "additionalProperties": false,
+      "description": "The neutral cognitive-substrate reference (component M of the certification statement).",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "substrateId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "substrateVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "substrateId",
+        "substrateVersion",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/certification/run-certification-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: run one certification. Carries the digest ref of the certification suite, the composition under test (all five scope components) and the evidence digest refs the run may consume; the fabric resolves the suite, evaluates every stage, derives the verdict / level / scoped statement and emits certification-recorded-event. Commands carry a REQUIRED non-null idempotency key (architecture-lock rule 17).",
+  "properties": {
+    "evidenceRefs": {
+      "description": "Digests of the sibling-protocol evidence records the run may consume.",
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
+    "suiteRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "suiteRef",
+    "subject",
+    "evidenceRefs"
+  ],
+  "title": "Arena run-certification-command v1",
+  "type": "object"
+}

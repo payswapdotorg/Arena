@@ -1,0 +1,630 @@
+{
+  "$defs": {
+    "bodyVersionRef": {
+      "additionalProperties": false,
+      "description": "A003 BodyVersionRef (reused validator, never redefined): tenant/name/version identity plus the sha256 digest of the body version.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "environmentProfile": {
+      "additionalProperties": false,
+      "description": "A003 EnvironmentProfileView (component E of the certification statement).",
+      "properties": {
+        "constraints": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "environmentId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "environmentVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "environmentId",
+        "environmentVersion",
+        "constraints"
+      ],
+      "type": "object"
+    },
+    "recordProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of one certification run.",
+      "properties": {
+        "executedBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "recordedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "executedBy",
+        "recordedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "runtimeProfile": {
+      "additionalProperties": false,
+      "description": "A003 RuntimeProfileView (component R of the certification statement): neutral runtime identity + closed scalar configuration map.",
+      "properties": {
+        "configuration": {
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "object"
+        },
+        "runtimeId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "runtimeVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "runtimeId",
+        "runtimeVersion",
+        "configuration"
+      ],
+      "type": "object"
+    },
+    "stageResult": {
+      "additionalProperties": false,
+      "description": "One per-stage result: stage id + closed outcome + closed machine reason + the evidence digest that drove it + the structured unknown cause (required iff the stage outcome is unknown).",
+      "properties": {
+        "evidenceDigest": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "satisfied",
+            "not-satisfied",
+            "unknown"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "stage-satisfied",
+            "stage-failed",
+            "composition-mismatch",
+            "missing-evidence",
+            "evidence-mismatch",
+            "invalid-evidence",
+            "method-limitation",
+            "tenant-mismatch"
+          ]
+        },
+        "stageId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "unknownCause": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/unknownCause"
+            }
+          ]
+        }
+      },
+      "required": [
+        "stageId",
+        "outcome",
+        "reason",
+        "evidenceDigest",
+        "unknownCause"
+      ],
+      "type": "object"
+    },
+    "statement": {
+      "additionalProperties": false,
+      "description": "The DERIVED scoped certification statement (the design law): all five scope components (body, substrate, environment, runtime, suite) + the suite revision (the suite digest) + the verdict qualifier + the granted level + the declared constraints + the mandated professional-limitations notice. Never caller-supplied; an unscoped statement is unrepresentable.",
+      "properties": {
+        "constraints": {
+          "items": {
+            "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "grantedLevel": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "DEVELOPMENT",
+                "CANDIDATE",
+                "CERTIFIED",
+                "CONDITIONAL",
+                "REVOKED"
+              ]
+            }
+          ]
+        },
+        "limitations": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/$defs/statementScope"
+        },
+        "statementVersion": {
+          "const": 1
+        },
+        "suiteRevision": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "verdictQualifier": {
+          "enum": [
+            "satisfied",
+            "did not satisfy",
+            "could not be determined against"
+          ]
+        }
+      },
+      "required": [
+        "statementVersion",
+        "scope",
+        "suiteRevision",
+        "verdictQualifier",
+        "grantedLevel",
+        "constraints",
+        "limitations",
+        "text"
+      ],
+      "type": "object"
+    },
+    "statementScope": {
+      "additionalProperties": false,
+      "description": "The B/V/M/E/R/S scope components of the statement — every component required.",
+      "properties": {
+        "body": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "bodyVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "environment": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "environmentVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "runtime": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "runtimeVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "substrate": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "substrateVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "suite": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "suiteVersion": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "bodyVersion",
+        "substrate",
+        "substrateVersion",
+        "environment",
+        "environmentVersion",
+        "runtime",
+        "runtimeVersion",
+        "suite",
+        "suiteVersion"
+      ],
+      "type": "object"
+    },
+    "subject": {
+      "additionalProperties": false,
+      "description": "The COMPOSITION UNDER TEST — the B/V × M × E × R half of the design-law statement. Every component is REQUIRED: a substrate-only subject is unrepresentable (architecture-lock rule 4; requirement R46).",
+      "properties": {
+        "bodyVersionRef": {
+          "$ref": "#/$defs/bodyVersionRef"
+        },
+        "environmentRef": {
+          "$ref": "#/$defs/environmentProfile"
+        },
+        "possessionRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        "runtimeProfile": {
+          "$ref": "#/$defs/runtimeProfile"
+        },
+        "substrateRef": {
+          "$ref": "#/$defs/substrateRef"
+        },
+        "tenantId": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9-]{1,62}$",
+              "type": "string"
+            }
+          ]
+        },
+        "workspaceId": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[a-z][a-z0-9.-]{0,63}$",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "bodyVersionRef",
+        "substrateRef",
+        "environmentRef",
+        "runtimeProfile",
+        "possessionRef",
+        "tenantId",
+        "workspaceId"
+      ],
+      "type": "object"
+    },
+    "substrateRef": {
+      "additionalProperties": false,
+      "description": "The neutral cognitive-substrate reference (component M of the certification statement).",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "substrateId": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "substrateVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "substrateId",
+        "substrateVersion",
+        "digest"
+      ],
+      "type": "object"
+    },
+    "unknownCause": {
+      "additionalProperties": false,
+      "description": "The structured WHY of an unknown outcome: a closed reason taxonomy member plus the deterministic detail naming the driving stage ids. REQUIRED iff the verdict is unknown; MUST be null otherwise.",
+      "properties": {
+        "detail": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "missing-evidence",
+            "evidence-mismatch",
+            "invalid-evidence",
+            "method-limitation",
+            "tenant-mismatch"
+          ]
+        }
+      },
+      "required": [
+        "reason",
+        "detail"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/certification/certification-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The append-once record of one certification run (kind certification-run) or one revocation (kind revocation). Run records bind the composition under test, the suite digest, one closed-vocabulary stage result per declared stage, the DERIVED verdict (satisfied | not-satisfied | unknown — never a score), the DERIVED structured unknown cause (required iff unknown), the DERIVED granted level (a failed or indeterminate run grants NOTHING), the DERIVED scoped statement (the design law) and the COMPUTED input digest (the R22 reproducibility anchor). Revocation records bind the revoked record digest + grounds. Frozen on creation; identical inputs ⇒ identical digest.",
+  "properties": {
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "finishedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "grantedLevel": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "enum": [
+            "DEVELOPMENT",
+            "CANDIDATE",
+            "CERTIFIED",
+            "CONDITIONAL",
+            "REVOKED"
+          ]
+        }
+      ]
+    },
+    "grounds": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        }
+      ]
+    },
+    "idempotencyKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "inputDigest": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "kind": {
+      "enum": [
+        "certification-run",
+        "revocation"
+      ]
+    },
+    "provenance": {
+      "$ref": "#/$defs/recordProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the record shape."
+    },
+    "revokes": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "stages": {
+      "description": "One result per declared suite stage, in suite order (empty on revocations).",
+      "items": {
+        "$ref": "#/$defs/stageResult"
+      },
+      "type": "array"
+    },
+    "startedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "statement": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/statement"
+        }
+      ]
+    },
+    "subject": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/subject"
+        }
+      ]
+    },
+    "suiteRef": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "supersedes": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "tenantId": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      ]
+    },
+    "unknownCause": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/unknownCause"
+        }
+      ]
+    },
+    "verdict": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "enum": [
+            "satisfied",
+            "not-satisfied",
+            "unknown"
+          ]
+        }
+      ]
+    },
+    "workspaceId": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[a-z][a-z0-9.-]{0,63}$",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "kind",
+    "subject",
+    "suiteRef",
+    "stages",
+    "verdict",
+    "unknownCause",
+    "grantedLevel",
+    "statement",
+    "inputDigest",
+    "supersedes",
+    "revokes",
+    "grounds",
+    "correlationId",
+    "idempotencyKey",
+    "tenantId",
+    "workspaceId",
+    "startedAt",
+    "finishedAt",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena CertificationRecord v1",
+  "type": "object"
+}

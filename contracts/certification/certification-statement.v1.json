@@ -1,0 +1,137 @@
+{
+  "$defs": {
+    "statement": {
+      "additionalProperties": false,
+      "description": "The DERIVED scoped certification statement (the design law): all five scope components (body, substrate, environment, runtime, suite) + the suite revision (the suite digest) + the verdict qualifier + the granted level + the declared constraints + the mandated professional-limitations notice. Never caller-supplied; an unscoped statement is unrepresentable.",
+      "properties": {
+        "constraints": {
+          "items": {
+            "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "grantedLevel": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "DEVELOPMENT",
+                "CANDIDATE",
+                "CERTIFIED",
+                "CONDITIONAL",
+                "REVOKED"
+              ]
+            }
+          ]
+        },
+        "limitations": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/$defs/statementScope"
+        },
+        "statementVersion": {
+          "const": 1
+        },
+        "suiteRevision": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "verdictQualifier": {
+          "enum": [
+            "satisfied",
+            "did not satisfy",
+            "could not be determined against"
+          ]
+        }
+      },
+      "required": [
+        "statementVersion",
+        "scope",
+        "suiteRevision",
+        "verdictQualifier",
+        "grantedLevel",
+        "constraints",
+        "limitations",
+        "text"
+      ],
+      "type": "object"
+    },
+    "statementScope": {
+      "additionalProperties": false,
+      "description": "The B/V/M/E/R/S scope components of the statement — every component required.",
+      "properties": {
+        "body": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "bodyVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "environment": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "environmentVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "runtime": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "runtimeVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "substrate": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "substrateVersion": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "suite": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "suiteVersion": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "bodyVersion",
+        "substrate",
+        "substrateVersion",
+        "environment",
+        "environmentVersion",
+        "runtime",
+        "runtimeVersion",
+        "suite",
+        "suiteVersion"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/certification/certification-statement@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "#/$defs/statement"
+    }
+  ],
+  "description": "The design law, as a schema: \"Agent Body B, version V, possessed by Cognitive Substrate M, under Environment E and Runtime Profile R, satisfied Certification Suite S at revision X.\" All five scope components are required; the limitations notice is mandatory (architecture-lock rule 23); Arena never certifies that M alone is a professional (requirement R46).",
+  "title": "Arena CertificationStatement v1"
+}
