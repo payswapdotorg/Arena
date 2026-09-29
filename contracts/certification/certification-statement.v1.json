@@ -1,0 +1,69 @@
+{
+  "$id": "arena:schema/certification/certification-statement@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The SCOPED certification statement (the design law). Carries Body×Substrate×Environment×RuntimeProfile×Suite+Rev×Verdict + rendered text + constraints. NEVER an unscoped professional claim.",
+  "properties": {
+    "bodyVersionRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "constraints": {
+      "items": {
+        "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "environmentRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "possessionRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "runtimeProfileRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "statementText": {
+      "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+      "type": "string"
+    },
+    "substrateRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "suiteRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "suiteRevision": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "pass",
+        "conditional-pass",
+        "fail",
+        "unknown"
+      ]
+    }
+  },
+  "required": [
+    "bodyVersionRef",
+    "substrateRef",
+    "environmentRef",
+    "runtimeProfileRef",
+    "possessionRef",
+    "suiteRef",
+    "suiteRevision",
+    "verdict",
+    "statementText",
+    "constraints"
+  ],
+  "title": "Arena CertificationStatement v1",
+  "type": "object"
+}

@@ -1,0 +1,64 @@
+{
+  "$id": "arena:schema/certification/certification-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Wire-safe structured form of a CertificationError: closed CERTIFICATION_* code set, core category mapping, strictly validating parse (unknown codes rejected).",
+  "properties": {
+    "category": {
+      "enum": [
+        "encoding",
+        "integrity",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "CERTIFICATION_COMPONENT_MISMATCH",
+        "CERTIFICATION_DUPLICATE_COMPONENT",
+        "CERTIFICATION_IDEMPOTENCY_CONFLICT",
+        "CERTIFICATION_IDENTITY_CONFLICT",
+        "CERTIFICATION_INVALID_COMPONENT_KIND",
+        "CERTIFICATION_INVALID_COMPONENT_VERDICT",
+        "CERTIFICATION_INVALID_DIGEST",
+        "CERTIFICATION_INVALID_IDENTITY",
+        "CERTIFICATION_INVALID_PROVENANCE",
+        "CERTIFICATION_INVALID_RECORD",
+        "CERTIFICATION_INVALID_REVISION",
+        "CERTIFICATION_INVALID_SCHEMA_REF",
+        "CERTIFICATION_INVALID_STATEMENT",
+        "CERTIFICATION_INVALID_SUITE",
+        "CERTIFICATION_INVALID_TEXT",
+        "CERTIFICATION_INVALID_TIMESTAMP",
+        "CERTIFICATION_INVALID_VERDICT",
+        "CERTIFICATION_NOT_FOUND",
+        "CERTIFICATION_SCOPE_VIOLATION",
+        "CERTIFICATION_TAMPERED",
+        "CERTIFICATION_TIMESTAMP_REGRESSION",
+        "CERTIFICATION_UNKNOWN_ERROR",
+        "CERTIFICATION_UNSUPPORTED_RECORD_VERSION",
+        "CERTIFICATION_UNSUPPORTED_SCOPE",
+        "CERTIFICATION_VERSION_CONFLICT"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena CertificationError v1",
+  "type": "object"
+}

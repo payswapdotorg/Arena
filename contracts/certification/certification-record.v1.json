@@ -1,0 +1,302 @@
+{
+  "$defs": {
+    "certificationStatement": {
+      "additionalProperties": false,
+      "description": "The SCOPED certification statement (the design law): Body×Substrate×Environment×RuntimeProfile×Suite+Rev×Verdict + rendered text + constraints. NEVER an unscoped professional claim.",
+      "properties": {
+        "bodyVersionRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "constraints": {
+          "description": "Declared constraints when verdict === conditional-pass; [] otherwise.",
+          "items": {
+            "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "environmentRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "possessionRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "runtimeProfileRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "statementText": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "substrateRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "suiteRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "suiteRevision": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "conditional-pass",
+            "fail",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "bodyVersionRef",
+        "substrateRef",
+        "environmentRef",
+        "runtimeProfileRef",
+        "possessionRef",
+        "suiteRef",
+        "suiteRevision",
+        "verdict",
+        "statementText",
+        "constraints"
+      ],
+      "type": "object"
+    },
+    "componentVerdictEntry": {
+      "additionalProperties": false,
+      "description": "One component verdict within a certification run (a pass component MUST carry a constraints array; a fail/unknown component MUST carry null).",
+      "properties": {
+        "constraints": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "items": {
+                "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "refDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "refKind": {
+          "enum": [
+            "evaluation",
+            "verification",
+            "compatibility"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "fail",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "refKind",
+        "refDigest",
+        "verdict",
+        "constraints",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "recordProvenance": {
+      "additionalProperties": false,
+      "description": "Provenance of one certification run.",
+      "properties": {
+        "executedBy": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "recordedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "executedBy",
+        "recordedAt",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "unknownCause": {
+      "additionalProperties": false,
+      "description": "The structured WHY of an unknown verdict: a closed reason taxonomy member plus the deterministic detail listing the driving component refs. REQUIRED iff the verdict is unknown; MUST be null otherwise.",
+      "properties": {
+        "detail": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "unverifiable-component",
+            "suite-misconfiguration"
+          ]
+        }
+      },
+      "required": [
+        "reason",
+        "detail"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/certification/certification-record@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The append-once record of one certification run: suite descriptor digest, possession digest, the flattened scope refs (body/substrate/environment/runtime-profile — the design-law fields), the per-component summary (one closed-vocabulary verdict per declared suite ref), the DERIVED certification verdict (pass | conditional-pass | fail | unknown — computed purely from the component summary, never caller-supplied), the DERIVED structured unknown cause (required iff unknown), the DERIVED constraints list, the DERIVED scoped CertificationStatement (design-law form), correlation id + idempotency key, the COMPUTED input digest over {suiteRef, possessionRef, componentVerdicts}, timestamps and run provenance. Frozen on creation; pure replayable construction; identical inputs ⇒ identical record digest.",
+  "properties": {
+    "bodyVersionRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "componentVerdicts": {
+      "description": "One component verdict per declared suite ref, in suite declaration order.",
+      "items": {
+        "$ref": "#/$defs/componentVerdictEntry"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "constraints": {
+      "description": "Declared constraints when verdict === conditional-pass; [] otherwise.",
+      "items": {
+        "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environmentRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "finishedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "idempotencyKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "inputDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "possessionRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/recordProvenance"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the record shape."
+    },
+    "runtimeProfileRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "startedAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "statement": {
+      "$ref": "#/$defs/certificationStatement"
+    },
+    "substrateRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "suiteRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "unknownCause": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/unknownCause"
+        }
+      ]
+    },
+    "verdict": {
+      "description": "The derived verdict — a closed four-member vocabulary, never a quantitative value.",
+      "enum": [
+        "pass",
+        "conditional-pass",
+        "fail",
+        "unknown"
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "suiteRef",
+    "possessionRef",
+    "bodyVersionRef",
+    "substrateRef",
+    "environmentRef",
+    "runtimeProfileRef",
+    "componentVerdicts",
+    "verdict",
+    "unknownCause",
+    "constraints",
+    "statement",
+    "correlationId",
+    "idempotencyKey",
+    "inputDigest",
+    "startedAt",
+    "finishedAt",
+    "provenance",
+    "digest"
+  ],
+  "title": "Arena CertificationRecord v1",
+  "type": "object"
+}

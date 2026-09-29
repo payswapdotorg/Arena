@@ -1,0 +1,109 @@
+{
+  "$defs": {
+    "componentVerdictEntry": {
+      "additionalProperties": false,
+      "description": "One component verdict within a certification run (a pass component MUST carry a constraints array; a fail/unknown component MUST carry null).",
+      "properties": {
+        "constraints": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "items": {
+                "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ]
+        },
+        "notes": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+              "type": "string"
+            }
+          ]
+        },
+        "refDigest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "refKind": {
+          "enum": [
+            "evaluation",
+            "verification",
+            "compatibility"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "fail",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "refKind",
+        "refDigest",
+        "verdict",
+        "constraints",
+        "notes"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/certification/run-certification-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Command envelope payload: run one certification. Carries the suite descriptor digest, the possession digest, the flattened scope refs (body/substrate/environment/runtime-profile) and the per-component verdict summary; the engine resolves the suite, validates set-equality, derives the verdict/unknown cause/constraints/statement, and emits certification-recorded-event. Commands carry a REQUIRED non-null idempotency key (architecture-lock rule 17).",
+  "properties": {
+    "bodyVersionRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "componentVerdicts": {
+      "items": {
+        "$ref": "#/$defs/componentVerdictEntry"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "environmentRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "possessionRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "runtimeProfileRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "substrateRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "suiteRef": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "suiteRef",
+    "possessionRef",
+    "bodyVersionRef",
+    "substrateRef",
+    "environmentRef",
+    "runtimeProfileRef",
+    "componentVerdicts"
+  ],
+  "title": "Arena run-certification-command v1",
+  "type": "object"
+}

@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/certification/certification-recorded-event@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Event envelope payload: the engine's authoritative result — the frozen, content-addressed CertificationRecord. The event carries the run command idempotency key when provided so event-stream replays are idempotency-addressable.",
+  "properties": {
+    "record": {
+      "$ref": "arena:schema/certification/certification-record@1.0.0"
+    }
+  },
+  "required": [
+    "record"
+  ],
+  "title": "Arena certification-recorded-event v1",
+  "type": "object"
+}

@@ -1,0 +1,42 @@
+{
+  "$defs": {
+    "verdictSemantics": {
+      "additionalProperties": false,
+      "description": "The declared meaning of each verdict for THIS suite (the design law: a suite declares what each verdict establishes). All four declarations are mandatory non-empty text.",
+      "properties": {
+        "conditional-pass": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "fail": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "pass": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "unknown": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pass",
+        "conditional-pass",
+        "fail",
+        "unknown"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/certification/certification-verdict@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "#/$defs/verdictSemantics"
+    }
+  ],
+  "description": "The verdict semantics object: the declared meaning of pass / conditional-pass / fail / unknown for a specific suite (the design law: a suite declares what each verdict establishes). The verdict vocabulary itself is the closed enum pass | conditional-pass | fail | unknown — it has no quantitative members and cannot carry graded values.",
+  "title": "Arena certification-verdict v1"
+}
