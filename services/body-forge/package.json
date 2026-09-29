@@ -1,0 +1,44 @@
+{
+  "name": "@arena/body-forge-fabric",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/body-forge": "workspace:*",
+    "@arena/learning": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/skill-extraction": "workspace:*"
+  },
+  "devDependencies": {
+    "@arena/agent-body": "workspace:*",
+    "@arena/capability-graph": "workspace:*",
+    "@arena/evaluation": "workspace:*",
+    "@arena/trajectory": "workspace:*",
+    "@arena/verification": "workspace:*",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
