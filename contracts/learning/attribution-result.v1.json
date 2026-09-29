@@ -1,0 +1,111 @@
+{
+  "$defs": {
+    "attributionFinding": {
+      "additionalProperties": false,
+      "description": "One attribution finding: a LE1.0 source, its closed status, and the deterministic basis.",
+      "properties": {
+        "basis": {
+          "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "substrate",
+            "body",
+            "environment",
+            "evaluator-change",
+            "verifier-change",
+            "sampling-measurement-variance"
+          ]
+        },
+        "status": {
+          "enum": [
+            "declared-intervention",
+            "detected-version-difference",
+            "within-measurement-variance",
+            "not-indicated"
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "status",
+        "basis"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/learning/attribution-result@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The structured attribution of one experiment run (LE1.0): one finding per the SIX distinguishable improvement sources (substrate | body | environment | evaluator-change | verifier-change | sampling-measurement-variance), classified from the DECLARED intervention surfaces + the evaluator/verifier version digests the arm records carry. KEY RULE: when the evaluator or verifier version digests differ between arms, the confounds array MUST carry evaluator-version-confound / verifier-version-confound and the capability-lift verdict MUST be inconclusive-unless-controlled — a changed evaluator score is not automatically a capability improvement.",
+  "properties": {
+    "basis": {
+      "pattern": "^[\\x20-\\x7E\\n\\t]{1,4096}$",
+      "type": "string"
+    },
+    "confounds": {
+      "description": "The surfaced measurement-validity confounds (empty when none). Never silently absorbed.",
+      "items": {
+        "enum": [
+          "evaluator-version-confound",
+          "verifier-version-confound"
+        ]
+      },
+      "type": "array"
+    },
+    "evaluatorDigestsBaseline": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "evaluatorDigestsIntervention": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "findings": {
+      "description": "One finding per LE1.0 source (all six, canonical order).",
+      "items": {
+        "$ref": "#/$defs/attributionFinding"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "type": "array"
+    },
+    "recordVersion": {
+      "const": 1,
+      "description": "Wire version of the attribution shape."
+    },
+    "verifierDigestsBaseline": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "verifierDigestsIntervention": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "findings",
+    "confounds",
+    "evaluatorDigestsBaseline",
+    "evaluatorDigestsIntervention",
+    "verifierDigestsBaseline",
+    "verifierDigestsIntervention",
+    "basis"
+  ],
+  "title": "Arena AttributionResult v1",
+  "type": "object"
+}
