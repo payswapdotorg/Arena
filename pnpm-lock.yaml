@@ -331,6 +331,43 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/learning:
+    dependencies:
+      '@arena/capability-graph':
+        specifier: workspace:*
+        version: link:../capability-graph
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../environment-protocol
+      '@arena/evaluation':
+        specifier: workspace:*
+        version: link:../evaluation
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+      '@arena/trajectory':
+        specifier: workspace:*
+        version: link:../trajectory
+      '@arena/verification':
+        specifier: workspace:*
+        version: link:../verification
+    devDependencies:
+      '@arena/skill-extraction':
+        specifier: workspace:*
+        version: link:../skill-extraction
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/model-substrate:
     dependencies:
       '@arena/protocol-core':
@@ -558,6 +595,40 @@ importers:
         specifier: workspace:*
         version: link:../../packages/protocol-core
     devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/learning:
+    dependencies:
+      '@arena/evaluation':
+        specifier: workspace:*
+        version: link:../../packages/evaluation
+      '@arena/learning':
+        specifier: workspace:*
+        version: link:../../packages/learning
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+      '@arena/trajectory':
+        specifier: workspace:*
+        version: link:../../packages/trajectory
+      '@arena/verification':
+        specifier: workspace:*
+        version: link:../../packages/verification
+    devDependencies:
+      '@arena/skill-extraction':
+        specifier: workspace:*
+        version: link:../../packages/skill-extraction
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4
