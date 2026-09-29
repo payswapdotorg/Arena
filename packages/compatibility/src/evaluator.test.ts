@@ -9,7 +9,7 @@ import {
   evaluateMultipleSubstrates,
   isCompatible,
 } from '../src/evaluator.js';
-import { toSubstrateCompatibilityProfile, toCognitiveSubstrate } from '@arena/agent-body';
+import { toSubstrateCompatibilityProfile, createCognitiveSubstrate } from '@arena/agent-body';
 
 describe('Compatibility Evaluator', () => {
   it('should evaluate basic compatibility', async () => {
@@ -19,7 +19,7 @@ describe('Compatibility Evaluator', () => {
       contextRequirements: { minContextUnits: 10000 },
     });
 
-    const substrate = await toCognitiveSubstrate({
+    const substrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',
@@ -44,7 +44,7 @@ describe('Compatibility Evaluator', () => {
       contextRequirements: { minContextUnits: 10000 },
     });
 
-    const substrate = await toCognitiveSubstrate({
+    const substrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',
@@ -69,7 +69,7 @@ describe('Compatibility Evaluator', () => {
       contextRequirements: { minContextUnits: 20000 },
     });
 
-    const substrate = await toCognitiveSubstrate({
+    const substrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',
@@ -94,7 +94,7 @@ describe('Compatibility Evaluator', () => {
       contextRequirements: { minContextUnits: 10000 },
     });
 
-    const substrate = await toCognitiveSubstrate({
+    const substrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',
@@ -120,7 +120,7 @@ describe('Compatibility Evaluator', () => {
       prohibitedConditions: ['deprecated'],
     });
 
-    const substrate = await toCognitiveSubstrate({
+    const substrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',
@@ -146,7 +146,7 @@ describe('Compatibility Evaluator', () => {
       prohibitedConditions: ['deprecated'],
     });
 
-    const substrate = await toCognitiveSubstrate({
+    const substrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',
@@ -171,7 +171,7 @@ describe('Compatibility Evaluator', () => {
       contextRequirements: { minContextUnits: 20000 },
     });
 
-    const substrate = await toCognitiveSubstrate({
+    const substrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',
@@ -199,7 +199,7 @@ describe('Compatibility Evaluator', () => {
     });
 
     const substrates = [
-      await toCognitiveSubstrate({
+      await createCognitiveSubstrate({
         adapterId: 'test-adapter',
         adapterVersion: '1.0.0',
         modelFamily: 'test-model',
@@ -210,7 +210,7 @@ describe('Compatibility Evaluator', () => {
         contextLimits: { maxContextUnits: 20000, maxOutputUnits: 4000 },
         conditions: ['stable'],
       }),
-      await toCognitiveSubstrate({
+      await createCognitiveSubstrate({
         adapterId: 'test-adapter',
         adapterVersion: '1.0.0',
         modelFamily: 'test-model',
@@ -237,7 +237,7 @@ describe('Compatibility Evaluator', () => {
       contextRequirements: { minContextUnits: 10000 },
     });
 
-    const compatibleSubstrate = await toCognitiveSubstrate({
+    const compatibleSubstrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',
@@ -249,7 +249,7 @@ describe('Compatibility Evaluator', () => {
       conditions: ['stable'],
     });
 
-    const incompatibleSubstrate = await toCognitiveSubstrate({
+    const incompatibleSubstrate = await createCognitiveSubstrate({
       adapterId: 'test-adapter',
       adapterVersion: '1.0.0',
       modelFamily: 'test-model',

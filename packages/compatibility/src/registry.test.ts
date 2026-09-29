@@ -3,6 +3,7 @@
  * requirements R2, R20; spec AB1.0; architecture-lock rules 2, 3, 4).
  */
 
+import { describe, it, expect, beforeEach } from 'vitest';
 import { CompatibilityRegistry } from '../src/registry.js';
 import {
   type CompatibilityRecord,
@@ -49,8 +50,8 @@ describe('Compatibility Registry', () => {
     const record = makeRecord({ tenantId: 'tenant-1', workspaceId: 'workspace-1' });
     const registered = registry.register(record);
     
-    expect((registered as Record<string, unknown>).tenantId).toBe('tenant-1');
-    expect((registered as Record<string, unknown>).workspaceId).toBe('workspace-1');
+    expect((registered as unknown as Record<string, unknown>).tenantId).toBe('tenant-1');
+    expect((registered as unknown as Record<string, unknown>).workspaceId).toBe('workspace-1');
   });
 
   it('should get records by digest', () => {
