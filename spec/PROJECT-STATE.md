@@ -13,7 +13,7 @@ A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002
 
 A012 MERGED via PR #26 (merge SHA 0cb1b90611a093858f5e3101cda189fd530de5b4, worker head 6b05363 + intake ed05333; PR CI green on ed05333; delivered @arena/evaluation + services/evaluation + contracts/evaluation — EvaluatorDescriptor, EvaluationCriteria, EvaluationRecord, evaluator registry + reference fabric; a 35-minute dispatch-to-push cycle, 76-minute dispatch-to-merge; acceptance via branch-oracle, worker chat retired post-merge).
 
-Live wave: A013 (verification; deps A002+A012 all merged) dispatched 2026-09-28 ~10:55 UTC from base 0cb1b906 (post-A012-merge main tip). Next unlock on the A013 merge: the A007/A014/A019 fan-out (A007 needs A005+A006+A013; A014 needs A002+A011+A012+A013; A019 needs A011+A012+A013+A004 — all satisfied once A013 merges; three pairwise-disjoint surfaces, full 3-slot wave).
+A013 MERGED via PR #28 (merge SHA 02c71552ef, worker head 4388033 + intake 9238836; PR CI green on 9238836; battery all-green at the TL station: ownership clean, 54 files +10143 lines, @arena/verification 165 tests/13 files + services/verification 51 tests/5 files, contract drift clean on 7 schemas; worker chat 5397113a). Live wave: the A007/A014/A019 fan-out (full 3-slot, pairwise-disjoint) dispatched 2026-09-29 ~04:5X UTC from the post-governance main tip (A007 needs A005+A006+A013 all merged; A014 needs A002+A011+A012+A013 all merged; A019 needs A011+A012+A013+A004 all merged). Next unlocks: A008 on the A007 merge; A020 on the A019 merge; A021 after A019+A020; A023 needs A013+A022+A014.
 
 Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
 
@@ -31,7 +31,7 @@ Use live GitHub branch state for the exact latest main SHA. This file records pr
 - A010 MERGED (PR #23, 6b8352c; worker head b1997c1 + intake 95989c7 + lockfile regen 38868ff)
 - A011 MERGED (PR #24, ee57532; worker head 15620f8 + intake b5f7f46)
 - A012 MERGED (PR #26, 0cb1b906; worker head 6b05363 + intake ed05333)
-- A013 IN_FLIGHT (dispatched ~10:55 UTC from 0cb1b906)
+- A013 MERGED (PR #28, 02c7155; worker head 4388033 + intake 9238836)
 - A014 WAITING_ON_DEPENDENCIES
 - A015 MERGED
 - A016 MERGED
