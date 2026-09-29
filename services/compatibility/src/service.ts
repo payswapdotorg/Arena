@@ -10,226 +10,222 @@
 
 import { 
   CompatibilityRegistry, 
-  createCompatibilityRegistry 
-} from './registry.js';
+  createCompatibilityRegistry,
+  type CompatibilityResult,
+  type SubstrateCompatibilityProfile,
+  type CognitiveSubstrate,
+  type CompatibilityRecord
+} from '@arena/compatibility';
 import { 
   CompatibilityEngine, 
-  createCompatibilityEngine,
-  CompatibilityResult 
-} from './engine.js';
+  createCompatibilityEngine
+} from '@arena/compatibility';
 import { 
-  SubstrateCompatibilityProfile,
-  CognitiveSubstrate 
-} from '@arena/agent-body';
-import { 
-  SubstrateRegistry 
+  type SubstrateRegistry 
 } from '@arena/model-substrate';
 import { 
   toCorrelationId, 
   toIdempotencyKey 
 } from '@arena/protocol-core';
-import type { CorrelationId, IdempotencyKey } from '@arena/protocol-core';
 
-/** Compatibility service options */
-export interface CompatibilityServiceOptions {
-  /** Custom registry (creates fresh if not provided) */
-  registry?: CompatibilityRegistry;
-  /** Custom engine (creates fresh if not provided) */
-  engine?: CompatibilityEngine;
-  /** Substrate registry for capability validation */
-  substrateRegistry?: SubstrateRegistry;
+/** Service configuration */
+export interface CompatibilityServiceConfig {
+  readonly registry?: CompatibilityRegistry;
+  readonly engine?: CompatibilityEngine;
+  readonly tenantId?: string;
+  readonly workspaceId?: string;
 }
 
 /** Compatibility service interface */
 export interface CompatibilityService {
   /** Evaluate compatibility and create a record */
-  evaluateCompatibility(
+  evaluateAndRecord(
     bodyProfile: SubstrateCompatibilityProfile,
     substrate: CognitiveSubstrate,
-    options: {
-      correlationId: string;
-      idempotencyKey: string;
-      tenantId?: string;
-      workspaceId?: string;
-      parentDigest?: string;
+    options?: {
+      correlationId?: string;
+      idempotencyKey?: string;
     }
-  ): Promise<import('../packages/compatibility/src/shared.js').CompatibilityRecord>;
+  ): Promise<CompatibilityRecord>;
 
-  /** Batch evaluate compatibility for multiple substrates */
-  batchEvaluateCompatibility(
+  /** Batch evaluate compatibility */
+  batchEvaluateAndRecord(
     bodyProfile: SubstrateCompatibilityProfile,
     substrates: readonly CognitiveSubstrate[],
-    options: {
-      correlationId: string;
-      idempotencyKey: string;
+    options?: {
+      correlationId?: string;
+      idempotencyKey?: string;
+    }
+  ): Promise<readonly CompatibilityRecord[]>;
+
+  /** Get compatibility history */
+  getHistory(
+    bodyVersionRef?: string,
+    substrateRef?: string,
+    options?: {
       tenantId?: string;
       workspaceId?: string;
+      from?: string;
+      to?: string;
     }
-  ): Promise<readonly import('../packages/compatibility/src/shared.js').CompatibilityRecord[]>;
-
-  /** Get compatibility history for a body version */
-  getBodyHistory(
-    bodyVersionRef: string,
-    tenantId?: string,
-    workspaceId?: string
-  ): Promise<readonly import('../packages/compatibility/src/shared.js').CompatibilityRecord[]>;
-
-  /** Get compatibility history for a substrate */
-  getSubstrateHistory(
-    substrateRef: string,
-    tenantId?: string,
-    workspaceId?: string
-  ): Promise<readonly import('../packages/compatibility/src/shared.js').CompatibilityRecord[]>;
+  ): readonly CompatibilityRecord[];
 
   /** Get latest compatibility result */
-  getLatestCompatibility(
+  getLatest(
     bodyVersionRef: string,
-    substrateRef: string,
-    tenantId?: string,
-    workspaceId?: string
-  ): Promise<import('../packages/compatibility/src/shared.js').CompatibilityRecord | undefined>;
-
-  /** Check if a substrate is compatible */
-  checkCompatibility(
-    bodyProfile: SubstrateCompatibilityProfile,
-    substrate: CognitiveSubstrate,
-    correlationId: string
-  ): Promise<boolean>;
+    substrateRef: string
+  ): CompatibilityRecord | undefined;
 
   /** Get service statistics */
   getStats(): {
     totalRecords: number;
     recordsByVerdict: Record<string, number>;
-    registry: CompatibilityRegistry;
   };
 }
 
-/** Create a compatibility service */
+/**
+ * Create a compatibility service with the given configuration.
+ */
 export function createCompatibilityService(
-  options: CompatibilityServiceOptions = {}
+  config: CompatibilityServiceConfig = {}
 ): CompatibilityService {
-  const {
-    registry = createCompatibilityRegistry(),
-    engine = createCompatibilityEngine(registry),
-    substrateRegistry,
-  } = options;
+  const registry = config.registry ?? createCompatibilityRegistry();
+  const engine = config.engine ?? createCompatibilityEngine(registry);
+  const tenantId = config.tenantId;
+  const workspaceId = config.workspaceId;
 
   return {
-    async evaluateCompatibility(
-      bodyProfile,
-      substrate,
-      { correlationId, idempotencyKey, tenantId, workspaceId, parentDigest }
-    ) {
-      // Validate correlation and idempotency keys
-      const correlation: CorrelationId = toCorrelationId(correlationId);
-      const idempotency: IdempotencyKey = toIdempotencyKey(idempotencyKey);
+    async evaluateAndRecord(
+      bodyProfile: SubstrateCompatibilityProfile,
+      substrate: CognitiveSubstrate,
+      options = {}
+    ): Promise<CompatibilityRecord> {
+      const { correlationId, idempotencyKey } = options;
+      const correlation = toCorrelationId(correlationId);
+      const idempotency = toIdempotencyKey(idempotencyKey);
 
-      // Evaluate compatibility
-      const result = await engine.evaluateAndRecord(
-        bodyProfile,
-        substrate,
-        {
+      try {
+        const result = await engine.evaluateAndRecord(bodyProfile, substrate, {
           evaluatedAt: new Date().toISOString(),
-          tenantId,
-          workspaceId,
-          parentDigest,
-        }
-      );
+          tenantId: tenantId,
+          workspaceId: workspaceId,
+        });
 
-      return result;
+        // Log the operation (would be replaced with actual logging)
+        if (process.env.NODE_ENV !== 'test') {
+          console.log(`[CompatibilityService] Evaluation completed: ${correlation}`, {
+            verdict: result.verdict,
+            bodyVersionRef: 'placeholder', // Would come from actual body
+            substrateRef: substrate.integrity.contentDigest,
+          });
+        }
+
+        return result;
+      } catch (error) {
+        console.error(`[CompatibilityService] Evaluation failed: ${correlation}`, error);
+        throw error;
+      }
     },
 
-    async batchEvaluateCompatibility(
-      bodyProfile,
-      substrates,
-      { correlationId, idempotencyKey, tenantId, workspaceId }
-    ) {
-      // Validate correlation and idempotency keys
-      const correlation: CorrelationId = toCorrelationId(correlationId);
-      const idempotency: IdempotencyKey = toIdempotencyKey(idempotencyKey);
+    async batchEvaluateAndRecord(
+      bodyProfile: SubstrateCompatibilityProfile,
+      substrates: readonly CognitiveSubstrate[],
+      options = {}
+    ): Promise<readonly CompatibilityRecord[]> {
+      const { correlationId, idempotencyKey } = options;
+      const correlation = toCorrelationId(correlationId);
+      const idempotency = toIdempotencyKey(idempotencyKey);
 
-      // Batch evaluate compatibility
-      const records = await engine.batchEvaluateAndRecord(
-        bodyProfile,
-        substrates,
-        {
+      try {
+        const results = await engine.batchEvaluateAndRecord(bodyProfile, substrates, {
           evaluatedAt: new Date().toISOString(),
-          tenantId,
-          workspaceId,
+          tenantId: tenantId,
+          workspaceId: workspaceId,
+        });
+
+        // Log the operation
+        if (process.env.NODE_ENV !== 'test') {
+          console.log(`[CompatibilityService] Batch evaluation completed: ${correlation}`, {
+            count: results.length,
+            verdicts: results.map(r => r.verdict),
+          });
         }
-      );
+
+        return results;
+      } catch (error) {
+        console.error(`[CompatibilityService] Batch evaluation failed: ${correlation}`, error);
+        throw error;
+      }
+    },
+
+    getHistory(
+      bodyVersionRef,
+      substrateRef,
+      options = {}
+    ): readonly CompatibilityRecord[] {
+      const { tenantId: queryTenantId, workspaceId: queryWorkspaceId, from, to } = options;
+      const tenantId = queryTenantId ?? config.tenantId;
+      const workspaceId = queryWorkspaceId ?? config.workspaceId;
+
+      let records: CompatibilityRecord[] = [];
+
+      // Filter by body version if specified
+      if (bodyVersionRef) {
+        records = [...registry.listRecordsByBody(bodyVersionRef)];
+      }
+      // Filter by substrate if specified
+      else if (substrateRef) {
+        records = [...registry.listRecordsBySubstrate(substrateRef)];
+      }
+      // Get all records
+      else {
+        records = [...registry.listRecords()];
+      }
+
+      // Apply tenant/workspace filtering
+      if (tenantId) {
+        records = records.filter(record => 
+          'tenantId' in record && record.tenantId === tenantId
+        );
+      }
+
+      if (workspaceId) {
+        records = records.filter(record => 
+          'workspaceId' in record && record.workspaceId === workspaceId
+        );
+      }
+
+      // Apply time range filtering
+      if (from || to) {
+        records = registry.listRecordsByTimeRange({ 
+          from: from as any, 
+          to: to as any 
+        }).filter(record =>
+          records.some(r => r.recordDigest === record.recordDigest)
+        );
+      }
 
       return records;
     },
 
-    async getBodyHistory(bodyVersionRef, tenantId, workspaceId) {
-      let records = registry.listRecordsByBody(bodyVersionRef);
-
-      // Filter by tenant if provided
-      if (tenantId !== undefined) {
-        records = records.filter(record => (record as any).tenantId === tenantId);
-      }
-
-      // Filter by workspace if provided
-      if (workspaceId !== undefined) {
-        records = records.filter(record => (record as any).workspaceId === workspaceId);
-      }
-
-      return records;
-    },
-
-    async getSubstrateHistory(substrateRef, tenantId, workspaceId) {
-      let records = registry.listRecordsBySubstrate(substrateRef);
-
-      // Filter by tenant if provided
-      if (tenantId !== undefined) {
-        records = records.filter(record => (record as any).tenantId === tenantId);
-      }
-
-      // Filter by workspace if provided
-      if (workspaceId !== undefined) {
-        records = records.filter(record => (record as any).workspaceId === workspaceId);
-      }
-
-      return records;
-    },
-
-    async getLatestCompatibility(bodyVersionRef, substrateRef, tenantId, workspaceId) {
-      let records = registry.listRecordsByBody(bodyVersionRef).filter(
-        record => record.substrateRef === substrateRef
-      );
-
-      // Filter by tenant if provided
-      if (tenantId !== undefined) {
-        records = records.filter(record => (record as any).tenantId === tenantId);
-      }
-
-      // Filter by workspace if provided
-      if (workspaceId !== undefined) {
-        records = records.filter(record => (record as any).workspaceId === workspaceId);
-      }
-
-      // Return the most recent record
-      if (records.length === 0) return undefined;
-      return records[records.length - 1];
-    },
-
-    async checkCompatibility(bodyProfile, substrate, correlationId) {
-      const correlation: CorrelationId = toCorrelationId(correlationId);
-      return engine.isCompatible(bodyProfile, substrate);
+    getLatest(
+      bodyVersionRef: string,
+      substrateRef: string
+    ): CompatibilityRecord | undefined {
+      return registry.getLatestRecord(bodyVersionRef, substrateRef);
     },
 
     getStats() {
-      const records = registry.listRecords();
-      const recordsByVerdict = records.reduce((acc, record) => {
-        acc[record.verdict] = (acc[record.verdict] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const allRecords = registry.listRecords();
+      const verdictCounts: Record<string, number> = {};
+
+      for (const record of allRecords) {
+        verdictCounts[record.verdict] = (verdictCounts[record.verdict] || 0) + 1;
+      }
 
       return {
-        totalRecords: records.length,
-        recordsByVerdict,
-        registry,
+        totalRecords: allRecords.length,
+        recordsByVerdict: verdictCounts,
       };
     },
   };

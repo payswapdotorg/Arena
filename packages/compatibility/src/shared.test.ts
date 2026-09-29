@@ -1,3 +1,8 @@
+/**
+ * @arena/compatibility — shared types and utilities tests
+ * (Work Order A022; requirements R2, R20; spec AB1.0).
+ */
+
 import { describe, it, expect } from 'vitest';
 import { 
   COMPATIBILITY_VERDICTS,
@@ -79,8 +84,8 @@ describe('Compatibility Results', () => {
 describe('Test Suite Validation', () => {
   it('should validate test suite references', () => {
     const validSuites = [
-      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'abc123' },
-      { namespace: 'test', name: 'other', version: '1.0.0', digest: 'def456' },
+      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'b2a0f454c9e0d6929c166ae4512355954d21448c30a9474d69ab34cbb70458a3' },
+      { namespace: 'test', name: 'other', version: '1.0.0', digest: '1111c40225bbce563f847e03dc2375bf0c3ae83bc4887620f9ef477c17552883' },
     ];
     
     expect(() => validateTestSuiteRefs(validSuites)).not.toThrow();
@@ -88,8 +93,8 @@ describe('Test Suite Validation', () => {
 
   it('should reject duplicate test suite references', () => {
     const duplicateSuites = [
-      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'abc123' },
-      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'abc123' },
+      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'b2a0f454c9e0d6929c166ae4512355954d21448c30a9474d69ab34cbb70458a3' },
+      { namespace: 'test', name: 'suite', version: '1.0.0', digest: 'b2a0f454c9e0d6929c166ae4512355954d21448c30a9474d69ab34cbb70458a3' },
     ];
     
     expect(() => validateTestSuiteRefs(duplicateSuites)).toThrow('duplicate test suite reference');

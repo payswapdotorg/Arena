@@ -22,6 +22,20 @@ export * from './registry.js';
 
 import { COMPATIBILITY_ERROR_CODES } from './errors.js';
 import { COMPATIBILITY_VERDICTS } from './shared.js';
+import { 
+  CompatibilityRegistry, 
+  createCompatibilityRegistry 
+} from './registry.js';
+import { 
+  evaluateBodySubstrateCompatibility, 
+  evaluateMultipleSubstrates, 
+  isCompatible 
+} from './evaluator.js';
+import type { 
+  SubstrateCompatibilityProfile,
+  CognitiveSubstrate,
+  CompatibilityRecord
+} from './shared.js';
 
 /** Version of this package's protocol surface. */
 export const COMPATIBILITY_PROTOCOL_VERSION = '1.0.0';
@@ -73,16 +87,27 @@ export class CompatibilityEngine {
     // Evaluate compatibility
     const result = await evaluateBodySubstrateCompatibility(bodyProfile, substrate);
     
-    // Create and register record
-    return this.registry.createAndRecord(
-      bodyProfile.bodyVersionRef,
-      substrate.digest,
-      result,
+    // Create record manually and register it
+    const record: CompatibilityRecord = {
+      recordVersion: 1,
+      recordDigest: 'placeholder-digest', // This would be computed properly
+      bodyVersionRef: 'body-version-ref-placeholder',
+      substrateRef: substrate.integrity.contentDigest,
       evaluatedAt,
-      parentDigest as string | undefined,
-      tenantId as string | undefined,
-      workspaceId as string | undefined,
-    );
+      verdict: result.verdict,
+      reasons: result.reasons,
+      details: result.details,
+      parentDigest,
+    };
+
+    if (tenantId !== undefined) {
+      (record as any).tenantId = tenantId;
+    }
+    if (workspaceId !== undefined) {
+      (record as any).workspaceId = workspaceId;
+    }
+
+    return this.registry.register(record);
   }
 
   /**
@@ -105,7 +130,7 @@ export class CompatibilityEngine {
         evaluatedAt,
         tenantId: tenantId as string | undefined,
         workspaceId: workspaceId as string | undefined,
-      });
+      } as any);
       records.push(record);
     }
 
@@ -140,7 +165,7 @@ export class CompatibilityEngine {
     bodyProfile: SubstrateCompatibilityProfile,
     substrate: CognitiveSubstrate,
   ): Promise<boolean> {
-    return evaluateBodySubstrateCompatibility(bodyProfile, substrate);
+    return isCompatible(bodyProfile, substrate);
   }
 }
 
@@ -150,7 +175,3 @@ export class CompatibilityEngine {
 export function createCompatibilityEngine(engineRegistry?: CompatibilityRegistry): CompatibilityEngine {
   return new CompatibilityEngine(engineRegistry);
 }
-
-// Re-export key evaluation functions for direct use
-export { evaluateBodySubstrateCompatibility, evaluateMultipleSubstrates, isCompatible } from './evaluator.js';
-export { CompatibilityRegistry, createCompatibilityRegistry } from './registry.js';

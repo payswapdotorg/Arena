@@ -9,9 +9,9 @@
 import { toContentDigest, deepFreeze } from '@arena/agent-body';
 import { 
   createCompatibilityResult, 
-  isCompatibilityRecord, 
-  CompatibilityRecord,
-  CompatibilityResult 
+  type CompatibilityRecord, 
+  type CompatibilityResult,
+  isCompatibilityRecord
 } from './shared.js';
 import { CompatibilityError, COMPATIBILITY_ERROR_CODES } from './errors.js';
 
