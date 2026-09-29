@@ -1,0 +1,25 @@
+{
+  "$id": "arena:schema/dataset/dataset-bundle@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The resolution of a dataset manifest into a verifiable bundle: every declared entry was resolved through an A002 resolver and its digest verified; the manifest digest chain (manifest digest + entries checksum) was verified. The bundle digest is computed over the canonical view {bundleVersion, manifestDigest, sorted entry keys} — deterministic: the same manifest always resolves to the same bundle digest.",
+  "properties": {
+    "bundleDigest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "bundleVersion": {
+      "const": 1
+    },
+    "manifest": {
+      "$ref": "arena:schema/dataset/dataset-manifest@1.0.0"
+    }
+  },
+  "required": [
+    "bundleVersion",
+    "manifest",
+    "bundleDigest"
+  ],
+  "title": "Arena dataset bundle v1",
+  "type": "object"
+}

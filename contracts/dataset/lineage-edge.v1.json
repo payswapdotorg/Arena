@@ -1,0 +1,56 @@
+{
+  "$defs": {
+    "artifactRef": {
+      "additionalProperties": false,
+      "description": "A002 artifact reference (reused validator, never redefined): namespace/name/version identity plus the sha256 content digest of the referenced material artifact.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version",
+        "digest"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/dataset/lineage-edge@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One dataset-level lineage edge: a content-addressed parent reference (a parent dataset manifest or artifact) plus the lineage relation. The relation vocabulary is the closed A002 @arena/provenance set (LINEAGE_RELATIONS), reused verbatim.",
+  "properties": {
+    "parent": {
+      "$ref": "#/$defs/artifactRef"
+    },
+    "relation": {
+      "enum": [
+        "adapted-from",
+        "composed-of",
+        "derived-from",
+        "extracted-from"
+      ]
+    }
+  },
+  "required": [
+    "parent",
+    "relation"
+  ],
+  "title": "Arena dataset lineage edge v1",
+  "type": "object"
+}
