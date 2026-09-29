@@ -105,21 +105,13 @@ export function createCompatibilityService(
       options = {}
     ): Promise<CompatibilityRecord> {
       const { correlationId, idempotencyKey } = options;
-      const correlation = toCorrelationId(correlationId);
-      const idempotency = toIdempotencyKey(idempotencyKey);
-
+      
       try {
         const options: EvaluateAndRecordOptions = {
           evaluatedAt: new Date().toISOString(),
+          ...(tenantId !== undefined ? { tenantId } : {}),
+          ...(workspaceId !== undefined ? { workspaceId } : {}),
         };
-        
-        if (tenantId !== undefined) {
-          options.tenantId = tenantId;
-        }
-        
-        if (workspaceId !== undefined) {
-          options.workspaceId = workspaceId;
-        }
 
         const result = await engine.evaluateAndRecord(
           bodyVersionRef,
@@ -130,6 +122,9 @@ export function createCompatibilityService(
 
         // Log the operation (would be replaced with actual logging)
         if (process.env.NODE_ENV !== 'test') {
+          const correlation = correlationId ? toCorrelationId(correlationId) : undefined;
+          const idempotency = idempotencyKey ? toIdempotencyKey(idempotencyKey) : undefined;
+          
           console.log(`[CompatibilityService] Evaluation completed: ${correlation}`, {
             verdict: result.verdict,
             bodyVersionRef: bodyVersionRef,
@@ -139,6 +134,7 @@ export function createCompatibilityService(
 
         return result;
       } catch (error) {
+        const correlation = correlationId ? toCorrelationId(correlationId) : undefined;
         console.error(`[CompatibilityService] Evaluation failed: ${correlation}`, error);
         throw error;
       }
@@ -151,8 +147,6 @@ export function createCompatibilityService(
       options = {}
     ): Promise<readonly CompatibilityRecord[]> {
       const { correlationId, idempotencyKey } = options;
-      const correlation = toCorrelationId(correlationId);
-      const idempotency = toIdempotencyKey(idempotencyKey);
 
       try {
         const records: CompatibilityRecord[] = [];
@@ -160,15 +154,9 @@ export function createCompatibilityService(
         for (const substrate of substrates) {
           const options: EvaluateAndRecordOptions = {
             evaluatedAt: new Date().toISOString(),
+            ...(tenantId !== undefined ? { tenantId } : {}),
+            ...(workspaceId !== undefined ? { workspaceId } : {}),
           };
-          
-          if (tenantId !== undefined) {
-            options.tenantId = tenantId;
-          }
-          
-          if (workspaceId !== undefined) {
-            options.workspaceId = workspaceId;
-          }
 
           const record = await engine.evaluateAndRecord(
             bodyVersionRef,
@@ -181,6 +169,9 @@ export function createCompatibilityService(
 
         // Log the operation (would be replaced with actual logging)
         if (process.env.NODE_ENV !== 'test') {
+          const correlation = correlationId ? toCorrelationId(correlationId) : undefined;
+          const idempotency = idempotencyKey ? toIdempotencyKey(idempotencyKey) : undefined;
+          
           console.log(`[CompatibilityService] Batch evaluation completed: ${correlation}`, {
             count: records.length,
             bodyVersionRef: bodyVersionRef,
@@ -189,6 +180,7 @@ export function createCompatibilityService(
 
         return records;
       } catch (error) {
+        const correlation = correlationId ? toCorrelationId(correlationId) : undefined;
         console.error(`[CompatibilityService] Batch evaluation failed: ${correlation}`, error);
         throw error;
       }
