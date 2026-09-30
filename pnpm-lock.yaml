@@ -54,6 +54,37 @@ importers:
         specifier: 'catalog:'
         version: 8.70.1(eslint@10.11.0)(typescript@5.9.3)
 
+  adapters/epoch:
+    dependencies:
+      '@arena/arena-sdk':
+        specifier: workspace:*
+        version: link:../../packages/arena-sdk
+      '@arena/body-registry':
+        specifier: workspace:*
+        version: link:../../packages/body-registry
+      '@arena/capability-case':
+        specifier: workspace:*
+        version: link:../../packages/capability-case
+      '@arena/job-protocol':
+        specifier: workspace:*
+        version: link:../../packages/job-protocol
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   adapters/models:
     dependencies:
       '@arena/model-substrate':
@@ -95,6 +126,37 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  bodies/software-engineer:
+    dependencies:
+      '@arena/agent-body':
+        specifier: workspace:*
+        version: link:../../packages/agent-body
+      '@arena/body-forge':
+        specifier: workspace:*
+        version: link:../../packages/body-forge
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../../packages/environment-protocol
+      '@arena/environment-software-engineer':
+        specifier: workspace:*
+        version: link:../../environments/software-engineer
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   bodies/structural-engineer:
     dependencies:
       '@arena/agent-body':
@@ -109,6 +171,31 @@ importers:
       '@arena/environment-structural-engineer':
         specifier: workspace:*
         version: link:../../environments/structural-engineer
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  environments/software-engineer:
+    dependencies:
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../../packages/environment-protocol
+      '@arena/environment-runtime':
+        specifier: workspace:*
+        version: link:../../packages/environment-runtime
       '@arena/protocol-core':
         specifier: workspace:*
         version: link:../../packages/protocol-core
@@ -614,6 +701,28 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/observability:
+    dependencies:
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+      '@arena/security':
+        specifier: workspace:*
+        version: link:../security
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/protocol-core:
     devDependencies:
       '@types/node':
@@ -638,6 +747,25 @@ importers:
       '@arena/artifact-protocol':
         specifier: workspace:*
         version: link:../artifact-protocol
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  packages/security:
+    dependencies:
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4
@@ -1101,6 +1229,50 @@ importers:
       '@arena/skill-extraction':
         specifier: workspace:*
         version: link:../../packages/skill-extraction
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/observability:
+    dependencies:
+      '@arena/observability':
+        specifier: workspace:*
+        version: link:../../packages/observability
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/security:
+    dependencies:
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+      '@arena/security':
+        specifier: workspace:*
+        version: link:../../packages/security
+    devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4

@@ -1,0 +1,41 @@
+{
+  "name": "@arena/epoch-adapter",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Provider-neutral Epoch capability-development adapter (A026): typed translation of EPI1.0 incoming requests into Arena capability-case provisioning and typed Arena-output refs, with the asynchronous job envelope (job id, correlation id, causation id, idempotency key, artifact digests, authorization metadata, explicit lifecycle) and a structurally enforced Epoch authority boundary (no World-Model mutation surface).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/arena-sdk": "workspace:*",
+    "@arena/body-registry": "workspace:*",
+    "@arena/capability-case": "workspace:*",
+    "@arena/job-protocol": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
