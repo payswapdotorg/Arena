@@ -1,0 +1,7 @@
+{
+  "name": "@arena/security-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A034 adversarial security battery (tests/security — NOT a pnpm workspace project; run via services/security: pnpm run battery:test / battery:typecheck)."
+}
