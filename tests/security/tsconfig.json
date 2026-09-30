@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "typeRoots": ["../../services/security/node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "@arena/security": ["../../packages/security/src/index.ts"],
+      "@arena/protocol-core": ["../../packages/protocol-core/src/index.ts"],
+      "@arena/security-service": ["../../services/security/src/index.ts"],
+      "vitest": ["../../services/security/node_modules/vitest/dist/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts", "vitest.config.ts"]
+}
