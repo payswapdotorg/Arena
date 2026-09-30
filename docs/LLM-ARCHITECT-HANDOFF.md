@@ -189,3 +189,4 @@ Capability Case
 ```
 
 without this conversation.
+A025 MERGED via PR #48 at 79e8f25 (2026-09-30): @arena/arena-sdk + @arena/api-fabric + contracts/api — the public/private Arena API and SDK surface. 25/36 merged; A026/A028/A029/A034 join A031/A032/A033 as dispatchable.
