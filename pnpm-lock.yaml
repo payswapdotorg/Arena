@@ -157,7 +157,63 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  bodies/structural-engineer:
+    dependencies:
+      '@arena/agent-body':
+        specifier: workspace:*
+        version: link:../../packages/agent-body
+      '@arena/body-forge':
+        specifier: workspace:*
+        version: link:../../packages/body-forge
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../../packages/environment-protocol
+      '@arena/environment-structural-engineer':
+        specifier: workspace:*
+        version: link:../../environments/structural-engineer
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   environments/software-engineer:
+    dependencies:
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../../packages/environment-protocol
+      '@arena/environment-runtime':
+        specifier: workspace:*
+        version: link:../../packages/environment-runtime
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  environments/structural-engineer:
     dependencies:
       '@arena/environment-protocol':
         specifier: workspace:*

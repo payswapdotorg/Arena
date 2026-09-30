@@ -1,0 +1,42 @@
+/**
+ * @arena/body-structural-engineer — the reference Structural Engineer
+ * Agent Body (Work Order A029).
+ *
+ * The SECOND reference vertical-slice body of Arena (following the
+ * A028 software-engineer precedent): a fully specified body definition
+ * that exercises the entire protocol stack — BodyManifest (A021) →
+ * BodyVersion/AgentBody lineage (A003) → environment requirements
+ * (A009/A010) → task compilation (A008) → trajectory → evaluation
+ * (A012) → verification (A013) → compatibility (A022) → certification
+ * (A023) → registration/release (A024) → SDK consumption (A025). The
+ * end-to-end walkthrough lives in examples/structural-engineer.
+ *
+ * This package declares the body as typed, content-addressed protocol
+ * DATA. It ships no runtime tool implementations: the professional
+ * surface (structural analysis, load/model parameters, code-reference
+ * lookup, drawing/spec access, calculation recording, compliance
+ * reporting) is expressed as typed descriptor objects that project
+ * onto VersionedArtifactRef entries cited by the BodyManifest.
+ */
+
+export * from './shared.js';
+export * from './surface.js';
+export * from './reference-surface.js';
+export * from './manifest.js';
+export * from './body.js';
+export * from './envelopes.js';
+
+import { STRUCTURAL_ENGINEER_BODY_SCHEMAS } from './envelopes.js';
+import { STRUCTURAL_ENGINEER_BODY_ERROR_CODES } from './shared.js';
+
+/** Protocol surface version of this package's data shapes. */
+export const STRUCTURAL_ENGINEER_BODY_PROTOCOL_VERSION = '1.0.0' as const;
+
+/** Supported error codes (closed list). */
+export const SUPPORTED_STRUCTURAL_ENGINEER_BODY_ERROR_CODES: readonly string[] = Object.freeze([
+  ...Object.values(STRUCTURAL_ENGINEER_BODY_ERROR_CODES),
+]);
+
+/** Frozen copy of the in-package schema registry. */
+export const STRUCTURAL_ENGINEER_BODY_SCHEMA_REGISTRY: Readonly<Record<string, string>> =
+  Object.freeze({ ...STRUCTURAL_ENGINEER_BODY_SCHEMAS });
