@@ -1,0 +1,7 @@
+{
+  "name": "@arena/epoch-e2e-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A027 epoch end-to-end battery (tests/epoch-e2e — NOT a pnpm workspace project; run via examples/epoch-e2e: pnpm run battery:test / battery:typecheck)."
+}
