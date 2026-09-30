@@ -190,3 +190,4 @@ Capability Case
 
 without this conversation.
 A025 MERGED via PR #48 at 79e8f25 (2026-09-30): @arena/arena-sdk + @arena/api-fabric + contracts/api — the public/private Arena API and SDK surface. 25/36 merged; A026/A028/A029/A034 join A031/A032/A033 as dispatchable.
+A034 MERGED via PR #54 at e66e201 (2026-09-30): services/security + packages/security + tests/security — tenancy isolation, authorization policy, data rights, expert rights, audit discipline. A026 MERGED via PR #53 at 4f3b473 (2026-09-30): adapters/epoch — EPI1.0 provider-neutral adapter with async job envelope and structural authority boundary. A028 MERGED via PR #52 at af7feb4 (2026-09-30): bodies/environments/examples/software-engineer — the first complete reference vertical slice proving the full protocol chain. 28/36 merged; A027/A030/A035 dispatched (wave-3); A036 unlocks on their landing.
