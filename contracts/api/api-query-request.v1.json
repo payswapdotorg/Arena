@@ -1,0 +1,578 @@
+{
+  "$defs": {
+    "current-certificationParams": {
+      "additionalProperties": false,
+      "description": "Parameters of current-certification: the composition under test.",
+      "properties": {
+        "subject": {
+          "description": "A023 CertificationSubject — the full five-component composition under test (owned by arena:schema/certification/*; carried opaquely).",
+          "type": "object"
+        }
+      },
+      "required": [
+        "subject"
+      ],
+      "type": "object"
+    },
+    "get-body-versionParams": {
+      "additionalProperties": false,
+      "description": "Parameters of get-body-version: the sha256 content digest of the body version.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest"
+      ],
+      "type": "object"
+    },
+    "get-certification-recordParams": {
+      "additionalProperties": false,
+      "description": "Parameters of get-certification-record: the sha256 digest of the certification record.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest"
+      ],
+      "type": "object"
+    },
+    "get-certification-suiteParams": {
+      "additionalProperties": false,
+      "description": "Parameters of get-certification-suite: the suite digest.",
+      "properties": {
+        "suiteRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "suiteRef"
+      ],
+      "type": "object"
+    },
+    "get-compatibility-recordParams": {
+      "additionalProperties": false,
+      "description": "Parameters of get-compatibility-record: the A022 recordDigest.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest"
+      ],
+      "type": "object"
+    },
+    "get-release-publicationParams": {
+      "additionalProperties": false,
+      "description": "Parameters of get-release-publication: the sha256 digest of the publication record.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest"
+      ],
+      "type": "object"
+    },
+    "get-release-recordParams": {
+      "additionalProperties": false,
+      "description": "Parameters of get-release-record: the sha256 content digest of the release record.",
+      "properties": {
+        "digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "digest"
+      ],
+      "type": "object"
+    },
+    "latest-compatibility-verdictParams": {
+      "additionalProperties": false,
+      "description": "Parameters of latest-compatibility-verdict: the A022 string-form body-version and substrate addresses.",
+      "properties": {
+        "bodyVersionRef": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "substrateRef": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "bodyVersionRef",
+        "substrateRef"
+      ],
+      "type": "object"
+    },
+    "list-body-registrationsParams": {
+      "additionalProperties": false,
+      "description": "Parameters of list-body-registrations: the body identity (A003 tenant + name).",
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "name"
+      ],
+      "type": "object"
+    },
+    "list-certification-recordsParams": {
+      "additionalProperties": false,
+      "description": "Parameters of list-certification-records: the closed empty shape.",
+      "maxProperties": 0,
+      "type": "object"
+    },
+    "list-certification-suitesParams": {
+      "additionalProperties": false,
+      "description": "Parameters of list-certification-suites: the closed empty shape.",
+      "maxProperties": 0,
+      "type": "object"
+    },
+    "list-certifications-by-suiteParams": {
+      "additionalProperties": false,
+      "description": "Parameters of list-certifications-by-suite: the suite digest (\"revision X\").",
+      "properties": {
+        "suiteRef": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "suiteRef"
+      ],
+      "type": "object"
+    },
+    "list-compatibility-recordsParams": {
+      "additionalProperties": false,
+      "description": "Parameters of list-compatibility-records: the closed empty shape.",
+      "maxProperties": 0,
+      "type": "object"
+    },
+    "list-release-recordsParams": {
+      "additionalProperties": false,
+      "description": "Parameters of list-release-records: the closed empty shape.",
+      "maxProperties": 0,
+      "type": "object"
+    },
+    "resolve-active-releaseParams": {
+      "additionalProperties": false,
+      "description": "Parameters of resolve-active-release: the body identity plus the A024 release channel.",
+      "properties": {
+        "channel": {
+          "enum": [
+            "development",
+            "candidate",
+            "stable"
+          ]
+        },
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant",
+        "name",
+        "channel"
+      ],
+      "type": "object"
+    },
+    "resolve-release-statusParams": {
+      "additionalProperties": false,
+      "description": "Parameters of resolve-release-status: the release artifact identity (A002/A024 ReleaseArtifactRef fields — release semver).",
+      "properties": {
+        "name": {
+          "pattern": "^[a-z][a-z0-9-]{1,127}$",
+          "type": "string"
+        },
+        "namespace": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespace",
+        "name",
+        "version"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/api/api-query-request@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "get-body-version"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/get-body-versionParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "get-certification-record"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/get-certification-recordParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "get-certification-suite"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/get-certification-suiteParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "get-compatibility-record"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/get-compatibility-recordParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "get-release-publication"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/get-release-publicationParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "get-release-record"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/get-release-recordParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "latest-compatibility-verdict"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/latest-compatibility-verdictParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "list-body-registrations"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/list-body-registrationsParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "list-certification-records"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/list-certification-recordsParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "list-certification-suites"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/list-certification-suitesParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "list-certifications-by-suite"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/list-certifications-by-suiteParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "list-compatibility-records"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/list-compatibility-recordsParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "list-release-records"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/list-release-recordsParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "current-certification"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/current-certificationParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "resolve-active-release"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/resolve-active-releaseParams"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "resolve-release-status"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "$ref": "#/$defs/resolve-release-statusParams"
+          }
+        }
+      }
+    }
+  ],
+  "description": "Query envelope payload (envelope kind \"query\"): one closed envelope over every Arena read path — the query kind, the per-kind params and the REQUIRED read scope. Queries are not commands: the envelope idempotency key is NULL (idempotency keys are REQUIRED on commands only — architecture-lock rule 17).",
+  "properties": {
+    "kind": {
+      "enum": [
+        "get-body-version",
+        "get-certification-record",
+        "get-certification-suite",
+        "get-compatibility-record",
+        "get-release-publication",
+        "get-release-record",
+        "latest-compatibility-verdict",
+        "list-body-registrations",
+        "list-certification-records",
+        "list-certification-suites",
+        "list-certifications-by-suite",
+        "list-compatibility-records",
+        "list-release-records",
+        "current-certification",
+        "resolve-active-release",
+        "resolve-release-status"
+      ]
+    },
+    "params": {
+      "description": "Per-kind parameters (bound by kind through if/then conditionals)."
+    },
+    "requestVersion": {
+      "const": 1
+    },
+    "scope": {
+      "$ref": "arena:schema/api/api-read-scope@1.0.0"
+    }
+  },
+  "required": [
+    "requestVersion",
+    "kind",
+    "params",
+    "scope"
+  ],
+  "title": "Arena api-query-request v1",
+  "type": "object"
+}

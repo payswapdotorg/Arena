@@ -1,0 +1,52 @@
+{
+  "$id": "arena:schema/api/api-release-status@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The compound release status projection (mirrors the A024 services/body-registry ReleaseStatus vocabulary): the append-only lifecycle state of a release registration (registered | superseded | retired | unknown) plus its publication visibility (published | unpublished).",
+  "properties": {
+    "publication": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "description": "Opaque A024 ReleasePublicationRecord payload.",
+          "type": "object"
+        }
+      ]
+    },
+    "registration": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "description": "Opaque A024 ReleaseRecord payload.",
+          "type": "object"
+        }
+      ]
+    },
+    "state": {
+      "enum": [
+        "registered",
+        "superseded",
+        "retired",
+        "unknown"
+      ]
+    },
+    "visibility": {
+      "enum": [
+        "published",
+        "unpublished"
+      ]
+    }
+  },
+  "required": [
+    "state",
+    "visibility",
+    "registration",
+    "publication"
+  ],
+  "title": "Arena api-release-status v1",
+  "type": "object"
+}
