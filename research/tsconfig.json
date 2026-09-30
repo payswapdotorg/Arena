@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@arena/protocol-core": ["../packages/protocol-core/src/index.ts"],
+      "@arena/artifact-protocol": ["../packages/artifact-protocol/src/index.ts"],
+      "@arena/evaluation": ["../packages/evaluation/src/index.ts"],
+      "@arena/verification": ["../packages/verification/src/index.ts"],
+      "@arena/datasets": ["../packages/datasets/src/index.ts"]
+    }
+  },
+  "include": ["src", "vitest.config.ts"]
+}

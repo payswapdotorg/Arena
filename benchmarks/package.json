@@ -1,0 +1,21 @@
+{
+  "name": "@arena/benchmarks",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A030 executable benchmark suites: deterministic runs of the A028 reference Software Engineer Agent Body against the A012 evaluation and A013 verification fabrics, producing reproducible scored artifacts and append-only leaderboard records (no live model calls).",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.4",
+    "typescript": "5.9.3",
+    "vitest": "5.0.1"
+  }
+}

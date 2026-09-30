@@ -1,0 +1,21 @@
+{
+  "name": "@arena/research",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A030 research layer: benchmark descriptors, scoring methodology and leaderboard result records over the A012 evaluation protocol, with public dataset packaging via the A014 dataset discipline (deterministic, no live model calls).",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.4",
+    "typescript": "5.9.3",
+    "vitest": "5.0.1"
+  }
+}
