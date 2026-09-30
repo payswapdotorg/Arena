@@ -1,0 +1,16 @@
+{
+  "$id": "arena:schema/api/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the schemas owned by @arena/arena-sdk. A SchemaRef matching this enum is a known Arena-API schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/api/api-error@1.0.0",
+    "arena:schema/api/api-query-kind@1.0.0",
+    "arena:schema/api/api-query-request@1.0.0",
+    "arena:schema/api/api-query-response@1.0.0",
+    "arena:schema/api/api-read-scope@1.0.0",
+    "arena:schema/api/api-release-status@1.0.0",
+    "arena:schema/api/schema-registry@1.0.0"
+  ],
+  "title": "Arena api-protocol schema registry v1",
+  "type": "string"
+}

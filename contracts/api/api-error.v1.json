@@ -1,0 +1,56 @@
+{
+  "$id": "arena:schema/api/api-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Wire-safe structured form of an ArenaApiError: closed ARENA_API_* code set, category mapping, strictly validating parse (unknown codes rejected). The API layer adds the `scope` category for cross-tenant fail-closed reads.",
+  "properties": {
+    "category": {
+      "enum": [
+        "integrity",
+        "scope",
+        "unknown",
+        "validation",
+        "versioning"
+      ]
+    },
+    "code": {
+      "enum": [
+        "ARENA_API_CORRELATION_MISMATCH",
+        "ARENA_API_CROSS_TENANT_ACCESS",
+        "ARENA_API_INVALID_CHANNEL",
+        "ARENA_API_INVALID_DIGEST",
+        "ARENA_API_INVALID_PARAMS",
+        "ARENA_API_INVALID_QUERY",
+        "ARENA_API_INVALID_QUERY_KIND",
+        "ARENA_API_INVALID_RECORD",
+        "ARENA_API_INVALID_RESPONSE",
+        "ARENA_API_INVALID_SCHEMA_REF",
+        "ARENA_API_INVALID_SCOPE",
+        "ARENA_API_SCHEMA_MISMATCH",
+        "ARENA_API_INVALID_TENANT",
+        "ARENA_API_SCOPE_REQUIRED",
+        "ARENA_API_TAMPERED",
+        "ARENA_API_UNKNOWN_ERROR",
+        "ARENA_API_UNSUPPORTED_VERSION"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena ArenaApiError v1",
+  "type": "object"
+}

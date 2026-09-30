@@ -1,0 +1,33 @@
+{
+  "$id": "arena:schema/api/api-query-kind@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The CLOSED query vocabulary of the Arena public/private API: the single enumeration of read/query paths over the platform core (registries, certification statements, release records, compatibility verdicts). Unknown kinds are rejected — never coerced.",
+  "properties": {
+    "kind": {
+      "enum": [
+        "get-body-version",
+        "get-certification-record",
+        "get-certification-suite",
+        "get-compatibility-record",
+        "get-release-publication",
+        "get-release-record",
+        "latest-compatibility-verdict",
+        "list-body-registrations",
+        "list-certification-records",
+        "list-certification-suites",
+        "list-certifications-by-suite",
+        "list-compatibility-records",
+        "list-release-records",
+        "current-certification",
+        "resolve-active-release",
+        "resolve-release-status"
+      ]
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "Arena api-query-kind v1",
+  "type": "object"
+}

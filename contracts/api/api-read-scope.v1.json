@@ -1,0 +1,17 @@
+{
+  "$id": "arena:schema/api/api-read-scope@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The REQUIRED tenant scope every Arena API query executes under. The reserved namespace 'public' reads only records explicitly published for global visibility; every other tenant sees its own records plus public ones — no silent cross-tenant reads (architecture-lock rule 11).",
+  "properties": {
+    "tenant": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "tenant"
+  ],
+  "title": "Arena api-read-scope v1",
+  "type": "object"
+}
