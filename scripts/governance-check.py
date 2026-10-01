@@ -6,7 +6,7 @@ A001 acceptance criteria:
 
   G1  required source-of-truth files present and non-empty
   G2  architecture lock presence: docs/architecture-lock.md non-empty, version
-      header A1.0, contiguous numbered rules (24 for A1.0), ACR section
+      header A2.0, contiguous numbered rules (36 for A2.0), ACR section
   G3  authorized frontier consistency: every AUTHORIZED/ACTIVE item listed in
       spec/PROJECT-STATE.md "Current frontier" exists in spec/work-items.md
       (A-series, AWO1.0) or spec/post-v1-work-items.md (B-series, BWO1.0)
@@ -53,8 +53,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-EXPECTED_LOCK_VERSION = "A1.0"
-EXPECTED_LOCK_RULE_COUNT = 24
+EXPECTED_LOCK_VERSION = "A2.0"
+EXPECTED_LOCK_RULE_COUNT = 36
 MAX_CONCURRENT_WORKERS = 3
 ACTIVE_STATUSES = {"ACTIVE", "AUTHORIZED"}
 KNOWN_STATUSES = ACTIVE_STATUSES | {
@@ -640,16 +640,20 @@ def self_test(repo_root: Path) -> tuple[int, int]:
         )
 
     # G2: wrong version / broken numbering
-    bad_lock = "# Arena Architecture Lock A2.0\n\n1. rule\n2. rule\n\n## Architecture Change Request\nx\n"
+    bad_lock = (
+        "# Arena Architecture Lock A1.0\n\n"
+        + "\n".join(f"{i}. rule" for i in range(1, 37))
+        + "\n\n## Architecture Change Request\nx\n"
+    )
     v = check_architecture_lock_text(bad_lock)
     record(
         "G2-lock-wrong-version",
-        any("does not match the expected A1.0" in m for m in v),
+        any("does not match the expected A2.0" in m for m in v),
         str(v),
     )
     bad_numbering = (
-        "# Arena Architecture Lock A1.0\n\n"
-        + "\n".join(f"{i}. rule" for i in range(1, 24))
+        "# Arena Architecture Lock A2.0\n\n"
+        + "\n".join(f"{i}. rule" for i in range(1, 36))
         + "\n\n## Architecture Change Request\nx\n"
     )
     v = check_architecture_lock_text(bad_numbering)
@@ -659,8 +663,8 @@ def self_test(repo_root: Path) -> tuple[int, int]:
         str(v),
     )
     good_lock = (
-        "# Arena Architecture Lock A1.0\n\n"
-        + "\n".join(f"{i}. rule" for i in range(1, 25))
+        "# Arena Architecture Lock A2.0\n\n"
+        + "\n".join(f"{i}. rule" for i in range(1, 37))
         + "\n\n## Architecture Change Request\nx\n"
     )
     v = check_architecture_lock_text(good_lock)
