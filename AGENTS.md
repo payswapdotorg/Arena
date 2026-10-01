@@ -121,3 +121,31 @@ Implementation complete + verification green + evidence complete + ownership com
 ## Remediation
 
 Architect findings are fixed on the same PR with regression evidence.
+
+
+## Approved long-term product direction
+
+Arena's north star is: **the Stripe of human expert escalation for AI automation**.
+
+The C-series turns the V1 capability infrastructure into an API-native human escalation network. Any AI application may:
+- escalate a capability boundary;
+- request the required expert capability;
+- receive a qualified human intervention;
+- receive a validated machine-readable result;
+- pay the expert through Arena;
+- optionally receive approved tool, knowledge, skill, evaluation or Agent Body improvement artifacts.
+
+Where supported, the expert works in a privacy-sanitized bounded replica of the agent's environment. The replica is never a live-world mutation path.
+
+Approved escalation modes: SOLVE, CORRECT, UNBLOCK, REVIEW, TEACH, TOOL_GAP, KNOWLEDGE, EVALUATE.
+
+The adversarial expert competition path is an alternate evaluation method, not a replacement for Verification.
+
+See:
+- spec/arena-product-thesis.md
+- spec/expert-escalation-api.md
+- spec/expert-environment-session.md
+- spec/adversarial-expert-evaluation.md
+- spec/escalation-reference-flow.md
+- spec/human-escalation-work-items.md
+- spec/human-escalation-dependency-graph.md
