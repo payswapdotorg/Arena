@@ -28,3 +28,19 @@
 ## Architecture Change Request
 
 A locked rule can change only through a recorded Architecture Change Request containing impact analysis, revised requirements/contracts, acceptance criteria, dependency changes, version/lock update, frontier update and explicit approval.
+
+
+## Approved Product Direction — Human Escalation Infrastructure
+
+25. Arena's commercial north star is human expert escalation infrastructure for AI applications; the public integration boundary is an application-facing Escalation API.
+26. External applications remain authoritative for their live workflows/worlds; Arena supplies human capability and validated results through explicit contracts.
+27. Human escalation supports SOLVE, CORRECT, UNBLOCK, REVIEW, TEACH, TOOL_GAP, KNOWLEDGE and EVALUATE modes as explicitly authorized request states.
+28. A human expert session may operate on a bounded replica of the originating agent's environment; the replica is never a write path to the host application's live authoritative world.
+29. Expert sessions must enforce declared privacy, tenancy, secret, action and retention barriers.
+30. Arena captures observable expert work, evidence, tool use and explicit annotations; hidden chain-of-thought is neither required nor a canonical learning artifact.
+31. An accepted escalation result is operationally distinct from any reusable learning artifact; reuse requires explicit rights, provenance, validation and scope.
+32. Expert interventions may produce tool-gap, knowledge, skill, evaluator, benchmark and Agent Body improvement candidates without silently mutating the host application's live agent.
+33. Expert payment, Arena fees, settlement and payout are commercial concerns behind provider-neutral adapters and do not become domain-specific payment-provider contracts.
+34. Adversarial expert competition is an alternative evaluation mechanism; popularity signals cannot bypass Arena Verification or certification authority.
+35. Human expert qualification/performance evidence is distinct from role authorization and from correctness verification.
+36. Epoch is a reference customer/integrator of the generic Arena Escalation API, not a special semantic authority inside Arena.
