@@ -119,3 +119,266 @@ body {
   max-width: 52rem;
   margin-inline: auto;
 }
+
+/* ------------------------------------------------------------------ */
+/* Capability surfaces (B008: cases, case detail, tasks, guided flow)  */
+/* ------------------------------------------------------------------ */
+
+.capability {
+  max-width: 52rem;
+  margin-inline: auto;
+  padding: var(--arena-space-xl) var(--arena-space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-lg);
+}
+
+/* The guided path: done / current / upcoming read at a glance. */
+.capability-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-sm);
+}
+
+.capability-step {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: var(--arena-space-sm);
+  padding: var(--arena-space-sm) var(--arena-space-md);
+  border: 1px solid var(--arena-color-line);
+  border-radius: var(--arena-radius-md);
+  background: var(--arena-color-surface);
+}
+
+.capability-step--done {
+  opacity: 0.75;
+}
+
+.capability-step--current {
+  border-color: var(--arena-color-primary);
+  border-width: 2px;
+}
+
+.capability-step__order {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--arena-radius-full);
+  background: var(--arena-color-line);
+  font-weight: 600;
+}
+
+.capability-step--done .capability-step__order {
+  background: var(--arena-color-primary-strong);
+  color: var(--arena-color-surface);
+}
+
+.capability-step--current .capability-step__order {
+  background: var(--arena-color-primary);
+  color: var(--arena-color-surface);
+}
+
+.capability-step__body p {
+  margin-block: var(--arena-space-2xs);
+}
+
+.capability-step__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-xs);
+  margin-block-start: var(--arena-space-sm);
+  padding: var(--arena-space-sm);
+  border-radius: var(--arena-radius-md);
+  background: var(--arena-color-canvas);
+}
+
+.capability-step__form button {
+  align-self: flex-start;
+}
+
+.capability-step__inputnote {
+  margin: 0;
+  font-size: var(--arena-text-sm);
+  color: var(--arena-color-ink-muted);
+}
+
+/* Truth-classified datum lines. */
+.capability-datadict {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2xs);
+}
+
+.capability-datum dt {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--arena-space-2xs);
+  flex-wrap: wrap;
+}
+
+.capability-datum dd {
+  margin: 0 0 0 var(--arena-space-lg);
+}
+
+/* The distinct pending / unknown marks (never collapsed into a badge). */
+.capability-truth__marker {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: var(--arena-radius-full);
+  margin-inline-end: 0.2rem;
+}
+
+.capability-truth--pending .capability-truth__marker {
+  border: 2px dashed var(--arena-color-ink);
+  background: transparent;
+}
+
+.capability-truth--unknown .capability-truth__marker {
+  border: 2px dotted var(--arena-color-ink);
+  background: transparent;
+}
+
+.capability-truth__label {
+  font-size: var(--arena-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Case cards + chips. */
+.capability-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-md);
+}
+
+.capability-card {
+  border: 1px solid var(--arena-color-line);
+  border-radius: var(--arena-radius-md);
+  padding: var(--arena-space-md);
+  background: var(--arena-color-surface);
+}
+
+.capability-card__title {
+  font-weight: 600;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.capability-chip {
+  display: inline-block;
+  margin: var(--arena-space-2xs) var(--arena-space-xs) 0 0;
+  padding: 0 var(--arena-space-xs);
+  border: 1px solid var(--arena-color-line);
+  border-radius: var(--arena-radius-sm);
+  font-size: var(--arena-text-sm);
+}
+
+/* Role lens switcher + notices. */
+.capability-roles ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--arena-space-xs);
+  margin: 0;
+  padding: 0;
+}
+
+.capability-role {
+  padding: 0 var(--arena-space-sm);
+  border: 1px solid var(--arena-color-line);
+  border-radius: var(--arena-radius-full);
+  text-decoration: none;
+}
+
+.capability-role--active {
+  border-color: var(--arena-color-primary);
+  background: var(--arena-color-primary);
+  color: var(--arena-color-surface);
+}
+
+.capability-roles__note,
+.capability-lens-note,
+.capability-history__note {
+  font-size: var(--arena-text-sm);
+  color: var(--arena-color-ink-muted);
+}
+
+/* Demo banner + typed-flow-rejection notice. */
+.capability-demo-banner,
+.capability-flow-error {
+  padding: var(--arena-space-sm) var(--arena-space-md);
+  border-radius: var(--arena-radius-md);
+  border: 1px dashed var(--arena-color-line);
+}
+
+.capability-flow-error {
+  border-style: solid;
+  border-color: var(--arena-color-danger);
+}
+
+/* The guided start form. */
+.capability-start__form fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-sm);
+  border: 1px solid var(--arena-color-line);
+  border-radius: var(--arena-radius-md);
+  padding: var(--arena-space-md);
+  margin: 0;
+}
+
+.capability-start__form legend {
+  font-weight: 600;
+  padding-inline: var(--arena-space-xs);
+}
+
+.capability-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2xs);
+}
+
+.capability-field__label {
+  font-weight: 600;
+}
+
+.capability-field__hint {
+  font-size: var(--arena-text-sm);
+  color: var(--arena-color-ink-muted);
+}
+
+.capability-start__submit {
+  align-self: flex-start;
+}
+
+.capability-start__disclosure {
+  font-size: var(--arena-text-sm);
+  color: var(--arena-color-ink-muted);
+}
+
+/* Lifecycle history. */
+.capability-events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--arena-space-2xs);
+  font-size: var(--arena-text-sm);
+}
+
+/* The fail-closed sign-in gate. */
+.capability-gate__alt {
+  font-size: var(--arena-text-sm);
+}
