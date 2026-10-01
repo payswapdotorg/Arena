@@ -76,3 +76,35 @@ Chat is not an authority source.
 Arena owns expert capability discovery and qualification, capability cases, task construction, executable environments, expert work capture, trajectories, evaluation and verification assets, learning experiments, Agent Body versions, cognitive-substrate compatibility, certification, release artifacts, marketplace and product surfaces.
 
 For Epoch, World Model, Action Gateway, Constraint Engine, Verification/Evidence and Delivery State remain Epoch authorities. Arena integrates through provider-neutral contracts.
+
+## Long-term product direction
+
+The approved north star is:
+
+> Arena is the Stripe of human expert escalation for AI automation.
+
+Any AI application can use Arena's API to procure the right human expertise when its automation reaches a capability boundary.
+
+Arena handles:
+- capability need interpretation;
+- expert discovery and qualification;
+- matching;
+- secure expert sessions;
+- solve/correct/unblock/review/teach interventions;
+- validation;
+- machine-readable results;
+- expert payment and Arena platform fees;
+- optional learning, tool-gap and domain-knowledge capture.
+
+Epoch is one application using Arena's API, not Arena's semantic center.
+
+See:
+- spec/arena-product-thesis.md
+- spec/expert-escalation-api.md
+- spec/expert-environment-session.md
+- spec/adversarial-expert-evaluation.md
+- spec/escalation-reference-flow.md
+- spec/human-escalation-work-items.md
+- spec/human-escalation-dependency-graph.md
+
+The C-series adds a Human Intelligence Fabric around the completed V1 capability infrastructure and the B-series product layer.
