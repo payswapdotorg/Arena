@@ -1,0 +1,41 @@
+{
+  "name": "@arena/auth-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The auth service for Arena (Work Order B004; issue #69; docs/LLM-ARCHITECT-HANDOFF.md B004 acceptance block): composes the @arena/auth session protocol with the B002 persistence ports — AuthService (authenticate via an injected credential-verifier port, issueSession/validateSession/rotateSession/revokeSession/revokeAll over the sealed-token cookie contract, tenant-scope fail-closed on every validation) plus ControlPlaneSessionStore (durable sessions as versioned control-plane records; revocation-epoch cache + rotation leases in the bounded/rebuildable coordination store) and createLocalAuthStack (FT2.0 local parity: the full session lifecycle with zero providers). Authorization stays OUT: the service returns identity + the B003 workspace context; it never interprets the opaque permission policy.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/auth": "workspace:*",
+    "@arena/persistence": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/role-context": "workspace:*",
+    "@arena/security": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
