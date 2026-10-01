@@ -2,200 +2,157 @@
 
 ## Mission
 
-Build Arena into the capability-development platform that creates, improves, evaluates and certifies expert Agent Bodies.
+Arena V1 core A001-A036 is complete.
 
-Arena turns difficult professional work into reusable capability assets:
+The next job is to turn that capability-development core into a product that ordinary users can install, discover, understand and use, without compromising the Agent Body / Cognitive Substrate architecture.
 
-```
-Operational failure / capability gap
-→ Capability Case
-→ Task
-→ Environment
-→ Expert intervention
-→ Trajectory
-→ Evaluation / Verification
-→ Learning artifact
-→ Agent Body Version
-→ Model Compatibility Test
-→ Certification
-→ Release
-```
+## Current truth
 
-## Architectural thesis
+V1 is merged. The B-series is the active implementation program.
 
-The central abstraction is the Agent Body.
+Read first:
+- AGENTS.md
+- AI_CONTINUATION.md
+- spec/architecture-lock.md
+- spec/product-requirements.md
+- spec/roles-and-contexts.md
+- spec/ux-architecture.md
+- docs/ux-operational-simulation.md
+- docs/deployment/free-tier-architecture.md
+- spec/free-tier-contract.md
+- spec/post-v1-work-items.md
+- spec/post-v1-dependency-graph.md
 
-A Cognitive Substrate (LLM/model) can possess many bodies. The same body can be possessed by many compatible substrates.
+## Product bar
 
-```
-Body v1.4 + GPT-6 Astra
-Body v1.4 + Model X
-Body v1.4 + Model Y
-```
+Arena public preview is ready only when all of the following are true.
 
-are distinct possessions of the same professional body.
+### Local use
 
-Only the composition is certified.
+A fresh machine can install and start Arena through a documented one-command path.
 
-## Product scope
+A fresh browser can enter deterministic Demo mode without infrastructure credentials.
 
-Arena includes:
+The Demo narrates:
+Capability Case -> Task -> Environment -> Trajectory -> Evaluation -> Verification -> Agent Body -> Possession -> Certification -> Release.
 
-- Capability Graph
-- Capability Cases
-- Expert Registry and Qualification
-- Task Compiler
-- Environment Protocol and isolated runners
-- Expert Workbench
-- Trajectory Store
-- Evaluator / Verifier Fabric
-- Artifact and lineage system
-- Learning Experiment Engine
-- Skill Extraction
-- Agent Body Forge
-- Cognitive Substrate adapters
-- Compatibility Engine
-- Certification
-- Body Registry and releases
-- customer/developer API and SDK
-- Epoch integration adapter
-- reference bodies and evaluation surfaces
-- commercial marketplace and usage accounting
-- security, tenancy and operations
+### Hosted use
 
-## Authority
+The web app is on a stable Vercel URL.
 
-Arena has one semantic authority for Arena-native objects: the Arena Control Plane.
+Control-plane state uses Neon PostgreSQL.
 
-Host systems remain authoritative for their own worlds.
+Large immutable artifacts use Cloudflare R2.
 
-For Epoch:
+Bounded coordination/cache/rate limiting uses Upstash Redis.
 
-- World Model is semantic authority.
-- Action Gateway is execution authority.
-- Constraint Engine is constraint authority.
-- Verification/Evidence is proof authority.
-- Delivery State is operational delivery authority.
+Apify remains optional for bounded external data acquisition.
 
-Arena supplies capability-development artifacts through adapters.
+Preview quota exhaustion is explicit and fail-closed.
 
-## Agent Body
+### UX
 
-A Body Version is immutable and content-addressed.
+The product has:
+- lightweight onboarding;
+- role-aware shell;
+- persistent role switcher;
+- workspace context;
+- capability cockpit;
+- guided capability workflows;
+- expert workbench;
+- Agent Body Studio;
+- Body/Substrate/Possession visualization;
+- environment/trajectory replay;
+- evaluation/verification/certification views;
+- marketplace;
+- operations/capacity;
+- responsive/mobile behavior;
+- keyboard/accessibility support;
+- loading/empty/error/denied/demo states.
 
-It contains, directly or by reference:
+## Design reference
 
-- mission/role;
-- domain scope;
-- capabilities and skills;
-- knowledge;
-- tools;
-- procedures;
-- memory policy;
-- planning/decision policy;
-- escalation/delegation;
-- authority boundaries;
-- safety policy;
-- evaluation and verification suites;
-- environment requirements;
-- substrate compatibility profile;
-- provenance.
+ShareNet is a reference for interaction qualities: calm onboarding, sparse hierarchy, explicit status, progressive disclosure and a primary action.
 
-## Possession
+Arena is not a ShareNet clone. Its UX must support complex engineering workflows and multiple role lenses.
 
-A Possession binds:
+## Role semantics
 
-- BodyVersion;
-- CognitiveSubstrate;
-- runtime profile;
-- model adapter version;
-- environment profile;
-- policy bundle;
-- optional substrate-specific artifacts.
+Identity -> Tenant -> Permission/Policy -> Granted Roles -> Active Role Context -> UI Workflow.
 
-Possessions are immutable and reproducible.
+Changing active role does not grant authority.
 
-## Certification
+The same canonical object has different projections.
 
-Certification records a claim about:
+A Capability Case can appear as:
+Owner: why is my agent struggling?
+Expert: what work am I being asked to perform?
+Builder: what capability is missing?
+Researcher: what evidence supports the hypothesis?
+Operator: is the workflow healthy?
 
-```
-BodyVersion × Substrate × Environment × Runtime × CertificationSuite
-```
+## Agent semantics
 
-It never claims that the underlying model, by itself, is a professional engineer, lawyer, accountant, researcher, etc.
+Agent Body and Cognitive Substrate remain separate objects.
 
-A new model creates a new possession and requires compatibility/certification testing.
+Possession binds them.
 
-A professional-capability change creates a new Body Version.
+Certification is scoped to:
+Body Version × Substrate × Environment × Runtime × Certification Suite.
 
-## Domain strategy
+The UI must reinforce this distinction.
 
-The first reference body is software engineering because executable environments and deterministic verification allow fast iteration.
+## Operational boundary
 
-Future domains include structural engineering, construction, mechanical/electrical engineering, scientific research, finance, cybersecurity and enterprise operations.
+Frontend code never invents domain truth.
 
-Domain additions belong in body/skill/environment/evaluator/verifier packages, not in competing core lifecycles.
+Replay is observational unless a separately authorized live action occurs.
 
-## Epoch integration
+Marketplace purchase, certification and professional authorization are distinct.
 
-Arena is an optional capability-development provider for Epoch.
+## UX validation
 
-```
-Epoch failure/capability gap
-→ Capability Development Request
-→ Arena Capability Case
-→ expert/task/environment work
-→ learning/certification
-→ artifact
-→ Epoch consumes artifact via adapter
-```
+docs/ux-operational-simulation.md contains the pre-implementation scenario simulation and the resulting normative changes.
 
-Arena never directly mutates Epoch authoritative stores.
+## B-series implementation
 
-## Implementation approach
+B001 — web runtime foundation and design system
+B002 — hosted persistence and infrastructure adapters
+B003 — roles and contexts
+B004/B005 — secure identity/session and persisted read models
+B006/B007 — demo and capability cockpit
+B008-B014 — main role-specific workflows
+B015 — deployment
+B016 — local install
+B017 — product E2E and UX/operational conformance
+B018 — accessibility/mobile/performance/resilience
+B019 — hosted preview and launch gate
 
-Foundation status: A001 merged (PR #2, d07a9bee); A002 merged (PR #6, 21dfdbda — artifact-protocol + provenance, G9 governs package-level contract generators); A003 merged (PR #8, e14b9fff — agent-body protocol, worker head 26fdd9ef + reconciliation b2a0f0dd, PR CI 36311438667 green, battery + pristine frozen-lockfile clone green on 5 packages); A004 merged (PR #10, cff162b — capability-graph protocol, worker head 422613f + intake d9e7689 + merge-of-main 6ad2415, PR CI green, battery + pristine clone green on 7 workspace projects, branch-oracle acceptance after a platform generation-window outage); A009 merged (PR #14, 480dd06 — environment-protocol ENV1.0, worker head b887803 + intake baf07db, PR CI green); A015 merged (PR #15, 40defad — job-protocol + services/job-orchestrator, worker head 01684ca + intake 14a029c + merge-of-main 959c0c5, PR CI green); A016 merged (PR #16, 8a834ad — model-substrate + adapters/models reference adapters, worker head 01feb38 + intake 7da9488 + merge-of-main c38544e, PR CI green). A005 merged (PR #20, d005296); A018 merged (PR #21, 13af7c2); A006 merged (PR #22, 603050f — expert-registry, 276 tests); A010 merged (PR #23, 6b8352c — environment-runner + environment-runtime, worker head b1997c1 + intake 95989c7 + lockfile regen 38868ff, PR CI green). A011 merged (PR #24, ee57532 — @arena/trajectory + services/trajectory-store + contracts/trajectory, worker head 15620f8 + intake b5f7f46, PR CI green). A012 merged (PR #26, 0cb1b906 — @arena/evaluation + services/evaluation + contracts/evaluation, worker head 6b05363 + intake ed05333, PR CI green, battery 20/20 + pristine frozen-lockfile clone green). A013 merged (PR #28, 02c7155 — @arena/verification + services/verification + contracts/verification, worker head 4388033 + intake 9238836, PR CI green, station battery all-green with 165+51 new tests; VerifierDescriptor with the closed EV1.0 method enum, EvidenceReference on real A002 ArtifactRefs, evidence support summaries, derived pass/fail/unknown outcomes with structured unknown causes, score-impossibility by construction — lock rule 7 proven bidirectionally with @arena/evaluation deliberately unimported). A019 merged (PR #32, 95f8e3c — @arena/skill-extraction + services/skill-extraction, worker head b56cef7 + intake 7d3f2c9, station battery all-green with 89+34 new tests; ValidatedTrajectoryRef enforcing the R17 validated gate with REAL A011/A012/A013 guards, deterministic ExtractionPolicy, content-addressed SkillCandidates, idempotent ExtractionRunRecords; no contracts surface — schemas in-package as SchemaRef data, disclosed). A014 merged (PR #34, d3cf60a — services/artifacts + packages/datasets + contracts/dataset, worker head d7e2d1e + remediation 084377e, station battery all-green with 89+75 new tests; the first REQUIRE-CHANGES remediation round of the program — a typecheck error fixed on the same branch per the runbook). A007 merged (PR #36, eaebedd — @arena/expert-qualification + @arena/expert-matching-fabric + contracts/expert-qualification, 127+46 tests, station battery all-green; QualificationEvidence/CompetencyClaim/QualificationRecord with append-only supersession and renewal/decay, QualificationPolicy, deterministic MatchingPolicy with digest tie-breaks; qualification DATA never authorization — lock rule 9). A020 merged (PR #35, 871c29c — @arena/learning + @arena/learning-fabric + contracts/learning, 145+46 tests, station battery all-green; ExperimentDescriptor with every LE1.0 minimum field + explicit changed-surface interventions, evaluator/verifier-version-confound attribution flags, the five-condition CapabilityLiftVerdict (never a score), read-only learning boundary, CalibrationRecord). A008 merged (PR #40, 04faea8 — @arena/task-spec + @arena/task-compiler-fabric + contracts/task, 159+55 tests, station battery all-green; full TS1.0 TaskSpec structure with the 11-class vocabulary, leakage/quality declarations, the deterministic R6 compiler over A005 TaskCompilationTargets with idempotency-keyed CompilationRecords). A021 merged (PR #39, b9402dc — @arena/body-forge + @arena/body-forge-fabric, 95+36 tests; BodyManifest composition with cited provenance for learning-derived inputs, deterministic forge recipes, append-only supersession lineage, the compose-from-learning demo path). A017 merged (PR #43, 84e1013 — @arena/workbench + apps/web/src/workbench route layer, 94+23 tests, R41 graceful degradation). A022 merged (PR #44, 3109811 — @arena/compatibility + @arena/compatibility-fabric, 45+8 tests, station battery ALL-GREEN after six remediation rounds + terminal TL intake; deterministic Body×Substrate verdicts with closed vocabulary, content-digest-validated append-only records, fail-closed registry + reference service). A023 merged (PR #45, 6c65c06 — @arena/certification + services/certification + contracts/certification, 50 files +10281 lines, station battery ALL-GREEN; CertificationSuite composition over evaluation+verification+compatibility references, deterministic scoped-statement CertificationRecords, closed verdict discipline; delivered by a replay GLM-5.3 Full-Stack agents-tab session). A024 merged (PR #47, 446c3ab — packages/body-registry + services/body-registry; release admission gated on real certification + compatibility references, append-only ReleaseRecord lineage, idempotent content-addressed publication; delivered by the replay GLM-5.3 Full-Stack session at 23:58 UTC, station battery ALL-GREEN). Current wave: A025/A031/A032 fan-out. Verification baseline: node 22 (engine-strict >=22 <23), pnpm 10.34.5; battery install/governance/boundary/typecheck/lint/test/build all exit 0.
+## Concurrency
 
-Use a TypeScript-first monorepo with:
+One Work Order = one branch = one PR.
 
-- PostgreSQL for control-plane state;
-- object storage for immutable large artifacts;
-- durable workflows for long-running work;
-- isolated execution for environments;
-- provider-neutral protocols;
-- content-addressed artifacts;
-- explicit idempotency/correlation;
-- strict tenant isolation.
+Maximum three concurrent workers.
 
-## Completion target
+Exact write surfaces are frozen before dispatch.
 
-A fresh team must be able to execute:
+Root dependency/lockfile reconciliation is serialized by the Tech Lead.
 
-```
-Capability Case
-→ Task
-→ Environment
-→ Expert
-→ Trajectory
-→ Evaluation
-→ Verification
-→ Learning
-→ Agent Body
-→ Substrate Compatibility
-→ Certification
-→ Release
-→ Epoch consumption
-```
+Workers may innovate within UX composition, animation and interaction patterns but cannot change canonical lifecycle, role/permission, authority, provenance or certification semantics.
 
-without this conversation.
-A025 MERGED via PR #48 at 79e8f25 (2026-09-30): @arena/arena-sdk + @arena/api-fabric + contracts/api — the public/private Arena API and SDK surface. 25/36 merged; A026/A028/A029/A034 join A031/A032/A033 as dispatchable.
-A034 MERGED via PR #54 at e66e201 (2026-09-30): services/security + packages/security + tests/security — tenancy isolation, authorization policy, data rights, expert rights, audit discipline. A026 MERGED via PR #53 at 4f3b473 (2026-09-30): adapters/epoch — EPI1.0 provider-neutral adapter with async job envelope and structural authority boundary. A028 MERGED via PR #52 at af7feb4 (2026-09-30): bodies/environments/examples/software-engineer — the first complete reference vertical slice proving the full protocol chain. 28/36 merged; A027/A030/A035 dispatched (wave-3); A036 unlocks on their landing.
-A027 MERGED via PR #55 at a6e26fe (2026-09-30): examples/tests/docs epoch-e2e — the deterministic full-loop learning slice. 29/36 merged.
-A035 MERGED via PR #56 at 52dca43 (2026-09-30): observability + SLOs + operations docs. 30/36 merged; A036 waits on A030 only.
-A029 MERGED via PR #57 at 30c8b1d (2026-09-30): reference structural-engineer body vertical slice. 31/36 merged.
-A030 MERGED via PR #58 at 9af0de6 (2026-09-30): research benchmark + public evaluation suite. 32/36 merged; A036 sprint dispatched.
-A036 MERGED via PR #59 at 7639931 (2026-10-01): production deployment, performance, release engineering — THE v1 COMPLETION SINK. 33/36 merged; the full Arena loop (Capability Case -> Task -> Environment -> Expert -> Trajectory -> Evaluation -> Verification -> Learning -> Certification -> Release -> Epoch consumption -> Production) is now implemented end-to-end.
-A031 MERGED via PR #60 at 0d268b1 (2026-10-01): expert marketplace commercial layer — listings, offers, engagements, reviews + web surface. 34/36 merged; closure wave: A032 + A033 in flight.
-A032 MERGED via PR #61 at 49a5e81 (2026-10-01): artifact marketplace — provenance/verification-gated listings, versioned offers, data-rights grants, grant-gated reviews + web surface. 35/36 merged; A033 in flight.
-A033 MERGED via PR #62 at 3f1a9e6 (2026-10-01): billing + entitlements — grant lineage/expiry/resolution, usage metering, quota enforcement, immutable statements. 36/36 MERGED — THE ARENA V1 ROSTER IS COMPLETE.
+## Definition of done
+
+A fresh user can:
+- open Arena;
+- understand what it does;
+- choose a role;
+- switch roles;
+- create or explore a capability case;
+- inspect an Agent Body;
+- watch/replay a run;
+- understand evidence and certification;
+- compare substrates for one Body;
+- discover capability artifacts;
+- use the same workflows locally or through the hosted preview.
+
+A fresh engineer can implement the next Work Order using repository state alone.
