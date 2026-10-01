@@ -17,6 +17,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@arena/demo": "workspace:*",
     "@arena/protocol-core": "workspace:*",
     "@arena/ui-platform": "workspace:*",
     "next": "15.5.4",
