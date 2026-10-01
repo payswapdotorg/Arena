@@ -1,0 +1,39 @@
+{
+  "name": "@arena/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Session protocol and primitives for Arena (Work Order B004; issue #69; docs/LLM-ARCHITECT-HANDOFF.md B004 acceptance block): the sealed session token protocol (opaque session id + HMAC-SHA256 seal over a canonical serialization, node:crypto only), the versioned SessionRecord (A034 SecurityPrincipal + TenantScopedRef provenance + B003 WorkspaceContext snapshot + opaque auth-method provenance + revocation epoch), the SessionStore port with typed fail-closed outcomes, the ARENA_SESSION_SECRET contract (missing/short secret => DISABLED, never a weak default key), the arena_session cookie contract, the in-memory FakeSessionStore (FT2.0 local parity) and the shared behavioral contract suite. Pure domain package: zero Next.js imports, zero provider names.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/protocol-core": "workspace:*",
+    "@arena/role-context": "workspace:*",
+    "@arena/security": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
