@@ -1,0 +1,118 @@
+{
+  "$defs": {
+    "canonicalObjectIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "capability-case",
+            "task",
+            "agent-body",
+            "trajectory",
+            "evaluation",
+            "verification",
+            "certification"
+          ]
+        },
+        "objectId": {
+          "maxLength": 255,
+          "minLength": 1,
+          "type": "string"
+        },
+        "tenant": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "tenant",
+        "objectId",
+        "version"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/role-context/role-projection@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The rendered output of a role lens over ONE canonical object (RC1.0 same-object / different-lens rule): the projection always carries the canonical object identity it projects, the lens question, the emphasized surfaces of the lensing role, recommended next actions and a role-specific payload.",
+  "properties": {
+    "canonical": {
+      "$ref": "#/$defs/canonicalObjectIdentity"
+    },
+    "canonicalKind": {
+      "enum": [
+        "capability-case",
+        "task",
+        "agent-body",
+        "trajectory",
+        "evaluation",
+        "verification",
+        "certification"
+      ]
+    },
+    "emphasis": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9-]{0,63}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "lensQuestion": {
+      "maxLength": 500,
+      "minLength": 1,
+      "type": "string"
+    },
+    "payload": {
+      "minProperties": 1,
+      "type": "object"
+    },
+    "projectionId": {
+      "pattern": "^[a-z][a-z0-9-]{0,63}(?:\\.[a-z][a-z0-9-]{0,63}){1,3}$",
+      "type": "string"
+    },
+    "recommendedActions": {
+      "items": {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "roleId": {
+      "enum": [
+        "administrator",
+        "agent-builder",
+        "evaluator",
+        "expert",
+        "marketplace-participant",
+        "operator",
+        "owner",
+        "researcher"
+      ]
+    }
+  },
+  "required": [
+    "recordVersion",
+    "projectionId",
+    "roleId",
+    "canonicalKind",
+    "canonical",
+    "lensQuestion",
+    "emphasis",
+    "recommendedActions",
+    "payload"
+  ],
+  "title": "Arena role projection v1",
+  "type": "object"
+}
