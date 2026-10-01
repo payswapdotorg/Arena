@@ -68,6 +68,14 @@ A fresh Tech Lead must read:
 - spec/post-v1-dependency-graph.md
 - docs/ux-operational-simulation.md
 - docs/deployment/free-tier-architecture.md
+- docs/launch-checklist.md
+- spec/human-escalation-work-items.md
+- spec/human-escalation-dependency-graph.md
+- spec/arena-product-thesis.md
+- spec/expert-escalation-api.md
+- spec/expert-environment-session.md
+- spec/adversarial-expert-evaluation.md
+- spec/escalation-reference-flow.md
 
 Chat is not an authority source.
 
