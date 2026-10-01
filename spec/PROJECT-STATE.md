@@ -189,3 +189,23 @@ Never treat stale chat context as state.
 - B017 WAITING_ON_DEPENDENCIES
 - B018 WAITING_ON_DEPENDENCIES
 - B019 WAITING_ON_DEPENDENCIES
+
+## Long-term product direction
+
+Approved north star:
+Arena = Stripe of human expert escalation for AI automation.
+
+C-series successor program:
+C001-C022 in spec/human-escalation-work-items.md.
+
+Core external flow:
+Application/Agent -> Escalation Request -> Capability Demand -> Expert Match -> Expert Session -> Intervention -> Validation -> Result -> Payment -> optional Learning/Tool/Knowledge improvement.
+
+The expert session may be a bounded replica of the agent environment. The originating application remains authoritative over its live world.
+
+Competition-based evaluation is an alternative evaluator route. It does not bypass Arena Verification.
+
+C-series first recommended wave:
+C001, C002, C010.
+
+See spec/human-escalation-dependency-graph.md.
