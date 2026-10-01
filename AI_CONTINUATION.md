@@ -60,16 +60,25 @@ through the B005 read API; injective state classification; demo cockpit
 visibly labelled. TL-owned follow-ups: free-text search deferred to B008+,
 job/SLO indicators deferred to B014, stale-.next TS6053 local-only flake.
 
-Fourth wave dispatched: B008 (capability case/task workflows) + B009
-(expert workbench) + B010 (body studio) — three concurrent workers, all
-deps MERGED, pairwise-disjoint surfaces. B011-B014 follow.
+Fourth wave — LANDED (all three): B008 (capability case/task guided
+workflows, PR #85 → 4a857b7; three-session delivery + TL lockfile intake +
+semantic app.test.tsx merge), B009 (expert workbench, PR #84 → 6a68895;
+continuation session completed the dead worker's uncommitted tree; evidence
+INSERT-only via the B002 port; qualification never authorization), B010
+(body studio, PR #83 → 377dc01; worker M1+M2 + TL-completed M3 + intake;
+possession matrix halves explicit; typed bare-substrate comparison
+rejection). Post-merge main CI green (6a68895).
 
-Next wave after B008/B009/B010: B011 (environment/trajectory replay
-viewer), B012 (evaluation/verification/research UX), B013 (marketplace
-UX), B014 (operations/capacity UX) — then B015 (deployment), B016 (local
-install), B017 (product E2E), B018 (UX polish), B019 (serialized launch
-acceptance). C-series governance roster extension (checker C-id parsing)
-is required before any C-series dispatch.
+Fifth wave dispatched: B011 (environment/trajectory replay viewer — replay
+NEVER implies live mutation), B012 (evaluation/verification/certification/
+research UX — the three concepts stay separate), B013 (marketplace UX with
+provenance/rights/verification/entitlements). Three concurrent workers.
+
+Slot-blocked ready WOs: B014 (operations/capacity) and B016 (local install)
+dispatch as slots free. Then B015 (deployment, needs B014), B017 (product
+E2E, needs B008-B016), B018 (UX polish, needs B017), B019 (serialized
+launch acceptance). C-series governance roster extension (checker C-id
+parsing) is required before any C-series dispatch.
 
 The Tech Lead must record:
 - exact base SHA;

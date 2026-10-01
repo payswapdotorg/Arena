@@ -81,22 +81,56 @@ pending/unknown marks; demo cockpit visibly labelled); TL battery 268/268
 under CI-equivalent clean-.next conditions; branch CI queued (runner queue);
 merged on local-battery truth per house rule.
 
-### Fourth wave (B008/B009/B010 — three concurrent workers)
+### Fourth wave (B008/B009/B010 — three concurrent workers) — LANDED
 
-B008 AUTHORIZED — Capability Case, Task and guided capability-development
+B008 MERGED — Capability Case, Task and guided capability-development
 workflows
-Deps B005+B006+B007+A005+A008+A010+A011 all MERGED; issue to be opened at
-dispatch
+Issue #80 — PR #85 (merged 4a857b7)
 Owned: apps/web/src/capability/*, packages/product-flows/*
+Harvest record: three-session delivery (worker M1 product-flows 33 tests;
+continuation M2 capability UI; TL-completed M3 route mounts) + TL lockfile
+intake (packages/product-flows) + semantic merge with B009/B010 (app.test.tsx
+stub lists recomputed). TL battery on integrated tree: governance clean,
+boundary clean, build 69/69, typecheck/lint/test 207/207.
 
-B009 AUTHORIZED — Expert Workbench and expert assignment/review workflow UX
-Deps B005+B006+B007+A006+A007+A017 all MERGED; issue to be opened at dispatch
+B009 MERGED — Expert Workbench and expert assignment/review workflow UX
+Issue #81 — PR #84 (merged 6a68895)
 Owned: apps/web/src/expert/*
+Harvest record: dead-worker uncommitted tree completed by a continuation
+session (24 files, 90/90 expert tests; evidence INSERT-only through the B002
+port; qualification rendered as scoped judgment, never authorization); TL
+independent battery build 67/67, typecheck/lint/test 201/201; branch CI green
+(458cbed).
 
-B010 AUTHORIZED — Agent Body Studio, Possession matrix, Skill/Knowledge/Tool
+B010 MERGED — Agent Body Studio, Possession matrix, Skill/Knowledge/Tool
 composition and model-substrate comparison UX
-Deps B005+B006+B007+A021+A022+A023 all MERGED; issue to be opened at dispatch
+Issue #82 — PR #83 (merged 377dc01)
 Owned: apps/web/src/bodies/*, packages/body-ui/*
+Harvest record: worker M1 (body-ui 38 tests) + M2 (studio surfaces 26 tests)
+committed; TL completed M3 (route mounts + one Parameters<> type fix) +
+lockfile intake (packages/body-ui). TL battery build 68/68, typecheck/lint/
+test 204/204; branch CI green (abc80d3). Post-merge main CI green (6a68895).
+
+### Fifth wave (B011/B012/B013 — three concurrent workers)
+
+B011 AUTHORIZED — Environment/trajectory replay viewer and interactive run
+inspection
+Deps B005+B007+A010+A011+A012+A013 all MERGED; issue to be opened at dispatch
+Owned: apps/web/src/replay/*, packages/replay-ui/*
+
+B012 AUTHORIZED — Evaluation, verification, certification and research UX
+Deps B005+B007+A012+A013+A023+A030 all MERGED; issue to be opened at dispatch
+Owned: apps/web/src/evaluation/*, apps/web/src/research/*
+
+B013 AUTHORIZED — Marketplace UX for experts and artifacts, including
+provenance/rights/verification/entitlements
+Deps B005+B007+A031+A032+A033 all MERGED; issue to be opened at dispatch
+Owned: apps/web/src/marketplace/*, packages/marketplace-ui/*
+
+Slot-blocked (deps MERGED, waiting for a concurrent-worker slot):
+B014 (B005+B007+A015+A034+A035) and B016 (B001+B002+B006) are ready and
+dispatch next as wave slots free. B015 waits on B014; B017 waits on
+B008-B016; B018 waits on B017; B019 waits on B015+B017+B018.
 
 ## Product specifications
 
@@ -229,12 +263,12 @@ Never treat stale chat context as state.
 - B005 MERGED
 - B006 MERGED
 - B007 MERGED
-- B008 AUTHORIZED
-- B009 AUTHORIZED
-- B010 AUTHORIZED
-- B011 WAITING_ON_DEPENDENCIES
-- B012 WAITING_ON_DEPENDENCIES
-- B013 WAITING_ON_DEPENDENCIES
+- B008 MERGED
+- B009 MERGED
+- B010 MERGED
+- B011 AUTHORIZED
+- B012 AUTHORIZED
+- B013 AUTHORIZED
 - B014 WAITING_ON_DEPENDENCIES
 - B015 WAITING_ON_DEPENDENCIES
 - B016 WAITING_ON_DEPENDENCIES
