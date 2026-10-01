@@ -22,6 +22,7 @@ Read first:
 - spec/free-tier-contract.md
 - spec/post-v1-work-items.md
 - spec/post-v1-dependency-graph.md
+- docs/launch-checklist.md
 
 ## Product bar
 
