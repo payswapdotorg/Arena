@@ -88,7 +88,7 @@ docs/GOVERNANCE.md:
 | Check | What it enforces |
 |---|---|
 | G1 | required source-of-truth files present and non-empty |
-| G2 | architecture lock present, version A1.0, 24 contiguous rules, ACR section |
+| G2 | architecture lock present, version A2.0, 36 contiguous rules, ACR section (ACR-001 records A1.0 → A2.0) |
 | G3 | PROJECT-STATE frontier items exist in work-items; ≤3 concurrent active |
 | G4 | every changed path (base..HEAD) ⊆ owned surfaces of some work order |
 | G5 | concurrently active work orders have pairwise-disjoint surfaces |

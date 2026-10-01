@@ -1,4 +1,4 @@
-# Arena Architecture Lock A1.0
+# Arena Architecture Lock A2.0
 
 1. Agent Body is a first-class persistent object.
 2. Cognitive Substrate is distinct from Agent Body.
@@ -28,6 +28,14 @@
 ## Architecture Change Request
 
 A locked rule can change only through a recorded Architecture Change Request containing impact analysis, revised requirements/contracts, acceptance criteria, dependency changes, version/lock update, frontier update and explicit approval.
+
+### ACR-001 — A1.0 → A2.0 (2026-10-01): human escalation product direction locked
+
+- **Approval:** explicitly approved by the project owner; recorded as `docs/decisions/ADR-HUMAN-ESCALATION-001.md` (Status: APPROVED, decision date 2026-10-01).
+- **Change:** adds locked rules 25–36 (human escalation infrastructure product direction). Rules 1–24 are unchanged and remain locked verbatim — this ACR is strictly additive.
+- **Impact analysis:** the escalation rules compose existing primitives (Expert Registry, Qualification, Matching, TaskSpec, Environment Protocol/Runner, Trajectory, Evaluation, Verification, Learning, Agent Body Forge, Compatibility, Certification, Release, Marketplace, Billing, Tenancy, Observability). No A-series contract semantics change; no Epoch-boundary semantics change. The program roadmap extends B001–B019 → C001–C022 (`spec/human-escalation-work-items.md`, `spec/human-escalation-dependency-graph.md`).
+- **Version/lock update:** lock header A1.0 → A2.0; expected rule count 24 → 36; governance checker G2 updated in the same change; `spec/PROJECT-STATE.md` architecture marker updated.
+- **Frontier update:** B-series frontier proceeds unchanged; C-series enters WAITING_ON_DEPENDENCIES until B001–B019 complete and the governance roster is extended to parse C-series ids.
 
 
 ## Approved Product Direction — Human Escalation Infrastructure

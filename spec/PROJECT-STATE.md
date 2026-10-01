@@ -1,6 +1,6 @@
 # Arena Project State
 
-Architecture: A1.0
+Architecture: A2.0
 Work Order schemas: AWO1.0 / BWO1.0
 Maximum concurrent workers: 3
 
