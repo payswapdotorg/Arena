@@ -1,0 +1,33 @@
+{
+  "name": "@arena/product-flows",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Guided product workflow definitions + flow runtime for Arena (Work Order B008; issue #80): the ordered, versioned steps of the capability-development guided flow (start case -> frame capability gap -> compose task -> run -> observe -> evaluate -> decide), each bound to the canonical A005 Capability Case lifecycle states it is valid from/to, and a runtime that applies ONLY canonical lifecycle transitions through the B002 ControlPlaneRepository port (the in-memory fake is the local/demo posture). No parallel lifecycle, no parallel store: every transition is a @arena/capability-case pure function, every write is a repository insert/update with optimistic concurrency, and lifecycle violations surface the canonical typed errors verbatim. Pure + deterministic: flow definitions are frozen data and every timestamp/id is injected by the caller.",
+  "exports": {
+    ".": { "types": "./src/index.ts", "default": "./src/index.ts" }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/capability-case": "workspace:*",
+    "@arena/persistence": "workspace:*",
+    "@arena/task-spec": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
