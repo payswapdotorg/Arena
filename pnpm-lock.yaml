@@ -1242,6 +1242,46 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  services/marketplace-artifacts:
+    dependencies:
+      '@arena/artifact-protocol':
+        specifier: workspace:*
+        version: link:../../packages/artifact-protocol
+      '@arena/datasets':
+        specifier: workspace:*
+        version: link:../../packages/datasets
+      '@arena/environment-protocol':
+        specifier: workspace:*
+        version: link:../../packages/environment-protocol
+      '@arena/evaluation':
+        specifier: workspace:*
+        version: link:../../packages/evaluation
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+      '@arena/provenance':
+        specifier: workspace:*
+        version: link:../../packages/provenance
+      '@arena/security':
+        specifier: workspace:*
+        version: link:../../packages/security
+      '@arena/verification':
+        specifier: workspace:*
+        version: link:../../packages/verification
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   services/marketplace-experts:
     dependencies:
       '@arena/body-registry':
