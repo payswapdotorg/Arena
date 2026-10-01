@@ -118,19 +118,19 @@ describe('first-run landing (UX1.0 Level 0) — the DEFAULT unauthenticated expe
 });
 
 describe('core route matrix stubs (UXM1.0)', () => {
-  // B008: /cases is no longer a stub — it is the session-aware case list
-  // (asserted above); the remaining core routes stay stubs until their
-  // work orders fill them.
+  // B008 + B010: `/cases` and `/bodies` are both upgraded from B001 stubs
+  // to session-aware server components (asserted structurally above like the
+  // B007 home); the remaining core routes stay stubs until their work orders
+  // fill them.
   const routes: ReadonlyArray<[string, React.ReactElement]> = [
-    ['bodies', <BodiesPage key="bodies" />],
     ['research', <ResearchPage key="research" />],
     ['marketplace', <MarketplacePage key="marketplace" />],
     ['operations', <OperationsPage key="operations" />],
     ['settings', <SettingsPage key="settings" />],
   ];
 
-  it('renders one stub per core route, each with a route header (positive)', () => {
-    expect(routes).toHaveLength(5);
+  it('renders one stub per remaining core route, each with a route header (positive)', () => {
+    expect(routes).toHaveLength(4);
     for (const [route, element] of routes) {
       const html = render(element);
       expect(html).toContain(`data-arena-route="${route}"`);
@@ -151,6 +151,15 @@ describe('core route matrix stubs (UXM1.0)', () => {
       expect(html).not.toContain('data-arena-primary');
       expect(html).not.toContain('role="alert"');
     }
+  });
+
+  it('mounts the bodies route as an async session-aware server component (B010)', () => {
+    // The mount delegates to resolveBodiesExperience (probe ->
+    // auth-required | studio); calling it outside a request scope would
+    // misread the session, so the mount is asserted structurally here
+    // (the B007 home precedent). The composition is covered by the
+    // bodies suites (src/bodies/*) through injected session probes.
+    expect(BodiesPage.constructor.name).toBe('AsyncFunction');
   });
 });
 
@@ -267,9 +276,18 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
     expect(existsSync(new URL('index.html', buildDir))).toBe(false);
   });
 
-  it('prerenders every remaining stub route with the standard empty state (positive)', () => {
+  it('compiles the session-aware bodies studio as a dynamic route (B010)', () => {
+    // `/bodies` reads the session cookie through the B004 boundary, so it
+    // compiles to server-rendered artifacts (bodies/page.js) rather than a
+    // prerendered bodies.html — no anonymous studio is prerendered either.
+    expect(existsSync(new URL('bodies/page.js', buildDir))).toBe(true);
+    expect(existsSync(new URL('bodies.html', buildDir))).toBe(false);
+  });
+
+  it('prerenders every remaining core route stub with the standard empty state (positive)', () => {
+    // B008 + B010: `/cases` and `/bodies` are session-aware dynamic routes
+    // (asserted above); only the untouched core-route stubs prerender.
     for (const route of [
-      'bodies',
       'research',
       'marketplace',
       'operations',
