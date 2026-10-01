@@ -9,6 +9,7 @@ A001 acceptance criteria:
       header A1.0, contiguous numbered rules (24 for A1.0), ACR section
   G3  authorized frontier consistency: every AUTHORIZED/ACTIVE item listed in
       spec/PROJECT-STATE.md "Current frontier" exists in spec/work-items.md
+      (A-series, AWO1.0) or spec/post-v1-work-items.md (B-series, BWO1.0)
   G4  work-order ownership: every changed path (dispatch base -> HEAD) is
       inside the owned surfaces of SOME work order
       (scripts/work-order-surfaces.json)
@@ -150,7 +151,7 @@ def parse_frontier(project_state_text: str) -> dict[str, str]:
             in_section = line.strip() == "## Current frontier"
             continue
         if in_section:
-            match = re.match(r"^-\s+(A\d{3})\s+(\S+)\s*$", line.strip())
+            match = re.match(r"^-\s+([AB]\d{3})\s+(\S+)\s*$", line.strip())
             if match:
                 frontier[match.group(1)] = match.group(2)
     return frontier
@@ -158,7 +159,7 @@ def parse_frontier(project_state_text: str) -> dict[str, str]:
 
 def parse_work_item_ids(work_items_text: str) -> set[str]:
     ids: set[str] = set()
-    for match in re.finditer(r"^\|\s*(A\d{3})\s*\|", work_items_text, re.M):
+    for match in re.finditer(r"^\|\s*([AB]\d{3})\s*\|", work_items_text, re.M):
         ids.add(match.group(1))
     return ids
 
@@ -563,6 +564,11 @@ def run_repo_checks(root: Path, base_override: str | None) -> tuple[list[str], d
 
     project_state_text = (root / "spec" / "PROJECT-STATE.md").read_text(encoding="utf-8")
     work_items_text = (root / "spec" / "work-items.md").read_text(encoding="utf-8")
+    # B-series (BWO1.0) work items live in spec/post-v1-work-items.md; the
+    # frontier may reference both series, so both rosters are authoritative.
+    post_v1_items_path = root / "spec" / "post-v1-work-items.md"
+    if post_v1_items_path.is_file():
+        work_items_text += "\n" + post_v1_items_path.read_text(encoding="utf-8")
     violations += check_frontier_consistency(project_state_text, work_items_text)
 
     surfaces = load_surfaces(SURFACES_REGISTRY)
@@ -683,6 +689,16 @@ def self_test(repo_root: Path) -> tuple[int, int]:
     record(
         "G3-frontier-too-many-active",
         any("exceeds the maximum" in m for m in v),
+        str(v),
+    )
+    # G3: B-series frontier item not defined in the post-V1 roster
+    b_series_state = "## Current frontier\n\n- B001 AUTHORIZED\n- B099 AUTHORIZED\n"
+    v = check_frontier_consistency(
+        b_series_state, work_items_fixture + "\n| B001 | web runtime | A036 | apps/web/* |\n"
+    )
+    record(
+        "G3-frontier-b-series-unknown-item",
+        any("B099" in m for m in v),
         str(v),
     )
 
