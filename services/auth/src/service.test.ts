@@ -60,6 +60,24 @@ async function expectAuthError(
   return caught as AuthError;
 }
 
+/**
+ * Deterministically tamper a sealed cookie: flip the FIRST character of the
+ * seal segment. Every character of the unpadded base64url HMAC-SHA256
+ * encoding except the LAST is fully significant — the final character of
+ * the 43-char encoding carries 2 zero-padding bits, so flipping it between
+ * values 0-3 ('A'-'D') decodes to the SAME 32 MAC bytes and the tamper is
+ * legitimately undetected (a 1-in-16 flake source per seal draw, observed
+ * as CI red on the B005 promotion commit). Flipping the first seal
+ * character always changes decoded byte 0 of the MAC, so `timingSafeEqual`
+ * fails and `open` throws the typed TOKEN_TAMPERED error every time.
+ */
+function tamperSeal(cookieValue: string): string {
+  const sealStart = cookieValue.lastIndexOf('.') + 1;
+  const seal = cookieValue.slice(sealStart);
+  const flippedFirst = seal[0] === 'A' ? 'B' : 'A';
+  return `${cookieValue.slice(0, sealStart)}${flippedFirst}${seal.slice(1)}`;
+}
+
 interface Fixture {
   readonly clock: ManualAuthClock;
   readonly store: FakeSessionStore;
@@ -296,9 +314,7 @@ describe('AuthService: validateSession', () => {
 
   it('rejects a tampered seal (typed integrity failure)', async () => {
     const cookieValue = await issueDefault(fixture.service);
-    const tampered = `${cookieValue.slice(0, -1)}${
-      cookieValue.endsWith('A') ? 'B' : 'A'
-    }`;
+    const tampered = tamperSeal(cookieValue);
     const error = await expectAuthError(() =>
       fixture.service.validateSession(tampered),
     );
@@ -549,7 +565,7 @@ describe('no-leakage canaries (B002 precedent)', () => {
       messages.push(String((error as Error).message));
     }
     const cookieValue = await issueDefault(fixture.service);
-    const flipped = `${cookieValue.slice(0, -1)}${cookieValue.endsWith('A') ? 'B' : 'A'}`;
+    const flipped = tamperSeal(cookieValue);
     try {
       await fixture.service.validateSession(flipped);
     } catch (error) {
