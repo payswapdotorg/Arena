@@ -1,0 +1,38 @@
+{
+  "name": "@arena/hosted-r2-object-store",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare R2 object-store adapter for @arena/persistence (Work Order B002; issue #64; FT2.0 'Storage'): content-addressed immutable blob storage over the S3-compatible endpoint env (R2_ACCOUNT_ID/R2_S3_ENDPOINT/R2_ACCESS_KEY_ID/R2_SECRET_ACCESS_KEY/R2_BUCKET) with @aws-sdk/client-s3 (exact pin). DISABLED fail-closed without configuration; capacity probe; ObjectStorageTransport seam for credential-free contract tests.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/persistence": "workspace:*",
+    "@aws-sdk/client-s3": "3.1144.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

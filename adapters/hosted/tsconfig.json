@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": [
+    "neon-postgres/src",
+    "r2-object-store/src",
+    "upstash-redis/src",
+    "neon-postgres/vitest.config.ts",
+    "r2-object-store/vitest.config.ts",
+    "upstash-redis/vitest.config.ts",
+    "vitest.config.ts"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@arena/hosted-neon-postgres",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Neon PostgreSQL adapter for @arena/persistence (Work Order B002; issue #64; FT2.0 'Database'): authoritative control-plane repository + versioned ordered SQL migrations with an applied-record ledger over @neondatabase/serverless (exact pin; Vercel-compatible HTTP driver). DISABLED fail-closed without configuration; capacity probe; SqlTransport seam for credential-free contract tests.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/persistence": "workspace:*",
+    "@neondatabase/serverless": "0.10.4"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
