@@ -1,0 +1,38 @@
+{
+  "name": "@arena/read-model-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The canonical read-model service for Arena (Work Order B005; issue #71): composes the B002 ControlPlaneRepository port with the pure @arena/read-model projections — readCanonical (typed RECORD_NOT_FOUND vs TENANT_SCOPE_VIOLATION; existence is never hidden across tenants), scrollByKind (deterministic (kind, recordId) ordering, bounded pages, opaque continuation tokens), listKinds (kind inventory with counts). READ-ONLY posture: the service exposes no mutation operations (asserted by hygiene tests) and takes the tenant from the B004-authenticated context, never from request payloads. The read model is a PROJECTION over canonical Arena objects, never a second authority: no state, no caching, every result re-read from the control plane carrying the source record's version + revision.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/persistence": "workspace:*",
+    "@arena/read-model": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
