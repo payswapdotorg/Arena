@@ -56,10 +56,22 @@ Owned: services/read-model/*, services/api-read/*, packages/read-model/*
 Harvest record: worker delivery + TL completion; TL battery 66/66 all
 gates; CI battery green on head e4d25ea before merge.
 
-B006 AUTHORIZED — Deterministic Demo/Preview mode and first-run guided
+B006 MERGED — Deterministic Demo/Preview mode and first-run guided
 narrative
-Deps B001+B003+B005+A028+A029 all MERGED; issue to be opened at dispatch
-Owned: apps/web/src/demo/*, packages/demo/*, docs/demo/*
+Issue #73 — PR #74 (merged aa5d526)
+Owned: apps/web/src/demo/*, apps/web/src/app/demo/*, packages/demo/*,
+docs/demo/* (+ apps/web/package.json @arena/demo link + lockfile intake)
+Harvest record: worker delivery + TL completion (worker died pre-commit at
+the session wall-clock); deterministic tamper-proof seal tests fixed en
+route (auth flake, 040dc5c); TL import normalization + manifest/lockfile
+intake; TL battery 268/268 all gates; CI battery green on head 04a6e56
+(integrated with repaired main) before merge.
+
+### Third wave
+
+B007 AUTHORIZED — Role-aware Home/Capability Cockpit and global navigation
+Deps B001+B003+B004+B005+B006 all MERGED; issue to be opened at dispatch
+Owned: apps/web/src/cockpit/*
 
 ## Product specifications
 
@@ -190,8 +202,8 @@ Never treat stale chat context as state.
 - B003 MERGED
 - B004 MERGED
 - B005 MERGED
-- B006 AUTHORIZED
-- B007 WAITING_ON_DEPENDENCIES
+- B006 MERGED
+- B007 AUTHORIZED
 - B008 WAITING_ON_DEPENDENCIES
 - B009 WAITING_ON_DEPENDENCIES
 - B010 WAITING_ON_DEPENDENCIES

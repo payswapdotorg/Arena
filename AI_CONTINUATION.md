@@ -36,8 +36,25 @@ Two-session worker delivery + TL completion; battery 63/63; CI green pre-merge.
 B005 — persisted control-plane read model — PR #72 MERGED (8a6e6e9).
 Worker delivery + TL completion; battery 66/66; CI green pre-merge.
 
-Next: B006 (deterministic demo/preview mode) is AUTHORIZED with deps
-satisfied (B001+B003+B005+A028+A029). B007 (cockpit) follows B006.
+B006 — deterministic demo/preview mode — PR #74 MERGED (aa5d526).
+Worker delivery + TL completion (worker died pre-commit at the session
+wall-clock; TL verified, normalized cross-package imports to the
+@arena/demo workspace alias, took manifest/lockfile intake); battery
+268/268; CI green on integrated head 04a6e56. En route this window:
+auth-service seal-tamper test flake fixed on main (040dc5c — the last
+base64url char carries 2 padding bits; tests now flip the first seal
+char, deterministic) and the A1.0→A2.0 architecture-lock bump completed
+(83384be, ACR-001) after the approved human-escalation rules landed
+without the mechanical lock update.
+
+Architecture lock is now A2.0 (36 locked rules; rules 25-36 are the
+approved human escalation product direction; ACR-001 records the bump).
+Long-term roadmap: A001-A036 → B001-B019 → C001-C022.
+
+Next: B007 (role-aware Home/Capability Cockpit + global navigation) is
+AUTHORIZED with deps satisfied (B001+B003+B004+B005+B006). B008-B014 all
+gate on B007. C-series governance roster extension (checker C-id parsing)
+is required before any C-series dispatch.
 
 The Tech Lead must record:
 - exact base SHA;
