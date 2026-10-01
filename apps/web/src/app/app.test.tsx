@@ -107,11 +107,21 @@ describe('first-run landing (UX1.0 Level 0) — the DEFAULT unauthenticated expe
     // session, so the mount is asserted structurally here.
     expect(HomePage.constructor.name).toBe('AsyncFunction');
   });
+
+  it('mounts /cases as an async session-aware server component (B008)', () => {
+    // Same posture as the B007 home: the mount delegates to
+    // resolveSessionCaseList (probe -> gate | case list); the session-aware
+    // composition is covered by the capability suites (src/capability) through
+    // injected session probes.
+    expect(CasesPage.constructor.name).toBe('AsyncFunction');
+  });
 });
 
 describe('core route matrix stubs (UXM1.0)', () => {
+  // B008: /cases is no longer a stub — it is the session-aware case list
+  // (asserted above); the remaining core routes stay stubs until their
+  // work orders fill them.
   const routes: ReadonlyArray<[string, React.ReactElement]> = [
-    ['cases', <CasesPage key="cases" />],
     ['bodies', <BodiesPage key="bodies" />],
     ['research', <ResearchPage key="research" />],
     ['marketplace', <MarketplacePage key="marketplace" />],
@@ -120,7 +130,7 @@ describe('core route matrix stubs (UXM1.0)', () => {
   ];
 
   it('renders one stub per core route, each with a route header (positive)', () => {
-    expect(routes).toHaveLength(6);
+    expect(routes).toHaveLength(5);
     for (const [route, element] of routes) {
       const html = render(element);
       expect(html).toContain(`data-arena-route="${route}"`);
@@ -257,15 +267,14 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
     expect(existsSync(new URL('index.html', buildDir))).toBe(false);
   });
 
-  it('prerenders every core route stub with the standard empty state (positive)', () => {
+  it('prerenders every remaining stub route with the standard empty state (positive)', () => {
     for (const route of [
-      'cases',
       'bodies',
       'research',
       'marketplace',
       'operations',
       'settings',
-    ]) {
+    ] as const) {
       const html = readBuilt(`${route}.html`);
       expect(html).toContain(`data-arena-route="${route}"`);
       expect(html).toContain('data-arena-state="empty"');
@@ -273,8 +282,15 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
     }
   });
 
+  it('compiles /cases as a session-aware dynamic route (B008: the case list reads the session)', () => {
+    // Like the B007 home: /cases decides gate-vs-cases per request (fail
+    // closed, no anonymous case list), so it is never prerendered as
+    // anonymous static content.
+    expect(existsSync(new URL('cases.html', buildDir))).toBe(false);
+  });
+
   it('never prerenders diagnostics as the default experience (negative)', () => {
-    const html = readBuilt('cases.html');
+    const html = readBuilt('settings.html');
     expect(html).not.toContain('Arena Control Console');
     expect(html).not.toContain(':8787');
   });
