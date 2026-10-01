@@ -954,3 +954,294 @@ Do not ask the user to restate the architecture.
 Do not wait for chat instructions between normal roadmap steps.
 
 The repository now contains the roadmap, contracts, UX architecture, operational simulation, deployment target, launch gate and worker boundaries required to execute the entire remaining program.
+
+
+# APPROVED PRODUCT DIRECTION — HUMAN ESCALATION INFRASTRUCTURE
+
+The approved long-term product thesis is:
+
+> Arena is the Stripe of human expert escalation for AI automation.
+
+This changes the commercial center of gravity of Arena while preserving the A-series core.
+
+## What Arena provides
+
+Any AI application can call Arena when the agent reaches a capability boundary.
+
+Arena handles:
+
+Application
+→ escalation
+→ capability analysis
+→ expert discovery/qualification
+→ expert matching
+→ secure environment session
+→ human intervention
+→ validation
+→ machine-readable result
+→ payment
+→ optional learning/tool/knowledge/body improvement.
+
+Epoch is one customer/integrator of this API, not Arena's defining application.
+
+## Escalation modes
+
+Supported modes:
+
+- SOLVE
+- CORRECT
+- UNBLOCK
+- REVIEW
+- TEACH
+- TOOL_GAP
+- KNOWLEDGE
+- EVALUATE
+
+The immediate operational result is separated from any reusable learning artifact.
+
+## Same-environment expert session
+
+For escalations that support it, Arena creates an isolated ExpertSessionCapsule from the agent's execution state.
+
+The human gets a secure link from Arena.
+
+The session reproduces the relevant agent environment while enforcing:
+
+- privacy barriers;
+- data minimization;
+- secret exclusion;
+- tool/action allowlists;
+- tenant isolation;
+- time limits;
+- live-world separation.
+
+The expert's observable actions, tool invocations, outputs, corrections and annotations may be streamed to the originating agent/application when policy allows.
+
+Do not expose or require hidden chain-of-thought. Capture observable work and explicit evidence.
+
+## The intervention is a learning opportunity
+
+A single intervention may generate:
+
+- immediate correction;
+- knowledge patch;
+- tool-gap signal;
+- tool specification;
+- skill candidate;
+- evaluator/verifier evidence;
+- trajectory;
+- benchmark case;
+- improved Agent Body;
+- reusable marketplace artifact.
+
+Nothing is made globally reusable without validation, provenance, rights and scope.
+
+## Tool-gap loop
+
+When an expert needed a capability unavailable to the agent, capture a ToolGapSignal.
+
+That can lead to:
+
+ToolGapSignal
+→ Tool specification
+→ provider/adapter integration
+→ Body update
+→ benchmark
+→ marketplace artifact.
+
+This means Arena improves not only the model, but also the agent's surrounding tools and domain knowledge.
+
+## Payment model
+
+Expert work is a commercial transaction.
+
+The originating AI application may specify a budget and authorize payment.
+
+Arena handles:
+- offer/acceptance;
+- payment hold/authorization;
+- validation condition;
+- expert payout;
+- platform fee;
+- refund/revision paths;
+- accounting/audit.
+
+Payments are provider-neutral. A Connect-style marketplace provider is an appropriate adapter pattern for an initial implementation because platform application fees and multi-party transfers are supported by current Stripe Connect patterns. Exact merchant-of-record, payout and jurisdiction responsibilities must be decided before production rollout. citeturn787126search0turn787126search1
+
+## Human Intelligence Fabric
+
+The C-series introduces the Human Intelligence Fabric around the existing Expert Registry:
+
+Capability Demand
+→ Expert Discovery
+→ Adaptive Qualification
+→ Calibration
+→ Matching
+→ Engagement
+→ Session
+→ Intervention
+→ Validation
+→ Performance Evidence
+→ Requalification.
+
+This incorporates the strongest Micro1-inspired ideas without turning Arena into a staffing company.
+
+## Expert performance
+
+Create a longitudinal evidence-backed Expert Performance Profile covering:
+- quality;
+- reliability;
+- task fit;
+- verification acceptance;
+- response/turnaround;
+- revision history;
+- domain breadth/depth;
+- historical difficulty;
+- cost efficiency.
+
+Do not reduce the profile to one simplistic score.
+
+## Adversarial Expert Evaluation
+
+Arena gains an alternative evaluator-scarcity route:
+
+Problem
+→ independent expert solutions
+→ adversarial challenges
+→ proof/evidence
+→ responses
+→ qualified voting
+→ adjudication
+→ verification.
+
+Upvote/downvote ratio is allowed as a community/discovery signal but cannot by itself establish correctness or certification.
+
+Minimum safeguards:
+- evidence required for substantive votes;
+- no self-voting;
+- conflict-of-interest handling;
+- minimum sample size;
+- anti-brigading/rate limiting;
+- qualification-aware aggregation;
+- explicit unknown/tie states.
+
+Pairwise comparison methods and debate-style competing-prover research provide useful foundations for this evaluation approach, but Arena's own Verification authority remains final. citeturn128285academia14turn956631search6
+
+## Why same-environment intervention is normative
+
+The purpose is not only to let an expert answer a question.
+
+It minimizes context translation and makes the intervention directly comparable to the agent's own workflow state.
+
+Interactive imitation-learning research supports the value of corrective human intervention in the task state and shows ways to reduce expert monitoring burden while collecting higher-quality intervention data. citeturn956631academia0turn956631academia1
+
+Recent HITL products likewise expose API-first task escalation and return structured machine-readable results, reinforcing the viability of the API boundary as a product primitive. citeturn128285search0turn128285search3
+
+## C-series roadmap
+
+The complete post-B roadmap is in:
+- spec/human-escalation-work-items.md
+- spec/human-escalation-dependency-graph.md
+- spec/arena-product-thesis.md
+- spec/expert-escalation-api.md
+- spec/expert-environment-session.md
+- spec/adversarial-expert-evaluation.md
+- spec/escalation-reference-flow.md
+
+C001-C022 are the execution program.
+
+The first safe C-wave is:
+
+C001 — Escalation API/MCP/webhooks
+C002 — capability-demand/routing compiler
+C010 — payments/platform fees
+
+Then progressively:
+- adaptive expert intake;
+- calibration;
+- expert sessions;
+- intervention modes;
+- tool/knowledge capture;
+- validation;
+- expert performance;
+- engagement;
+- human-data production;
+- adversarial competition;
+- Agent Body pretraining marketplace;
+- capability-demand routing;
+- developer portal;
+- enterprise privacy packs;
+- Epoch/generic integrations;
+- network quality/fraud/disputes;
+- escalation operations;
+- final capability-learning compiler.
+
+The C-series must obey the same three-worker concurrency and repository-governance laws as B-series.
+
+## Strategic product boundary
+
+Arena is not:
+- a generic recruiting company;
+- a payroll system;
+- a generic crowdsourcing site;
+- a social voting site;
+- an LLM hosting platform.
+
+Arena is:
+- human escalation infrastructure;
+- capability acquisition infrastructure;
+- human-data production infrastructure;
+- capability improvement infrastructure;
+- capability commerce.
+
+The API is the primary commercial boundary.
+
+## Canonical external flow
+
+A generic AI application should ultimately be able to do:
+
+POST escalation
+→ receive request_id
+→ Arena routes a qualified human
+→ secure session starts
+→ agent/app observes approved intervention
+→ result is validated
+→ structured result delivered
+→ expert is paid
+→ Arena collects fee
+→ optional learning artifact is produced.
+
+Epoch must work through exactly this generic boundary rather than receiving special treatment in the core architecture.
+
+## Agent learning boundary
+
+The originating application controls whether and how returned artifacts update its live agent.
+
+Arena may produce candidate:
+- skill;
+- knowledge;
+- tool;
+- evaluator;
+- benchmark;
+- Body update.
+
+Arena must not silently mutate the host application's live Agent or World Model.
+
+## C-series acceptance bar
+
+C-series is complete only when an unrelated third-party AI application, without Arena-specific internal access, can exercise the complete escalation flow and receive a validated machine-readable result.
+
+Epoch and at least one generic reference client must prove this.
+
+At least one real product flow must demonstrate:
+1. agent reaches a capability boundary;
+2. Arena recruits/matches a human;
+3. expert receives a safe replica of the agent environment;
+4. expert solves/corrects/unblocks;
+5. agent receives the approved result;
+6. payment settles;
+7. Arena fee is recorded;
+8. tool/knowledge/learning signals are captured where permitted;
+9. the intervention can be replayed;
+10. the same evidence can support future capability improvement.
+
