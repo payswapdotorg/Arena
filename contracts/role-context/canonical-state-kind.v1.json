@@ -1,0 +1,50 @@
+{
+  "$id": "arena:schema/role-context/canonical-state-kind@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The product-truth taxonomy (handoff §7): one descriptor per canonical state kind. Every user-visible state must classify into exactly one kind; the UI may never collapse two different kinds into one generic badge — the only permitted display equivalence is kind identity.",
+  "properties": {
+    "guidance": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "verified-fact",
+        "evidence",
+        "expert-judgment",
+        "model-output",
+        "simulation-replay",
+        "evaluation-result",
+        "certification",
+        "suggestion-hypothesis",
+        "demo-state",
+        "pending",
+        "unknown"
+      ]
+    },
+    "label": {
+      "maxLength": 200,
+      "minLength": 1,
+      "type": "string"
+    },
+    "meaning": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "type": "string"
+    },
+    "recordVersion": {
+      "const": 1
+    }
+  },
+  "required": [
+    "recordVersion",
+    "kind",
+    "label",
+    "meaning",
+    "guidance"
+  ],
+  "title": "Arena canonical state kind v1",
+  "type": "object"
+}

@@ -4,19 +4,34 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "start:console": "node --experimental-strip-types src/console/main.mjs",
+    "start:workbench": "node --experimental-strip-types src/workbench/main.mjs",
+    "start:marketplace": "node --experimental-strip-types src/marketplace/artifacts/main.mjs",
+    "start:marketplace:experts": "node --experimental-strip-types src/marketplace/experts/main.mjs",
+    "selfcheck": "node --experimental-strip-types src/main.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run",
-    "build": "tsc -p tsconfig.build.json",
-    "start": "node --experimental-strip-types src/main.ts"
+    "test": "vitest run"
   },
   "dependencies": {
-    "@arena/protocol-core": "workspace:*"
+    "@arena/protocol-core": "workspace:*",
+    "@arena/ui-platform": "workspace:*",
+    "next": "15.5.4",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
   },
   "devDependencies": {
+    "@eslint/js": "catalog:",
     "@types/node": "catalog:",
+    "@types/react": "19.1.13",
+    "@types/react-dom": "19.1.9",
     "eslint": "catalog:",
+    "globals": "catalog:",
     "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
     "vitest": "catalog:"
   }
 }

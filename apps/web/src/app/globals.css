@@ -1,0 +1,121 @@
+/* Arena web host — app-level styles on top of the design system. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: var(--arena-font-sans);
+  font-size: var(--arena-text-base);
+  line-height: var(--arena-line-height-normal);
+  color: var(--arena-color-ink);
+  background: var(--arena-color-canvas);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------ */
+/* First-run landing (Level 0)                                         */
+/* ------------------------------------------------------------------ */
+
+.landing {
+  max-width: 46rem;
+  margin-inline: auto;
+  padding: var(--arena-space-3xl) var(--arena-space-md);
+  display: grid;
+  gap: var(--arena-space-xl);
+}
+
+.landing__title {
+  margin: 0;
+  font-size: var(--arena-text-4xl);
+  line-height: var(--arena-line-height-tight);
+  letter-spacing: -0.015em;
+  max-width: 24ch;
+}
+
+.landing__lede {
+  margin: var(--arena-space-sm) 0 0;
+  font-size: var(--arena-text-lg);
+  color: var(--arena-color-ink-muted);
+  max-width: 52ch;
+}
+
+.landing__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--arena-space-md);
+}
+
+.landing__step {
+  display: flex;
+  gap: var(--arena-space-md);
+  padding: var(--arena-space-lg);
+  background: var(--arena-color-surface);
+  border: 1px solid var(--arena-color-line);
+  border-radius: var(--arena-radius-lg);
+  box-shadow: var(--arena-elevation-low);
+}
+
+.landing__step-index {
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--arena-radius-full);
+  background: var(--arena-color-primary-soft);
+  color: var(--arena-color-primary-strong);
+  font-weight: var(--arena-font-weight-semibold);
+}
+
+.landing__step-body {
+  display: grid;
+  gap: var(--arena-space-2xs);
+}
+
+.landing__step-title {
+  margin: 0;
+  font-size: var(--arena-text-xl);
+  line-height: var(--arena-line-height-tight);
+}
+
+.landing__step-text {
+  margin: 0;
+  color: var(--arena-color-ink-muted);
+  max-width: 58ch;
+}
+
+.landing__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--arena-space-md);
+}
+
+.landing__secondary {
+  color: var(--arena-color-primary-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.landing__secondary:hover {
+  color: var(--arena-color-primary);
+}
+
+/* ------------------------------------------------------------------ */
+/* Stub routes                                                         */
+/* ------------------------------------------------------------------ */
+
+.route-stub {
+  max-width: 52rem;
+  margin-inline: auto;
+}

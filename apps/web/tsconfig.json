@@ -1,7 +1,16 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node"]
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "types": ["node"],
+    "plugins": [{ "name": "next" }],
+    "allowJs": false,
+    "incremental": false
   },
-  "include": ["src", "vitest.config.ts"]
+  "include": ["next-env.d.ts", "next.config.ts", "src", "vitest.config.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
