@@ -1,0 +1,39 @@
+{
+  "name": "@arena/api-read",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The auth-gated read API boundary for Arena (Work Order B005; issue #71): the protocol-level HTTP-shaped read surface over the canonical read-model service. handleReadRequest authenticates FIRST through the B004 AuthService (fail closed: unauthenticated/expired/revoked/tampered → typed auth error envelope; anonymous reads are NOT representable), then scopes EVERY read to the tenant of the validated session context — the tenant NEVER comes from the request payload. Success envelopes echo the request kind and carry the canonical read results with source version, provenance and read-at; error envelopes use the house typed-error code vocabulary (READ_MODEL_* + AUTH_* codes). Versioned contract surface per spec/service-boundaries.md, consumed by B006/B007 UI wiring. Read-only: no write path exists on this boundary.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/auth": "workspace:*",
+    "@arena/persistence": "workspace:*",
+    "@arena/read-model": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

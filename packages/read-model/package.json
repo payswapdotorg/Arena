@@ -1,0 +1,32 @@
+{
+  "name": "@arena/read-model",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Canonical read models over the B002 control plane for Arena (Work Order B005; issue #71): pure, side-effect-free projections of versioned ControlPlaneRecords into frozen, version-stamped read shapes that carry record id, tenant id, kind, record version, data, revision, as-stored provenance and an injected read-at timestamp. Includes a typed read-query vocabulary (by-id, by-kind scroll with opaque continuation tokens, by-tenant listing) with bounded page sizes. This package is a PROJECTION, never a second authority: no state, no writes, no caching — versions, provenance and tenant boundaries are READ from the control plane, never recomputed.",
+  "exports": {
+    ".": { "types": "./src/index.ts", "default": "./src/index.ts" }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/persistence": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

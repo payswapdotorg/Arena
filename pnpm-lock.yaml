@@ -878,6 +878,28 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/read-model:
+    dependencies:
+      '@arena/persistence':
+        specifier: workspace:*
+        version: link:../persistence
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/role-context:
     dependencies:
       '@arena/protocol-core':
@@ -1092,6 +1114,31 @@ importers:
       '@arena/protocol-core':
         specifier: workspace:*
         version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/api-read:
+    dependencies:
+      '@arena/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@arena/persistence':
+        specifier: workspace:*
+        version: link:../../packages/persistence
+      '@arena/read-model':
+        specifier: workspace:*
+        version: link:../../packages/read-model
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -1561,6 +1608,28 @@ importers:
       '@arena/persistence':
         specifier: workspace:*
         version: link:../../packages/persistence
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/read-model:
+    dependencies:
+      '@arena/persistence':
+        specifier: workspace:*
+        version: link:../../packages/persistence
+      '@arena/read-model':
+        specifier: workspace:*
+        version: link:../../packages/read-model
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
