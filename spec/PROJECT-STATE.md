@@ -1,110 +1,113 @@
 # Arena Project State
 
 Architecture: A1.0
-Work Order schema: AWO1.0
-Default branch: main
+Work Order schemas: AWO1.0 / BWO1.0
 Maximum concurrent workers: 3
 
-## Bootstrap status
+## V1
 
-Repository architecture, governance, requirements, implementation plan, core object specifications, security/data governance, service boundaries, dependency graph and Work Orders are committed.
+A001-A036: COMPLETE / MERGED.
 
-A001 MERGED via PR #2 (merge SHA d07a9beec762aceeaad1b010047f1eb804b7416a). A002 MERGED via PR #6 (merge SHA 21dfdbda27d68bb706b31f642e92c8817c63aa5b, worker head ea8081c6 + Tech Lead reconciliation d21b4fe). A003 MERGED via PR #8 (merge SHA e14b9fff9df0f37bc3982f5724401c55d1410813, worker head 26fdd9ef + Tech Lead reconciliation b2a0f0dd; CI run 36311438667 green on the PR head; post-merge run 36311670948). A004 MERGED via PR #10 (merge SHA cff162b96a7dcc0758b509f666993ca557c4fddb, worker head 422613fe + Tech Lead intake d9e7689 + merge-of-main 6ad2415; PR CI green; acceptance via branch-oracle — worker chat died in a platform generation-window outage after pushing the delivery branch). A009 MERGED via PR #14 (merge SHA 480dd06563269b29c68b365d13a716009a5d4f87, worker head b887803 + intake baf07db; PR CI green). A015 MERGED via PR #15 (merge SHA 40defadbb56f8727e9540d929b6194e903daff55, worker head 01684ca + intake 14a029c + merge-of-main 959c0c5; PR CI green). A016 MERGED via PR #16 (merge SHA 8a834ad1ba59886bc58e897b8b6abb949ed677c5, worker head 01feb38 + intake 7da9488 + merge-of-main c38544e; PR CI green). A005 MERGED via PR #20 (merge SHA d0052965d79ae48a4dab5d4b38b699d5c1ed14d0, worker head f900d2e + intake 9752c62; PR CI green; acceptance via branch-oracle — the worker chat was retired post-delivery). A018 MERGED via PR #21 (merge SHA 13af7c27e27a61d1704e3d4a5f261ca8433b957b, worker head 2cc08aa + intake b8c3c71; PR CI green; dispatched from d005296 and delivered in a 68-minute end-to-end cycle). A006 MERGED via PR #22 (merge SHA 603050fe549e8f4c10e1f08692abeb2b2d8cb7e8, worker head a878a77 + intake b65e6f3; PR CI green; delivered @arena/expert-registry with 276 tests, full battery green; a 65-minute dispatch-to-merge cycle after the sandbox-cap incident was fixed). A010 MERGED via PR #23 (merge SHA 6b8352c5256c19b4f997aba0dac3dc9435178ac9, worker head b1997c1 + intake 95989c7 + merge-of-main lockfile regeneration 38868ff; PR CI green on 38868ff; delivered services/environment-runner + packages/environment-runtime — isolated environment runner and lifecycle; a 107-minute dispatch-to-merge cycle after the 05:35 re-dispatch). A011 MERGED via PR #24 (merge SHA ee5753283b2fd8b6a4a1e4ce367184e0f3215e74, worker head 15620f8 + intake b5f7f46; PR CI green on b5f7f46; delivered @arena/trajectory + services/trajectory-store + contracts/trajectory — TrajectoryHeader, chained append-only entries, TrajectoryRecord, replay views, reference store; an 84-minute dispatch-to-push cycle, acceptance via branch-oracle).
+The V1 core is implemented end-to-end:
+Capability Case -> Task -> Environment -> Expert -> Trajectory -> Evaluation -> Verification -> Learning -> Agent Body -> Substrate Compatibility -> Certification -> Release -> Epoch consumption -> Production -> Marketplace -> Billing/Entitlements.
 
-A012 MERGED via PR #26 (merge SHA 0cb1b90611a093858f5e3101cda189fd530de5b4, worker head 6b05363 + intake ed05333; PR CI green on ed05333; delivered @arena/evaluation + services/evaluation + contracts/evaluation — EvaluatorDescriptor, EvaluationCriteria, EvaluationRecord, evaluator registry + reference fabric; a 35-minute dispatch-to-push cycle, 76-minute dispatch-to-merge; acceptance via branch-oracle, worker chat retired post-merge).
+## Productization program
 
-A013 MERGED via PR #28 (merge SHA 02c71552ef, worker head 4388033 + intake 9238836; PR CI green on 9238836; battery all-green at the TL station; worker chat 5397113a). A019 MERGED via PR #32 (merge SHA 95f8e3cc6a, worker head b56cef7 + intake 7d3f2c9; station battery all-green; worker chat e6f03d58; a 35-minute dispatch-to-push cycle). A014 MERGED via PR #34 (merge SHA d3cf60af62, worker head d7e2d1e + remediation 084377e + intake; station battery all-green after one ARCHITECT REQUIRE-CHANGES round: typecheck TS7053 in contracts.parity.test.ts fixed on the same branch with full battery re-run; 48 files +7703 lines, @arena/datasets 89 tests + @arena/artifact-service 75 tests, all existing suites green; worker chat 776d1b01). A007 MERGED via PR #36 (merge SHA eaebedd853, worker head 178e4ca + intake; station battery all-green: ownership clean, 63 files +13750 lines, @arena/expert-qualification 127 tests + @arena/expert-matching 46 tests; a branch-collision with a recovered prior attempt (334a03e) was honestly disclosed and resolved via force-with-lease; worker chat 1820bed0). A020 MERGED via PR #35 (merge SHA 871c29c, worker head 6b1847c + intake; station battery all-green: ownership clean, 57 files +12538 lines, @arena/learning 145 tests + @arena/learning-fabric 46 tests; ExperimentDescriptor with every LE1.0 field, evaluator/verifier-version-confound attribution, five-condition CapabilityLiftVerdict, read-only learning boundary; the worker session recovered server-side after a premature TL void — UI-freeze is NOT death; worker chat 60a7943c). A021 MERGED via PR #39 (merge SHA b9402dc, worker head 542abbd + intake; station battery all-green: ownership clean, 35 files +6696 lines, @arena/body-forge 95 tests + @arena/body-forge-fabric 36 tests; BodyManifest/ForgePolicy/ForgeRecipe/ForgeRecord with append-only supersession lineage; worker chat 6ddf1cb3). A008 MERGED via PR #40 (merge SHA 04faea8, worker head 9ac57d5 + intake; station battery all-green: ownership clean, 61 files +12535 lines, @arena/task-spec 159 tests + @arena/task-compiler-fabric 55 tests; full TS1.0 TaskSpec + deterministic compiler with CompilationRecord; worker chat b184aaad). A017 MERGED via PR #43 at 84e1013 on 2026-09-29 ~13:0X UTC (worker head c055730 + TL lockfile intake d40b293; station battery all-green — 94+23 new tests, ownership clean, 30 files +7114 lines; the sibling TL session that dispatched it went silent at 10:10 UTC; harvest by the resident watch loop; PR CI green on the intake head d40b293). A022 MERGED via PR #44 at 3109811 on 2026-09-29 ~22:0X UTC (worker head 092e13f after six remediation rounds — A022R/A022R4/A022R5/A022R8/A022R9 partial deliveries salvaged on-branch, then terminal TL intake of the enumerated mechanical failures per the A014 REQUIRE-CHANGES precedent; station battery ALL-GREEN: check/contracts/typecheck 37/37/lint/test/build EXIT 0, @arena/compatibility 45 tests + @arena/compatibility-fabric 8 tests; six rounds were degraded by platform peak-hour rate-limit storms on both the replay GLM-5.3 channel and the local z-ai channel — the honest delivery record is in the PR #44 body). A023 MERGED via PR #45 at 6c65c06 on 2026-09-29 ~23:0X UTC (worker head 3d4700e — a replay GLM-5.3 Full-Stack agents-tab session, the mandated channel; 50 files +10281 lines; station battery ALL-GREEN at the TL integration station: check/contracts/typecheck/lint/test/build all EXIT 0; @arena/certification + services/certification + contracts/certification with CertificationSuite descriptors, deterministic CertificationEngine over the scoped statement form, closed verdict discipline with structured unknown-causes, append-only supersession lineage, parity-tested generated contracts). A024 MERGED via PR #47 at 446c3ab on 2026-09-30 ~00:0X UTC (worker head bb7c08b — a replay GLM-5.3 Full-Stack session dispatched 22:37 UTC that delivered BOTH layers (packages/body-registry + services/body-registry) and opened its PR at 23:58 UTC, two minutes before the deadline; station battery ALL-GREEN at 00:05 UTC: check/contracts/typecheck/lint/test/build all EXIT 0; release admission gate on certification + compatibility references, ReleaseRecord lineage with supersession/retirement, content-addressed publication semantics). A025 MERGED via PR #48 at 79e8f25 on 2026-09-30 ~04:3X UTC (worker head c04de57 + TL lockfile intake 93595ed; PR CI green on 93595ed; station battery ALL-GREEN at the TL integration station on 2026-09-30 04:15-04:30 UTC: governance (base a77144a) + boundary + contracts byte-identical + typecheck 43/43 + lint 43/43 + test 43 tasks + build 43/43 all EXIT 0; @arena/arena-sdk 70 tests + @arena/api-fabric 45 tests; the worker delivered the full PR-contract body with exact evidence; dispatched by the prior session at 00:5X UTC and harvested by the resident watch loop after a sandbox reset). THE A025 MERGE UNLOCKS: A026 (epoch adapter) + A028 + A029 (reference bodies) + A034 (security) — in addition to the already-unlocked A031/A032/A033; dispatch up to 3 concurrent, pairwise-disjoint. WAVE-2 (2026-09-30 20:19-20:23 UTC, peak-hours platform combat — three worker sessions died and were re-dispatched through capacity assaults, sandbox-slot releases via settings/dashboard, and §8 stop/continue cures; all three delivered via the git channel): A034 MERGED via PR #54 at e66e201 (worker head f6759dc; 48 files +9119; station battery ALL-GREEN: check/contracts/typecheck/lint/test/build EXIT 0; services/security + packages/security + tests/security with runtime-assembled credential fixtures — no push-protection incidents). A026 MERGED via PR #53 at 4f3b473 (worker head cb36b1e + TL lockfile intake bff0582; 18 files +3347; station battery ALL-GREEN; adapters/epoch per EPI1.0 — typed request/response translation, async job envelope, structural authority boundary). A028 MERGED via PR #52 at af7feb4 (worker head a05f7ae + TL lockfile intake 2ad8e73; 34 files +4914; station battery ALL-GREEN; bodies/software-engineer + environments/software-engineer + examples/software-engineer — the first complete reference vertical slice). THE WAVE-2 MERGES UNLOCK: A027 (epoch e2e slice), A030 (research benchmark), A035 (observability) — wave-3 dispatched at base af7feb4; A036 unlocks when A030+A035 land. A027 MERGED via PR #55 at a6e26fe on 2026-09-30 21:55 UTC (worker head 1c46bd40; 19 files +3227; station battery ALL-GREEN; the worker survived a mid-run workspace destruction via the §7 rebuild nudge — 17-minute rebuild-to-push). A035 MERGED via PR #56 at 52dca43 on 2026-09-30 22:14 UTC (worker head 6944b74 + TL lockfile intake; 40 files +6008; station battery ALL-GREEN; packages/observability + services/observability + docs/operations with SLO/error-budget/alert-rule discipline and A034 audit-event integration). 30/36 merged. A036 waits on A030 only. A029 MERGED via PR #57 at 30c8b1d on 2026-09-30 22:30 UTC (worker head a58a225; 34 files +5028; station battery ALL-GREEN after one merge-of-main reconciliation — the worker cloned at an older base, lockfile regenerated; bodies/environments/examples/structural-engineer, the second reference vertical slice). 31/36 merged. A030 MERGED via PR #58 at 9af0de6 on 2026-09-30 23:40 UTC (worker head 67fe663; 30 files +5761; station battery ALL-GREEN — check 3s/contracts 4s/typecheck 4s/lint 7s/test 7s/build 8s, turbo-cached; research/ + benchmarks/ over the evaluation/verification/dataset fabrics exercising the A028 reference body). 32/36 merged; A036 fully unlocked — final sprint dispatched 23:42. A036 MERGED via PR #59 at 7639931 on 2026-10-01 00:21 UTC (worker head d8f8b1f; 51 files +6646; station battery ALL-GREEN; deploy/ + ops/ + docs/release/ + tests/performance/ + release/ — the v1 completion sink; dispatched at 23:42 with a 12-minute sprint budget, delivered at 00:15 post-deadline, harvested with the full quality bar intact). 33/36 merged — THE ARENA V1 LOOP IS COMPLETE through production release. Remaining: A031 + A032 (workers in flight at close) + A033 (staged, undispatched). A031 MERGED via PR #60 at 0d268b1 on 2026-10-01 01:4X UTC (worker head 256b198 + TL lockfile intake; 31 files +8488; station battery ALL-GREEN; services/marketplace-experts + apps/web/src/marketplace/experts — expert marketplace commercial layer: listings, offers, engagements, reviews; closure-wave re-dispatch from 82ef53f delivered in ~40 minutes). 34/36 merged. Remaining: A032 (worker in flight) + A033 (dispatching). A032 MERGED via PR #61 at 49a5e81 on 2026-10-01 03:0X UTC (worker head 6abbe2c lint-fix pair over 7d7b5bf + TL lockfile intake 91ca431 + merge-of-main 284b823 per the A029 house pattern — the worker branched at 82ef53f pre-A031; 34 files +8391; station battery ALL-GREEN twice (pre- and post-reconciliation); services/marketplace-artifacts + apps/web/src/marketplace/artifacts — provenance+verification-gated listings, versioned offer lineage, A034 data-rights-enforced grants, grant-gated reviews; delivered after a TL continuation nudge re-triggered the final push — the report-then-stall pattern). 35/36 merged. Remaining: A033 (worker in flight, budget-compressed finish). A033 MERGED via PR #62 at 3f1a9e6 on 2026-10-01 04:2X UTC (worker heads b389662 entitlements core + ab74054 billing service — 2 atomic commits, 36 files +6439, packages/entitlements + services/billing: grants with append-only lineage + exact expiry, fail-closed tenant-scoped resolution, usage-meter events, envelope wiring; billing usage ingestion, metered windows, quota enforcement, immutable statements, injected-ports reference fabric; full local battery green at the worker + station battery ALL-GREEN post merge-of-main 4b15e4d; recovered TWICE by TL continuation nudges — a mid-build stream stall cured by the reload-then-send protocol, then a token-redacted continued session cured by runtime-assembled base64 push credentials per the A034 doctrine). 36/36 MERGED — THE ARENA V1 ROSTER IS COMPLETE: every Work Order A001-A036 delivered, battery-verified, and merged; the full loop (Capability Case -> Task -> Environment -> Expert -> Trajectory -> Evaluation -> Verification -> Learning -> Certification -> Release -> Epoch consumption -> Production -> Marketplaces -> Billing/Entitlements) is implemented end-to-end.
+Goal: satisfy all three product requirements:
 
-Use live GitHub branch state for the exact latest main SHA. This file records product/workflow state; it must never be treated as a substitute for Git ancestry.
+1. installable and usable locally;
+2. hosted through a free-tier-compatible preview profile;
+3. friendly responsive multi-role frontend with a persistent role switcher and role-specific workflows.
 
-## Current frontier
+### First wave
 
-- A001 MERGED
-- A002 MERGED
-- A003 MERGED
-- A004 MERGED
-- A005 MERGED (PR #20, d005296)
-- A006 MERGED (PR #22, 603050f)
-- A007 MERGED (PR #36, eaebedd; worker head 178e4ca)
-- A008 MERGED (PR #40, 04faea8; worker head 9ac57d5)
-- A009 MERGED
-- A010 MERGED (PR #23, 6b8352c; worker head b1997c1 + intake 95989c7 + lockfile regen 38868ff)
-- A011 MERGED (PR #24, ee57532; worker head 15620f8 + intake b5f7f46)
-- A012 MERGED (PR #26, 0cb1b906; worker head 6b05363 + intake ed05333)
-- A013 MERGED (PR #28, 02c7155; worker head 4388033 + intake 9238836)
-- A014 MERGED (PR #34, d3cf60a; worker head d7e2d1e + remediation 084377e)
-- A015 MERGED
-- A016 MERGED
-- A017 MERGED (PR #43, 84e1013; worker head c055730 + TL intake d40b293)
-- A018 MERGED (PR #21, 13af7c2)
-- A019 MERGED (PR #32, 95f8e3c; worker head b56cef7 + intake 7d3f2c9)
-- A020 MERGED (PR #35, 871c29c; worker head 6b1847c)
-- A021 MERGED (PR #39, b9402dc; worker head 542abbd)
-- A022 MERGED (PR #44, 3109811; worker head 092e13f + six remediation rounds incl. terminal TL intake)
-- A023 MERGED (PR #45, 6c65c06; worker head 3d4700e via replay GLM-5.3 Full-Stack)
-- A024 MERGED (PR #47, 446c3ab; worker head bb7c08b via replay GLM-5.3 Full-Stack)
-- A025 MERGED (PR #48, 79e8f25; worker head c04de57 + TL intake 93595ed)
-- A026 MERGED (PR #53, 4f3b473; worker head cb36b1e + TL intake bff0582)
-- A027 MERGED (PR #55, a6e26fe; worker head 1c46bd40)
-- A028 MERGED (PR #52, af7feb4; worker head a05f7ae + TL intake 2ad8e73)
-- A029 MERGED (PR #57, 30c8b1d; worker head a58a225 + intake 7bd4a02 + merge-of-main f0fa061)
-- A030 MERGED (PR #58, 9af0de6; worker head 67fe663)
-- A031 MERGED (PR #60, 0d268b1; worker head 256b198 + TL intake — closure-wave re-dispatch)
-- A032 MERGED (PR #61, 49a5e81; worker head 6abbe2c + TL intake 91ca431 + merge-of-main 284b823)
-- A033 MERGED (PR #62, 3f1a9e6; worker heads b389662 + ab74054 + merge-of-main 4b15e4d — THE FINAL WORK ORDER)
-- A034 MERGED (PR #54, e66e201; worker head f6759dc + TL intake)
-- A035 MERGED (PR #56, 52dca43; worker head 6944b74 + TL intake)
-- A036 MERGED (PR #59, 7639931; worker head d8f8b1f — post-deadline sprint delivery)
+B001 READY — Web runtime foundation / Next.js App Router / design system
+Issue #63
+Owned: apps/web/*, packages/ui-platform/*
 
-## Current authorized assignment
+B002 READY — Hosted persistence/infrastructure adapters
+Issue #64
+Owned: packages/persistence/*, adapters/hosted/*, services/persistence/*
 
-Wave in flight, bases recorded at dispatch:
+B003 READY — Role/context model and projection contracts
+Issue #65
+Owned: packages/role-context/*, contracts/role-context/*
 
-- A009 — MERGED via PR #14 (480dd06). Delivered @arena/environment-protocol (ENV1.0: environment declarations with image/build digests, initial state snapshots, seed policy, action/tool surface, observation surface, resource limits, network policy; checkpoint semantics; workload admission) + contracts/environment/*.v1.json. 61 files.
-- A015 — MERGED via PR #15 (40defad). Delivered @arena/job-protocol + services/job-orchestrator (durable jobs, event log, orchestration; envelope wiring with idempotency keys; G9 services/* generator wiring exercised) + contracts/events/*.v1.json. 53 files.
-- A016 — MERGED via PR #16 (8a834ad). Delivered @arena/model-substrate + adapters/models reference adapters (SubstrateAdapter protocol, content-addressed AdapterDescriptor, append-only SubstrateRegistry, compatibility test descriptors, upgrade path types) + contracts/model-substrate/*.v1.json. 61 files.
+These are intentionally pairwise-disjoint and are the only current authorized productization wave.
 
-Next wave (dispatched from the post-triple-merge governance tip):
-- A005 — Capability Case protocol (packages/capability-case, contracts/capability-case) — Issue #12
-- A006 — Expert registry protocol (packages/expert-registry, contracts/expert) — Issue #13
-- A010 — Environment runner service (services/environment-runner, packages/environment-runtime) — Issue #17 — unlocked by A009+A015
+## Product specifications
 
-Wave rules: pairwise-disjoint surfaces; zero new external runtime dependencies (existing pnpm catalog only); no root manifest/lockfile edits (Tech Lead serializes reconciliation — see d21b4fe for the A002 pattern: lockfile intake + G9 package-generator wiring); Envelope<T>/canonical-JSON primitives reused from @arena/protocol-core; generated contracts + drift checks per the A001 convention, package-level generators wired into G9.
+- spec/product-requirements.md
+- spec/roles-and-contexts.md
+- spec/ux-architecture.md
+- spec/ux-route-matrix.md
+- spec/free-tier-contract.md
+- spec/post-v1-work-items.md
+- spec/post-v1-dependency-graph.md
+- docs/deployment/free-tier-architecture.md
+- docs/ux-operational-simulation.md
+- docs/product-demo-script.md
 
-Queue after the current wave (dependency-verified against spec/work-items.md): A013 IN FLIGHT (dispatched ~10:55 UTC from 0cb1b906), then the A007/A014/A019 fan-out (all need A013; A007 also needs A006 MERGED), then A008 (needs A005+A006+A007 — unlocks on the A007 merge) and A020 (needs A011+A012+A013+A019 — unlocks on the A019 merge); A021 follows (needs A003+A004+A019+A020). Dependency note (correction 2026-09-27 20:05): A034 requires A018/A021/A023/A025 — it is NOT ready on A015 alone (an earlier one-directional graph read was wrong; spec/work-items.md is authoritative). The triple-merge verification baseline: battery green on all workspace projects after each merge-of-main lockfile regeneration (A009 intake baf07db; A015 14a029c+959c0c5; A016 7da9488+c38544e), pristine frozen-lockfile clones green, PR CI green on all three.
+## Product truth invariants
 
-## Verification baseline
+Role context is not permission.
 
-A001 baseline (see docs/verification-baseline.md for the full record):
-- node v22.23.3, pnpm 10.34.5, python 3.12.14 (runner image ubuntu-latest, actions checkout@v7.0.1 / setup-node@v7.0.0, fetch-depth: 0);
-- battery: install --frozen-lockfile, governance, boundary, typecheck, lint, test, build — all exit 0;
-- pass counts: governance self-test 24/24, boundary self-test 11/11, tests 108/108 (105 protocol-core + 3 web), typecheck 2/2, build 2/2;
-- CI: GitHub Actions run 36257651225 (pull_request, head ca8355d) — success;
-- merge SHA: d07a9beec762aceeaad1b010047f1eb804b7416a (PR #2);
-- known limitations: regex-based import scanning; canonical JSON defined post-parse; conservative overlap heuristic; src-resolved internal packages (publishConfig reserved); engine-strict rejects non-Node-22 hosts; LICENSE placeholder pending Architect decision.
+Body is not Substrate.
 
-## Review lessons
+Possession is the binding.
 
-Record durable lessons from worker failures, connector/platform failures, test gaps and architecture reviews here.
+Certification is composition-scoped.
 
-A002 review (2026-09-26):
-- Worker sessions created outside the normal dispatch flow can have ephemeral per-turn sandboxes: anything on disk is lost when the turn ends. Delivery protocol must emit through the transcript (base64 chunks / heredocs) in the finishing turn, not rely on staging alone. Normal-flow sessions have persistent workspaces and stage via the files API.
-- Serial reconciliation pattern that works: worker commits everything except the root lockfile; Tech Lead runs pnpm install, commits lockfile intake + integration patches (G9 package generators), verifies pristine-clone frozen install, pushes, PR, CI, merge.
+Replay is observational unless a separately authorized live action is issued.
 
-A001 review (2026-09-26):
-- Local-green is not runner-green: governance resolve_diff_base failed on PR checkouts because default fetch-depth omits origin/main. Fix: fetch-depth: 0 in ci.yml (commit ca8355d). Lesson: any check that depends on ref shape must be exercised on the runner before merge.
-- Delivery extraction: worker sandboxes expose only the project directory to the files API; $HOME trees are invisible. Workers must stage deliveries into the project root (STAGING-<WO>/) before reporting completion.
-- Platform peak-hour capacity popups eat follow-up messages (client-side echo then loss). Cancel + resend (never switch models) until processing starts.
+Demo state is not customer state.
 
-## Successor rule
+Provider quota is visible and fail-closed.
 
-After every accepted merge:
-1. reconcile GitHub ground truth;
-2. update this file with exact merge SHA and verification baseline;
-3. update AI_CONTINUATION.md and docs/LLM-ARCHITECT-HANDOFF.md;
-4. derive READY items from spec/dependency-graph.md;
-5. dispatch at most three disjoint items;
-6. record base SHA/ownership;
-7. serialize dependency and lockfile reconciliation.
+The frontend projects canonical objects; it does not create a parallel domain model.
 
-Never dispatch from stale status text when live GitHub state disagrees.
+## Current product gap assessment
+
+### Local use
+Existing V1 offers an engineering/reference console, but not yet the final product-first install/demo journey.
+
+### Hosted use
+No Arena Vercel project is currently configured in the connected Vercel account, and the repository has no current Neon/R2/Upstash/Apify provider wiring. The B-series must establish this.
+
+### UX
+A018/A017 provide engineering console/workbench foundations, but the final role-aware product shell, onboarding, cockpit and all role-specific workflows are still B-series work.
+
+## UX validation
+
+The pre-implementation role/replay/evidence/marketplace/free-tier simulation is recorded in docs/ux-operational-simulation.md.
+
+The simulation required:
+- persistent role switcher;
+- role-specific projections over shared canonical objects;
+- explicit state/evidence taxonomy;
+- replay/live-world separation;
+- marketplace/certification distinction;
+- visible capacity state;
+- deterministic Demo mode.
+
+These are normative B-series requirements.
+
+## Deployment target
+
+Preview:
+Vercel Hobby + Neon Free + Cloudflare R2 Standard + Upstash Redis Free, with Apify optional for bounded acquisition.
+
+Provider-specific types remain adapter-only.
+
+## Successor procedure
+
+After every B merge:
+1. reconcile live GitHub state;
+2. record exact merge SHA and verification;
+3. update this file, AI_CONTINUATION.md and docs/LLM-ARCHITECT-HANDOFF.md;
+4. recompute readiness from spec/post-v1-dependency-graph.md;
+5. dispatch no more than 3 disjoint items;
+6. serialize root dependency/lockfile reconciliation;
+7. run relevant product E2E/UX gates whenever user-facing behavior changes materially.
+
+Never treat stale chat context as state.
