@@ -411,7 +411,7 @@ When a dependency is needed, worker reports it; TL reconciles it centrally.
 
 ## 10. Roadmap execution sequence
 
-### Wave 1 — Foundation
+### Wave 1 — Foundation — LANDED (2026-10-01)
 
 Dispatch exactly:
 
@@ -419,13 +419,14 @@ B001
 B002
 B003
 
-B001 establishes the web host/design system.
+B001 establishes the web host/design system. — MERGED via PR #67 (2b01b7b)
 
-B002 establishes provider-neutral persistence/infrastructure contracts and hosted adapters.
+B002 establishes provider-neutral persistence/infrastructure contracts and hosted adapters. — MERGED via PR #68 (3ab66f9)
 
-B003 establishes role/context/projection contracts.
+B003 establishes role/context/projection contracts. — MERGED via PR #66 (7605fe6)
 
-These three are intentionally pairwise-disjoint.
+These three are intentionally pairwise-disjoint. Each merge passed a full
+TL-station battery plus an integration battery (final wave-1 tree: 61/61).
 
 ### Wave 2 — Secure product substrate
 

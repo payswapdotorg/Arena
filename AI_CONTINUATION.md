@@ -19,13 +19,19 @@ Reach the product bar:
 2. hosted free-tier-compatible preview;
 3. friendly responsive role-aware UI with persistent multi-role switching.
 
-## First dispatch wave
+## First dispatch wave — LANDED (2026-10-01)
 
-B001 — Web runtime foundation / Next.js App Router / design-system primitives
-B002 — Hosted persistence/infrastructure adapters
-B003 — Role/context model
+B001 — Web runtime foundation — PR #67 MERGED (2b01b7b)
+B002 — Hosted persistence/infrastructure adapters — PR #68 MERGED (3ab66f9)
+B003 — Role/context model — PR #66 MERGED (7605fe6)
 
-These have disjoint ownership surfaces.
+Harvest evidence: per-PR TL-station battery + lockfile intake + integration
+battery at every merge step (final wave-1 integrated tree 61/61 tasks green).
+B002 includes TL live-path hardening (deterministic idempotency replay,
+hermetic live contract runs, live rate-limit window) disclosed in PR #68.
+
+Next: B004 (auth/session/tenant browser boundary) is AUTHORIZED with deps
+satisfied; B005 follows once B004 merges.
 
 The Tech Lead must record:
 - exact base SHA;

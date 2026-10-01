@@ -19,21 +19,35 @@ Goal: satisfy all three product requirements:
 2. hosted through a free-tier-compatible preview profile;
 3. friendly responsive multi-role frontend with a persistent role switcher and role-specific workflows.
 
-### First wave
+### First wave — LANDED
 
-B001 READY — Web runtime foundation / Next.js App Router / design system
-Issue #63
+B001 MERGED — Web runtime foundation / Next.js App Router / design system
+Issue #63 — PR #67 (merged 2b01b7b)
 Owned: apps/web/*, packages/ui-platform/*
 
-B002 READY — Hosted persistence/infrastructure adapters
-Issue #64
+B002 MERGED — Hosted persistence/infrastructure adapters
+Issue #64 — PR #68 (merged 3ab66f9)
 Owned: packages/persistence/*, adapters/hosted/*, services/persistence/*
 
-B003 READY — Role/context model and projection contracts
-Issue #65
+B003 MERGED — Role/context model and projection contracts
+Issue #65 — PR #66 (merged 7605fe6)
 Owned: packages/role-context/*, contracts/role-context/*
 
-These are intentionally pairwise-disjoint and are the only current authorized productization wave.
+Wave-1 harvest record (TL, 2026-10-01): each PR merged after full TL-station
+battery (governance/boundary/typecheck/lint/test/build) plus per-merge
+lockfile intake and an integration battery at every merge step (final
+integrated wave-1 tree: 61/61 tasks green). B002 additionally received TL
+live-path hardening at intake (deterministic idempotency replay, hermetic
+live contract runs, live rate-limit window) — disclosed in the PR body.
+
+### Second wave
+
+B004 AUTHORIZED — Identity/session/tenant integration and secure browser
+session boundary
+Deps B001+B002+B003 all MERGED; issue to be opened at dispatch
+Owned: packages/auth/*, services/auth/*, apps/web/src/auth/*
+
+B005 remains WAITING_ON_DEPENDENCIES (needs B004 merged).
 
 ## Product specifications
 
@@ -151,10 +165,10 @@ Never treat stale chat context as state.
 - A034 MERGED
 - A035 MERGED
 - A036 MERGED
-- B001 AUTHORIZED
-- B002 AUTHORIZED
-- B003 AUTHORIZED
-- B004 WAITING_ON_DEPENDENCIES
+- B001 MERGED
+- B002 MERGED
+- B003 MERGED
+- B004 AUTHORIZED
 - B005 WAITING_ON_DEPENDENCIES
 - B006 WAITING_ON_DEPENDENCIES
 - B007 WAITING_ON_DEPENDENCIES
