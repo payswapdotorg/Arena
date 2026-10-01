@@ -1,0 +1,27 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@arena/protocol-core": [
+        "../packages/protocol-core/src/index.ts"
+      ],
+      "@arena/observability": [
+        "../packages/observability/src/index.ts"
+      ],
+      "@arena/deploy": [
+        "../deploy/src/index.ts"
+      ],
+      "@arena/ops": [
+        "./src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "vitest.config.ts"
+  ]
+}

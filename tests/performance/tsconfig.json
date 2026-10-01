@@ -1,0 +1,33 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@arena/protocol-core": [
+        "../../packages/protocol-core/src/index.ts"
+      ],
+      "@arena/observability": [
+        "../../packages/observability/src/index.ts"
+      ],
+      "@arena/arena-sdk": [
+        "../../packages/arena-sdk/src/index.ts"
+      ],
+      "@arena/api-fabric": [
+        "../../services/api/src/index.ts"
+      ],
+      "@arena/deploy": [
+        "../../deploy/src/index.ts"
+      ],
+      "@arena/performance": [
+        "./src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "vitest.config.ts"
+  ]
+}
