@@ -1,0 +1,654 @@
+/*
+ * Arena design system — component styles (@arena/ui-platform, B001).
+ *
+ * Consumed together with the generated token stylesheet:
+ *
+ *   import '@arena/ui-platform/tokens.css';
+ *   import '@arena/ui-platform/components.css';
+ *
+ * House rules:
+ *   - every value comes from an --arena-* token;
+ *   - meaning never rests on color alone (labels + marker shapes too);
+ *   - all motion collapses to nothing under prefers-reduced-motion;
+ *   - responsive strategy per UXM1.0 §Responsive rule:
+ *       desktop >= 1024px  : rail | main | inspector grid
+ *       tablet  768-1023px : collapsible rail, inspector sheet
+ *       mobile  < 768px    : top bar + bottom nav, inspector bottom sheet
+ */
+
+/* ------------------------------------------------------------------ */
+/* Focus visibility (WCAG 2.2 AA practice)                             */
+/* ------------------------------------------------------------------ */
+
+.arena-shell :focus-visible,
+.arena-state :focus-visible,
+.arena-surface :focus-visible,
+.arena-page-header :focus-visible,
+.arena-live-region :focus-visible,
+.arena-focus-boundary :focus-visible {
+  outline: 2px solid var(--arena-color-focus);
+  outline-offset: 2px;
+  border-radius: var(--arena-radius-xs);
+}
+
+/* ------------------------------------------------------------------ */
+/* Skip link                                                           */
+/* ------------------------------------------------------------------ */
+
+.arena-skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.arena-skip-link:focus {
+  position: fixed;
+  top: var(--arena-space-sm);
+  left: var(--arena-space-sm);
+  width: auto;
+  height: auto;
+  clip-path: none;
+  z-index: 100;
+  padding: var(--arena-space-sm) var(--arena-space-md);
+  background: var(--arena-color-surface);
+  color: var(--arena-color-primary-strong);
+  border: 2px solid var(--arena-color-focus);
+  border-radius: var(--arena-radius-md);
+  font-weight: var(--arena-font-weight-semibold);
+  text-decoration: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Shell                                                               */
+/* ------------------------------------------------------------------ */
+
+.arena-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--arena-color-canvas);
+  color: var(--arena-color-ink);
+}
+
+.arena-shell__topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--arena-space-sm);
+  padding: var(--arena-space-sm) var(--arena-space-lg);
+  background: var(--arena-color-surface);
+  border-bottom: 1px solid var(--arena-color-line);
+}
+
+.arena-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--arena-space-xs);
+  color: var(--arena-color-primary-strong);
+  font-weight: var(--arena-font-weight-semibold);
+  font-size: var(--arena-text-lg);
+  letter-spacing: 0.01em;
+}
+
+.arena-shell__slots {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--arena-space-xs);
+  margin-left: auto;
+}
+
+.arena-shell__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  flex: 1;
+}
+
+.arena-shell__main {
+  padding: var(--arena-space-lg);
+  min-width: 0;
+}
+
+.arena-shell__rail,
+.arena-shell__inspector {
+  min-width: 0;
+}
+
+.arena-shell__rail-summary {
+  cursor: pointer;
+  color: var(--arena-color-ink-muted);
+  font-size: var(--arena-text-sm);
+  font-weight: var(--arena-font-weight-medium);
+  padding: var(--arena-space-2xs) 0;
+}
+
+.arena-shell__rail-content {
+  margin-top: var(--arena-space-xs);
+}
+
+/* Mobile first (< 768px): rail hidden, bottom nav visible. */
+.arena-shell__rail {
+  display: none;
+}
+
+.arena-shell__main {
+  padding-bottom: calc(var(--arena-space-2xl) + 2rem);
+}
+
+/* Tablet (768px - 1023px): collapsible rail above stage, inspector sheet. */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .arena-shell__rail {
+    display: block;
+    padding: 0 var(--arena-space-lg);
+    border-bottom: 1px solid var(--arena-color-line);
+  }
+  .arena-shell__main {
+    padding-bottom: var(--arena-space-2xl);
+  }
+  .arena-shell__inspector {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    max-height: 70vh;
+    overflow: auto;
+    padding: var(--arena-space-lg);
+    background: var(--arena-color-surface);
+    border-top: 1px solid var(--arena-color-line-strong);
+    border-radius: var(--arena-radius-lg) var(--arena-radius-lg) 0 0;
+    box-shadow: var(--arena-elevation-high);
+  }
+}
+
+/* Desktop (>= 1024px): 3-zone grid, static inspector, no bottom nav. */
+@media (min-width: 1024px) {
+  .arena-shell__body {
+    grid-template-columns: 16rem minmax(0, 1fr) minmax(0, 22rem);
+    gap: var(--arena-space-lg);
+    padding: var(--arena-space-lg);
+  }
+  .arena-shell__body[data-arena-inspector='false'] {
+    grid-template-columns: 16rem minmax(0, 1fr);
+  }
+  .arena-shell__rail {
+    display: block;
+    padding: 0;
+    border-bottom: 0;
+  }
+  .arena-shell__rail-summary {
+    display: none;
+  }
+  .arena-shell__main {
+    padding: 0;
+  }
+  .arena-shell__inspector {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    background: transparent;
+    border-top: 0;
+    border-left: 1px solid var(--arena-color-line);
+    border-radius: 0;
+    box-shadow: var(--arena-elevation-flat);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Slot placeholders + bottom navigation                               */
+/* ------------------------------------------------------------------ */
+
+.arena-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--arena-space-2xs);
+  padding: var(--arena-space-2xs) var(--arena-space-sm);
+  border: 1px dashed var(--arena-color-line-strong);
+  border-radius: var(--arena-radius-full);
+  color: var(--arena-color-ink-muted);
+  background: var(--arena-color-canvas);
+  font-size: var(--arena-text-xs);
+}
+
+.arena-slot__marker {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--arena-color-ink-subtle);
+}
+
+.arena-bottomnav {
+  display: flex;
+}
+
+.arena-bottomnav__list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.arena-bottomnav__item {
+  flex: 1;
+}
+
+.arena-bottomnav__link {
+  display: block;
+  text-align: center;
+  padding: var(--arena-space-sm) var(--arena-space-2xs);
+  padding-bottom: calc(var(--arena-space-sm) + env(safe-area-inset-bottom, 0px));
+  color: var(--arena-color-ink-muted);
+  font-size: var(--arena-text-xs);
+  font-weight: var(--arena-font-weight-medium);
+  text-decoration: none;
+}
+
+.arena-bottomnav__link--current,
+.arena-bottomnav__link:hover {
+  color: var(--arena-color-primary-strong);
+}
+
+@media (min-width: 768px) {
+  .arena-bottomnav {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .arena-bottomnav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    background: var(--arena-color-surface);
+    border-top: 1px solid var(--arena-color-line);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Contextual navigation (rail)                                        */
+/* ------------------------------------------------------------------ */
+
+.arena-context-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--arena-space-2xs);
+}
+
+.arena-context-nav__link {
+  display: block;
+  padding: var(--arena-space-2xs) var(--arena-space-sm);
+  border-radius: var(--arena-radius-sm);
+  color: var(--arena-color-ink-muted);
+  text-decoration: none;
+  font-size: var(--arena-text-sm);
+}
+
+.arena-context-nav__link:hover {
+  background: var(--arena-color-primary-soft);
+  color: var(--arena-color-primary-strong);
+}
+
+.arena-context-nav__link--current {
+  background: var(--arena-color-primary-soft);
+  color: var(--arena-color-primary-strong);
+  font-weight: var(--arena-font-weight-semibold);
+}
+
+/* ------------------------------------------------------------------ */
+/* Surface / page header / primary action                              */
+/* ------------------------------------------------------------------ */
+
+.arena-surface {
+  background: var(--arena-color-surface);
+  border: 1px solid var(--arena-color-line);
+  border-radius: var(--arena-radius-lg);
+  padding: var(--arena-space-lg);
+}
+
+.arena-surface--flush {
+  padding: 0;
+}
+
+.arena-surface--low {
+  box-shadow: var(--arena-elevation-low);
+}
+
+.arena-surface--mid {
+  box-shadow: var(--arena-elevation-mid);
+}
+
+.arena-surface--high {
+  box-shadow: var(--arena-elevation-high);
+}
+
+.arena-page-header {
+  display: grid;
+  gap: var(--arena-space-xs);
+  margin-block-end: var(--arena-space-lg);
+}
+
+.arena-page-header__title {
+  margin: 0;
+  font-size: var(--arena-text-2xl);
+  line-height: var(--arena-line-height-tight);
+  letter-spacing: -0.01em;
+}
+
+.arena-page-header__description {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--arena-color-ink-muted);
+}
+
+.arena-page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--arena-space-sm);
+  margin-block-start: var(--arena-space-2xs);
+}
+
+.arena-primary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--arena-space-xs);
+  padding: var(--arena-space-sm) var(--arena-space-lg);
+  background: var(--arena-color-primary);
+  color: var(--arena-color-on-primary);
+  border: 1px solid transparent;
+  border-radius: var(--arena-radius-md);
+  font-size: var(--arena-text-base);
+  font-weight: var(--arena-font-weight-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--arena-motion-duration-fast)
+    var(--arena-motion-easing-standard);
+}
+
+.arena-primary-action:hover {
+  background: var(--arena-color-primary-strong);
+  color: var(--arena-color-on-primary);
+}
+
+/* ------------------------------------------------------------------ */
+/* State components                                                    */
+/* ------------------------------------------------------------------ */
+
+.arena-state {
+  display: grid;
+  gap: var(--arena-space-2xs);
+  justify-items: start;
+  border-radius: var(--arena-radius-md);
+  padding: var(--arena-space-md);
+  font-size: var(--arena-text-sm);
+}
+
+.arena-state__title {
+  margin: 0;
+  font-weight: var(--arena-font-weight-semibold);
+  color: var(--arena-color-ink);
+}
+
+.arena-state__detail {
+  margin: 0;
+  color: var(--arena-color-ink-muted);
+}
+
+.arena-state__action {
+  margin-block-start: var(--arena-space-2xs);
+}
+
+.arena-state--loading {
+  grid-auto-flow: column;
+  align-items: center;
+  gap: var(--arena-space-sm);
+  color: var(--arena-color-ink-muted);
+  background: var(--arena-color-surface);
+  border: 1px solid var(--arena-color-line);
+}
+
+.arena-state__pulse {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid var(--arena-color-line);
+  border-top-color: var(--arena-color-primary);
+  animation: arena-spin var(--arena-motion-duration-base) linear infinite;
+}
+
+@keyframes arena-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.arena-state--error {
+  background: var(--arena-color-danger-soft);
+  border: 1px solid var(--arena-color-danger);
+  border-left-width: 4px;
+}
+
+.arena-state--empty {
+  justify-items: center;
+  text-align: center;
+  border: 1px dashed var(--arena-color-line-strong);
+  padding: var(--arena-space-xl);
+  gap: var(--arena-space-xs);
+}
+
+.arena-state__well {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 2px dashed var(--arena-color-line-strong);
+}
+
+.arena-state--denied {
+  background: var(--arena-color-canvas);
+  border: 1px solid var(--arena-color-line-strong);
+  border-left: 6px double var(--arena-color-ink-subtle);
+}
+
+.arena-state__lock {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--arena-color-ink-subtle);
+  border-radius: var(--arena-radius-xs) var(--arena-radius-xs)
+    var(--arena-radius-full) var(--arena-radius-full);
+}
+
+.arena-state--stale {
+  border: 1px solid var(--arena-color-warning);
+  background: var(--arena-color-warning-soft);
+  padding: var(--arena-space-xs) var(--arena-space-sm);
+}
+
+.arena-state__fact-label {
+  display: block;
+  font-size: var(--arena-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--arena-color-ink-subtle);
+}
+
+.arena-state__fact-value {
+  font-family: var(--arena-font-mono);
+  font-size: var(--arena-text-xs);
+  color: var(--arena-color-ink);
+}
+
+/* ------------------------------------------------------------------ */
+/* Product-truth badges                                                */
+/* ------------------------------------------------------------------ */
+
+.arena-truth {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--arena-space-2xs);
+  padding: var(--arena-space-2xs) var(--arena-space-sm);
+  border-radius: var(--arena-radius-full);
+  font-size: var(--arena-text-xs);
+  font-weight: var(--arena-font-weight-medium);
+}
+
+.arena-truth__marker {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  display: inline-block;
+}
+
+/* One distinct marker shape per state kind — color-independent meaning. */
+.arena-truth__marker--circle {
+  border-radius: 50%;
+}
+
+.arena-truth__marker--square {
+  border-radius: 1px;
+}
+
+.arena-truth__marker--diamond {
+  transform: rotate(45deg);
+}
+
+.arena-truth__marker--star {
+  clip-path: polygon(50% 0, 63% 38%, 100% 38%, 70% 61%, 82% 100%, 50% 76%, 18% 100%, 30% 61%, 0 38%, 37% 38%);
+}
+
+.arena-truth__marker--triangle {
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.arena-truth__marker--gauge {
+  border-radius: 50% 50% 0 0;
+  border-bottom: 0;
+}
+
+.arena-truth__marker--hexagon {
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}
+
+.arena-truth__marker--pill {
+  border-radius: var(--arena-radius-full);
+  width: 0.75rem;
+}
+
+.arena-truth__marker--ring {
+  border-radius: 50%;
+}
+
+.arena-truth__marker--tag {
+  transform: skewX(-12deg);
+}
+
+/* Per-kind colors (verified, evidence, expert-judgment, model-output,
+   simulation, evaluation, certification, suggestion, hypothesis, demo). */
+.arena-truth--verified {
+  color: var(--arena-truth-verified-color);
+  background: var(--arena-truth-verified-soft);
+}
+
+.arena-truth--evidence {
+  color: var(--arena-truth-evidence-color);
+  background: var(--arena-truth-evidence-soft);
+}
+
+.arena-truth--expert-judgment {
+  color: var(--arena-truth-expert-judgment-color);
+  background: var(--arena-truth-expert-judgment-soft);
+}
+
+.arena-truth--model-output {
+  color: var(--arena-truth-model-output-color);
+  background: var(--arena-truth-model-output-soft);
+}
+
+.arena-truth--simulation {
+  color: var(--arena-truth-simulation-color);
+  background: var(--arena-truth-simulation-soft);
+}
+
+.arena-truth--evaluation {
+  color: var(--arena-truth-evaluation-color);
+  background: var(--arena-truth-evaluation-soft);
+}
+
+.arena-truth--certification {
+  color: var(--arena-truth-certification-color);
+  background: var(--arena-truth-certification-soft);
+}
+
+.arena-truth--suggestion {
+  color: var(--arena-truth-suggestion-color);
+  background: var(--arena-truth-suggestion-soft);
+}
+
+.arena-truth--hypothesis {
+  color: var(--arena-truth-hypothesis-color);
+  background: var(--arena-truth-hypothesis-soft);
+}
+
+.arena-truth--demo {
+  color: var(--arena-truth-demo-color);
+  background: var(--arena-truth-demo-soft);
+}
+
+.arena-truth__note {
+  color: var(--arena-color-ink-muted);
+  font-weight: var(--arena-font-weight-regular);
+}
+
+/* Filled markers take their kind color; the ring marker stays hollow. */
+.arena-truth__marker:not(.arena-truth__marker--ring) {
+  background: currentColor;
+}
+
+.arena-truth__marker--ring {
+  border: 2px solid currentColor;
+}
+
+/* ------------------------------------------------------------------ */
+/* Focus boundary + live region                                        */
+/* ------------------------------------------------------------------ */
+
+.arena-focus-boundary {
+  position: relative;
+}
+
+.arena-focus-boundary__sentinel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.arena-live-region {
+  font-size: var(--arena-text-sm);
+  color: var(--arena-color-ink-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion (UX1.0 §Motion)                                      */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .arena-shell *,
+  .arena-state *,
+  .arena-truth *,
+  .arena-primary-action {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
