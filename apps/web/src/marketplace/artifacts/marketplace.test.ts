@@ -7,7 +7,6 @@ import {
   startMarketplaceServer,
   type MarketplaceHandler,
 } from './server.js';
-import type { SeededMarketplaceCorpus } from './corpus.d.mts';
 
 interface OfferProfileView {
   readonly offerId: string;

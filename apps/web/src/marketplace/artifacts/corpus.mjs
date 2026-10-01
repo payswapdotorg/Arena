@@ -440,7 +440,7 @@ export async function buildMarketplaceCorpus() {
       });
       reviews = reviewsResponse.result;
     } catch {
-      reviews = [];
+      // offers without reviews answer with an empty list
     }
     profileViews.push({
       offerId: partial.offerId,
