@@ -435,7 +435,7 @@ Dispatch:
 B004
 B005
 
-B004 establishes secure identity/session/tenant browser boundaries.
+B004 establishes secure identity/session/tenant browser boundaries. — MERGED via PR #70 (865c851)
 
 B005 exposes persisted canonical read models through the product/API boundary.
 

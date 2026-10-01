@@ -42,12 +42,17 @@ live contract runs, live rate-limit window) — disclosed in the PR body.
 
 ### Second wave
 
-B004 AUTHORIZED — Identity/session/tenant integration and secure browser
+B004 MERGED — Identity/session/tenant integration and secure browser
 session boundary
-Deps B001+B002+B003 all MERGED; issue to be opened at dispatch
+Issue #69 — PR #70 (merged 865c851)
 Owned: packages/auth/*, services/auth/*, apps/web/src/auth/*
+Harvest record: two-session worker delivery + TL completion; TL-station
+battery 63/63 all gates; CI battery green on head a5ae1e8 before merge.
 
-B005 remains WAITING_ON_DEPENDENCIES (needs B004 merged).
+B005 AUTHORIZED — Persisted control-plane read model/API integration over
+canonical Arena objects
+Deps B002+B004+A025 all MERGED; issue to be opened at dispatch
+Owned: services/read-model/*, services/api-read/*, packages/read-model/*
 
 ## Product specifications
 
@@ -168,8 +173,8 @@ Never treat stale chat context as state.
 - B001 MERGED
 - B002 MERGED
 - B003 MERGED
-- B004 AUTHORIZED
-- B005 WAITING_ON_DEPENDENCIES
+- B004 MERGED
+- B005 AUTHORIZED
 - B006 WAITING_ON_DEPENDENCIES
 - B007 WAITING_ON_DEPENDENCIES
 - B008 WAITING_ON_DEPENDENCIES

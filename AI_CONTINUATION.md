@@ -30,8 +30,11 @@ battery at every merge step (final wave-1 integrated tree 61/61 tasks green).
 B002 includes TL live-path hardening (deterministic idempotency replay,
 hermetic live contract runs, live rate-limit window) disclosed in PR #68.
 
-Next: B004 (auth/session/tenant browser boundary) is AUTHORIZED with deps
-satisfied; B005 follows once B004 merges.
+B004 — auth/session/tenant browser boundary — PR #70 MERGED (865c851).
+Two-session worker delivery + TL completion; battery 63/63; CI green pre-merge.
+
+Next: B005 (persisted control-plane read model) is AUTHORIZED with deps
+satisfied (B002+B004+A025). B006 (demo/preview mode) follows B005.
 
 The Tech Lead must record:
 - exact base SHA;
