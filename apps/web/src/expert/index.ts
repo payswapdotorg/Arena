@@ -11,4 +11,6 @@
 export * from './state-mark.js';
 export * from './runtime.js';
 export * from './assignment.js';
+export * from './evidence.js';
+export * from './workbench.js';
 export * from './expert-view.js';

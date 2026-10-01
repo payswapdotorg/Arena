@@ -351,7 +351,7 @@ async function projectCases(
   return { cases: Object.freeze(cases), readAt };
 }
 
-async function projectQualifications(
+export async function projectQualificationCards(
   port: ExpertReadPort,
   isDemo: boolean,
 ): Promise<{ readonly cards: readonly ExpertQualificationCard[]; readonly readAt: number }> {
@@ -377,7 +377,7 @@ export async function buildAssignedWorkView(
 ): Promise<AssignedWorkViewModel> {
   const isDemo = options.mode === 'demo';
   const [qualifications, caseProjection, inventory] = await Promise.all([
-    projectQualifications(options.port, isDemo),
+    projectQualificationCards(options.port, isDemo),
     projectCases(options.port, isDemo),
     options.port.inventory(),
   ]);

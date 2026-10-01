@@ -344,3 +344,15 @@ export async function getDemoExpertContext(): Promise<DemoExpertContext> {
 
 /** Re-export the read-model not-found code the evidence ledger probes on (fail-closed stop condition). */
 export const EXPERT_READ_NOT_FOUND_CODE = READ_MODEL_ERROR_CODES.RECORD_NOT_FOUND;
+
+/**
+ * True iff a thrown value is the read boundary's typed record-not-found
+ * failure — as EITHER the session posture's wrapped `ExpertReadError`
+ * (the B005 read-API envelope adapter) or the read model's own
+ * `ReadModelError` (the demo read session throws it directly). Both carry
+ * the SAME canonical code; anything else propagates (fail closed).
+ */
+export function isExpertReadNotFound(error: unknown): boolean {
+  const code = (error as { code?: unknown } | null)?.code;
+  return code === EXPERT_READ_NOT_FOUND_CODE;
+}
