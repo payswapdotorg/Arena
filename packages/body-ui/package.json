@@ -1,0 +1,31 @@
+{
+  "name": "@arena/body-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The reusable view model for Arena body surfaces (Work Order B010; issue #82): pure, deterministic, frozen-data-driven projections of canonical agent-body/certification reads into the shapes the Body Studio renders — the Body Version identity card (content-addressed, immutable, explicit versioning), the Possession matrix rows (Body × Substrate × runtime/environment × policy as a VERSIONED COMPOSITION BINDING — never 'the body runs model X'), the skill/knowledge/tool composition listings, the certification claim cards (a claim applies to the tested composition, never the bare model) and the composition-scoped substrate comparison model (compare full compositions under identical suite/environment semantics; a bare substrate/model ranking request is a TYPED REJECTION). Zero new external dependencies: the package depends only on the @arena/read-model contract types and adds no runtime authority — it is a projection, never a second domain model.",
+  "exports": {
+    ".": { "types": "./src/index.ts", "default": "./src/index.ts" }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/read-model": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

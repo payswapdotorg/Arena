@@ -110,17 +110,20 @@ describe('first-run landing (UX1.0 Level 0) — the DEFAULT unauthenticated expe
 });
 
 describe('core route matrix stubs (UXM1.0)', () => {
+  // B010: `/bodies` is upgraded from the B001 stub to the session-aware
+  // Body Studio (an async server component reading the session cookie
+  // through the B004 boundary), so it is asserted structurally below like
+  // the B007 home — not rendered through the stub list.
   const routes: ReadonlyArray<[string, React.ReactElement]> = [
     ['cases', <CasesPage key="cases" />],
-    ['bodies', <BodiesPage key="bodies" />],
     ['research', <ResearchPage key="research" />],
     ['marketplace', <MarketplacePage key="marketplace" />],
     ['operations', <OperationsPage key="operations" />],
     ['settings', <SettingsPage key="settings" />],
   ];
 
-  it('renders one stub per core route, each with a route header (positive)', () => {
-    expect(routes).toHaveLength(6);
+  it('renders one stub per remaining core route, each with a route header (positive)', () => {
+    expect(routes).toHaveLength(5);
     for (const [route, element] of routes) {
       const html = render(element);
       expect(html).toContain(`data-arena-route="${route}"`);
@@ -141,6 +144,15 @@ describe('core route matrix stubs (UXM1.0)', () => {
       expect(html).not.toContain('data-arena-primary');
       expect(html).not.toContain('role="alert"');
     }
+  });
+
+  it('mounts the bodies route as an async session-aware server component (B010)', () => {
+    // The mount delegates to resolveBodiesExperience (probe ->
+    // auth-required | studio); calling it outside a request scope would
+    // misread the session, so the mount is asserted structurally here
+    // (the B007 home precedent). The composition is covered by the
+    // bodies suites (src/bodies/*) through injected session probes.
+    expect(BodiesPage.constructor.name).toBe('AsyncFunction');
   });
 });
 
@@ -257,10 +269,17 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
     expect(existsSync(new URL('index.html', buildDir))).toBe(false);
   });
 
-  it('prerenders every core route stub with the standard empty state (positive)', () => {
+  it('compiles the session-aware bodies studio as a dynamic route (B010)', () => {
+    // `/bodies` reads the session cookie through the B004 boundary, so it
+    // compiles to server-rendered artifacts (bodies/page.js) rather than a
+    // prerendered bodies.html — no anonymous studio is prerendered either.
+    expect(existsSync(new URL('bodies/page.js', buildDir))).toBe(true);
+    expect(existsSync(new URL('bodies.html', buildDir))).toBe(false);
+  });
+
+  it('prerenders every remaining core route stub with the standard empty state (positive)', () => {
     for (const route of [
       'cases',
-      'bodies',
       'research',
       'marketplace',
       'operations',
