@@ -33,8 +33,11 @@ hermetic live contract runs, live rate-limit window) disclosed in PR #68.
 B004 — auth/session/tenant browser boundary — PR #70 MERGED (865c851).
 Two-session worker delivery + TL completion; battery 63/63; CI green pre-merge.
 
-Next: B005 (persisted control-plane read model) is AUTHORIZED with deps
-satisfied (B002+B004+A025). B006 (demo/preview mode) follows B005.
+B005 — persisted control-plane read model — PR #72 MERGED (8a6e6e9).
+Worker delivery + TL completion; battery 66/66; CI green pre-merge.
+
+Next: B006 (deterministic demo/preview mode) is AUTHORIZED with deps
+satisfied (B001+B003+B005+A028+A029). B007 (cockpit) follows B006.
 
 The Tech Lead must record:
 - exact base SHA;

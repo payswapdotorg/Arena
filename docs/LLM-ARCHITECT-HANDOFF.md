@@ -437,7 +437,7 @@ B005
 
 B004 establishes secure identity/session/tenant browser boundaries. — MERGED via PR #70 (865c851)
 
-B005 exposes persisted canonical read models through the product/API boundary.
+B005 exposes persisted canonical read models through the product/API boundary. — MERGED via PR #72 (8a6e6e9)
 
 B006 may begin only when its declared dependencies are satisfied; prefer stabilizing B004/B005 first if the worker budget is constrained.
 

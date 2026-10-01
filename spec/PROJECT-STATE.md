@@ -49,10 +49,17 @@ Owned: packages/auth/*, services/auth/*, apps/web/src/auth/*
 Harvest record: two-session worker delivery + TL completion; TL-station
 battery 63/63 all gates; CI battery green on head a5ae1e8 before merge.
 
-B005 AUTHORIZED — Persisted control-plane read model/API integration over
+B005 MERGED — Persisted control-plane read model/API integration over
 canonical Arena objects
-Deps B002+B004+A025 all MERGED; issue to be opened at dispatch
+Issue #71 — PR #72 (merged 8a6e6e9)
 Owned: services/read-model/*, services/api-read/*, packages/read-model/*
+Harvest record: worker delivery + TL completion; TL battery 66/66 all
+gates; CI battery green on head e4d25ea before merge.
+
+B006 AUTHORIZED — Deterministic Demo/Preview mode and first-run guided
+narrative
+Deps B001+B003+B005+A028+A029 all MERGED; issue to be opened at dispatch
+Owned: apps/web/src/demo/*, packages/demo/*, docs/demo/*
 
 ## Product specifications
 
@@ -174,8 +181,8 @@ Never treat stale chat context as state.
 - B002 MERGED
 - B003 MERGED
 - B004 MERGED
-- B005 AUTHORIZED
-- B006 WAITING_ON_DEPENDENCIES
+- B005 MERGED
+- B006 AUTHORIZED
 - B007 WAITING_ON_DEPENDENCIES
 - B008 WAITING_ON_DEPENDENCIES
 - B009 WAITING_ON_DEPENDENCIES
