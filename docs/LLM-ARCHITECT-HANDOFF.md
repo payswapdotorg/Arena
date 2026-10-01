@@ -196,3 +196,5 @@ A035 MERGED via PR #56 at 52dca43 (2026-09-30): observability + SLOs + operation
 A029 MERGED via PR #57 at 30c8b1d (2026-09-30): reference structural-engineer body vertical slice. 31/36 merged.
 A030 MERGED via PR #58 at 9af0de6 (2026-09-30): research benchmark + public evaluation suite. 32/36 merged; A036 sprint dispatched.
 A036 MERGED via PR #59 at 7639931 (2026-10-01): production deployment, performance, release engineering — THE v1 COMPLETION SINK. 33/36 merged; the full Arena loop (Capability Case -> Task -> Environment -> Expert -> Trajectory -> Evaluation -> Verification -> Learning -> Certification -> Release -> Epoch consumption -> Production) is now implemented end-to-end.
+A031 MERGED via PR #60 at 0d268b1 (2026-10-01): expert marketplace commercial layer — listings, offers, engagements, reviews + web surface. 34/36 merged; closure wave: A032 + A033 in flight.
+A032 MERGED via PR #61 at 49a5e81 (2026-10-01): artifact marketplace — provenance/verification-gated listings, versioned offers, data-rights grants, grant-gated reviews + web surface. 35/36 merged; A033 in flight.
