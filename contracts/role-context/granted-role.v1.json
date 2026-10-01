@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "grantProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "grantedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "grantedBy": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "note": {
+          "pattern": "^\\S.{0,199}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "grantedBy",
+        "grantedAt"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/role-context/granted-role@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One granted role: identity × tenant × role, with grant provenance (grantedBy / grantedAt / optional note), a recommended expiry window and the id of the permission policy in force. Holding a role is not a permission (RC1.0).",
+  "properties": {
+    "expiresAt": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "grantId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "identityId": {
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "policyId": {
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/grantProvenance"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "roleId": {
+      "enum": [
+        "administrator",
+        "agent-builder",
+        "evaluator",
+        "expert",
+        "marketplace-participant",
+        "operator",
+        "owner",
+        "researcher"
+      ]
+    },
+    "tenantId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "validFrom": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "grantId",
+    "identityId",
+    "tenantId",
+    "roleId",
+    "policyId",
+    "provenance",
+    "validFrom"
+  ],
+  "title": "Arena granted role v1",
+  "type": "object"
+}

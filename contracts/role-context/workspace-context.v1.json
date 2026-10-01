@@ -1,0 +1,274 @@
+{
+  "$defs": {
+    "activeRoleContext": {
+      "additionalProperties": false,
+      "properties": {
+        "activatedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "grantId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "identityId": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "preserved": {
+          "$ref": "#/$defs/switchPreservation"
+        },
+        "recordVersion": {
+          "const": 1
+        },
+        "registryVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "type": "string"
+        },
+        "roleId": {
+          "enum": [
+            "administrator",
+            "agent-builder",
+            "evaluator",
+            "expert",
+            "marketplace-participant",
+            "operator",
+            "owner",
+            "researcher"
+          ]
+        },
+        "tenantId": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "workspaceId": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "identityId",
+        "tenantId",
+        "workspaceId",
+        "roleId",
+        "grantId",
+        "activatedAt",
+        "registryVersion"
+      ],
+      "type": "object"
+    },
+    "grantProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "grantedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "grantedBy": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "note": {
+          "pattern": "^\\S.{0,199}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "grantedBy",
+        "grantedAt"
+      ],
+      "type": "object"
+    },
+    "grantedRole": {
+      "additionalProperties": false,
+      "properties": {
+        "expiresAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "grantId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "identityId": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "policyId": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/grantProvenance"
+        },
+        "recordVersion": {
+          "const": 1
+        },
+        "roleId": {
+          "enum": [
+            "administrator",
+            "agent-builder",
+            "evaluator",
+            "expert",
+            "marketplace-participant",
+            "operator",
+            "owner",
+            "researcher"
+          ]
+        },
+        "tenantId": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        },
+        "validFrom": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "grantId",
+        "identityId",
+        "tenantId",
+        "roleId",
+        "policyId",
+        "provenance",
+        "validFrom"
+      ],
+      "type": "object"
+    },
+    "permissionPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "descriptor": {
+          "description": "Opaque descriptor owned by the external permission authority; @arena/role-context carries it and never interprets it.",
+          "minProperties": 1,
+          "type": "object"
+        },
+        "issuedAt": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "policyId": {
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "type": "string"
+        },
+        "recordVersion": {
+          "const": 1
+        },
+        "tenantId": {
+          "pattern": "^[a-z][a-z0-9-]{1,62}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "policyId",
+        "tenantId",
+        "descriptor",
+        "issuedAt"
+      ],
+      "type": "object"
+    },
+    "switchPreservation": {
+      "additionalProperties": false,
+      "properties": {
+        "canonicalObjectRef": {
+          "pattern": "^[a-z][a-z0-9-]{0,63}:[a-z0-9][a-z0-9._:/-]{0,253}@(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "type": "string"
+        },
+        "filters": {
+          "additionalProperties": {
+            "maxLength": 200,
+            "type": "string"
+          },
+          "minProperties": 1,
+          "type": "object"
+        },
+        "navigationBreadcrumb": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "selectedTimeRange": {
+          "additionalProperties": false,
+          "properties": {
+            "from": {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+              "type": "string"
+            },
+            "to": {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "from",
+            "to"
+          ],
+          "type": "object"
+        },
+        "unsavedDraftKeys": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "$id": "arena:schema/role-context/workspace-context@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Tenant/workspace-scoped context: the granted-role set (deterministically ordered, same tenant + identity), the OPAQUE permission policy (carried, never interpreted, byte-identical across every role switch) and the optional active role. Activating a role can never change permissions — the API shape makes it impossible.",
+  "properties": {
+    "activeRole": {
+      "$ref": "#/$defs/activeRoleContext"
+    },
+    "grantedRoles": {
+      "items": {
+        "$ref": "#/$defs/grantedRole"
+      },
+      "minItems": 0,
+      "type": "array"
+    },
+    "identityId": {
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "type": "string"
+    },
+    "permissionPolicy": {
+      "$ref": "#/$defs/permissionPolicy"
+    },
+    "recordVersion": {
+      "const": 1
+    },
+    "tenantId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "workspaceId": {
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recordVersion",
+    "identityId",
+    "tenantId",
+    "workspaceId",
+    "grantedRoles",
+    "permissionPolicy"
+  ],
+  "title": "Arena workspace context v1",
+  "type": "object"
+}
