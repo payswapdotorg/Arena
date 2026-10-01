@@ -1282,6 +1282,37 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  services/marketplace-experts:
+    dependencies:
+      '@arena/body-registry':
+        specifier: workspace:*
+        version: link:../../packages/body-registry
+      '@arena/certification':
+        specifier: workspace:*
+        version: link:../../packages/certification
+      '@arena/expert-qualification':
+        specifier: workspace:*
+        version: link:../../packages/expert-qualification
+      '@arena/expert-registry':
+        specifier: workspace:*
+        version: link:../../packages/expert-registry
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   services/observability:
     dependencies:
       '@arena/observability':
