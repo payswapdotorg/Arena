@@ -63,8 +63,12 @@ describe('product shell (root layout, UX1.0 Level 1)', () => {
   });
 });
 
-describe('first-run landing (UX1.0 Level 0) — the DEFAULT experience', () => {
-  const html = render(<HomePage />);
+describe('first-run landing (UX1.0 Level 0) — the DEFAULT unauthenticated experience', () => {
+  // B007: `/` is the authenticated capability cockpit; without a session it
+  // renders this landing (fail closed — never an anonymous cockpit). The
+  // async session-aware route composition is covered by the cockpit suites
+  // (src/cockpit/home-route.test.tsx) through injected session probes.
+  const html = render(<LandingView />);
 
   it('introduces Arena in the calm three steps (positive)', () => {
     expect(html).toContain('What Arena is');
@@ -95,6 +99,13 @@ describe('first-run landing (UX1.0 Level 0) — the DEFAULT experience', () => {
     expect(render(<LandingView ctaHref="/marketplace" />)).toContain(
       'href="/marketplace"',
     );
+  });
+
+  it('mounts the home route as an async session-aware server component (B007)', () => {
+    // The mount delegates to resolveHomeExperience (probe -> landing |
+    // cockpit); calling it outside a request scope would misread the
+    // session, so the mount is asserted structurally here.
+    expect(HomePage.constructor.name).toBe('AsyncFunction');
   });
 });
 
@@ -227,23 +238,23 @@ describe('web runtime contract (Next.js host + legacy console reachability)', ()
 });
 
 // `next build` artifacts, when present (the battery runs test before build on
-// a fresh checkout, so this suite skips until a build has produced .next):
-// the prerendered HTML must carry the same shell, landing CTA and state
-// markers the component-level suites assert on — build parity, not just
-// source-level rendering.
+// a fresh checkout, so this suite skips until a build has produced .next).
+// B007: `/` is the session-aware cockpit home — a DYNAMIC route (it reads
+// the session cookie through the B004 boundary), so it compiles to
+// server-rendered artifacts (page.js) rather than a prerendered index.html.
+// The stub routes stay static and must still prerender with the shell,
+// the standard empty state and no diagnostics.
 const buildDir = new URL('../../.next/server/app/', import.meta.url);
 
-describe.skipIf(!existsSync(buildDir))('next build output (prerendered product host)', () => {
+describe.skipIf(!existsSync(buildDir))('next build output (product host)', () => {
   const readBuilt = (route: string): string =>
     readFileSync(new URL(route, buildDir), 'utf-8');
 
-  it('prerenders the first-run landing with the single CTA (positive)', () => {
-    const html = readBuilt('index.html');
-    expect(html).toContain('Explore a capability');
-    expect(html).toContain('What Arena is');
-    expect(html).toContain('data-arena-shell="true"');
-    expect(html).toContain('data-arena-slot="workspace"');
-    expect(html).toContain('lang="en"');
+  it('compiles the session-aware home as a dynamic route (B007: cockpit reads the session)', () => {
+    expect(existsSync(new URL('page.js', buildDir))).toBe(true);
+    // The home is no longer prerendered as anonymous static content: it
+    // decides landing-vs-cockpit per request (fail closed, no anonymous cockpit).
+    expect(existsSync(new URL('index.html', buildDir))).toBe(false);
   });
 
   it('prerenders every core route stub with the standard empty state (positive)', () => {
@@ -263,7 +274,7 @@ describe.skipIf(!existsSync(buildDir))('next build output (prerendered product h
   });
 
   it('never prerenders diagnostics as the default experience (negative)', () => {
-    const html = readBuilt('index.html');
+    const html = readBuilt('cases.html');
     expect(html).not.toContain('Arena Control Console');
     expect(html).not.toContain(':8787');
   });
