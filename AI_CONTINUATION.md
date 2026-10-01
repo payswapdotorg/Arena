@@ -75,3 +75,26 @@ Do not declare the product ready merely because source builds. All three product
 After every accepted B merge, update spec/PROJECT-STATE.md, AI_CONTINUATION.md and docs/LLM-ARCHITECT-HANDOFF.md with live GitHub truth.
 
 Do not ask the user to reconstruct prior decisions.
+
+## Long-term product direction
+
+Arena's approved north star is the Stripe of human expert escalation for AI automation.
+
+C-series goal:
+Any AI application can call Arena when an agent reaches a capability boundary and receive a validated human result through an API.
+
+The human intervention may:
+- solve;
+- correct;
+- unblock;
+- review;
+- teach;
+- identify a missing tool;
+- provide scoped domain knowledge;
+- evaluate competing solutions.
+
+Where permitted, experts work inside a privacy-sanitized replica of the agent's actual environment so the intervention is directly observable/replayable and can generate reusable capability artifacts.
+
+Epoch is one client of the generic API.
+
+After B019, the C-series in spec/human-escalation-work-items.md becomes the next roadmap.
