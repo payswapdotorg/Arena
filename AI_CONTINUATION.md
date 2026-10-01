@@ -51,9 +51,24 @@ Architecture lock is now A2.0 (36 locked rules; rules 25-36 are the
 approved human escalation product direction; ACR-001 records the bump).
 Long-term roadmap: A001-A036 → B001-B019 → C001-C022.
 
-Next: B007 (role-aware Home/Capability Cockpit + global navigation) is
-AUTHORIZED with deps satisfied (B001+B003+B004+B005+B006). B008-B014 all
-gate on B007. C-series governance roster extension (checker C-id parsing)
+B007 — role-aware capability cockpit + shared shell + global navigation —
+PR #79 MERGED (4ff6188). Two-session worker delivery + TL independent
+review; battery 268/268 under CI-equivalent clean-.next conditions; branch
+CI queued (public-repo runner queue), merged on local-battery truth.
+Lens-not-authorization verified (truthful not-granted denial); reads
+through the B005 read API; injective state classification; demo cockpit
+visibly labelled. TL-owned follow-ups: free-text search deferred to B008+,
+job/SLO indicators deferred to B014, stale-.next TS6053 local-only flake.
+
+Fourth wave dispatched: B008 (capability case/task workflows) + B009
+(expert workbench) + B010 (body studio) — three concurrent workers, all
+deps MERGED, pairwise-disjoint surfaces. B011-B014 follow.
+
+Next wave after B008/B009/B010: B011 (environment/trajectory replay
+viewer), B012 (evaluation/verification/research UX), B013 (marketplace
+UX), B014 (operations/capacity UX) — then B015 (deployment), B016 (local
+install), B017 (product E2E), B018 (UX polish), B019 (serialized launch
+acceptance). C-series governance roster extension (checker C-id parsing)
 is required before any C-series dispatch.
 
 The Tech Lead must record:

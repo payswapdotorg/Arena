@@ -69,9 +69,34 @@ intake; TL battery 268/268 all gates; CI battery green on head 04a6e56
 
 ### Third wave
 
-B007 AUTHORIZED — Role-aware Home/Capability Cockpit and global navigation
-Deps B001+B003+B004+B005+B006 all MERGED; issue to be opened at dispatch
-Owned: apps/web/src/cockpit/*
+B007 MERGED — Role-aware Home/Capability Cockpit and global navigation
+Issue #78 — PR #79 (merged 4ff6188)
+Owned: apps/web/src/cockpit/* (+ permitted route mounts: app/page.tsx,
+app/app.test.tsx, app/demo/cockpit/*)
+Harvest record: two-session worker delivery (first session built + committed,
+died pre-push; continuation session verified + pushed + PR'd) + TL independent
+review (fail-closed session → B005 read API; lens-not-authorization with
+truthful not-granted denial; injective state classification with distinct
+pending/unknown marks; demo cockpit visibly labelled); TL battery 268/268
+under CI-equivalent clean-.next conditions; branch CI queued (runner queue);
+merged on local-battery truth per house rule.
+
+### Fourth wave (B008/B009/B010 — three concurrent workers)
+
+B008 AUTHORIZED — Capability Case, Task and guided capability-development
+workflows
+Deps B005+B006+B007+A005+A008+A010+A011 all MERGED; issue to be opened at
+dispatch
+Owned: apps/web/src/capability/*, packages/product-flows/*
+
+B009 AUTHORIZED — Expert Workbench and expert assignment/review workflow UX
+Deps B005+B006+B007+A006+A007+A017 all MERGED; issue to be opened at dispatch
+Owned: apps/web/src/expert/*
+
+B010 AUTHORIZED — Agent Body Studio, Possession matrix, Skill/Knowledge/Tool
+composition and model-substrate comparison UX
+Deps B005+B006+B007+A021+A022+A023 all MERGED; issue to be opened at dispatch
+Owned: apps/web/src/bodies/*, packages/body-ui/*
 
 ## Product specifications
 
@@ -203,10 +228,10 @@ Never treat stale chat context as state.
 - B004 MERGED
 - B005 MERGED
 - B006 MERGED
-- B007 AUTHORIZED
-- B008 WAITING_ON_DEPENDENCIES
-- B009 WAITING_ON_DEPENDENCIES
-- B010 WAITING_ON_DEPENDENCIES
+- B007 MERGED
+- B008 AUTHORIZED
+- B009 AUTHORIZED
+- B010 AUTHORIZED
 - B011 WAITING_ON_DEPENDENCIES
 - B012 WAITING_ON_DEPENDENCIES
 - B013 WAITING_ON_DEPENDENCIES
