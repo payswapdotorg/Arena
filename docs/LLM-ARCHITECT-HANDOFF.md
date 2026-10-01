@@ -157,3 +157,799 @@ A fresh user can:
 - use the same workflows locally or through the hosted preview.
 
 A fresh engineer can implement the next Work Order using repository state alone.
+
+
+---
+
+# FINAL TL EXECUTION DIRECTIVE — ARENA PRODUCTIZATION
+
+## 1. Mandate
+
+You are the Tech Lead / Orchestrator for the entire remaining Arena roadmap.
+
+Do not treat this document, or the chat that produced it, as the implementation itself. The repository is the sole source of truth.
+
+Your responsibility is to drive B001-B019 from READY to MERGED to ACCEPTED and finally close the public-preview launch gate.
+
+Do not stop at “the code exists” or “CI is green”. The end state must be demonstrated from a fresh machine and a fresh browser profile.
+
+## 2. What is already complete
+
+A001-A036 are the completed Arena V1 core.
+
+Do not reopen them merely to make the product easier to build.
+
+Core invariants from A1.0 remain locked:
+
+- Agent Body is a first-class persistent object.
+- Body Version is immutable/content-addressed.
+- Cognitive Substrate is distinct from Agent Body.
+- Possession is the versioned binding between Body and Substrate plus runtime/environment/policy configuration.
+- Certification is a claim about the tested composition, not about the raw model.
+- Evaluation and Verification are different authorities.
+- Historical evidence is append-only.
+- Environment execution is isolated/bounded.
+- Expert qualification is not authorization.
+- Providers/models are behind adapters.
+- Arena must not become the semantic authority of Epoch.
+- Epoch World Model, Action Gateway, Constraint Engine, Verification/Evidence and Delivery State remain Epoch authorities.
+- No direct Arena writes to Epoch authoritative stores.
+- Long-running jobs are idempotent/correlation-addressable.
+- Tenant/customer data remains isolated.
+
+Any proposed violation requires an Architecture Change Request before implementation.
+
+## 3. Product end state
+
+At completion, a person who knows nothing about Arena must be able to:
+
+1. open Arena;
+2. understand the product in the first session;
+3. enter a deterministic demo without provider credentials;
+4. hold multiple granted roles;
+5. switch roles without changing authorization;
+6. understand a capability gap;
+7. follow a capability case through the complete lifecycle;
+8. inspect an Agent Body;
+9. understand Body versus Cognitive Substrate versus Possession;
+10. watch/replay an environment run;
+11. distinguish expert action, model output, evaluation and verified evidence;
+12. compare different substrates possessing the same Body;
+13. inspect certification and release provenance;
+14. discover/purchase/publish marketplace artifacts where entitled;
+15. monitor jobs and hosted capacity;
+16. perform the principal workflows on desktop and mobile;
+17. do all of the above locally and on the hosted preview.
+
+The product should feel like a guided professional workspace, not an API explorer or engineering diagnostics page.
+
+## 4. Product architecture
+
+Canonical Arena domains remain the source of truth.
+
+The frontend is a projection layer.
+
+Never create a second domain model in React state, route-local storage or ad hoc APIs.
+
+Preferred flow:
+
+Browser
+-> role/session context
+-> product/read-model API
+-> canonical Arena services/protocols
+-> persistence/artifact/workflow adapters
+-> external providers
+
+For long-running work:
+
+UI command
+-> authenticated API command
+-> durable Job
+-> worker/runner
+-> checkpoint/events
+-> canonical result
+-> read-model projection
+-> UI
+
+Do not make one Vercel request the durable worker for long-running jobs.
+
+## 5. Role architecture
+
+The authoritative conceptual chain is:
+
+Identity
+-> Tenant
+-> Policy/Permission
+-> Granted Roles
+-> Active Role Context
+-> UI Projection
+
+Active role is a lens, not an authorization mechanism.
+
+Required reference roles:
+
+- Owner/Customer
+- Agent Builder
+- Expert
+- Evaluator
+- Researcher
+- Operator
+- Marketplace Participant
+- Administrator
+
+A person can hold several or all of them.
+
+Changing the active role may change:
+
+- landing page;
+- navigation emphasis;
+- primary CTA;
+- object projection;
+- inspector content;
+- recommended next actions.
+
+Changing the active role must never change:
+
+- tenant;
+- permission grants;
+- authorization;
+- data visibility;
+- audit identity.
+
+## 6. UX north star
+
+Use ShareNet as inspiration for interaction quality only:
+
+- calm onboarding;
+- clear state;
+- progressive disclosure;
+- generous whitespace;
+- one meaningful primary action;
+- restrained motion;
+- accessibility.
+
+Do not copy ShareNet's information architecture or visual identity.
+
+Arena's experience should emphasize:
+
+- capability discovery;
+- guided work;
+- role switching;
+- interactive inspection;
+- replay;
+- evidence;
+- causality;
+- Body/Substrate/Certification clarity.
+
+Workers are explicitly encouraged to be creative inside these boundaries.
+
+They may innovate in:
+
+- layout;
+- visual language;
+- animation;
+- capability maps;
+- 2D/3D representations;
+- timeline/replay mechanics;
+- inspector patterns;
+- empty/loading/success transitions.
+
+They may not innovate on canonical semantics or authority.
+
+## 7. Product truth vocabulary
+
+Every important user-visible state must be classified.
+
+Use explicit labels/visual language for:
+
+- Verified fact
+- Evidence
+- Expert judgment
+- Model output
+- Simulation / Replay
+- Evaluation result
+- Certification
+- Suggestion / Hypothesis
+- Demo state
+- Pending
+- Unknown
+
+Do not collapse these into generic “AI result”, “verified”, “score” or “success” badges.
+
+A purchased artifact is not automatically certified.
+
+A model is not automatically a professional.
+
+A replay is not a live-world mutation.
+
+A role is not permission.
+
+## 8. Work Order execution protocol
+
+Every B-series Work Order must follow:
+
+1. TL recomputes readiness from the live main branch.
+2. TL confirms dependency SHAs are merged.
+3. TL freezes owned write surfaces.
+4. TL records dispatch base SHA.
+5. TL gives worker only one Work Order.
+6. Worker creates one branch and one PR.
+7. Worker stays inside owned surfaces.
+8. Worker does not modify governance state or lockfiles unless explicitly authorized.
+9. Worker includes positive and negative tests.
+10. Worker provides reproducible verification evidence.
+11. TL reviews changed paths against ownership.
+12. TL runs/reviews CI and product battery.
+13. Any remediation is performed on the same PR.
+14. Only TL accepts and merges.
+15. TL records exact merge SHA and verification baseline.
+16. TL updates project state and handoff.
+17. TL recomputes the frontier.
+18. TL dispatches the next safe wave.
+
+Never dispatch from stale text.
+
+## 9. Three-worker concurrency law
+
+Maximum concurrent workers: 3.
+
+Concurrent Work Orders must have pairwise-disjoint write surfaces.
+
+Do not split a logical feature between workers unless the split is expressed as a stable package/contract boundary.
+
+Do not allow two workers to edit:
+
+- the same page;
+- the same package manifest;
+- the same generated contract;
+- the root lockfile;
+- the same governance file.
+
+Root manifest/lockfile changes are serialized.
+
+When a dependency is needed, worker reports it; TL reconciles it centrally.
+
+## 10. Roadmap execution sequence
+
+### Wave 1 — Foundation
+
+Dispatch exactly:
+
+B001
+B002
+B003
+
+B001 establishes the web host/design system.
+
+B002 establishes provider-neutral persistence/infrastructure contracts and hosted adapters.
+
+B003 establishes role/context/projection contracts.
+
+These three are intentionally pairwise-disjoint.
+
+### Wave 2 — Secure product substrate
+
+Dispatch:
+
+B004
+B005
+
+B004 establishes secure identity/session/tenant browser boundaries.
+
+B005 exposes persisted canonical read models through the product/API boundary.
+
+B006 may begin only when its declared dependencies are satisfied; prefer stabilizing B004/B005 first if the worker budget is constrained.
+
+### Wave 3 — First-use product
+
+Dispatch:
+
+B007
+B008
+B009
+
+B007 = role-aware Capability Cockpit and shell.
+
+B008 = Capability Case + Task guided workflow.
+
+B009 = Expert workflow/workbench.
+
+These must share read-model semantics rather than creating duplicate data models.
+
+### Wave 4 — Deep capability experience
+
+Dispatch:
+
+B010
+B011
+B012
+
+B010 = Body Studio + possession/substrate comparison.
+
+B011 = Environment/Trajectory replay.
+
+B012 = Evaluation/Verification/Certification + Research.
+
+The three should converge on a coherent visual language while preserving independent ownership.
+
+### Wave 5 — Commercial/operations/hosting
+
+Dispatch:
+
+B013
+B014
+B015
+
+B013 = marketplace.
+
+B014 = operations/jobs/SLO/capacity.
+
+B015 = deployment/provider wiring.
+
+B015 must consume B002/B004/B005/B014 contracts and cannot bypass them.
+
+### Wave 6 — Installability and acceptance
+
+Dispatch where dependencies are genuinely ready:
+
+B016 = local install/seed/reset.
+
+B017 = end-to-end product/UX/operational conformance.
+
+B018 = accessibility/mobile/performance/resilience/product polish.
+
+Do not let B018 become a generic redesign. It is a quality/launch gate over the already-defined product architecture.
+
+### Final launch gate
+
+B019 is serialized.
+
+It owns:
+
+- public preview acceptance;
+- launch runbooks;
+- hosted demo;
+- quota/cost monitoring;
+- release evidence;
+- final product gate.
+
+No “ready” claim before B019 is accepted.
+
+## 11. B-series acceptance logic
+
+### B001
+Accepted when:
+- real product host exists;
+- Vercel-compatible build passes;
+- design tokens/components are coherent;
+- mobile shell works;
+- accessibility primitives exist;
+- diagnostics is no longer the default product experience.
+
+### B002
+Accepted when:
+- Neon/R2/Upstash adapters satisfy provider-neutral contracts;
+- local fakes have contract parity;
+- quotas/capacity states exist;
+- paid fallback is impossible;
+- secrets remain server-side;
+- migrations/bootstrap are reproducible.
+
+### B003
+Accepted when:
+- all reference roles exist;
+- active role is distinct from permission;
+- role projection is canonical-object-based;
+- switching is deterministic and testable.
+
+### B004
+Accepted when:
+- browser session boundary is secure;
+- tenant identity is preserved;
+- authorization remains server/policy controlled;
+- authentication failures fail closed.
+
+### B005
+Accepted when:
+- UI can read persisted canonical state;
+- versions/provenance/tenant boundaries survive reload;
+- read model does not become a second authority.
+
+### B006
+Accepted when:
+- a fresh browser can enter Demo with no provider credentials;
+- demo is deterministic;
+- demo is resettable;
+- demo state is visibly labelled;
+- the full reference narrative exists.
+
+### B007
+Accepted when:
+- shell, workspace and role switcher work;
+- home answers “what am I doing and what can I do next?”;
+- active role changes the lens, not authorization.
+
+### B008
+Accepted when:
+- user can start/continue a Capability Case;
+- Task and case state are truthful;
+- progression follows canonical lifecycle;
+- guided workflow is understandable to a new user.
+
+### B009
+Accepted when:
+- expert can discover assigned work;
+- enter the workbench;
+- perform/review work;
+- submit evidence;
+- see correct task/run/trajectory states.
+
+### B010
+Accepted when:
+- Body Studio exists;
+- Body versioning is explicit;
+- skills/knowledge/tools are inspectable;
+- Body/Substrate/Possession distinction is unmistakable;
+- substrate comparisons are composition-scoped.
+
+### B011
+Accepted when:
+- user can replay runs;
+- timeline distinguishes observation/action/tool/result;
+- replay never implies live mutation;
+- engineering evidence remains accessible.
+
+### B012
+Accepted when:
+- evaluation, verification and certification are separate concepts;
+- research comparisons are composition-scoped;
+- evidence and unknown causes are surfaced.
+
+### B013
+Accepted when:
+- expert and artifact marketplaces are usable;
+- provenance/rights/verification are visible;
+- offer/grant/entitlement semantics are explicit;
+- purchase never implies certification.
+
+### B014
+Accepted when:
+- jobs, incidents, SLOs, audit and capacity can be understood;
+- correlation IDs connect operational state to work;
+- free-tier capacity is visible.
+
+### B015
+Accepted when:
+- Vercel deployment works;
+- Neon, R2 and Upstash integration works;
+- optional Apify dry run works;
+- no required demo path depends on a paid-only provider feature;
+- secrets and environment configuration are documented.
+
+### B016
+Accepted when:
+- clean machine setup is reproducible;
+- demo seed/reset is simple;
+- local and hosted product contracts are aligned.
+
+### B017
+Accepted when:
+- complete capability lifecycle E2E passes;
+- role-switch regression passes;
+- UX-to-operational simulation passes;
+- hosted/local parity passes.
+
+### B018
+Accepted when:
+- accessibility checks pass;
+- mobile workflows pass;
+- performance budgets pass;
+- resilience/error recovery pass;
+- visual regression does not violate architecture.
+
+### B019
+Accepted only when every launch-checklist gate is green and reproducible evidence is attached.
+
+## 12. Mandatory end-to-end scenario
+
+The TL must ensure one automated + one human-readable walkthrough for:
+
+Owner
+-> capability gap
+-> Capability Case
+-> Task
+-> Environment
+-> run/replay
+-> Trajectory
+-> Evaluation
+-> Verification
+-> Learning
+-> Agent Body Version
+-> Possession
+-> Substrate comparison
+-> Certification
+-> Release
+-> Marketplace visibility/entitlement
+-> Epoch consumption
+-> Operations visibility
+
+Then repeat the relevant portions through at least four role lenses:
+
+Owner
+Agent Builder
+Expert
+Researcher
+
+And verify that an Operator can trace failures without changing the business meaning of the object.
+
+## 13. Deployment architecture
+
+Preview target:
+
+Vercel Hobby
++
+Neon Free
++
+Cloudflare R2 Standard
++
+Upstash Redis Free
+
+Apify is optional and bounded.
+
+Rules:
+
+- domain code stays provider-neutral;
+- providers are adapters;
+- PostgreSQL is authoritative for control-plane state;
+- R2 stores immutable large artifacts;
+- Redis stores bounded/rebuildable state;
+- Apify is acquisition only;
+- no hidden paid fallback;
+- capacity state is visible;
+- quota exhaustion fails closed.
+
+Do not assert that the entire system is “free” without qualification. The correct claim is that the declared preview profile is designed and tested to operate within the providers' published free allowances.
+
+## 14. Local architecture
+
+The product must support:
+
+- Node 22 as pinned by the repository;
+- reproducible package install;
+- local infrastructure fakes/defaults where feasible;
+- deterministic demo;
+- resettable seed;
+- explicit environment configuration for connected mode.
+
+The first successful local run must not require a user to understand PostgreSQL, R2, Redis or Apify.
+
+## 15. Testing strategy
+
+Do not rely on a single test type.
+
+The B-series must contain:
+
+### Contract tests
+Adapters and product projections match canonical protocols.
+
+### Unit tests
+Role logic, projection logic, state classification, quota logic, route helpers.
+
+### Integration tests
+Persistence, auth/session boundaries, artifact lifecycle, job/read-model flow.
+
+### Negative/adversarial tests
+Cross-tenant denial, role escalation attempts, replay mutation confusion, paid-fallback attempts, exhausted providers, malformed claims, stale versions, revoked rights.
+
+### Product E2E
+Real browser journeys over local and hosted-compatible stacks.
+
+### UX checks
+Desktop, tablet, mobile, keyboard and reduced motion.
+
+### Performance
+Page load, route navigation, read-model latency, replay rendering, artifact access, job polling/streaming.
+
+### Fresh-machine acceptance
+At least one clean environment path must be exercised before B019.
+
+## 16. Browser UX verification
+
+Use the repository's available browser-verification tooling where appropriate.
+
+Every major user route must be inspected visually, not only asserted by DOM/unit tests.
+
+Check:
+
+- first-run onboarding;
+- home;
+- role switcher;
+- case;
+- expert workbench;
+- Body Studio;
+- replay;
+- evaluation/certification;
+- marketplace;
+- operations;
+- settings.
+
+Look specifically for:
+
+- dead ends;
+- ambiguous CTAs;
+- accidental admin language;
+- state misrepresentation;
+- role leakage;
+- excessive dashboard density;
+- mobile overflow;
+- loading flashes;
+- inaccessible focus;
+- misleading certification/verification badges.
+
+## 17. Creative-worker contract
+
+Workers should not be micromanaged on visual implementation.
+
+Each UX Work Order should receive:
+
+- intent;
+- canonical data dependencies;
+- authority constraints;
+- allowed states;
+- acceptance scenarios;
+- owned surfaces.
+
+Then let the worker solve the visual composition.
+
+TL review must judge the result against:
+
+1. canonical truth;
+2. role safety;
+3. workflow completion;
+4. usability;
+5. accessibility;
+6. consistency;
+7. performance.
+
+Do not reject creative variation merely because it differs from a proposed wireframe.
+
+Do reject any variation that changes product semantics.
+
+## 18. Change-control
+
+Architecture changes are not to be smuggled into UI work.
+
+A worker discovering an architectural gap must:
+
+- document the finding;
+- stop broadening scope;
+- propose the smallest contract-level correction;
+- let the TL determine whether an Architecture Change Request is required.
+
+A UI workaround is not acceptable if it causes:
+
+- duplicate authority;
+- hidden state;
+- role-derived authorization;
+- fake completion;
+- provider leakage;
+- impossible lifecycle states.
+
+## 19. Evidence discipline
+
+Every accepted Work Order must leave evidence in the repository/PR:
+
+- implementation summary;
+- changed-surface declaration;
+- tests;
+- commands;
+- outputs/results;
+- limitations;
+- screenshots or browser evidence for user-facing work where relevant;
+- exact commit/merge SHA.
+
+Do not report “tested” without commands/results.
+
+Do not report “deployed” without a deployment identifier/URL and health evidence.
+
+Do not report “free-tier” without the provider configuration and quota evidence.
+
+## 20. State-management discipline
+
+Prefer server/canonical state for authoritative facts.
+
+Client state may contain:
+
+- navigation;
+- transient interaction;
+- drafts;
+- filters;
+- animation;
+- local view preferences.
+
+Client state must not become the hidden authority for:
+
+- role grants;
+- permissions;
+- certification;
+- release state;
+- entitlement;
+- job completion;
+- verification;
+- tenant identity.
+
+## 21. Demo discipline
+
+Demo must be:
+
+- deterministic;
+- isolated;
+- resettable;
+- visibly labelled;
+- representative of actual contracts.
+
+The demo should use the same canonical object shapes/read models that live workflows use.
+
+Avoid building a “fake demo API” that bypasses the product architecture.
+
+## 22. Launch decision tree
+
+The TL must not use subjective confidence as the launch criterion.
+
+Use:
+
+Local gates
+AND
+Hosted gates
+AND
+UX gates
+AND
+Security gates
+AND
+E2E gates
+AND
+Accessibility/mobile/performance gates
+AND
+Fresh-user evidence
+AND
+Free-tier guardrails
+=
+Launchable preview
+
+Any red gate means the statement “Arena is ready” is not yet authorized.
+
+## 23. Final completion artifact
+
+At B019 acceptance, create/update:
+
+- spec/PROJECT-STATE.md
+- AI_CONTINUATION.md
+- docs/LLM-ARCHITECT-HANDOFF.md
+- docs/launch-checklist.md
+- docs/getting-started/*
+- docs/launch/*
+- release/preview/*
+- deployment URL record
+- exact release commit SHA
+- final test/verification baseline
+
+The final state must be self-describing enough that a new architect can take over immediately.
+
+## 24. First action for the new TL
+
+Before dispatching any worker:
+
+1. read the repository documents named above;
+2. inspect live GitHub main/branches/PRs/issues;
+3. verify A001-A036 remain merged;
+4. verify B001/B002/B003 are still the only authorized first-wave items;
+5. record the exact current main SHA;
+6. dispatch B001, B002 and B003 to three workers with frozen surfaces;
+7. reject any worker plan that requires shared-file parallel editing;
+8. begin continuous reconciliation after each merge.
+
+Do not ask the user to restate the architecture.
+
+Do not wait for chat instructions between normal roadmap steps.
+
+The repository now contains the roadmap, contracts, UX architecture, operational simulation, deployment target, launch gate and worker boundaries required to execute the entire remaining program.
