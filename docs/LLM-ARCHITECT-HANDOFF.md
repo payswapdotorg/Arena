@@ -195,3 +195,4 @@ A027 MERGED via PR #55 at a6e26fe (2026-09-30): examples/tests/docs epoch-e2e â€
 A035 MERGED via PR #56 at 52dca43 (2026-09-30): observability + SLOs + operations docs. 30/36 merged; A036 waits on A030 only.
 A029 MERGED via PR #57 at 30c8b1d (2026-09-30): reference structural-engineer body vertical slice. 31/36 merged.
 A030 MERGED via PR #58 at 9af0de6 (2026-09-30): research benchmark + public evaluation suite. 32/36 merged; A036 sprint dispatched.
+A036 MERGED via PR #59 at 7639931 (2026-10-01): production deployment, performance, release engineering â€” THE v1 COMPLETION SINK. 33/36 merged; the full Arena loop (Capability Case -> Task -> Environment -> Expert -> Trajectory -> Evaluation -> Verification -> Learning -> Certification -> Release -> Epoch consumption -> Production) is now implemented end-to-end.
