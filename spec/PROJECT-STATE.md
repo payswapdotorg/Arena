@@ -73,6 +73,14 @@ Owned: apps/web/src/demo/*, packages/demo/*, docs/demo/*
 - docs/deployment/free-tier-architecture.md
 - docs/ux-operational-simulation.md
 - docs/product-demo-script.md
+- docs/decisions/ADR-HUMAN-ESCALATION-001.md
+- spec/arena-product-thesis.md
+- spec/expert-escalation-api.md
+- spec/expert-environment-session.md
+- spec/adversarial-expert-evaluation.md
+- spec/escalation-reference-flow.md
+- spec/human-escalation-work-items.md
+- spec/human-escalation-dependency-graph.md
 
 ## Product truth invariants
 
