@@ -283,7 +283,7 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B013 AUTHORIZED
 - B014 MERGED
 - B015 MERGED
-- B016 WAITING_ON_DEPENDENCIES
+- B016 MERGED
 - B017 WAITING_ON_DEPENDENCIES
 - B018 WAITING_ON_DEPENDENCIES
 - B019 WAITING_ON_DEPENDENCIES
@@ -307,3 +307,7 @@ C-series first recommended wave:
 C001, C002, C010.
 
 See spec/human-escalation-dependency-graph.md.
+
+B016 MERGED — local install/seed/reset workflow and developer quickstart
+PR #95 (merged c9b6f25f)
+Harvest record (TL, 2026-10-02 21:40 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #94 closed at acceptance.
