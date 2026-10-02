@@ -224,6 +224,10 @@ Never treat stale chat context as state.
 
 ## Current frontier
 
+B015 MERGED — B015 delivered: production provider wiring + deployment automation
+PR #93 (merged 245059c)
+Harvest record (TL, 2026-10-02 12:24 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #92 closed at acceptance.
+
 B014 MERGED — Operations, jobs, SLOs, audit and free-tier capacity UX landed
 PR #90 (merged c0fcbbc)
 Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #91 closed at acceptance.
@@ -278,7 +282,7 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B012 MERGED
 - B013 AUTHORIZED
 - B014 MERGED
-- B015 WAITING_ON_DEPENDENCIES
+- B015 MERGED
 - B016 WAITING_ON_DEPENDENCIES
 - B017 WAITING_ON_DEPENDENCIES
 - B018 WAITING_ON_DEPENDENCIES
