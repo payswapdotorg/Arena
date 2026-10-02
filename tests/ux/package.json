@@ -1,0 +1,7 @@
+{
+  "name": "@arena/ux-conformance-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "B017 UX/operational conformance + regression battery (tests/ux — NOT a pnpm workspace project; run via node tests/ux/run.mjs, which drives apps/web's vitest with --root)."
+}

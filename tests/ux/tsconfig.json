@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "typeRoots": ["../../apps/web/node_modules/@types"],
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "paths": {
+      "react": ["../../apps/web/node_modules/@types/react"],
+      "react-dom/server": ["../../apps/web/node_modules/@types/react-dom/server"],
+      "vitest": ["../../apps/web/node_modules/vitest/dist/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts", "vitest.config.ts", "../../apps/web/next-env.d.ts"]
+}
