@@ -9,6 +9,7 @@ import { LandingView } from './_lib/landing-view.js';
 import CasesPage from './cases/page.js';
 import BodiesPage from './bodies/page.js';
 import ResearchPage from './research/page.js';
+import EvaluationPage from './evaluation/page.js';
 import MarketplacePage from './marketplace/page.js';
 import OperationsPage from './operations/page.js';
 import SettingsPage from './settings/page.js';
@@ -118,19 +119,18 @@ describe('first-run landing (UX1.0 Level 0) — the DEFAULT unauthenticated expe
 });
 
 describe('core route matrix stubs (UXM1.0)', () => {
-  // B008 + B010: `/cases` and `/bodies` are both upgraded from B001 stubs
-  // to session-aware server components (asserted structurally above like the
-  // B007 home); the remaining core routes stay stubs until their work orders
-  // fill them.
+  // B008 + B010 + B012: `/cases`, `/bodies` and `/research` are upgraded
+  // from B001 stubs to session-aware server components (asserted
+  // structurally below like the B007 home); the remaining core routes
+  // stay stubs until their work orders fill them.
   const routes: ReadonlyArray<[string, React.ReactElement]> = [
-    ['research', <ResearchPage key="research" />],
     ['marketplace', <MarketplacePage key="marketplace" />],
     ['operations', <OperationsPage key="operations" />],
     ['settings', <SettingsPage key="settings" />],
   ];
 
   it('renders one stub per remaining core route, each with a route header (positive)', () => {
-    expect(routes).toHaveLength(4);
+    expect(routes).toHaveLength(3);
     for (const [route, element] of routes) {
       const html = render(element);
       expect(html).toContain(`data-arena-route="${route}"`);
@@ -160,6 +160,24 @@ describe('core route matrix stubs (UXM1.0)', () => {
     // (the B007 home precedent). The composition is covered by the
     // bodies suites (src/bodies/*) through injected session probes.
     expect(BodiesPage.constructor.name).toBe('AsyncFunction');
+  });
+
+  it('mounts /research as an async session-aware server component (B012)', () => {
+    // The mount delegates to resolveResearchExperience (probe ->
+    // auth-required | research home); calling it outside a request scope
+    // would misread the session, so the mount is asserted structurally
+    // here. The composition is covered by the research suites
+    // (src/research/*) through injected session probes.
+    expect(ResearchPage.constructor.name).toBe('AsyncFunction');
+  });
+
+  it('mounts /evaluation as an async session-aware server component (B012)', () => {
+    // The mount delegates to resolveEvaluationExperience (probe ->
+    // auth-required | evaluation home); same structural posture as the
+    // B007 home / B010 bodies. The composition is covered by the
+    // evaluation suites (src/evaluation/*) through injected session
+    // probes.
+    expect(EvaluationPage.constructor.name).toBe('AsyncFunction');
   });
 });
 
@@ -285,10 +303,10 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
   });
 
   it('prerenders every remaining core route stub with the standard empty state (positive)', () => {
-    // B008 + B010: `/cases` and `/bodies` are session-aware dynamic routes
-    // (asserted above); only the untouched core-route stubs prerender.
+    // B008 + B010 + B012: `/cases`, `/bodies` and `/research` are
+    // session-aware dynamic routes (asserted above and below); only the
+    // untouched core-route stubs prerender.
     for (const route of [
-      'research',
       'marketplace',
       'operations',
       'settings',
@@ -297,6 +315,16 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
       expect(html).toContain(`data-arena-route="${route}"`);
       expect(html).toContain('data-arena-state="empty"');
       expect(html).toContain('data-arena-shell="true"');
+    }
+  });
+
+  it('compiles the session-aware research and evaluation routes as dynamic routes (B012)', () => {
+    // /research and /evaluation read the session cookie through the B004
+    // boundary, so they compile to server-rendered artifacts (page.js)
+    // rather than prerendered html — no anonymous surface is prerendered.
+    for (const route of ['research', 'evaluation'] as const) {
+      expect(existsSync(new URL(`${route}/page.js`, buildDir))).toBe(true);
+      expect(existsSync(new URL(`${route}.html`, buildDir))).toBe(false);
     }
   });
 
