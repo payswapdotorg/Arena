@@ -19,10 +19,11 @@
  *     dry-run, example, ...) are allowed.
  *
  * ALLOWLIST: four pre-existing hygiene-test fixtures carry deliberately
- * SYNTHETIC token-shaped literals (e.g. sk-abcdefghijklmnopqrstuvwx) that
- * exist to prove the repo's own credential-detection regexes work. They
- * are allowlisted by path + pattern id below — any NEW hit, anywhere
- * (including in those files for other patterns), still fails the scan.
+ * SYNTHETIC token-shaped literals (the classic "sk-" + alphabet-run test
+ * datum) that exist to prove the repo's own credential-detection regexes
+ * work. They are allowlisted by path + pattern id below — any NEW hit,
+ * anywhere (including in those files for other patterns), still fails
+ * the scan.
  *
  * Usage: node deploy/scripts/secret-scan.mjs [--help]
  */
