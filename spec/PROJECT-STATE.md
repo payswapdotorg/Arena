@@ -224,6 +224,10 @@ Never treat stale chat context as state.
 
 ## Current frontier
 
+B014 MERGED — Operations, jobs, SLOs, audit and free-tier capacity UX landed
+PR #90 (merged c0fcbbc)
+Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #91 closed at acceptance.
+
 - A001 MERGED
 - A002 MERGED
 - A003 MERGED
@@ -273,7 +277,7 @@ Never treat stale chat context as state.
 - B011 AUTHORIZED
 - B012 MERGED
 - B013 AUTHORIZED
-- B014 WAITING_ON_DEPENDENCIES
+- B014 MERGED
 - B015 WAITING_ON_DEPENDENCIES
 - B016 WAITING_ON_DEPENDENCIES
 - B017 WAITING_ON_DEPENDENCIES
