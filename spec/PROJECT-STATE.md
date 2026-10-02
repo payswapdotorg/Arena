@@ -113,6 +113,10 @@ test 204/204; branch CI green (abc80d3). Post-merge main CI green (6a68895).
 
 ### Fifth wave (B011/B012/B013 — three concurrent workers)
 
+B012 MERGED — Evaluation, verification, certification and research UX landed
+PR #89 (merged 372232b)
+Harvest record (TL, 2026-10-02 03:25 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #87 closed at acceptance.
+
 B011 AUTHORIZED — Environment/trajectory replay viewer and interactive run
 inspection
 Deps B005+B007+A010+A011+A012+A013 all MERGED; issue to be opened at dispatch
@@ -267,7 +271,7 @@ Never treat stale chat context as state.
 - B009 MERGED
 - B010 MERGED
 - B011 AUTHORIZED
-- B012 AUTHORIZED
+- B012 MERGED
 - B013 AUTHORIZED
 - B014 WAITING_ON_DEPENDENCIES
 - B015 WAITING_ON_DEPENDENCIES
