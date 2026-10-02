@@ -1,20 +1,26 @@
 import type { Metadata } from 'next';
 
-import { RouteStub } from '../_lib/route-stub.js';
+import {
+  ResearchAuthRequiredView,
+  ResearchHomeView,
+  resolveResearchExperience,
+} from '../../research/index.js';
 
 export const metadata: Metadata = {
   title: 'Research',
 };
 
-/** Structural stub (B012 fills evaluation/research UX): shared shell + route header + standard empty state. */
-export default function ResearchPage() {
-  return (
-    <RouteStub
-      route="research"
-      title="Research"
-      description="Benchmark bodies and substrates, study capability lift, and publish reusable research artifacts."
-      emptyTitle="No research yet"
-      emptyHint="Experiments, benchmark suites and datasets will appear here once the research queue is wired in."
-    />
-  );
+/**
+ * /research — the session-aware research/benchmark surface mount (Work
+ * Order B012; issue #87 — upgraded from the B001 structural stub). A
+ * mount point, not logic: the composition lives in apps/web/src/research
+ * (resolveResearchExperience). Fail closed — an unauthenticated visitor
+ * gets the auth-required notice, never an anonymous research surface.
+ */
+export default async function ResearchPage() {
+  const experience = await resolveResearchExperience();
+  if (experience.kind === 'auth-required') {
+    return <ResearchAuthRequiredView />;
+  }
+  return <ResearchHomeView view={experience.view} />;
 }
