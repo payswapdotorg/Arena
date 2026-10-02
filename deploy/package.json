@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "dryrun": "vitest run src/hosted/dry-run.integration.test.ts",
+    "secret-scan": "node scripts/secret-scan.mjs"
   },
   "devDependencies": {
     "@types/node": "22.20.4",

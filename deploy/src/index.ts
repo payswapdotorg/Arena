@@ -1,5 +1,6 @@
 /**
- * @arena/deploy — DEP1.0 public surface (Work Order A036).
+ * @arena/deploy — DEP1.0 public surface (Work Order A036), extended
+ * additively by the B015 hosted-preview provider wiring.
  *
  * Typed, versioned deployment descriptors for the Arena v1 service
  * topology, with health gates wired to the A035 SLO catalog and
@@ -11,3 +12,4 @@ export * from './model.js';
 export * from './slo-catalog.js';
 export * from './health-gates.js';
 export * from './reference.js';
+export * from './hosted/index.js';
