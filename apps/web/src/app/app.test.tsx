@@ -119,18 +119,17 @@ describe('first-run landing (UX1.0 Level 0) — the DEFAULT unauthenticated expe
 });
 
 describe('core route matrix stubs (UXM1.0)', () => {
-  // B008 + B010 + B012: `/cases`, `/bodies` and `/research` are upgraded
-  // from B001 stubs to session-aware server components (asserted
-  // structurally below like the B007 home); the remaining core routes
-  // stay stubs until their work orders fill them.
+  // B008 + B010 + B012 + B014: `/cases`, `/bodies`, `/research` and
+  // `/operations` are upgraded from B001 stubs to session-aware server
+  // components (asserted structurally below like the B007 home); the
+  // remaining core routes stay stubs until their work orders fill them.
   const routes: ReadonlyArray<[string, React.ReactElement]> = [
     ['marketplace', <MarketplacePage key="marketplace" />],
-    ['operations', <OperationsPage key="operations" />],
     ['settings', <SettingsPage key="settings" />],
   ];
 
   it('renders one stub per remaining core route, each with a route header (positive)', () => {
-    expect(routes).toHaveLength(3);
+    expect(routes).toHaveLength(2);
     for (const [route, element] of routes) {
       const html = render(element);
       expect(html).toContain(`data-arena-route="${route}"`);
@@ -178,6 +177,15 @@ describe('core route matrix stubs (UXM1.0)', () => {
     // evaluation suites (src/evaluation/*) through injected session
     // probes.
     expect(EvaluationPage.constructor.name).toBe('AsyncFunction');
+  });
+
+  it('mounts /operations as an async session-aware server component (B014)', () => {
+    // The mount delegates to resolveOperationsExperience (probe ->
+    // auth-required | operations home); same structural posture as the
+    // B007 home / B012 evaluation. The composition is covered by the
+    // operations suites (src/operations/*) through injected session
+    // probes.
+    expect(OperationsPage.constructor.name).toBe('AsyncFunction');
   });
 });
 
@@ -303,12 +311,11 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
   });
 
   it('prerenders every remaining core route stub with the standard empty state (positive)', () => {
-    // B008 + B010 + B012: `/cases`, `/bodies` and `/research` are
-    // session-aware dynamic routes (asserted above and below); only the
-    // untouched core-route stubs prerender.
+    // B008 + B010 + B012 + B014: `/cases`, `/bodies`, `/research` and
+    // `/operations` are session-aware dynamic routes (asserted above and
+    // below); only the untouched core-route stubs prerender.
     for (const route of [
       'marketplace',
-      'operations',
       'settings',
     ] as const) {
       const html = readBuilt(`${route}.html`);
@@ -326,6 +333,16 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
       expect(existsSync(new URL(`${route}/page.js`, buildDir))).toBe(true);
       expect(existsSync(new URL(`${route}.html`, buildDir))).toBe(false);
     }
+  });
+
+  it('compiles the session-aware operations route as a dynamic route (B014)', () => {
+    // /operations reads the session cookie through the B004 boundary, so
+    // it compiles to server-rendered artifacts (page.js) rather than a
+    // prerendered operations.html — no anonymous operations surface is
+    // prerendered (fail closed: capacity and SLO state never prerender as
+    // anonymous content).
+    expect(existsSync(new URL('operations/page.js', buildDir))).toBe(true);
+    expect(existsSync(new URL('operations.html', buildDir))).toBe(false);
   });
 
   it('compiles /cases as a session-aware dynamic route (B008: the case list reads the session)', () => {
