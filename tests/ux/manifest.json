@@ -1,0 +1,210 @@
+{
+  "manifestVersion": "1.0.0",
+  "workOrder": "B017",
+  "description": "The B017 UX/operational regression manifest: every conformance check mapped to the surface that OWNS the behavior it asserts. The TL uses this at every future intake — a change to a listed surface re-runs the mapped checks.",
+  "updatedAt": "2026-10-03",
+  "legend": {
+    "status": "pass = green at the recorded run; known-defect = the check encodes a discovered defect as a characterization tripwire (fails the moment the defect is fixed, forcing the strict expectation); env-dependent = requires the host to provide Playwright + Chromium (self-skips otherwise).",
+    "layers": "composition = in-process composition + static markup (always runs); served = HTTP against the runner-booted next start; browser = real headless Chromium measurement."
+  },
+  "checks": [
+    {
+      "id": "UX-ROUTE-01",
+      "title": "Shell renders a nav link for every core route; nav hrefs are real routes (no orphan affordances)",
+      "file": "tests/ux/route-reachability.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/app/layout.tsx + apps/web/src/app/_lib/nav.ts (B001/B007 shell)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-ROUTE-02",
+      "title": "First-run landing renders with exactly ONE primary action into /cases",
+      "file": "tests/ux/route-reachability.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/app/_lib/landing-view.tsx (B007 landing)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-ROUTE-03",
+      "title": "Loading/error/not-found render truthful, actionable design-system states",
+      "file": "tests/ux/route-reachability.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/app/{loading,error,not-found}.tsx (B001 route quality gates)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-ROUTE-04",
+      "title": "Every core and demo route answers 200 with its route marker; unknown routes answer 404 with the standard empty state; session surfaces fail closed (denied) without a session",
+      "file": "tests/ux/route-reachability.test.ts",
+      "layer": "served",
+      "ownerSurface": "apps/web/src/app/** route mounts (B007-B014)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-TRUTH-01",
+      "title": "Every rendered truth badge is inside the closed vocabulary (ui-platform StateKind + pending/unknown); no invented badges",
+      "file": "tests/ux/truth-labels.test.ts",
+      "layer": "composition+served",
+      "ownerSurface": "packages/ui-platform/src/states/TruthBadge.tsx + tokens (B001 design system)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-TRUTH-02",
+      "title": "The cockpit shows DISTINCT truth kinds with DISTINCT treatments — simulation/verified/certification/demo never collapse",
+      "file": "tests/ux/truth-labels.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/cockpit/* (B007 cockpit)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-TRUTH-03",
+      "title": "The evaluation surface renders the three-way distinction note verbatim + the truth-class legend; evaluation/verified/certification each marked",
+      "file": "tests/ux/truth-labels.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/evaluation/* (B012 evaluation)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-TRUTH-04",
+      "title": "The audit stream renders as evidence with the append-only note; the capacity board renders the fail-closed guarantee verbatim",
+      "file": "tests/ux/truth-labels.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/operations/* (B014 operations)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-TRUTH-05",
+      "title": "Demo data never renders without its Demo badge (B006 labelling survives every screen)",
+      "file": "tests/ux/truth-labels.test.ts",
+      "layer": "composition+served",
+      "ownerSurface": "apps/web/src/** demo banner/badge usage (B006 labelling contract)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-TRUTH-06",
+      "title": "The B006 product-truth label vocabulary maps onto closed rendered kinds (no orphan labels)",
+      "file": "tests/ux/truth-labels.test.ts",
+      "layer": "composition",
+      "ownerSurface": "packages/demo/src/shared.ts (B006 vocabulary) + packages/ui-platform tokens (mapping)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-TRUTH-07",
+      "title": "The research surface renders the composition-scope banner (never bare-model rankings)",
+      "file": "tests/ux/truth-labels.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/research/* (B012 research)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-STATE-01",
+      "title": "Fail-closed gates: every session surface gates an unauthenticated visitor (no anonymous data surface)",
+      "file": "tests/ux/states.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/{capability,evaluation,research,bodies,operations} session resolvers (B007-B014 fail-closed probes)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-STATE-02",
+      "title": "Honest empty states: authenticated sessions over an EMPTY control plane render truthful empties with actionable next steps (start a case, nothing fabricated, no-data SLOs never green)",
+      "file": "tests/ux/states.test.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/{capability,evaluation,research,bodies,operations} view models (B008/B010/B012/B014 honesty)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-JSON-01",
+      "title": "No raw JSON rendering on any demo or core page (entity-aware scan; the labelled corpus-hash digest display is the single documented exception, count-bounded to one per page)",
+      "file": "tests/ux/no-raw-json.test.ts",
+      "layer": "composition+served",
+      "ownerSurface": "apps/web/src/** (all view components)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-VIEWPORT-01",
+      "title": "No horizontal overflow at 390x844 and 1280x800 (real headless Chromium measurement, per-element offender naming)",
+      "file": "tests/ux/viewport.test.ts",
+      "layer": "browser",
+      "ownerSurface": "packages/ui-platform/src/styles/components.css (table scroll-region rule family) + apps/web/src/{bodies,research,evaluation,operations,capability} table/banner markup",
+      "status": "known-defect",
+      "finding": "UX-VIEWPORT-01 (mobile-only): every demo-surface data table overflows 390px because its role=region scroll wrapper class never sets overflow-x: auto — /demo/bodies (741px), /demo/research (875px), /demo/evaluation (840px), /demo/operations (684px), /demo/operations/jobs (826px), /demo/operations/capacity (472px), plus the /demo/cases demo-banner corpus-hash code line (394px). All pages are clean at 1280x800. Encoded as characterization tripwires: the battery asserts the defect's presence and FAILS when a surface is fixed, forcing the strict expectation. Proposed root fix (TL-owned surfaces): overflow-x: auto on the table scroll-region classes in packages/ui-platform/src/styles/components.css + overflow-wrap: anywhere on the demo-banner hash code (or render the 8-char FNV hash summary)."
+    },
+    {
+      "id": "UX-VIEWPORT-02",
+      "title": "Static overflow-safety analysis: minmax(0,1fr) shell grids, no fixed CSS width > 390px, three breakpoints, reduced-motion",
+      "file": "tests/ux/viewport.test.ts",
+      "layer": "composition",
+      "ownerSurface": "packages/ui-platform/src/styles/components.css (B001/B007 responsive shell)",
+      "status": "pass"
+    },
+    {
+      "id": "UX-VIEWPORT-03",
+      "title": "Responsive shell switches zones (bottom-nav at 390, rail at 1280); keyboard reaches real interactive elements",
+      "file": "tests/ux/viewport.test.ts",
+      "layer": "browser",
+      "ownerSurface": "apps/web/src/app/layout.tsx + packages/ui-platform shell/a11y (B001/B007)",
+      "status": "pass"
+    },
+    {
+      "id": "OPS-CAPACITY-01",
+      "title": "Capacity panel shows the free-tier state: all four closed FT2.0 postures with visible ceilings, worst-of overall, exhaustion policy rendered as data",
+      "file": "tests/ux/operational.test.ts",
+      "layer": "composition+served",
+      "ownerSurface": "apps/web/src/operations/capacity-view-model.ts + operations-screens.tsx (B014) + packages/persistence capacity (B002 FT2.0)",
+      "status": "pass"
+    },
+    {
+      "id": "OPS-CAPACITY-02",
+      "title": "Fail-closed exhaustion: EXHAUSTED/DISABLED render as REFUSAL (typed reasons, fail closed, no upgrade/billing escape anywhere); assertCapacityUsable throws the typed error; unknown ceilings render as unknown, never unlimited",
+      "file": "tests/ux/operational.test.ts",
+      "layer": "composition+served",
+      "ownerSurface": "packages/persistence/src/capacity.ts (B002 fail-closed guard) + apps/web/src/operations capacity views (B014)",
+      "status": "pass"
+    },
+    {
+      "id": "OPS-AUDIT-01",
+      "title": "The audit stream records lifecycle hops: verified append-only A034 chain (authorization decisions, tenant-scope denials) + job lifecycle transition histories with monotone sequences",
+      "file": "tests/ux/operational.test.ts",
+      "layer": "composition+served",
+      "ownerSurface": "apps/web/src/operations/{audit-view-model,fixtures,operations-route}.ts (B014) + packages/security audit chain (A034)",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-LIFECYCLE-01",
+      "title": "Full Capability Case lifecycle walk with state-machine legality at every hop, append-only history, Task/Environment hops, four-role projection equality after every hop; typed illegal-transition rejections; read-path story walk Task->Trajectory->Evaluation->Verification->Certification->Release; reset restores the identical corpus hash",
+      "file": "tests/product-e2e/lifecycle-walk.test.ts",
+      "layer": "composition",
+      "ownerSurface": "packages/product-flows + packages/capability-case (A005/B008 state machine) + apps/web/src/{capability,evaluation,bodies} surfaces",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-ROLESWITCH-01",
+      "title": "Role-switch simulation: the SAME canonical case projects through Owner/Expert/Builder/Researcher at the B003 contract, the app surfaces and the rendered markup — identity/tenancy preserved, only the projection changes; truthful not-granted denial",
+      "file": "tests/product-e2e/role-switch.test.ts",
+      "layer": "composition",
+      "ownerSurface": "packages/role-context projections (B003) + apps/web/src/{cockpit,capability} role lenses (B007/B008)",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DETERMINISM-01",
+      "title": "Determinism: frozen corpus hash constant, byte-identical double resolution + double render across 13 demo surfaces, fixed narrative read stamps, B016 seed parity through the real seed command",
+      "file": "tests/product-e2e/determinism.test.ts",
+      "layer": "composition+subprocess",
+      "ownerSurface": "packages/demo (B006 corpus/store) + scripts/product/seed.mjs (B016) + apps/web demo compositions",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-SERVED-01",
+      "title": "Served-app walk: full lifecycle through the REAL origin-checked form POSTs with the 303 redirect contract; foreign Origin 403; typed flowError redirects; /demo/reset semantics",
+      "file": "tests/product-e2e/served-walk.test.ts",
+      "layer": "served",
+      "ownerSurface": "apps/web/src/app/demo/** route handlers + apps/web/src/capability/flow-actions.ts (B006/B008 form-post contract)",
+      "status": "pass"
+    }
+  ],
+  "notes": [
+    "The batteries are NOT pnpm workspace projects (tests/* is outside the workspace globs — the tests/security and tests/epoch-e2e precedent, kept because a root-manifest edit is forbidden for B017). Run them through their self-contained runners: node tests/product-e2e/run.mjs and node tests/ux/run.mjs (both drive apps/web's vitest with --root).",
+    "The browser layer needs Playwright + Chromium on the host (ARENA_PLAYWRIGHT_MODULE or the global npm prefix). Without it the browser checks self-skip and the static overflow analysis still runs; the runner prints which layer ran.",
+    "UX-VIEWPORT-01 is the only known-defect row: the defects live on forbidden surfaces (packages/ui-platform CSS + apps/web table markup), so B017 records them as tripwires and proposes the root fix for TL intake rather than editing the surfaces."
+  ]
+}
