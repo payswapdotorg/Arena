@@ -54,7 +54,10 @@ import {
   resolveDemoCertificationExperience,
 } from '../../apps/web/src/evaluation/evaluation-route.js';
 import { EVALUATION_DEMO_IDS } from '../../apps/web/src/evaluation/fixtures.js';
-import { resolveDemoBodyDetailExperience } from '../../apps/web/src/bodies/bodies-route.js';
+import {
+  resolveDemoBodyDetailExperience,
+  resolveDemoBodiesStudioView,
+} from '../../apps/web/src/bodies/bodies-route.js';
 import { DEMO_NARRATIVE } from '../../packages/demo/src/narrative.js';
 import { buildDemoLandingView } from '../../apps/web/src/demo/narrative-view.js';
 import { DemoLandingView } from '../../apps/web/src/demo/demo-landing-view.js';
@@ -634,6 +637,26 @@ describe('B017 M1 — the read-path story walk (Task -> Trajectory -> Evaluation
     const context = await cockpitModule.getDemoCockpitContext();
     const page = await context.port.scroll('capability-case');
     expect(page.records.map((record) => record.recordId)).toEqual([NARRATIVE_RECORD_ID]);
+    await resetDemoApp();
+  });
+
+  it('the TWO reference Bodies render in the bodies studio (A028 + A029)', async () => {
+    await bootDemoApp();
+    const studio = await resolveDemoBodiesStudioView('agent-builder');
+    expect(studio.demo.isDemo).toBe(true);
+    const recordIds = studio.bodies.map((entry) => entry.card.recordId);
+    expect(recordIds).toContain('demo.agent-body.software-engineer');
+    expect(recordIds).toContain('demo.agent-body.structural-engineer');
+    expect(studio.bodies.length).toBe(2);
+    // Both carry their lineage (current versions 1.1.0 and 1.0.0).
+    const software = studio.bodies.find(
+      (entry) => entry.card.recordId === 'demo.agent-body.software-engineer',
+    );
+    const structural = studio.bodies.find(
+      (entry) => entry.card.recordId === 'demo.agent-body.structural-engineer',
+    );
+    expect(software?.card.identity.versioning.currentVersion).toBe('1.1.0');
+    expect(structural?.card.identity.versioning.currentVersion).toBe('1.0.0');
     await resetDemoApp();
   });
 });
