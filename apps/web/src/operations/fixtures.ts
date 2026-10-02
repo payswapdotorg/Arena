@@ -632,6 +632,8 @@ const DEMO_CAPACITY_DIMENSIONS: Readonly<Record<string, readonly CapacityDimensi
     'control-plane-store': [
       { dimension: 'storage', used: 210, limit: 512, remaining: 302, windowMs: null },
       { dimension: 'compute-hours', used: 12, limit: 100, remaining: 88, windowMs: 2_678_400_000 },
+      // The provider reports no ceiling for transfer — rendered as unknown, never unlimited.
+      { dimension: 'transfer', used: 40, limit: null, remaining: null, windowMs: null },
     ],
     'coordination-store': [
       { dimension: 'commands', used: 480_000, limit: 500_000, remaining: 20_000, windowMs: 2_592_000_000 },
