@@ -1,0 +1,166 @@
+# Deploy preview — Arena hosted preview deployment automation (Work Order B015).
+#
+# Posture (docs/deployment/free-tier-architecture.md FT1.0 / spec/free-tier-contract.md FT2.0):
+#   - free-tier-compatible by construction (Vercel Hobby + Neon Free + R2 free tier + Upstash Free);
+#   - env-driven: every credential is a GitHub repository secret injected by the
+#     Tech Lead at the launch gate (B019) — this file carries placeholders only;
+#   - fail closed: the deploy job refuses to run without the documented secrets,
+#     and the wiring self-test proves quota exhaustion refuses operations
+#     (no automatic paid fallback, ever);
+#   - this workflow COMPLEMENTS .github/workflows/ci.yml (the TL-owned battery)
+#     and never modifies it.
+#
+# Runbooks: ops/deployment/provider-setup.md (secret injection),
+# ops/deployment/free-tier-limits.md, ops/deployment/rollback.md,
+# ops/deployment/quota-exhaustion-playbook.md.
+
+name: Deploy preview
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+# One deployment at a time; never cancel an in-flight deploy mid-build.
+concurrency:
+  group: deploy-preview
+  cancel-in-progress: false
+
+jobs:
+  wiring-selftest:
+    name: Wiring self-test (env contract / dry-run / secret scan / deploy battery)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node (from .nvmrc)
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable corepack (pnpm pinned via packageManager)
+        run: corepack enable
+
+      - name: Show toolchain
+        run: node --version && pnpm --version
+
+      - name: Install workspace (frozen lockfile — deploy wiring typechecks adapter sources)
+        run: pnpm install --frozen-lockfile
+
+      - name: Install deploy package (frozen lockfile — standalone @arena/deploy project)
+        run: pnpm --dir deploy install --frozen-lockfile --ignore-workspace
+
+      # Wiring self-test per the B015 work order: env-presence validation,
+      # the deploy dry-run (full wiring path against local fakes, no live
+      # credentials), and the quota fail-closed proofs.
+      - name: Env-contract presence check (deterministic; no live credentials)
+        run: pnpm --dir deploy exec vitest run src/hosted/env-contract.test.ts
+
+      - name: Deploy dry-run (full wiring path against local fakes)
+        run: pnpm --dir deploy exec vitest run src/hosted/dry-run.integration.test.ts
+
+      - name: Quota fail-closed tests (exhaustion refuses; no paid fallback)
+        run: pnpm --dir deploy exec vitest run src/hosted/fail-closed.test.ts src/hosted/quotas.test.ts
+
+      - name: Deploy battery (typecheck / lint / full test / build)
+        run: pnpm --dir deploy typecheck && pnpm --dir deploy lint && pnpm --dir deploy test && pnpm --dir deploy build
+
+      # Committed-secret scan: fails the job on any hit. The B015 surface is
+      # env-driven with empty placeholders by construction; this guard makes
+      # an accidental commit of live credentials fail the deploy pipeline.
+      - name: Secret scan (fail on committed secrets)
+        run: node deploy/scripts/secret-scan.mjs
+
+      # Authored YAML structure check (runs in the battery too) + actionlint
+      # for full workflow schema validation of this file.
+      - name: Workflow structure check (authored YAML schema check)
+        run: pnpm --dir deploy exec vitest run src/hosted/workflow-structure.test.ts
+
+      - name: Workflow lint (actionlint)
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          ./actionlint -color .github/workflows/deploy-preview.yml
+
+  deploy-preview:
+    name: Deploy hosted preview (Vercel Hobby)
+    needs: wiring-selftest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Node (from .nvmrc)
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable corepack (pnpm pinned via packageManager)
+        run: corepack enable
+
+      - name: Show toolchain
+        run: node --version && pnpm --version
+
+      - name: Install workspace (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      # Fail CLOSED: the deploy is refused while the CI deploy credentials
+      # are absent. The Tech Lead injects the live secrets at the launch
+      # gate (B019) — see ops/deployment/provider-setup.md. Until then this
+      # job intentionally reports failure instead of silently skipping.
+      - name: Fail closed when deploy secrets are absent (TL injects at B019)
+        run: |
+          missing=0
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "$(printenv "$name")" ]; then
+              echo "::error::missing GitHub repository secret: $name (ops/deployment/provider-setup.md — the Tech Lead injects live deploy credentials at the B019 launch gate)"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      # Prebuilt deploy flow: pull project settings (root directory apps/web,
+      # Next.js framework, Node 22), build, then deploy the prebuilt output
+      # to the production alias (the hosted preview IS the production alias).
+      # Runtime env for the app is set as Vercel project environment
+      # variables by the TL (never in this file) — see provider-setup.md.
+      - name: Pull Vercel project settings (apps/web)
+        working-directory: apps/web
+        run: pnpm dlx vercel@62.1.0 pull --yes --environment=production --token "$VERCEL_TOKEN"
+
+      - name: Build the hosted preview (prebuilt)
+        working-directory: apps/web
+        run: pnpm dlx vercel@62.1.0 build --prod --token "$VERCEL_TOKEN"
+
+      - name: Deploy the hosted preview (prebuilt, production alias)
+        id: deploy
+        working-directory: apps/web
+        run: |
+          url="$(pnpm dlx vercel@62.1.0 deploy --prebuilt --prod --token "$VERCEL_TOKEN" 2>&1 | tee /dev/stderr | grep -oE 'https://[a-z0-9][a-z0-9.-]*\.vercel\.app' | head -n 1)"
+          if [ -z "$url" ]; then
+            echo "::error::no deployment URL in vercel output (deploy refused)"
+            exit 1
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "deployed: $url"
+
+      - name: Smoke-check the deployment (fail closed on non-2xx/3xx)
+        run: |
+          code="$(curl -sS -o /dev/null -w '%{http_code}' "${{ steps.deploy.outputs.url }}")"
+          case "$code" in
+            2*|3*) echo "hosted preview deployment green (HTTP $code)" ;;
+            *)
+              echo "::error::deployment smoke check failed (HTTP $code) — see ops/deployment/rollback.md"
+              exit 1
+              ;;
+          esac
