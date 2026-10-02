@@ -1,0 +1,7 @@
+{
+  "name": "@arena/product-e2e-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "B017 full product E2E battery (tests/product-e2e — NOT a pnpm workspace project; run via node tests/product-e2e/run.mjs, which drives apps/web's vitest with --root)."
+}
