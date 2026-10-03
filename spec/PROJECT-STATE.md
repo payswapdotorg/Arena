@@ -283,8 +283,8 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B015 MERGED
 - B016 MERGED
 - B017 MERGED
-- B018 WAITING_ON_DEPENDENCIES (B011/B013 in flight)
-- B019 WAITING_ON_DEPENDENCIES
+- B018 AUTHORIZED (deps B007-B017 all MERGED; issue #100; dispatched 2026-10-03)
+- B019 WAITING_ON_DEPENDENCIES (B015+B017 MERGED; waits on B018)
 
 ## Long-term product direction
 
