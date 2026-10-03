@@ -10,6 +10,7 @@ import CasesPage from './cases/page.js';
 import BodiesPage from './bodies/page.js';
 import ResearchPage from './research/page.js';
 import EvaluationPage from './evaluation/page.js';
+import ReplayPage from './replay/page.js';
 import MarketplacePage from './marketplace/page.js';
 import OperationsPage from './operations/page.js';
 import SettingsPage from './settings/page.js';
@@ -186,6 +187,14 @@ describe('core route matrix stubs (UXM1.0)', () => {
     // operations suites (src/operations/*) through injected session
     // probes.
     expect(OperationsPage.constructor.name).toBe('AsyncFunction');
+  });
+
+  it('mounts /replay as an async session-aware server component (B011)', () => {
+    // The mount delegates to resolveReplayHome (probe -> auth-required |
+    // the replay run list); same structural posture as the B007 home /
+    // B012 evaluation. The composition is covered by the replay suites
+    // (src/replay/*) through injected session probes.
+    expect(ReplayPage.constructor.name).toBe('AsyncFunction');
   });
 });
 

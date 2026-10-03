@@ -1,0 +1,36 @@
+{
+  "name": "@arena/replay-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The reusable view model for the Arena environment/trajectory replay viewer (Work Order B011; issue #86): pure, deterministic, frozen-data-driven projections of canonical trajectory/environment/evaluation/verification objects into the shapes the replay surface renders — the replay TIMELINE (append-only steps, per-step action/observation/event records, wall-clock vs logical ordering, honest no-data vs pending gaps), the interactive run-inspection model (step selection, per-step I/O, environment event stream, append-only evidence addresses) and the evaluation/verification RESULT LINKAGE in which every linked artifact carries its OWN truth class (a replayed step is SIMULATION-REPLAY, never 'result'). Zero app dependencies and zero runtime authority: the package depends only on sibling domain/protocol packages, validates every payload through THEIR public guards (malformed or truncated inputs degrade truthfully, never crash) and invents no parallel domain model.",
+  "exports": {
+    ".": { "types": "./src/index.ts", "default": "./src/index.ts" }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/environment-runtime": "workspace:*",
+    "@arena/evaluation": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/role-context": "workspace:*",
+    "@arena/trajectory": "workspace:*",
+    "@arena/verification": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
