@@ -132,9 +132,7 @@ Deps B005+B007+A031+A032+A033 all MERGED; issue to be opened at dispatch
 Owned: apps/web/src/marketplace/*, packages/marketplace-ui/*
 
 Slot-blocked (deps MERGED, waiting for a concurrent-worker slot):
-B014 (B005+B007+A015+A034+A035) and B016 (B001+B002+B006) are ready and
-dispatch next as wave slots free. B015 waits on B014; B017 waits on
-B008-B016; B018 waits on B017; B019 waits on B015+B017+B018.
+B018 waits on B011+B013 (both in flight); B019 waits on B015+B017+B018.
 
 ## Product specifications
 
@@ -224,9 +222,9 @@ Never treat stale chat context as state.
 
 ## Current frontier
 
-B015 MERGED — B015 delivered: production provider wiring + deployment automation
-PR #93 (merged 245059c)
-Harvest record (TL, 2026-10-02 12:24 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #92 closed at acceptance.
+B017 MERGED — full product E2E battery + UX/operational conformance + validation runbook
+PR #97 (merged 12a517b, intake a34a1e0)
+Harvest record (TL, 2026-10-02 23:58 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); intake applies the architecture-question verdicts (UX-VIEWPORT-01 root fix, reset-hint narrowing, battery manifest wiring); PR opened and merged by the TL; issue #96 closed at acceptance.
 
 B014 MERGED — Operations, jobs, SLOs, audit and free-tier capacity UX landed
 PR #90 (merged c0fcbbc)
@@ -284,8 +282,8 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B014 MERGED
 - B015 MERGED
 - B016 MERGED
-- B017 WAITING_ON_DEPENDENCIES
-- B018 WAITING_ON_DEPENDENCIES
+- B017 MERGED
+- B018 WAITING_ON_DEPENDENCIES (B011/B013 in flight)
 - B019 WAITING_ON_DEPENDENCIES
 
 ## Long-term product direction
@@ -311,3 +309,7 @@ See spec/human-escalation-dependency-graph.md.
 B016 MERGED — local install/seed/reset workflow and developer quickstart
 PR #95 (merged c9b6f25f)
 Harvest record (TL, 2026-10-02 21:40 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #94 closed at acceptance.
+
+B017 MERGED — full product E2E, role-switch simulation, UX/operational conformance
+PR #97 (merged 12a517b)
+Harvest record (TL, 2026-10-02 23:58 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA f5cc908, gate-parity green; product-e2e 28/28 + ux 46/46 batteries re-run locally under Node 22.20 with the real-Chromium viewport layer); intake a34a1e0 applies the worker's architecture-question verdicts (UX-VIEWPORT-01 root fix — scroll-region rule family + code break-anywhere, strict viewport expectations restored; DEMO_RESET_HINT narrowed to actual semantics; test:e2e/test:ux manifest wiring); issue #96 closed at acceptance.
