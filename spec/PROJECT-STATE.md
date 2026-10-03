@@ -278,7 +278,7 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B010 MERGED
 - B011 MERGED
 - B012 MERGED
-- B013 AUTHORIZED
+- B013 MERGED
 - B014 MERGED
 - B015 MERGED
 - B016 MERGED
@@ -317,3 +317,7 @@ Harvest record (TL, 2026-10-02 23:58 UTC): worker delivery branch-verified at th
 B011 MERGED — environment/trajectory replay viewer + interactive run inspection; frontier B018 waits on B013, B019 on B018
 PR #98 (merged 550622cf)
 Harvest record (TL, 2026-10-03 04:48 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #86 closed at acceptance.
+
+B013 MERGED — Marketplace UX for experts and artifacts: packages/marketplace-ui view-model layer (provenance/rights/verification/entitlement state machine/certification-badge-only-when-record-backed/fail-closed purchase), apps/web/src/marketplace runtime+corpus+screens absorbing console-era recipes (21 tests preserved), /marketplace/** + /demo/marketplace/** mounts; TL parity ALL GREEN at 304f87a (71/71 tasks on two full runs); 39 files +6352/-22
+PR #99 (merged 531f8c7)
+Harvest record (TL, 2026-10-03 13:48 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #88 closed at acceptance.
