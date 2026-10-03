@@ -120,17 +120,17 @@ describe('first-run landing (UX1.0 Level 0) — the DEFAULT unauthenticated expe
 });
 
 describe('core route matrix stubs (UXM1.0)', () => {
-  // B008 + B010 + B012 + B014: `/cases`, `/bodies`, `/research` and
-  // `/operations` are upgraded from B001 stubs to session-aware server
-  // components (asserted structurally below like the B007 home); the
-  // remaining core routes stay stubs until their work orders fill them.
+  // B008 + B010 + B012 + B014 + B013: `/cases`, `/bodies`, `/research`,
+  // `/operations` and `/marketplace` are upgraded from B001 stubs to
+  // session-aware server components (asserted structurally below like the
+  // B007 home); the remaining core routes stay stubs until their work
+  // orders fill them.
   const routes: ReadonlyArray<[string, React.ReactElement]> = [
-    ['marketplace', <MarketplacePage key="marketplace" />],
     ['settings', <SettingsPage key="settings" />],
   ];
 
   it('renders one stub per remaining core route, each with a route header (positive)', () => {
-    expect(routes).toHaveLength(2);
+    expect(routes).toHaveLength(1);
     for (const [route, element] of routes) {
       const html = render(element);
       expect(html).toContain(`data-arena-route="${route}"`);
@@ -195,6 +195,15 @@ describe('core route matrix stubs (UXM1.0)', () => {
     // B012 evaluation. The composition is covered by the replay suites
     // (src/replay/*) through injected session probes.
     expect(ReplayPage.constructor.name).toBe('AsyncFunction');
+  });
+
+  it('mounts /marketplace as an async session-aware server component (B013)', () => {
+    // The mount delegates to resolveMarketplaceExperience (probe ->
+    // auth-required | the marketplace browse view); same structural
+    // posture as the B007 home / B010 bodies. The composition is covered
+    // by the marketplace suites (src/marketplace/*) through injected
+    // session probes.
+    expect(MarketplacePage.constructor.name).toBe('AsyncFunction');
   });
 });
 
@@ -320,11 +329,11 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
   });
 
   it('prerenders every remaining core route stub with the standard empty state (positive)', () => {
-    // B008 + B010 + B012 + B014: `/cases`, `/bodies`, `/research` and
-    // `/operations` are session-aware dynamic routes (asserted above and
-    // below); only the untouched core-route stubs prerender.
+    // B008 + B010 + B012 + B014 + B013: `/cases`, `/bodies`, `/research`,
+    // `/operations` and `/marketplace` are session-aware dynamic routes
+    // (asserted above and below); only the untouched core-route stubs
+    // prerender.
     for (const route of [
-      'marketplace',
       'settings',
     ] as const) {
       const html = readBuilt(`${route}.html`);
@@ -332,6 +341,15 @@ describe.skipIf(!existsSync(buildDir))('next build output (product host)', () =>
       expect(html).toContain('data-arena-state="empty"');
       expect(html).toContain('data-arena-shell="true"');
     }
+  });
+
+  it('compiles the session-aware marketplace route as a dynamic route (B013)', () => {
+    // /marketplace reads the session cookie through the B004 boundary, so
+    // it compiles to server-rendered artifacts (marketplace/page.js)
+    // rather than a prerendered marketplace.html — no anonymous
+    // marketplace is ever prerendered (fail closed).
+    expect(existsSync(new URL('marketplace/page.js', buildDir))).toBe(true);
+    expect(existsSync(new URL('marketplace.html', buildDir))).toBe(false);
   });
 
   it('compiles the session-aware research and evaluation routes as dynamic routes (B012)', () => {

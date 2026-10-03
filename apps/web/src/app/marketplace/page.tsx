@@ -1,20 +1,29 @@
 import type { Metadata } from 'next';
 
-import { RouteStub } from '../_lib/route-stub.js';
+import {
+  MarketplaceAuthRequiredView,
+  MarketplaceHomeView,
+  resolveMarketplaceExperience,
+} from '../../marketplace/index.js';
 
 export const metadata: Metadata = {
   title: 'Marketplace',
 };
 
-/** Structural stub (B013 fills marketplace UX): shared shell + route header + standard empty state. */
-export default function MarketplacePage() {
-  return (
-    <RouteStub
-      route="marketplace"
-      title="Marketplace"
-      description="Discover artifacts, expertise and datasets — with verification, provenance, rights and compatibility in the open."
-      emptyTitle="No marketplace listings yet"
-      emptyHint="Artifact and expert listings will appear here, clearly separated from your operational state."
-    />
-  );
+/**
+ * `/marketplace` — the marketplace browse screen (Work Order B013; issue
+ * #88; UXM1.0 §Core routes). An async server component: the browser session
+ * is probed FIRST through the B004 boundary (fail closed) — an
+ * unauthenticated visitor gets the auth-required notice, NEVER an anonymous
+ * marketplace. The authenticated visitor gets the expert-service and
+ * artifact listings scoped to their tenant, with provenance, rights,
+ * verification, certification presence and explicit entitlement states —
+ * purchase is never certification.
+ */
+export default async function MarketplacePage() {
+  const experience = await resolveMarketplaceExperience();
+  if (experience.kind === 'auth-required') {
+    return <MarketplaceAuthRequiredView code={experience.code} />;
+  }
+  return <MarketplaceHomeView view={experience.view} />;
 }
