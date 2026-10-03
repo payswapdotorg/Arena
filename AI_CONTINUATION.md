@@ -143,3 +143,4 @@ Epoch is one client of the generic API.
 
 After B019, the C-series in spec/human-escalation-work-items.md becomes the next roadmap.
 - B016 MERGED
+- B011 MERGED

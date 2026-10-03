@@ -276,7 +276,7 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B008 MERGED
 - B009 MERGED
 - B010 MERGED
-- B011 AUTHORIZED
+- B011 MERGED
 - B012 MERGED
 - B013 AUTHORIZED
 - B014 MERGED
@@ -313,3 +313,7 @@ Harvest record (TL, 2026-10-02 21:40 UTC): worker delivery branch-verified at th
 B017 MERGED — full product E2E, role-switch simulation, UX/operational conformance
 PR #97 (merged 12a517b)
 Harvest record (TL, 2026-10-02 23:58 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA f5cc908, gate-parity green; product-e2e 28/28 + ux 46/46 batteries re-run locally under Node 22.20 with the real-Chromium viewport layer); intake a34a1e0 applies the worker's architecture-question verdicts (UX-VIEWPORT-01 root fix — scroll-region rule family + code break-anywhere, strict viewport expectations restored; DEMO_RESET_HINT narrowed to actual semantics; test:e2e/test:ux manifest wiring); issue #96 closed at acceptance.
+
+B011 MERGED — environment/trajectory replay viewer + interactive run inspection; frontier B018 waits on B013, B019 on B018
+PR #98 (merged 550622cf)
+Harvest record (TL, 2026-10-03 04:48 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #86 closed at acceptance.
