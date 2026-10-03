@@ -1,0 +1,28 @@
+{
+  "name": "@arena/marketplace-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The reusable view model for Arena marketplace surfaces (Work Order B013; issue #88): pure, deterministic, frozen-data-driven projections of expert-service and artifact listings — identity, the provenance summary under the evidence truth class, the rights posture, the verification status under its own truth class, certification presence ONLY when a certification record backs it (composition-scoped: Body Version × Substrate × Environment × Runtime × Suite — a marketplace purchase is never a certification), and the explicit entitlement state machine (granted / revoked / expired / pending, read from the append-only grant record lineage, never implied by ownership). Zero runtime dependencies: the package projects canonical marketplace objects structurally through honest readers (a missing or foreign-typed field degrades to unknown, never a guess) — a projection, never a second domain model, with no client-side price or entitlement logic.",
+  "exports": {
+    ".": { "types": "./src/index.ts", "default": "./src/index.ts" }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
