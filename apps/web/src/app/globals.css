@@ -382,3 +382,12 @@ body {
 .capability-gate__alt {
   font-size: var(--arena-text-sm);
 }
+
+/* B017 intake (UX-VIEWPORT-01): the corpus-hash code elements render a
+   72-char canonical-JSON prefix; on a 390px viewport an unbreakable
+   <code> line spills the document. Break anywhere instead of
+   overflowing — the hash stays selectable and legible. */
+.capability-demo-banner__hash code,
+.demo-inventory__hash code {
+  overflow-wrap: anywhere;
+}

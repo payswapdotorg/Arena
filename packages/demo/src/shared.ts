@@ -62,9 +62,11 @@ export const DEMO_BADGE_NOTE = 'deterministic seed' as const;
 /** The reset control label. */
 export const DEMO_RESET_LABEL = 'Reset demo' as const;
 
-/** The reset control explanation. */
+/** The reset control explanation. (B017 intake: narrowed to the product's
+ * actual semantics — store.reset() reseeds the corpus records; guided-walk
+ * writes persist until the app process restarts, which is the total reset.) */
 export const DEMO_RESET_HINT =
-  'Reset drops the demo workspace and reseeds it to the identical corpus hash.' as const;
+  'Reset reseeds the demo corpus to the identical hash; anything you wrote in the guided walk persists until the app restarts.' as const;
 
 /** The frozen labelling contract itself (one object, one truth). */
 export const DEMO_LABELLING = Object.freeze({

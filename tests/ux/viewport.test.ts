@@ -76,21 +76,18 @@ const PAGES = [
  *   /demo/cases       capability-demo-banner__hash <code> (394px — the
  *                     unbreakable corpus-hash prefix line)
  *
- * PROPOSED ROOT FIX (TL applies on the owning surfaces): add
- * `overflow-x: auto` to the table scroll-region classes in
- * packages/ui-platform/src/styles/components.css (one rule family),
- * plus `overflow-wrap: anywhere` on the demo-banner hash code element
- * (apps/web B008 surface) — or render the 8-char FNV hash summary
- * instead of the canonical-JSON prefix.
+ * ROOT FIX APPLIED AT B017 INTAKE (TL, per the tripwire contract): the
+ * one-rule scroll-region family now lives in
+ * packages/ui-platform/src/styles/components.css (`overflow-x: auto` +
+ * `max-width: 100%` on every `*__scroll` wrapper) and
+ * `overflow-wrap: anywhere` covers both corpus-hash code elements
+ * (capability-demo-banner__hash + demo-inventory__hash) in
+ * apps/web/src/app/globals.css. KNOWN_OVERFLOW_PAGES is therefore
+ * EMPTY: every page is held to the strict no-overflow expectation.
  */
 const KNOWN_OVERFLOW_PAGES: ReadonlySet<string> = new Set([
-  '/demo/bodies',
-  '/demo/research',
-  '/demo/evaluation',
-  '/demo/operations',
-  '/demo/operations/jobs',
-  '/demo/operations/capacity',
-  '/demo/cases',
+  // B017 intake: UX-VIEWPORT-01 fixed on the owning surfaces — the
+  // tripwire list is empty and the strict expectation applies everywhere.
 ]);
 
 describe('B017 M2 — overflow safety (static analysis of the real CSS)', () => {
@@ -165,9 +162,26 @@ describe.skipIf(BASE === undefined || !PLAYWRIGHT_AVAILABLE)(
               const clientWidth = documentElement.clientWidth;
               const scrollWidth = documentElement.scrollWidth;
               const offenders = [];
+              // B017 intake: an element inside a designated horizontal
+              // scroll region (overflow-x auto|scroll on an ancestor other
+              // than body/html) LEGITIMATELY extends past the viewport —
+              // that is scrollable content, not page overflow. The
+              // document-level scrollWidth check below already proves the
+              // page itself does not overflow; this element-level check
+              // flags only content that escapes with NO scroll region
+              // owning it.
+              const inScrollRegion = (el) => {
+                let p = el.parentElement;
+                while (p && p !== document.body && p !== document.documentElement) {
+                  const ox = getComputedStyle(p).overflowX;
+                  if (ox === 'auto' || ox === 'scroll') return true;
+                  p = p.parentElement;
+                }
+                return false;
+              };
               for (const element of document.querySelectorAll('body *')) {
                 const rect = element.getBoundingClientRect();
-                if (rect.width > 0 && rect.right > clientWidth + 1) {
+                if (rect.width > 0 && rect.right > clientWidth + 1 && !inScrollRegion(element)) {
                   const firstClass =
                     typeof element.className === 'string' && element.className !== ''
                       ? '.' + element.className.split(/\\s+/)[0]

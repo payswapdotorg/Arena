@@ -22,7 +22,9 @@
     "product:seed": "node scripts/product/seed.mjs",
     "test": "turbo run test",
     "test:product": "node scripts/product/tests/run-tests.mjs",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "test:e2e": "node tests/product-e2e/run.mjs",
+    "test:ux": "node tests/ux/run.mjs"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",

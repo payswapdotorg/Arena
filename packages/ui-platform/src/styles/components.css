@@ -639,6 +639,48 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Table scroll regions (B017 intake — UX-VIEWPORT-01 root fix)        */
+/*                                                                     */
+/* The role="region" table wrappers (tabIndex={0}, aria-label) exist   */
+/* in every surface's markup but never had a stylesheet backing, so    */
+/* wide tables overflowed the mobile viewport instead of scrolling     */
+/* inside their focusable region. One rule family gives every          */
+/* __scroll wrapper horizontal scrolling; the wrappers are already     */
+/* keyboard-focusable, so the overflow becomes reachable by keyboard   */
+/* (UXM1.0 §Responsive: content never clipped, only scrolled).         */
+/* Desktop is unaffected: overflow-x:auto renders no scrollbar when    */
+/* the table fits.                                                     */
+/* ------------------------------------------------------------------ */
+
+.body-matrix__scroll,
+.research-benchmarks__scroll,
+.evaluation-reports__scroll,
+.evaluation-verifications__scroll,
+.evaluation-certifications__scroll,
+.evaluation-certification-stages__scroll,
+.evaluation-report-metrics__scroll,
+.evaluation-verification-scope__scroll,
+.operations-jobs__scroll,
+.operations-job-attempts__scroll,
+.operations-job-events__scroll,
+.operations-capacity__scroll,
+.operations-provider__scroll,
+.operations-slos__scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* B017 intake (UX-VIEWPORT-01, research surface): the research surface
+   renders long unbreakable <code> tokens — 40-char evidence digests in
+   the runs section, lineage digests and comma-joined parent paths. Left
+   unbreakable they spill the 390px viewport (up to 875px measured).
+   Break-anywhere keeps them selectable, legible and inside the page;
+   it only activates when a token would otherwise exceed its line box. */
+.research-surface code {
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------------ */
 /* Reduced motion (UX1.0 §Motion)                                      */
 /* ------------------------------------------------------------------ */
 
