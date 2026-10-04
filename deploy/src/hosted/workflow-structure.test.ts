@@ -115,7 +115,11 @@ describe('B015 deploy-preview.yml — deploy job (fail closed)', () => {
     expect(WORKFLOW).toContain('pnpm dlx vercel@62.1.0 pull --yes --environment=production');
     expect(WORKFLOW).toContain('pnpm dlx vercel@62.1.0 build --prod');
     expect(WORKFLOW).toContain('pnpm dlx vercel@62.1.0 deploy --prebuilt --prod');
-    expect(WORKFLOW).toContain('working-directory: apps/web');
+    // Launch-gate posture fix (B019 gate, TL): the vercel steps run from the
+    // repository ROOT with the Vercel project rootDirectory=apps/web. The old
+    // `working-directory: apps/web` + rootDirectory-less posture double-joined
+    // the CLI path and failed to resolve the workspace node_modules trace.
+    expect(WORKFLOW).not.toContain('working-directory: apps/web');
   });
 
   it('smoke-checks the deployment URL (fail closed on non-2xx/3xx)', () => {
