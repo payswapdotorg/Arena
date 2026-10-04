@@ -139,7 +139,7 @@
     {
       "id": "RES-COMP-01",
       "title": "Error recovery: global error boundaries catch React component errors",
-      "file": "apps/web/src/a11y/testing/indexts",
+      "file": "apps/web/src/a11y/testing/index.ts",
       "layer": "composition",
       "ownerSurface": "apps/web/src/a11y/components (B018 accessible error states)",
       "status": "pass"
@@ -173,7 +173,7 @@
       "title": "Auto-save: work automatically saved during use with recovery options",
       "file": "apps/web/src/responsive/testing/index.ts",
       "layer": "composition",
-      "ownerSurface": "apps/web/src/respective/utils (B018 data recovery)",
+      "ownerSurface": "apps/web/src/responsive/utils (B018 data recovery)",
       "status": "pass"
     },
     {
