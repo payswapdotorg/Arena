@@ -1,0 +1,316 @@
+{
+  "manifestVersion": "1.0.0",
+  "workOrder": "B018",
+  "description": "The B018 accessibility, mobile, performance, resilience and launch polish manifest: every conformance check mapped to the surface that OWNS the behavior it asserts. The TL uses this at every future intake — a change to a listed surface re-runs the mapped checks.",
+  "updatedAt": "2026-10-03",
+  "legend": {
+    "status": "pass = green at the recorded run; known-defect = the check encodes a discovered defect as a characterization tripwire (fails the moment the defect is fixed, forcing the strict expectation); env-dependent = requires the host to provide Playwright + Chromium (self-skips otherwise).",
+    "layers": "composition = in-process composition + static markup (always runs); served = HTTP against the runner-booted next start; browser = real headless Chromium measurement."
+  },
+  "checks": [
+    {
+      "id": "A11Y-COMP-01",
+      "title": "Focus management: keyboard navigation works across all interactive elements with logical tab order",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/a11y/hooks (B018 focus management primitives)",
+      "status": "pass"
+    },
+    {
+      "id": "A11Y-COMP-02", 
+      "title": "Screen reader support: semantic HTML structure with proper heading hierarchy and ARIA landmarks",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/a11y/utils (B018 semantic markup helpers)",
+      "status": "pass"
+    },
+    {
+      "id": "A11Y-COMP-03",
+      "title": "Color contrast: minimum 4.5:1 contrast ratio for normal text across all components",
+      "file": "apps/web/src/a11y/testing/index.ts", 
+      "layer": "composition",
+      "ownerSurface": "packages/ui-platform/src/styles (B001 design system tokens)",
+      "status": "pass"
+    },
+    {
+      "id": "A11Y-COMP-04",
+      "title": "Form accessibility: all form inputs have proper labels and error states",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition", 
+      "ownerSurface": "apps/web/src/a11y/components (B018 accessible form components)",
+      "status": "pass"
+    },
+    {
+      "id": "A11Y-COMP-05",
+      "title": "Reduced motion support: respects prefers-reduced-motion media query",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/a11y/hooks (B018 reduced motion detection)",
+      "status": "pass"
+    },
+    {
+      "id": "A11Y-COMP-06",
+      "title": "Live regions: dynamic content updates announced to screen readers",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/a11y/hooks (B018 live region primitives)",
+      "status": "pass"
+    },
+    {
+      "id": "MOB-COMP-01",
+      "title": "Responsive navigation: bottom nav on mobile (390px), side rail on desktop (1280px)",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/responsive/components (B018 responsive navigation)",
+      "status": "pass"
+    },
+    {
+      "id": "MOB-COMP-02",
+      "title": "Touch targets: all interactive elements meet 44x44px minimum size",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/responsive/utils (B018 touch target sizing)",
+      "status": "pass"
+    },
+    {
+      "id": "MOB-COMP-03",
+      "title": "Responsive grid: content reflows appropriately across all breakpoints",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/responsive/components (B018 responsive grid)",
+      "status": "pass"
+    },
+    {
+      "id": "MOB-COMP-04",
+      "title": "Mobile layout: bottom sheet for mobile, modal for desktop",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/responsive/components (B018 responsive modals)",
+      "status": "pass"
+    },
+    {
+      "id": "MOB-COMP-05",
+      "title": "Viewport configuration: proper viewport meta tag and responsive design tokens",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/app/layout.tsx (B001 responsive shell)",
+      "status": "pass"
+    },
+    {
+      "id": "MOB-COMP-06",
+      "title": "Touch gesture support: tap, swipe, and long-press gesture handling",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/responsive/hooks (B018 touch gesture detection)",
+      "status": "pass"
+    },
+    {
+      "id": "PERF-EXT-01",
+      "title": "Performance budgets: steady-baseline load shape meets all SLOs (availability ≥ 0.995, latency ratio ≥ 0.95)",
+      "file": "tests/performance/src/perf.test.ts",
+      "layer": "served",
+      "ownerSurface": "tests/performance (A036 PERF1.0 extended for B018 product budgets)",
+      "status": "pass"
+    },
+    {
+      "id": "PERF-EXT-02",
+      "title": "Adversarial performance: malformed requests breach availability budget → suite FAILS (fail-closed)",
+      "file": "tests/performance/src/perf.test.ts",
+      "layer": "served",
+      "ownerSurface": "tests/performance (A036 PERF1.0 extended for B018 product budgets)",
+      "status": "pass"
+    },
+    {
+      "id": "PERF-EXT-03",
+      "title": "Reproducibility: same (shape, seed) → identical outcome sequence and identical evidence digest",
+      "file": "tests/performance/src/perf.test.ts",
+      "layer": "composition+served",
+      "ownerSurface": "tests/performance (A036 PERF1.0 extended for B018 product budgets)",
+      "status": "pass"
+    },
+    {
+      "id": "PERF-EXT-04",
+      "title": "Performance evidence: wall-clock recorded but never asserted; digest excludes timing",
+      "file": "tests/performance/src/perf.test.ts",
+      "layer": "composition+served",
+      "ownerSurface": "tests/performance (A036 PERF1.0 extended for B018 product budgets)",
+      "status": "pass"
+    },
+    {
+      "id": "RES-COMP-01",
+      "title": "Error recovery: global error boundaries catch React component errors",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/a11y/components (B018 accessible error states)",
+      "status": "pass"
+    },
+    {
+      "id": "RES-COMP-02",
+      "title": "Loading states: skeleton screens and progress indicators for all async operations",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/responsive/components (B018 responsive loading)",
+      "status": "pass"
+    },
+    {
+      "id": "RES-COMP-03",
+      "title": "Empty states: contextual messaging and actionable next steps for empty content",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/a11y/components (B011Y accessible empty states)",
+      "status": "pass"
+    },
+    {
+      "id": "RES-COMP-04",
+      "title": "Network error handling: graceful degradation when network unavailable",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/responsive/hooks (B018 network detection)",
+      "status": "pass"
+    },
+    {
+      "id": "RES-COMP-05",
+      "title": "Auto-save: work automatically saved during use with recovery options",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/responsive/utils (B018 data recovery)",
+      "status": "pass"
+    },
+    {
+      "id": "UI-VIS-01",
+      "title": "Visual regression: viewport/responsive variation does not violate architecture markup shape",
+      "file": "tests/ux/viewport.test.ts",
+      "layer": "browser",
+      "ownerSurface": "packages/ui-platform/src/styles (B001 responsive shell) + apps/web/src/** table markup (B007-B017)",
+      "status": "known-defect",
+      "finding": "UI-VIS-01: mobile-only overflow in demo surfaces (741px, 875px, 840px, 684px, 826px, 472px, 394px) due to missing overflow-x: auto on table scroll-region classes. Encoded as characterization tripwire: the battery asserts the defect's presence and FAILS when surfaces are fixed, forcing the strict expectation. Proposed root fix (TL-owned surfaces): overflow-x: auto on table scroll-region classes in packages/ui-platform/src/styles/components.css + overflow-wrap: anywhere on demo-banner hash code."
+    },
+    {
+      "id": "UI-VIS-02",
+      "title": "Static overflow-safety: minmax(0,1fr) shell grids, no fixed CSS width > 390px, three breakpoints",
+      "file": "tests/ux/viewport.test.ts",
+      "layer": "composition",
+      "ownerSurface": "packages/ui-platform/src/styles/components.css (B001/B007 responsive shell)",
+      "status": "pass"
+    },
+    {
+      "id": "UI-VIS-03",
+      "title": "Responsive shell switches zones (bottom-nav at 390, rail at 1280); keyboard reaches real interactive elements",
+      "file": "tests/ux/viewport.test.ts",
+      "layer": "browser",
+      "ownerSurface": "apps/web/src/app/layout.tsx + packages/ui-platform shell/a11y (B001/B007)",
+      "status": "pass"
+    },
+    {
+      "id": "DOC-REL-01",
+      "title": "Accessibility statement: published conformance status and contact information",
+      "file": "docs/release/product/accessibility-statement.md",
+      "layer": "composition",
+      "ownerSurface": "docs/release/product/* (B018 launch documentation)",
+      "status": "pass"
+    },
+    {
+      "id": "DOC-REL-02", 
+      "title": "Mobile support statement: documented capabilities and limitations",
+      "file": "docs/release/product/mobile-support-statement.md",
+      "layer": "composition",
+      "ownerSurface": "docs/release/product/* (B018 launch documentation)",
+      "status": "pass"
+    },
+    {
+      "id": "DOC-REL-03",
+      "title": "Performance budget: documented budgets and monitoring approach",
+      "file": "docs/release/product/performance-budget.md",
+      "layer": "composition",
+      "ownerSurface": "docs/release/product/* (B018 launch documentation)",
+      "status": "pass"
+    },
+    {
+      "id": "DOC-REL-04",
+      "title": "Resilience documentation: error handling and recovery procedures",
+      "file": "docs/release/product/resilience-error-recovery.md",
+      "layer": "composition",
+      "ownerSurface": "docs/release/product/* (B018 launch documentation)",
+      "status": "pass"
+    },
+    {
+      "id": "DOC-REL-05",
+      "title": "Launch polish checklist: comprehensive review of all quality gates",
+      "file": "docs/release/product/launch-polish-checklist.md",
+      "layer": "composition",
+      "ownerSurface": "docs/release/product/* (B018 launch documentation)",
+      "status": "pass"
+    },
+    {
+      "id": "SCREEN-A11Y-01",
+      "title": "Cockpit screen: role switcher accessible, navigation landmarks present, truth labels properly categorized",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/cockpit/* (B007 cockpit)",
+      "status": "pass"
+    },
+    {
+      "id": "SCREEN-A11Y-02",
+      "title": "Capability screen: case details accessible, task list navigable, status indicators properly labeled",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/capability/* (B008 capability)",
+      "status": "pass"
+    },
+    {
+      "id": "SCREEN-A11Y-03",
+      "title": "Expert screen: workbench accessible, assignment list navigable, evidence section properly structured",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/expert/* (B009 expert)",
+      "status": "pass"
+    },
+    {
+      "id": "SCREEN-A11Y-04",
+      "title": "Evaluation screen: results accessible, verification section properly labeled, certification badges distinct",
+      "file": "apps/web/src/a11y/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/evaluation/* (B012 evaluation)",
+      "status": "pass"
+    },
+    {
+      "id": "SCREEN-MOB-01",
+      "title": "Cockpit screen: responsive layout, bottom nav on mobile, touch-friendly controls",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/cockpit/* (B007 cockpit)",
+      "status": "pass"
+    },
+    {
+      "id": "SCREEN-MOB-02",
+      "title": "Capability screen: responsive grid, mobile-optimized table, touch-friendly buttons",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/capability/* (B008 capability)",
+      "status": "pass"
+    },
+    {
+      "id": "SCREEN-MOB-03",
+      "title": "Expert screen: mobile bottom sheet, responsive layout, touch targets adequate",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/expert/* (B009 expert)",
+      "status": "pass"
+    },
+    {
+      "id": "SCREEN-MOB-04",
+      "title": "Evaluation screen: responsive charts, mobile-optimized text, responsive modal",
+      "file": "apps/web/src/responsive/testing/index.ts",
+      "layer": "composition",
+      "ownerSurface": "apps/web/src/evaluation/* (B012 evaluation)",
+      "status": "pass"
+    }
+  ],
+  "notes": [
+    "The B018 battery extends the B017 manifest pattern with new a11y and responsive layers, performance extensions for product-shaped budgets, resilience checks for error recovery, and comprehensive launch documentation.",
+    "All new surfaces are owned by B018 and follow the established patterns from B017 composition/served/browser layer model.",
+    "The UI-VIS-01 known-defect mirrors B017's UX-VIEWPORT-01 pattern - the defects live on forbidden surfaces (packages/ui-platform CSS + apps/web table markup), so B018 records them as tripwires and proposes the root fix for TL intake.",
+    "Performance testing extends A036 PERF1.0 with product-shaped budget assertions while maintaining the deterministic house style.",
+    "Launch documentation provides comprehensive coverage of all B018 acceptance criteria for the B019 launch gate."
+  ]
+}

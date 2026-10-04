@@ -6,23 +6,233 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@arena/protocol-core": [
-        "../../packages/protocol-core/src/index.ts"
-      ],
-      "@arena/observability": [
-        "../../packages/observability/src/index.ts"
-      ],
-      "@arena/arena-sdk": [
-        "../../packages/arena-sdk/src/index.ts"
+      "@arena/agent-body": [
+        "../../packages/agent-body/src/index.ts"
       ],
       "@arena/api-fabric": [
         "../../services/api/src/index.ts"
       ],
+      "@arena/api-read": [
+        "../../services/api-read/src/index.ts"
+      ],
+      "@arena/arena-sdk": [
+        "../../packages/arena-sdk/src/index.ts"
+      ],
+      "@arena/artifact-protocol": [
+        "../../packages/artifact-protocol/src/index.ts"
+      ],
+      "@arena/artifact-service": [
+        "../../services/artifacts/src/index.ts"
+      ],
+      "@arena/auth": [
+        "../../packages/auth/src/index.ts"
+      ],
+      "@arena/auth-service": [
+        "../../services/auth/src/index.ts"
+      ],
+      "@arena/billing-service": [
+        "../../services/billing/src/index.ts"
+      ],
+      "@arena/body-forge": [
+        "../../packages/body-forge/src/index.ts"
+      ],
+      "@arena/body-forge-fabric": [
+        "../../services/body-forge/src/index.ts"
+      ],
+      "@arena/body-registry": [
+        "../../packages/body-registry/src/index.ts"
+      ],
+      "@arena/body-registry-fabric": [
+        "../../services/body-registry/src/index.ts"
+      ],
+      "@arena/body-software-engineer": [
+        "../../bodies/software-engineer/src/index.ts"
+      ],
+      "@arena/body-structural-engineer": [
+        "../../bodies/structural-engineer/src/index.ts"
+      ],
+      "@arena/body-ui": [
+        "../../packages/body-ui/src/index.ts"
+      ],
+      "@arena/capability-case": [
+        "../../packages/capability-case/src/index.ts"
+      ],
+      "@arena/capability-graph": [
+        "../../packages/capability-graph/src/index.ts"
+      ],
+      "@arena/certification": [
+        "../../packages/certification/src/index.ts"
+      ],
+      "@arena/certification-fabric": [
+        "../../services/certification/src/index.ts"
+      ],
+      "@arena/compatibility": [
+        "../../packages/compatibility/src/index.ts"
+      ],
+      "@arena/compatibility-fabric": [
+        "../../services/compatibility/src/index.ts"
+      ],
+      "@arena/control-ui": [
+        "../../packages/control-ui/src/index.ts"
+      ],
+      "@arena/datasets": [
+        "../../packages/datasets/src/index.ts"
+      ],
+      "@arena/demo": [
+        "../../packages/demo/src/index.ts"
+      ],
       "@arena/deploy": [
         "../../deploy/src/index.ts"
       ],
+      "@arena/entitlements": [
+        "../../packages/entitlements/src/index.ts"
+      ],
+      "@arena/environment-protocol": [
+        "../../packages/environment-protocol/src/index.ts"
+      ],
+      "@arena/environment-runner": [
+        "../../services/environment-runner/src/index.ts"
+      ],
+      "@arena/environment-runtime": [
+        "../../packages/environment-runtime/src/index.ts"
+      ],
+      "@arena/environment-software-engineer": [
+        "../../environments/software-engineer/src/index.ts"
+      ],
+      "@arena/environment-structural-engineer": [
+        "../../environments/structural-engineer/src/index.ts"
+      ],
+      "@arena/evaluation": [
+        "../../packages/evaluation/src/index.ts"
+      ],
+      "@arena/evaluation-fabric": [
+        "../../services/evaluation/src/index.ts"
+      ],
+      "@arena/expert-matching-fabric": [
+        "../../services/expert-matching/src/index.ts"
+      ],
+      "@arena/expert-qualification": [
+        "../../packages/expert-qualification/src/index.ts"
+      ],
+      "@arena/expert-registry": [
+        "../../packages/expert-registry/src/index.ts"
+      ],
+      "@arena/hosted-neon-postgres": [
+        "../../adapters/hosted/neon-postgres/src/index.ts"
+      ],
+      "@arena/hosted-neon-postgres/test-support": [
+        "../../adapters/hosted/neon-postgres/src/test-support.ts"
+      ],
+      "@arena/hosted-r2-object-store": [
+        "../../adapters/hosted/r2-object-store/src/index.ts"
+      ],
+      "@arena/hosted-r2-object-store/test-support": [
+        "../../adapters/hosted/r2-object-store/src/test-support.ts"
+      ],
+      "@arena/hosted-upstash-redis": [
+        "../../adapters/hosted/upstash-redis/src/index.ts"
+      ],
+      "@arena/hosted-upstash-redis/test-support": [
+        "../../adapters/hosted/upstash-redis/src/test-support.ts"
+      ],
+      "@arena/job-orchestrator": [
+        "../../services/job-orchestrator/src/index.ts"
+      ],
+      "@arena/job-protocol": [
+        "../../packages/job-protocol/src/index.ts"
+      ],
+      "@arena/learning": [
+        "../../packages/learning/src/index.ts"
+      ],
+      "@arena/learning-fabric": [
+        "../../services/learning/src/index.ts"
+      ],
+      "@arena/marketplace-artifacts-fabric": [
+        "../../services/marketplace-artifacts/src/index.ts"
+      ],
+      "@arena/marketplace-experts-fabric": [
+        "../../services/marketplace-experts/src/index.ts"
+      ],
+      "@arena/marketplace-ui": [
+        "../../packages/marketplace-ui/src/index.ts"
+      ],
+      "@arena/model-substrate": [
+        "../../packages/model-substrate/src/index.ts"
+      ],
+      "@arena/observability": [
+        "../../packages/observability/src/index.ts"
+      ],
+      "@arena/observability-service": [
+        "../../services/observability/src/index.ts"
+      ],
       "@arena/performance": [
         "./src/index.ts"
+      ],
+      "@arena/persistence": [
+        "../../packages/persistence/src/index.ts"
+      ],
+      "@arena/persistence-service": [
+        "../../services/persistence/src/index.ts"
+      ],
+      "@arena/product-flows": [
+        "../../packages/product-flows/src/index.ts"
+      ],
+      "@arena/protocol-core": [
+        "../../packages/protocol-core/src/index.ts"
+      ],
+      "@arena/provenance": [
+        "../../packages/provenance/src/index.ts"
+      ],
+      "@arena/read-model": [
+        "../../packages/read-model/src/index.ts"
+      ],
+      "@arena/read-model-service": [
+        "../../services/read-model/src/index.ts"
+      ],
+      "@arena/replay-ui": [
+        "../../packages/replay-ui/src/index.ts"
+      ],
+      "@arena/role-context": [
+        "../../packages/role-context/src/index.ts"
+      ],
+      "@arena/security": [
+        "../../packages/security/src/index.ts"
+      ],
+      "@arena/security-service": [
+        "../../services/security/src/index.ts"
+      ],
+      "@arena/skill-extraction": [
+        "../../packages/skill-extraction/src/index.ts"
+      ],
+      "@arena/skill-extraction-fabric": [
+        "../../services/skill-extraction/src/index.ts"
+      ],
+      "@arena/task-compiler-fabric": [
+        "../../services/task-compiler/src/index.ts"
+      ],
+      "@arena/task-spec": [
+        "../../packages/task-spec/src/index.ts"
+      ],
+      "@arena/trajectory": [
+        "../../packages/trajectory/src/index.ts"
+      ],
+      "@arena/trajectory-store": [
+        "../../services/trajectory-store/src/index.ts"
+      ],
+      "@arena/ui-platform": [
+        "../../packages/ui-platform/src/index.ts"
+      ],
+      "@arena/verification": [
+        "../../packages/verification/src/index.ts"
+      ],
+      "@arena/verification-fabric": [
+        "../../services/verification/src/index.ts"
+      ],
+      "@arena/web": [
+        "../../apps/web/src/index.ts"
+      ],
+      "@arena/workbench": [
+        "../../packages/workbench/src/index.ts"
       ]
     }
   },
