@@ -56,11 +56,11 @@ describe('B018 Accessibility Conformance Battery', () => {
           role: 'navigation', 
           'aria-label': 'Main navigation' 
         },
-          React.createElement('ul',
-            React.createElement('li',
+          React.createElement('ul', {},
+            React.createElement('li', {},
               React.createElement('a', { href: '#home' }, 'Home')
             ),
-            React.createElement('li',
+            React.createElement('li', {},
               React.createElement('a', { href: '#about' }, 'About')
             )
           )
@@ -71,7 +71,7 @@ describe('B018 Accessibility Conformance Battery', () => {
       expect(markup).toContain('role="navigation"');
       expect(markup).toContain('aria-label="Main navigation"');
       
-      // Check for navigation elements (check for actual content instead of tags)
+      // Check for navigation elements
       expect(markup).toContain('Home');
       expect(markup).toContain('About');
     });
@@ -150,11 +150,11 @@ describe('B018 Accessibility Conformance Battery', () => {
             role: 'navigation', 
             'aria-label': 'Context navigation' 
           },
-            React.createElement('ul',
-              React.createElement('li',
+            React.createElement('ul', {},
+              React.createElement('li', {},
                 React.createElement('a', { href: '/demo/cockpit' }, 'Home')
               ),
-              React.createElement('li',
+              React.createElement('li', {},
                 React.createElement('a', { href: '/demo/capability' }, 'Cases')
               )
             )

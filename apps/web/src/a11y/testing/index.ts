@@ -34,17 +34,17 @@ export const A11yTest = {
     const errors: string[] = [];
     let lastLevel = 0;
 
-    headings.forEach((heading, index) => {
+    headings.forEach((heading) => {
       const level = parseInt(heading.tagName.charAt(1));
       
       if (heading.id) {
         // Check if heading has proper ID for navigation
         const label = heading.textContent?.trim();
         if (label && label.length < 3) {
-          errors.push(`Heading ${index + 1} text is too short: "${label}"`);
+          errors.push(`Heading text is too short: "${label}"`);
         }
       } else {
-        errors.push(`Heading ${index + 1} is missing an ID attribute`);
+        errors.push('Heading is missing an ID attribute');
       }
 
       if (level > lastLevel + 1) {
@@ -146,7 +146,7 @@ export const A11yTest = {
     const textElements = container.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6, li, td, th');
     
     textElements.forEach(element => {
-      const style = window.getComputedStyle(element);
+      const style = (window as any).getComputedStyle(element);
       const color = style.color;
       const backgroundColor = style.backgroundColor;
       
@@ -168,7 +168,7 @@ export const A11yTest = {
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
     
-    interactiveElements.forEach((element, index) => {
+    interactiveElements.forEach((element) => {
       const tabIndex = element.getAttribute('tabindex');
       if (tabIndex === '-1' && element.tagName !== 'BUTTON') {
         errors.push(`Interactive element has tabindex="-1": ${element.tagName}`);

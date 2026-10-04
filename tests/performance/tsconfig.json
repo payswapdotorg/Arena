@@ -1,9 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": [
-      "node"
-    ],
     "baseUrl": ".",
     "paths": {
       "@arena/protocol-core": [
