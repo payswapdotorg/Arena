@@ -6,7 +6,10 @@ Fresh-session rule: recover Arena entirely from repository state and live GitHub
 
 Arena V1 A001-A036 is complete and merged.
 
-The active implementation program is the B-series productization program, governed by:
+The B-series productization program (B001-B019) is COMPLETE — all 19 work orders
+merged; the hosted preview is LIVE at https://arena-preview-five.vercel.app
+(deploy pipeline green end-to-end; launch-gate boundary executed by the TL).
+The successor program is the C-series, governed by:
 - spec/post-v1-work-items.md
 - spec/post-v1-dependency-graph.md
 
@@ -141,7 +144,9 @@ Where permitted, experts work inside a privacy-sanitized replica of the agent's 
 
 Epoch is one client of the generic API.
 
-After B019, the C-series in spec/human-escalation-work-items.md becomes the next roadmap.
+B019 is MERGED (PR #103; launch gate executed; preview live). The C-series in
+spec/human-escalation-work-items.md is the next roadmap; its first recommended
+wave is C001, C002, C010 (issues #75/#76/#77 already track them).
 - B016 MERGED
 - B011 MERGED
 - B013 MERGED

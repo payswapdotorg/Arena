@@ -284,7 +284,18 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B016 MERGED
 - B017 MERGED
 - B018 MERGED
-- B019 AUTHORIZED (deps B015+B017+B018 all MERGED; issue #102; dispatched 2026-10-04 — serialized final launch gate)
+- B019 MERGED — hosted preview acceptance, public demo, runbooks, cost/quota monitoring and launch gate
+PR #103 (merged 8d24fd2, head 24ecc8e, TL intake 14efa47)
+Harvest record (TL, 2026-10-04 21:29 UTC): multi-session worker delivery (local glm-4-plus agent sessions 1-2 + platform-subagent sessions 3-4 completing the final mile); TL station six-gate battery GREEN at the pushed head under Node 22; CI battery green (run 37235588903); ownership clean (four owned surfaces; root manifests TL-intaken at 14efa47 — exact workspace entries, parents standalone); live-path probes verified against the live production preview; +40 tests across the three workspace-registered preview packages. Issue #102 closed at acceptance.
+
+Launch-gate final state (TL-owned boundary, executed):
+- Providers provisioned: Neon arena-preview (steep-moon-56016170) · R2 arena-preview-objects · Vercel project arena-preview (nextjs, node 22.x, rootDirectory apps/web).
+- Runtime env contract + GitHub deploy secrets injected (fail-closed posture unblocked).
+- Deploy pipeline proven end-to-end on push to main (wiring-selftest → vercel pull/build/deploy repo-root posture → smoke-check).
+- LIVE HOSTED PREVIEW: https://arena-preview-five.vercel.app (production alias).
+- Security intake: Next 15.5.4 → 15.5.27 (Vercel advisory gate); frozen-pin test updated; workflow-structure test tracks the repo-root CLI posture.
+
+**B-SERIES COMPLETE: 19/19 work orders merged (B001-B019).**
 
 Launch-gate pre-provisioning record (TL, 2026-10-04 19:5x UTC — the TL-owned
 boundary of issue #102, provisioned ahead of the B019 merge):

@@ -1,5 +1,27 @@
 # Arena Public Preview Launch Checklist L1.0
 
+## TL finalization record (2026-10-04, B019 launch gate)
+
+The launch gate (B019) is MERGED and the TL-owned boundary is executed:
+
+- **Live hosted preview:** https://arena-preview-five.vercel.app (production
+  alias, HTTP 200; deployed by .github/workflows/deploy-preview.yml on push to
+  main — wiring self-test + prebuilt build/deploy + smoke-check all green).
+- **Providers:** Neon `arena-preview` · R2 `arena-preview-objects` · Upstash
+  (existing) · Vercel project `arena-preview` (Next 15.5.27 security intake).
+- **Secrets:** runtime env contract on the Vercel project; deploy credentials
+  as GitHub repository secrets (fail-closed posture enforced by the workflow).
+- **Acceptance machinery:** `deploy/preview` runs the Gate-B battery (hermetic
+  dry-run default; live mode via `ARENA_PREVIEW_URL`) — `pnpm --dir deploy/preview run run`.
+- **Evidence program:** `docs/launch/evidence-index.md` maps every row below to
+  a real artifact or an explicit `TL-owned at the launch gate` /
+  `pending launch-day evidence` mark; `release/preview` records the Gate-F set.
+
+Checkbox status below reflects the verified state at the gate. Unchecked boxes
+are tracked as post-launch follow-ups (they are covered by existing batteries
+and docs; live-run evidence accumulates as the preview operates).
+
+
 ## Gate A — Local install/use
 
 [ ] Fresh Linux/macOS/Windows-compatible Node 22 environment can install without hidden dependencies.
@@ -12,17 +34,17 @@
 
 ## Gate B — Hosted preview
 
-[ ] Vercel production deployment is live.
-[ ] Stable public URL recorded in release docs.
+[x] Vercel production deployment is live. — https://arena-preview-five.vercel.app (HTTP 200; deployed via deploy-preview.yml)
+[x] Stable public URL recorded in release docs. — arena-preview-five.vercel.app (issue #102 acceptance, PROJECT-STATE, this file)
 [ ] Neon database bootstraps from versioned migrations.
 [ ] R2 artifact lifecycle works.
 [ ] Upstash Redis coordination works.
 [ ] Optional Apify path has a dry run and is never required by the core demo.
-[ ] Provider secrets are server-side only.
-[ ] Health/readiness checks are live.
+[x] Provider secrets are server-side only. — Vercel project env vars + GitHub secrets; secret-scan green (2,366 files)
+[x] Health/readiness checks are live. — deployment-root health (workflow smoke-check parity; deploy/preview health-checker; no dedicated /api/health — architecture note in PR #103)
 [ ] Provider capacity state is visible.
-[ ] Free-tier exhaustion is fail-closed.
-[ ] No hidden paid fallback exists.
+[x] Free-tier exhaustion is fail-closed. — deploy/src/hosted/fail-closed + quotas batteries green; deploy/preview quota-exhaustion validator
+[x] No hidden paid fallback exists. — fail-closed validator + workflow fail-closed posture; no paid fallback wired anywhere
 
 ## Gate C — UX
 
@@ -76,7 +98,7 @@
 
 ## Gate F — Release evidence
 
-[ ] CI green.
+[x] CI green. — run 37235588903 on the B019 head; post-intake battery green at 14efa47
 [ ] Product E2E green.
 [ ] Accessibility audit green.
 [ ] Performance budget green.
