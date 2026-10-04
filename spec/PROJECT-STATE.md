@@ -284,7 +284,7 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B016 MERGED
 - B017 MERGED
 - B018 MERGED
-- B019 READY (deps B015+B017+B018 all MERGED; final B-series work order — launch gate)
+- B019 AUTHORIZED (deps B015+B017+B018 all MERGED; issue #102; dispatched 2026-10-04 — serialized final launch gate)
 
 ## Long-term product direction
 
