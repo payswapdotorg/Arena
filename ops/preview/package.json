@@ -1,0 +1,25 @@
+{
+  "name": "@arena/ops-preview",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "B019 preview operational runbooks and watch harness: launch-day on-call procedures, quota-exhaustion drills, rollback playbooks, public-demo incident management, and cost/quota monitoring with deterministic projections.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.json",
+    "watch": "node dist/watch.js"
+  },
+  "dependencies": {
+    "commander": "12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.4",
+    "typescript":  "5.9.3",
+    "vitest": "5.0.1"
+  }
+}
