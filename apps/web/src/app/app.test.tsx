@@ -277,7 +277,7 @@ describe('web runtime contract (Next.js host + legacy console reachability)', ()
       dependencies: Record<string, string>;
       devDependencies: Record<string, string>;
     };
-    expect(manifest.dependencies['next']).toBe('15.5.4');
+    expect(manifest.dependencies['next']).toBe('15.5.27');
     expect(manifest.dependencies['react']).toBe('19.1.1');
     expect(manifest.dependencies['react-dom']).toBe('19.1.1');
     expect(manifest.dependencies['@arena/ui-platform']).toBe('workspace:*');

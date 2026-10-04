@@ -134,17 +134,14 @@ jobs:
       # to the production alias (the hosted preview IS the production alias).
       # Runtime env for the app is set as Vercel project environment
       # variables by the TL (never in this file) — see provider-setup.md.
-      - name: Pull Vercel project settings (apps/web)
-        working-directory: apps/web
+      - name: Pull Vercel project settings (apps/web via project rootDirectory)
         run: pnpm dlx vercel@62.1.0 pull --yes --environment=production --token "$VERCEL_TOKEN"
 
       - name: Build the hosted preview (prebuilt)
-        working-directory: apps/web
         run: pnpm dlx vercel@62.1.0 build --prod --token "$VERCEL_TOKEN"
 
       - name: Deploy the hosted preview (prebuilt, production alias)
         id: deploy
-        working-directory: apps/web
         run: |
           url="$(pnpm dlx vercel@62.1.0 deploy --prebuilt --prod --token "$VERCEL_TOKEN" 2>&1 | tee /dev/stderr | grep -oE 'https://[a-z0-9][a-z0-9.-]*\.vercel\.app' | head -n 1)"
           if [ -z "$url" ]; then
