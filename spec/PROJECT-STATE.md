@@ -283,8 +283,8 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B015 MERGED
 - B016 MERGED
 - B017 MERGED
-- B018 AUTHORIZED (deps B007-B017 all MERGED; issue #100; dispatched 2026-10-03)
-- B019 WAITING_ON_DEPENDENCIES (B015+B017 MERGED; waits on B018)
+- B018 MERGED
+- B019 READY (deps B015+B017+B018 all MERGED; final B-series work order — launch gate)
 
 ## Long-term product direction
 
@@ -321,3 +321,7 @@ Harvest record (TL, 2026-10-03 04:48 UTC): worker delivery branch-verified at th
 B013 MERGED — Marketplace UX for experts and artifacts: packages/marketplace-ui view-model layer (provenance/rights/verification/entitlement state machine/certification-badge-only-when-record-backed/fail-closed purchase), apps/web/src/marketplace runtime+corpus+screens absorbing console-era recipes (21 tests preserved), /marketplace/** + /demo/marketplace/** mounts; TL parity ALL GREEN at 304f87a (71/71 tasks on two full runs); 39 files +6352/-22
 PR #99 (merged 531f8c7)
 Harvest record (TL, 2026-10-03 13:48 UTC): worker delivery branch-verified at the TL station (six-gate battery re-run at the pushed SHA, gate-parity green); lockfile intake as needed; PR opened and merged by the TL; issue #88 closed at acceptance.
+
+B018 MERGED — accessibility, mobile, performance, resilience and launch polish: apps/web/src/a11y (primitives + ambient DOM type surface + 12-test conformance battery), apps/web/src/responsive (primitives + 13-test battery), tests/performance PERF1.0 revival (full @arena/* source mapping — standalone NodeNext resolution fixed) + product-budget tests (suite 18/18), docs/release/product/* (a11y/mobile/perf-budget/resilience statements + launch-polish checklist), honest manifest at tests/performance/manifest.json
+PR #101 (merged 29d01e43)
+Harvest record (TL, 2026-10-04 07:50 UTC): worker delivery over three remediation rounds + disclosed TL intake-remediation (z-ai worker brain rate-limit-dead; mechanical fixes applied at the station — JSX-in-.ts renames, ambient DOM types instead of the DOM lib, local cn() replacing the nonexistent '@/lib/utils', perf-suite source mapping); six-gate battery re-run at the pushed SHA 08d9132 ALL GREEN (71/71 turbo tasks; apps/web 581 passed + 8 skipped; a11y 12/12; responsive 13/13; post-build app.test 36/36; PERF standalone 18/18); no lockfile intake needed; issue #100 closed at acceptance.
