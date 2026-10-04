@@ -287,7 +287,7 @@ export const Contrast = {
       const g = parseInt(color.slice(3, 5), 16) / 255;
       const b = parseInt(color.slice(5, 7), 16) / 255;
       
-      const [rs, gs, bs] = [r, g, b].map(c => {
+      const [rs = 0, gs = 0, bs = 0] = [r, g, b].map(c => {
         c = c / 12.92;
         if (c <= 0.03928) return c;
         return Math.pow((c + 0.055) / 1.055, 2.4);
@@ -375,7 +375,7 @@ function getLuminance(color: string): number {
     const g = parseInt(color.slice(3, 5), 16) / 255;
     const b = parseInt(color.slice(5, 7), 16) / 255;
     
-    const [rs, gs, bs] = [r, g, b].map(c => {
+    const [rs = 0, gs = 0, bs = 0] = [r, g, b].map(c => {
       c = c / 12.92;
       if (c <= 0.03928) return c;
       return Math.pow((c + 0.055) / 1.055, 2.4);
@@ -384,4 +384,26 @@ function getLuminance(color: string): number {
     return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
   }
   return 0.5; // Default fallback
+}
+/**
+ * Class name utility for combining CSS classes conditionally (B018).
+ * Local replacement for the nonexistent shadcn-style '@/lib/utils' module.
+ */
+export function cn(
+  ...classes: Array<string | undefined | null | false | Record<string, boolean>>
+): string {
+  return classes
+    .flat()
+    .filter((cls): cls is string | Record<string, boolean> => Boolean(cls))
+    .map((cls) => {
+      if (typeof cls === 'string') {
+        return cls.trim();
+      }
+      return Object.entries(cls)
+        .filter(([, condition]) => Boolean(condition))
+        .map(([className]) => className.trim())
+        .join(' ');
+    })
+    .filter(Boolean)
+    .join(' ');
 }

@@ -449,3 +449,25 @@ export const MobileNavigation = {
     return window.innerHeight + window.scrollY >= document.body.offsetHeight;
   },
 };
+/**
+ * Class name utility for combining CSS classes conditionally (B018).
+ * Local replacement for the nonexistent shadcn-style '@/lib/utils' module.
+ */
+export function cn(
+  ...classes: Array<string | undefined | null | false | Record<string, boolean>>
+): string {
+  return classes
+    .flat()
+    .filter((cls): cls is string | Record<string, boolean> => Boolean(cls))
+    .map((cls) => {
+      if (typeof cls === 'string') {
+        return cls.trim();
+      }
+      return Object.entries(cls)
+        .filter(([, condition]) => Boolean(condition))
+        .map(([className]) => className.trim())
+        .join(' ');
+    })
+    .filter(Boolean)
+    .join(' ');
+}

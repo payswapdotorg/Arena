@@ -101,7 +101,7 @@ export function useTouchSupport() {
     const checkTouchSupport = () => {
       const hasTouch = 'ontouchstart' in window || 
                      navigator.maxTouchPoints > 0 || 
-                     navigator.msMaxTouchPoints > 0;
+                     (navigator.msMaxTouchPoints ?? 0) > 0;
       setIsTouchDevice(hasTouch);
     };
 
@@ -189,6 +189,7 @@ export function useTouchGesture() {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
+    if (!touch) return;
     setPosition({ x: touch.clientX, y: touch.clientY });
     setStartTime(Date.now());
     setGesture('tap');
@@ -198,9 +199,9 @@ export function useTouchGesture() {
     if (gesture === 'none') return;
 
     const touch = e.touches[0];
+    if (!touch) return;
     const deltaX = touch.clientX - position.x;
     const deltaY = touch.clientY - position.y;
-    const deltaTime = Date.now() - startTime;
 
     // Check for swipe gesture
     if (Math.abs(deltaX) > 50 || Math.abs(deltaY) > 50) {
@@ -209,10 +210,10 @@ export function useTouchGesture() {
   };
 
   const handleTouchEnd = () => {
-    const deltaTime = Date.now() - startTime;
+    const _deltaTime = Date.now() - startTime;
     
     // Check for long press
-    if (deltaTime > 500) {
+    if (_deltaTime > 500) {
       setGesture('longPress');
     } else {
       setGesture('tap');

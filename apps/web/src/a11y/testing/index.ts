@@ -146,7 +146,7 @@ export const A11yTest = {
     const textElements = container.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6, li, td, th');
     
     textElements.forEach(element => {
-      const style = (window as any).getComputedStyle(element);
+      const style = window.getComputedStyle(element);
       const color = style.color;
       const backgroundColor = style.backgroundColor;
       
@@ -175,7 +175,7 @@ export const A11yTest = {
       }
       
       // Check if element is focusable
-      if (!element.isContentEditable && element.tagName !== 'BUTTON' && 
+      if (!(element as HTMLElement).isContentEditable && element.tagName !== 'BUTTON' && 
           !element.hasAttribute('href') && !['INPUT', 'SELECT', 'TEXTAREA'].includes(element.tagName)) {
         const tabIndexValue = parseInt(tabIndex || '0');
         if (tabIndexValue >= 0) {

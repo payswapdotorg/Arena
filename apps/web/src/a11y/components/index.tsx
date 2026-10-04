@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '../utils';
 import { useSkipNavigation } from '../hooks';
 
 interface AccessibleModalProps {

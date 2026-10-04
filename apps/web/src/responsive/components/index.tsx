@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '../utils';
 import { useResponsiveLayout, useTouchGesture } from '../hooks';
 
 /**
@@ -21,7 +21,7 @@ interface ResponsiveContainerProps {
 export function ResponsiveContainer({ 
   children, 
   className,
-  maxWidth = 'desktop'
+  maxWidth: _maxWidth = 'desktop'
 }: ResponsiveContainerProps) {
   const { breakpoint } = useResponsiveLayout();
 
@@ -29,12 +29,12 @@ export function ResponsiveContainer({
     mobile: 'px-4',
     tablet: 'px-6',
     desktop: 'px-8',
-  };
+  } as const;
 
   return (
     <div className={cn(
       'mx-auto w-full',
-      widthClasses[breakpoint],
+      widthClasses[breakpoint as keyof typeof widthClasses],
       className
     )}>
       {children}
@@ -178,7 +178,7 @@ export function TouchButton({
   touchFeedback = true,
   ...props 
 }: TouchButtonProps) {
-  const { gesture, handleTouchStart, handleTouchMove, handleTouchEnd } = useTouchGesture();
+  const { gesture: _gesture, handleTouchStart, handleTouchMove, handleTouchEnd } = useTouchGesture();
 
   return (
     <button
@@ -404,37 +404,6 @@ export function ResponsiveTabs({
           </button>
         ))}
       </div>
-    </div>
-  );
-}
-
-/**
- * Responsive grid with touch-friendly spacing
- */
-interface TouchGridProps {
-  children: React.ReactNode;
-  className?: string;
-  spacing?: 'sm' | 'md' | 'lg';
-}
-
-export function TouchGrid({ 
-  children, 
-  className,
-  spacing = 'md'
-}: TouchGridProps) {
-  const spacingClasses = {
-    sm: 'gap-2',
-    md: 'gap-4',
-    lg: 'gap-6',
-  };
-
-  return (
-    <div className={cn(
-      'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-      spacingClasses[spacing],
-      className
-    )}>
-      {children}
     </div>
   );
 }

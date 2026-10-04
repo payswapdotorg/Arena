@@ -15,10 +15,17 @@ if (typeof window === 'undefined') {
   global.window = {
     innerWidth: 1024,
     innerHeight: 768,
-    addEventListener: () => {},
-    dispatchEvent: () => {},
-    defineProperty: () => {},
-  };
+    addEventListener: (): void => {},
+    dispatchEvent: (): boolean => true,
+    defineProperty: (obj: object): object => obj,
+    matchMedia: (): { matches: boolean; media: string; addEventListener(): void; removeEventListener(): void } => ({
+      matches: false,
+      media: '',
+      addEventListener: (): void => {},
+      removeEventListener: (): void => {},
+    }),
+    getComputedStyle: (): { color: string; backgroundColor: string } => ({ color: 'rgb(0, 0, 0)', backgroundColor: 'rgb(255, 255, 255)' }),
+  } as unknown as typeof window;
 }
 
 // Mock window.innerWidth/innerHeight for responsive testing

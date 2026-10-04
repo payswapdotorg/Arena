@@ -121,8 +121,8 @@ export const ResponsiveTest = {
 
       // Check for proper spacing
       const computedStyle = window.getComputedStyle(element);
-      const marginRight = parseInt(computedStyle.marginRight) || 0;
-      const marginBottom = parseInt(computedStyle.marginBottom) || 0;
+      const marginRight = parseInt(computedStyle.marginRight ?? '0') || 0;
+      const marginBottom = parseInt(computedStyle.marginBottom ?? '0') || 0;
 
       if (marginRight < 8 || marginBottom < 8) {
         errors.push(`Insufficient spacing around touch target: ${element.tagName} at index ${index}`);
@@ -253,7 +253,7 @@ export const ResponsiveTest = {
     
     textElements.forEach((element, index) => {
       const computedStyle = window.getComputedStyle(element);
-      const fontSize = parseInt(computedStyle.fontSize);
+      const fontSize = parseInt(computedStyle.fontSize ?? '0');
       
       // Check for extremely small text
       if (fontSize < 12) {
@@ -261,8 +261,8 @@ export const ResponsiveTest = {
       }
 
       // Check for responsive font sizing
-      if (!computedStyle.fontSize.includes('clamp') && 
-          !computedStyle.fontSize.includes('rem') &&
+      if (!String(computedStyle.fontSize ?? '').includes('clamp') && 
+          !String(computedStyle.fontSize ?? '').includes('rem') &&
           fontSize > 16) {
         errors.push(`Text may not be responsive at index ${index}: ${fontSize}px`);
       }

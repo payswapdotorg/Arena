@@ -8,7 +8,17 @@
  * Ownership: B018 - Accessibility, Mobile, Performance, Resilience and Launch Polish
  */
 
-export * from './hooks';
+export {
+  useViewport,
+  useBreakpoint,
+  useMediaQuery,
+  useTouchSupport,
+  useScrollPosition,
+  useResponsiveLayout,
+  useTouchGesture,
+  useResponsiveContainer,
+  useOrientation,
+} from './hooks';
 export * from './components';
 export * from './utils';
 export * from './testing';

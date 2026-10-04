@@ -97,7 +97,7 @@ export function useKeyboardNavigation(
   items: Array<{ id: string; element: HTMLElement | null }>,
   options: { loop?: boolean; orientation?: 'horizontal' | 'vertical' } = {}
 ) {
-  const { loop = true, orientation = 'vertical' } = options;
+  const { loop: _loop = true, orientation = 'vertical' } = options;
   const activeIndexRef = useRef(-1);
 
   const handleKeyDown = (e: KeyboardEvent) => {
