@@ -286,6 +286,18 @@ Harvest record (TL, 2026-10-02 04:45 UTC): worker delivery branch-verified at th
 - B018 MERGED
 - B019 AUTHORIZED (deps B015+B017+B018 all MERGED; issue #102; dispatched 2026-10-04 — serialized final launch gate)
 
+Launch-gate pre-provisioning record (TL, 2026-10-04 19:5x UTC — the TL-owned
+boundary of issue #102, provisioned ahead of the B019 merge):
+- Neon project `arena-preview` (steep-moon-56016170, aws-us-east-1, pg 17);
+- Cloudflare R2 bucket `arena-preview-objects`;
+- Vercel project `arena-preview` (prj_PxNulA41ti7n3uulomMVhiskUPCa,
+  nextjs, node 22.x; no rootDirectory — the deploy workflow already runs
+  from apps/web and a rootDirectory double-joins the CLI path);
+- runtime env contract injected as Vercel production env vars (B015
+  env-contract: DATABASE_URL / R2_* / UPSTASH_* / ARENA_SESSION_SECRET);
+- GitHub repository secrets VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID
+  injected — deploy-preview.yml is now unblocked on push to main.
+
 ## Long-term product direction
 
 Approved north star:
