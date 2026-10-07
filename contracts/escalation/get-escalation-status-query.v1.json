@@ -1,0 +1,26 @@
+{
+  "$id": "arena:schema/escalation/get-escalation-status-query@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The GET /v1/escalations/{request_id} wire form: a query envelope (NULL idempotency key — reads are not commands; correlation-addressable). Idempotent status polling.",
+  "properties": {
+    "queryVersion": {
+      "const": 1
+    },
+    "requestId": {
+      "pattern": "^esc_[0-9a-f]{32}$",
+      "type": "string"
+    },
+    "tenantId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "queryVersion",
+    "requestId",
+    "tenantId"
+  ],
+  "title": "Arena get-escalation-status-query v1",
+  "type": "object"
+}

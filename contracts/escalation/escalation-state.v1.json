@@ -1,0 +1,32 @@
+{
+  "$id": "arena:schema/escalation/escalation-state@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The durable escalation lifecycle (ES1.0): CREATED → TRIAGED → MATCHING → OFFERED → ACCEPTED → SESSION_READY → IN_PROGRESS → SUBMITTED → VALIDATING → ACCEPTED|REVISION_REQUIRED|REJECTED → PAID → LEARNING_CAPTURED → CLOSED, plus the EXPLICIT timed_out / cancelled / expert_replaced states. Terminal states are final.",
+  "enum": [
+    "created",
+    "triaged",
+    "matching",
+    "offered",
+    "accepted",
+    "session_ready",
+    "in_progress",
+    "submitted",
+    "validating",
+    "result_accepted",
+    "revision_required",
+    "result_rejected",
+    "paid",
+    "learning_captured",
+    "expert_replaced",
+    "closed",
+    "cancelled",
+    "timed_out"
+  ],
+  "title": "Arena escalation lifecycle state v1",
+  "type": "string",
+  "x-terminal-states": [
+    "closed",
+    "cancelled",
+    "timed_out"
+  ]
+}

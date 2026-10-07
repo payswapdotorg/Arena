@@ -1,0 +1,302 @@
+{
+  "$id": "arena:schema/escalation/escalation-request@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The provider-neutral integration boundary object: any AI application escalates a capability boundary without understanding Arena internal domain topology. The digest is sha256 over the canonical JSON of the digest-free view.",
+  "properties": {
+    "budget": {
+      "additionalProperties": false,
+      "properties": {
+        "amountMinorUnits": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amountMinorUnits",
+        "currency"
+      ],
+      "type": "object"
+    },
+    "capabilityNeed": {
+      "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*){0,31}$",
+      "type": "string"
+    },
+    "clientAppId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "contextReferences": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "uri",
+              "artifact-ref",
+              "trajectory-ref",
+              "task-ref"
+            ]
+          },
+          "ref": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "createdAt": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "type": "string"
+    },
+    "deadline": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "type": "string"
+    },
+    "desiredOutputSchema": {
+      "description": "Plain-JSON desired output schema (inline JSON-Schema-shaped object).",
+      "type": "object"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environmentSessionPolicy": {
+      "additionalProperties": false,
+      "description": "Bounded-replica policy (architecture-lock rule 28): the replica is never a write path to the host application live world.",
+      "properties": {
+        "sanitization": {
+          "enum": [
+            "standard",
+            "strict"
+          ]
+        },
+        "sessionMode": {
+          "enum": [
+            "none",
+            "bounded-replica"
+          ]
+        }
+      },
+      "required": [
+        "sessionMode",
+        "sanitization"
+      ],
+      "type": "object"
+    },
+    "escalationModes": {
+      "items": {
+        "enum": [
+          "solve",
+          "correct",
+          "unblock",
+          "review",
+          "teach",
+          "tool_gap",
+          "knowledge",
+          "evaluate"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "expertRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "jurisdictions": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "preferredLocales": {
+          "items": {
+            "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "requiredCapabilities": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*){0,31}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "requiredCapabilities"
+      ],
+      "type": "object"
+    },
+    "idempotencyKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "learningPermissions": {
+      "additionalProperties": false,
+      "properties": {
+        "allowArtifactReuse": {
+          "type": "boolean"
+        },
+        "allowKnowledgeCapture": {
+          "type": "boolean"
+        },
+        "allowToolGapSignals": {
+          "type": "boolean"
+        },
+        "requireApproval": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allowKnowledgeCapture",
+        "allowToolGapSignals",
+        "allowArtifactReuse",
+        "requireApproval"
+      ],
+      "type": "object"
+    },
+    "locale": {
+      "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$",
+      "type": "string"
+    },
+    "permittedActions": {
+      "description": "The closed vocabulary of actions the expert is permitted to take.",
+      "items": {
+        "enum": [
+          "read-context",
+          "run-approved-tools",
+          "propose-patch",
+          "annotate-evidence",
+          "ask-clarification",
+          "signal-tool-gap"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "privacyPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "dataClassification": {
+          "enum": [
+            "public",
+            "internal",
+            "confidential"
+          ]
+        },
+        "pii": {
+          "enum": [
+            "forbid",
+            "redact",
+            "allow"
+          ]
+        }
+      },
+      "required": [
+        "dataClassification",
+        "pii"
+      ],
+      "type": "object"
+    },
+    "requestId": {
+      "pattern": "^esc_[0-9a-f]{32}$",
+      "type": "string"
+    },
+    "requestVersion": {
+      "const": 1
+    },
+    "retentionPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "disposition": {
+          "enum": [
+            "retain",
+            "purge"
+          ]
+        },
+        "retentionMs": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "retentionMs",
+        "disposition"
+      ],
+      "type": "object"
+    },
+    "sourceRunRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "sourceWorkflowRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "taskRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "tenantId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "urgency": {
+      "enum": [
+        "routine",
+        "priority",
+        "urgent",
+        "critical"
+      ]
+    }
+  },
+  "required": [
+    "requestVersion",
+    "requestId",
+    "clientAppId",
+    "tenantId",
+    "sourceWorkflowRef",
+    "sourceRunRef",
+    "capabilityNeed",
+    "escalationModes",
+    "urgency",
+    "createdAt",
+    "deadline",
+    "budget",
+    "expertRequirements",
+    "locale",
+    "desiredOutputSchema",
+    "contextReferences",
+    "environmentSessionPolicy",
+    "privacyPolicy",
+    "permittedActions",
+    "learningPermissions",
+    "retentionPolicy",
+    "idempotencyKey",
+    "correlationId",
+    "digest"
+  ],
+  "title": "Arena EscalationRequest v1 (ES1.0 primary object)",
+  "type": "object"
+}

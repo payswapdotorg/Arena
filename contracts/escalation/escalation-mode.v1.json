@@ -1,0 +1,17 @@
+{
+  "$id": "arena:schema/escalation/escalation-mode@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The approved escalation modes (architecture-lock rule 27). A request carries one or more modes; mode changes happen only through explicit lifecycle transitions (spec/human-escalation-work-items.md).",
+  "enum": [
+    "solve",
+    "correct",
+    "unblock",
+    "review",
+    "teach",
+    "tool_gap",
+    "knowledge",
+    "evaluate"
+  ],
+  "title": "Arena escalation mode v1",
+  "type": "string"
+}
