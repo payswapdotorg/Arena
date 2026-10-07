@@ -36,6 +36,7 @@ export {
   escalationRowsViewModel,
   keyRowViewModel,
   keyRowsViewModel,
+  mergeObservabilityDashboards,
   quickstartViewModel,
   sandboxScenarioCatalogueViewModel,
 } from './view-models.js';

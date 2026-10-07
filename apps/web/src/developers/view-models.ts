@@ -13,6 +13,7 @@ import {
 } from '../../../../packages/escalation/src/index.js';
 import type { ClientEscalationProjection } from '../../../../packages/developer-platform/src/index.js';
 import type { ObservabilityDashboard } from '../../../../services/developer-platform/src/index.js';
+import type { DeveloperTruthLabel } from '../../../../packages/developer-platform/src/index.js';
 
 import type { DemoKeyRow } from './fixtures.js';
 
@@ -298,4 +299,71 @@ export function dashboardViewModel(dashboard: ObservabilityDashboard): Dashboard
       requestId: event.requestId,
     })),
   };
+}
+
+/**
+ * Merge a tenant's per-app observability dashboards into ONE view payload
+ * (the demo portal projects both its live and sandbox apps side by side,
+ * per-row truth labels intact). Projections, sandbox runs and summary
+ * counters merge additively; webhook events are TENANT-scoped (identical
+ * across the tenant's per-app dashboards) so one copy is kept — never
+ * duplicated. Pure projection; null only for an empty input list.
+ */
+export function mergeObservabilityDashboards(
+  dashboards: readonly ObservabilityDashboard[],
+): ObservabilityDashboard | null {
+  if (dashboards.length === 0) return null;
+  const [first, ...rest] = dashboards;
+  if (rest.length === 0) return first;
+  const byState: Record<string, number> = { ...first.summary.byState };
+  const costTotals: Record<
+    string,
+    { amountMinorUnits: number; arenaFeeMinorUnits: number }
+  > = { ...first.summary.costTotals };
+  let validationPassed = first.summary.validationPassed;
+  let validationFailed = first.summary.validationFailed;
+  let validationPending = first.summary.validationPending;
+  let slaBreachedCount = first.summary.slaBreachedCount;
+  const projections: ClientEscalationProjection[] = [...first.projections];
+  const sandboxRuns = [...first.sandboxRuns];
+  for (const next of rest) {
+    validationPassed += next.summary.validationPassed;
+    validationFailed += next.summary.validationFailed;
+    validationPending += next.summary.validationPending;
+    slaBreachedCount += next.summary.slaBreachedCount;
+    for (const [state, count] of Object.entries(next.summary.byState)) {
+      byState[state] = (byState[state] ?? 0) + count;
+    }
+    for (const [currency, totals] of Object.entries(next.summary.costTotals)) {
+      const acc = costTotals[currency] ?? { amountMinorUnits: 0, arenaFeeMinorUnits: 0 };
+      costTotals[currency] = {
+        amountMinorUnits: acc.amountMinorUnits + totals.amountMinorUnits,
+        arenaFeeMinorUnits: acc.arenaFeeMinorUnits + totals.arenaFeeMinorUnits,
+      };
+    }
+    projections.push(...next.projections);
+    sandboxRuns.push(...next.sandboxRuns);
+  }
+  const truthLabel: DeveloperTruthLabel = projections.every((p) => p.truthLabel === 'sandbox')
+    ? 'sandbox'
+    : projections.every((p) => p.truthLabel === 'demo')
+      ? 'demo'
+      : 'live';
+  return Object.freeze({
+    clientAppId: dashboards.map((dashboard) => dashboard.clientAppId).join(' + '),
+    tenantId: first.tenantId,
+    projections: Object.freeze(projections),
+    summary: Object.freeze({
+      total: projections.length,
+      byState: Object.freeze(byState),
+      validationPassed,
+      validationFailed,
+      validationPending,
+      slaBreachedCount,
+      costTotals: Object.freeze(costTotals),
+      truthLabel,
+    }),
+    recentWebhookEvents: first.recentWebhookEvents,
+    sandboxRuns: Object.freeze(sandboxRuns),
+  });
 }

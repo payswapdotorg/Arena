@@ -19,13 +19,15 @@ import { createNodeSecretHasher } from '../../../../packages/developer-platform/
 
 import { DEMO_TENANT_ID } from './runtime-labels.js';
 
-/** Deterministic sequential secret material (DEMO ONLY — never production). */
+/** Deterministic sequential secret material (DEMO ONLY — never production).
+ * The call counter occupies the LEADING 8 hex chars so every derived id
+ * (client apps use the first 8 chars, keys the first 32) is distinct. */
 export class DemoSequentialMaterial {
   private counter = 0;
   bytes32Hex(): string {
     this.counter += 1;
-    const suffix = String(this.counter).padStart(6, '0');
-    return `a1b2c3d4e5f6${suffix}${'0'.repeat(64 - 12 - suffix.length)}`;
+    const prefix = this.counter.toString(16).padStart(8, '0');
+    return `${prefix}${'0'.repeat(56)}`;
   }
 }
 
@@ -44,6 +46,7 @@ export interface DemoKeyRow {
 /** The demo corpus assembled through the REAL service surfaces. */
 export interface DemoDevelopersCorpus {
   readonly app: ClientAppRecord;
+  readonly sandboxApp: ClientAppRecord;
   readonly keys: readonly DemoKeyRow[];
   /** The shown-once issuance moment the keys page replays (demo-labelled). */
   readonly issuance: {
@@ -64,6 +67,7 @@ export interface DemoDevelopersCorpus {
     readonly state: string;
   };
   readonly dashboard: ObservabilityDashboard;
+  readonly sandboxDashboard: ObservabilityDashboard;
   readonly projection: ClientEscalationProjection;
 }
 
@@ -187,6 +191,10 @@ export async function buildDemoDevelopersCorpus(): Promise<DemoDevelopersCorpus>
     tenantId: DEMO_TENANT_ID,
     clientAppId: app.clientAppId,
   });
+  const sandboxDashboard = await service.observabilityDashboard({
+    tenantId: DEMO_TENANT_ID,
+    clientAppId: sandboxApp.clientAppId,
+  });
 
   const keyRows = await service.listKeys({
     tenantId: DEMO_TENANT_ID,
@@ -195,6 +203,7 @@ export async function buildDemoDevelopersCorpus(): Promise<DemoDevelopersCorpus>
 
   return Object.freeze({
     app,
+    sandboxApp,
     keys: Object.freeze(
       keyRows.map((row) => ({
         keyId: String(row['keyId']),
@@ -228,6 +237,7 @@ export async function buildDemoDevelopersCorpus(): Promise<DemoDevelopersCorpus>
       state: live.projection.state,
     }),
     dashboard,
+    sandboxDashboard,
     projection: live.projection,
   });
 }

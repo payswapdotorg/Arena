@@ -17,7 +17,7 @@ import {
   sandboxScenarioCatalogue,
 } from './runtime.js';
 import type { ResolveSessionCockpitOptions, SessionCockpitOutcome } from './runtime.js';
-import { keyRowsViewModel, quickstartViewModel, sandboxScenarioCatalogueViewModel, dashboardViewModel } from './view-models.js';
+import { keyRowsViewModel, quickstartViewModel, sandboxScenarioCatalogueViewModel, dashboardViewModel, mergeObservabilityDashboards } from './view-models.js';
 import { DevelopersAuthRequiredView, DevelopersErrorView, DevelopersHomeView, DevelopersKeysView, DevelopersObservabilityView, DevelopersQuickstartView, DevelopersSandboxView } from './views.js';
 
 export type DevelopersRouteExperience =
@@ -56,12 +56,20 @@ async function resolvePortalContext(
   const tenantId = session.facts.tenantId;
   if (isDemoTenant(tenantId)) {
     const { corpus } = await getDemoDevelopersContext();
+    // The demo observability payload MERGES the live and sandbox app
+    // dashboards — per-row truth labels stay intact (live rows and
+    // sandbox rows side by side, the shared state vocabulary).
+    const mergedDashboard = mergeObservabilityDashboards([
+      corpus.dashboard,
+      corpus.sandboxDashboard,
+    ]);
     return {
       mode: 'demo',
       tenantLabel: `${tenantId} (demo)`,
       clientAppCount: 2,
       keyCount: corpus.keys.length + 1,
-      escalationCount: corpus.dashboard.summary.total + 1,
+      escalationCount:
+        corpus.dashboard.summary.total + corpus.sandboxDashboard.summary.total,
       keys: keyRowsViewModel(corpus.keys),
       issuance: {
         keyId: corpus.issuance.keyId,
@@ -71,7 +79,7 @@ async function resolvePortalContext(
         secret: corpus.issuance.secret,
       },
       sandboxRun: corpus.sandboxRun,
-      dashboard: dashboardViewModel(corpus.dashboard),
+      dashboard: mergedDashboard === null ? null : dashboardViewModel(mergedDashboard),
     };
   }
   // Non-demo session: the local-parity posture has no registrations yet —
