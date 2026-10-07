@@ -61,7 +61,6 @@ import type {
   EscalationPolicyPort,
   ModePolicySink,
   PolicyPackStore,
-  PolicyResolutionRecord,
   ResolutionStore,
   RetentionLedger,
   SessionPolicySink,
@@ -125,7 +124,10 @@ export interface ErasureRequestInput {
   readonly now?: number | string | Date;
 }
 
-export interface WithdrawalRequestInput extends ErasureRequestInput {}
+export interface WithdrawalRequestInput extends ErasureRequestInput {
+  /** Withdrawal carries the same fields as erasure (kept explicit for the API surface). */
+  readonly kind?: 'expert-withdrawal';
+}
 
 export interface DispositionExecutionInput {
   readonly subjectId: string;
