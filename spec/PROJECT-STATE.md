@@ -626,3 +626,48 @@ A030 all ✓), C014 (#120, agent body pretraining + capability-body marketplace 
 C008/C009/A021/A023/A024 all ✓). Wave 8 next: C015 + C020 (after C013/C014). The TL will
 continue the cadence past 00:00 UTC per operator directive ("stay up until the entire
 roadmap is done") — deadline misses will be disclosed honestly in these records.
+
+- C013 MERGED — adversarial expert evaluation / Expert Arena competition
+  PR #143 (merged 6cf70c8; issue #119). Harvest record (TL, 2026-10-07 22:41 UTC):
+  packages/adversarial-evaluation — AE1.0 competition lifecycle, six judgment types,
+  structurally enforced guardrails, evidence-weighted Bradley-Terry adjudication,
+  discovery-signal-only ratio law, certification boundary, A030 byproducts; services/
+  adversarial-evaluation — reference service on the A015 fabric with C009/A012/A013 seams;
+  apps/web/src/competitions — web UX chain. 92 owned tests (64 domain + 16 service + 12
+  web). Worker battery green (build OOM solo re-run disclosed). Open (recorded): /competitions
+  app mounts not included (outside owned surface — resolvers exported for TL); single demo
+  competition; calibrationWeight default question in PR.
+
+- C014 MERGED — on-demand Agent Body pretraining and capability-body marketplace
+  PR #144 (merged 6d52864; issue #120). Harvest record (TL, 2026-10-07): services/
+  body-marketplace — pretraining pipeline (typed closed compilation, rights/evidence
+  blocks), A021 forge proposals with NEW IMMUTABLE BodyVersions only, A023 record-backed
+  certification posture, A024 listings (DRAFT→PUBLISHED→SUSPENDED/RETIRED append-only
+  history), offer/grant seams; apps/web/src/body-marketplace — browse/detail/
+  request-pretraining (consequence exposure)/my-listings with role lens. 38 service tests
+  + 606 web-suite tests incl. 11 route tests. Worker battery green (build OOM solo re-run
+  disclosed). Open (recorded): no app/ route mounts (outside owned surface); settlement
+  seam ownership question in PR.
+
+- C012 MERGED — human-data production studio for customer AI pipelines
+  PR #145 (merged bf5d763; issue #118). Harvest record (TL, 2026-10-07): packages/human-
+  data — commission model over the C001 compile seam, rights-gated deliverables (C009 gate +
+  EES1.0 replay law + consent wall), A014 bundle assembly (46 tests); services/human-data —
+  commission lifecycle with durable idempotent jobs, C001 escalation port, C006/C009
+  deliverable-source port, A014 bundle delivery, events (16 tests); apps/web/src/human-data —
+  studio routes: commission builder (consequence exposure), production dashboard (C001
+  projections), dataset delivery (manifest/rights/lineage/download gate) + thin app-router
+  mounts per C017 precedent (6 route tests). 68 owned tests total. Worker battery green
+  (session-3 finisher: prior sessions' work intact). Open (recorded): escalation-port
+  event-on-failure question in PR.
+
+Integrated-main TL station battery GREEN at bf5d763 (check/boundary clean, contracts
+byte-identical, typecheck 110/110, lint 110/110, test 110/110 tasks, build 110/110) —
+wave 7 complete: 17 of 22 C-WOs landed (C001-C014, C017-C019).
+
+C-series wave 8 AUTHORIZED on live main @ bf5d763+ (frontier recomputed after C013/C014
+merges): C015 (#121, capability-demand matching across experts/Bodies/tools/knowledge/
+artifacts — deps C002 ✓, C005 ✓, C008 ✓, C014 ✓ all merged) and C020 (#126, network
+quality: reputation/disputes/anti-gaming/fraud — deps C005 ✓, C009 ✓, C010 ✓, C013 ✓
+all merged). Wave 9 (final) next: C016 + C021 + C022 (after C015). Cadence continues
+past 00:00 UTC per operator directive; the deadline miss is disclosed honestly.
