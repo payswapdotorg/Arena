@@ -1,0 +1,37 @@
+{
+  "name": "@arena/expert-engagement",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert engagement (Work Order C011; issue #117) — the engagement layer between routing and session. EngagementRecord: the append-only, content-addressed lifecycle of offers to experts (OFFERED → ACCEPTED | DECLINED | EXPIRED → ACTIVE → COMPLETED | WITHDRAWN | REPLACED) with machine-readable guarded transitions, offer-expiry determinism (acceptance at/after expiry fails closed), idempotent correlation-addressable offer operations, supersession history and digest tamper detection — bound to the C001 escalation states through closed allowlists and to the C010 commercial records through OPAQUE PUBLIC REFS ONLY (this package owns NO money truth; the offer/acceptance record is the handshake C010 settlement keys off). AvailabilityDeclaration: versioned expert-declared availability windows + per-window capacity with RECOMPUTED capacity accounting that cannot overcommit a declared window (an offer needing a zero-remaining slot fails closed with CAPACITY_EXCEEDED) and deterministic offer-time availability resolution; toRoutingAvailabilityInput projects the ES1.0 current-availability ROUTING INPUT the C002 seam reads — a projection, never a write into routing. SLA: versioned SlaPolicy response windows by urgency class (mirrors the C001 urgency vocabulary), deadline-aware accept-by/start-by/submit-by clock derivation, clock states satisfied|on-track|at-risk|breached with machine-readable reasons, and explicit append-only SlaBreachRecords — measurements only, enforcement belongs to downstream consumers (routing penalties, C020 quality). Tenant isolation at the domain level; all timestamps injected (lock rule 17).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

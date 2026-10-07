@@ -1,0 +1,38 @@
+{
+  "name": "@arena/expert-engagement-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert-engagement reference service (Work Order C011; issue #117). In-process service over @arena/expert-engagement: offer issue/accept/decline/expire/withdraw/replace/activate/complete operations wired to the C001 escalation lifecycle (closed state-binding allowlists — drift fails closed with ESCALATION_STATE_MISMATCH) and the C002 routing shortlists (an offer may only be issued to an expert on a MATCHED verdict's shortlist — never an off-shortlist offer) through INJECTED ports; the C010 commercial offer/budget-hold records are resolved as OPAQUE PUBLIC REFS only (this service owns NO money truth — lock rule 33). Availability declarations are versioned with strictly-superseding versions; the deterministic offer-time availability resolution recomputes capacity from the accepted/active commitment set so a declared window can NEVER be overcommitted (CAPACITY_EXCEEDED). Serves the ES1.0 current-availability routing-input projection the C002 seam reads (a projection, never a write into routing). SLA clock evaluation runs as a DURABLE IDEMPOTENT, correlation-addressable job on the A015 job-fabric seam; breached clocks are appended once as content-addressed breach records (first observation canonical — append-only events with reasons; measurements only, enforcement belongs downstream). Commands carry REQUIRED idempotency keys (lock rule 17); duplicate acceptance REPLAYS the recorded outcome (typed duplicate, never a double-commit); cross-tenant access fails closed; tampered store entries fail closed with digest re-verification; all times are injected — no hidden clocks.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/expert-engagement": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
