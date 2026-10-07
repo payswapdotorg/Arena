@@ -338,7 +338,6 @@ export class DeveloperPlatformService {
         // The secret MATCHED this key and the request was denied for a
         // structural reason (revoked / rotated / tenant / environment /
         // scope) — fail closed immediately with the typed reason.
-        sawAnyKey = true;
         throw new DeveloperPlatformError(DENIAL_ERROR_CODES[verdict.reason], {
           message: `developer key authorization denied: ${verdict.reason}`,
           details: { reason: verdict.reason, scope: input.scope },

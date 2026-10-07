@@ -54,13 +54,13 @@ export class FakeEscalationPort implements EscalationPort {
     let record = createEscalationRecord(request, nowMs);
     this.records.push(record);
     const emitted: EscalationWebhookEvent[] = [];
-    const createdEvent = this.projectEvent(record, nowMs);
+    const createdEvent = this.projectEvent(record);
     emitted.push(createdEvent);
     this.webhookEvents.push({ event: createdEvent, at: nowMs });
     // Reference-flow drive (mirrors the C001 service): triage → matching.
     record = applyEscalationTransition(record, 'triaged', { now: nowMs });
     this.records[this.records.length - 1] = record;
-    const triagedEvent = this.projectEvent(record, nowMs);
+    const triagedEvent = this.projectEvent(record);
     emitted.push(triagedEvent);
     this.webhookEvents.push({ event: triagedEvent, at: nowMs });
     return { requestId: request.requestId, record, emittedEvents: emitted };
@@ -98,7 +98,7 @@ export class FakeEscalationPort implements EscalationPort {
       }));
   }
 
-  private projectEvent(record: EscalationRecord, at: number): EscalationWebhookEvent {
+  private projectEvent(record: EscalationRecord): EscalationWebhookEvent {
     const eventType = lifecycleEventForState(record.state);
     if (eventType === null) {
       throw new Error(`state ${record.state} has no webhook projection`);

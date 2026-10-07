@@ -32,7 +32,6 @@ export const DEVELOPER_KEY_SECRET_PATTERN_SOURCE = '^dak_(sandbox|live)_[0-9a-f]
 /** Webhook SIGNING secret wire form: `whsec_<32 bytes hex>`. Shown once at registration. */
 export const WEBHOOK_SIGNING_SECRET_PATTERN_SOURCE = '^whsec_[0-9a-f]{64}$';
 
-const HEX32 = /^[0-9a-f]{32}$/;
 const HEX64 = /^[0-9a-f]{64}$/;
 
 export function isDeveloperKeyId(value: unknown): value is DeveloperKeyId {
