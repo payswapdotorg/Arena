@@ -1,0 +1,37 @@
+{
+  "name": "@arena/network-quality",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena network quality (Work Order C020; issue #126) — the integrity layer of the expert network. Dimensional reputation records: per-expert, append-only, provenance-addressed record families (dispute outcomes, competition agreement/disagreement patterns from C013, validation-outcome history from C009, COI records, conduct flags), each carrying source refs, sample size and applicability context; the no-single-global-score law is enforced structurally (any aggregate is typed, versioned, formula-disclosing; reputation evidence is never authorization — lock rule 35). Dispute state machine: OPEN -> UNDER_REVIEW -> RESOLVED-with-typed-outcome (+ ESCALATED / WITHDRAWN), referencing escalations, validation verdicts and payment records through their owning surfaces' public refs; resolution is a typed transition with machine-readable reasons and retained audit history; reviewer COI is checked (a reviewer party to the dispute is excluded). COI registry: declared + derived conflict-of-interest records (tenant overlap, prior engagement, marketplace interest) with typed COI-check verdicts (clear / conflicted-with-reasons / unknown-insufficient-data) exposed as a READ PORT for the C002/C009/C013 seams — a proposal surface, never a write into routing or adjudication. Anti-gaming controls: typed finding records from C013 voting data (self-voting attempts, duplicate-account/sybil signals, coordinated-brigading patterns, rate-limit breaches) and engagement/availability signals (capacity gaming) — findings carry evidence refs and machine-readable reasons; controls NEVER silently adjust scores. Fraud controls: anomaly findings over C010 records (duplicate-payout attempts, payout velocity anomalies) and identity findings (expert impersonation signals) with enforcement actions (HOLD / SUSPEND / INVESTIGATE) as explicit state transitions with append-only audit history — never silent drops. Findings PROPOSE actions into the owning surfaces; nothing is silently adjusted. Tenant isolation at the domain level.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
