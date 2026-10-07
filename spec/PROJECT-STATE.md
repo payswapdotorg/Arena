@@ -348,3 +348,37 @@ Harvest record (TL, 2026-10-03 13:48 UTC): worker delivery branch-verified at th
 B018 MERGED — accessibility, mobile, performance, resilience and launch polish: apps/web/src/a11y (primitives + ambient DOM type surface + 12-test conformance battery), apps/web/src/responsive (primitives + 13-test battery), tests/performance PERF1.0 revival (full @arena/* source mapping — standalone NodeNext resolution fixed) + product-budget tests (suite 18/18), docs/release/product/* (a11y/mobile/perf-budget/resilience statements + launch-polish checklist), honest manifest at tests/performance/manifest.json
 PR #101 (merged 29d01e43)
 Harvest record (TL, 2026-10-04 07:50 UTC): worker delivery over three remediation rounds + disclosed TL intake-remediation (z-ai worker brain rate-limit-dead; mechanical fixes applied at the station — JSX-in-.ts renames, ambient DOM types instead of the DOM lib, local cn() replacing the nonexistent '@/lib/utils', perf-suite source mapping); six-gate battery re-run at the pushed SHA 08d9132 ALL GREEN (71/71 turbo tasks; apps/web 581 passed + 8 skipped; a11y 12/12; responsive 13/13; post-build app.test 36/36; PERF standalone 18/18); no lockfile intake needed; issue #100 closed at acceptance.
+
+
+## FINAL CURRENT FRONTIER — 2026-10-07
+
+Authoritative handoff: docs/LLM-ARCHITECT-FINAL-HANDOFF.md
+
+A001-A036: COMPLETE / MERGED.
+B001-B019: COMPLETE / MERGED.
+
+Post-B019 launch-integrity closure is now explicitly tracked:
+- G001 issue #104 — fresh-machine/local evidence;
+- G002 issue #105 — current hosted/provider/quota evidence;
+- G003 issue #106 — fresh-browser UX/product evidence.
+
+G001-G003 have disjoint evidence surfaces and may run concurrently.
+
+C001-C022: NOT YET IMPLEMENTED.
+
+C-series north star: Arena is the Stripe of human expert escalation for AI automation.
+
+Corrected C dependency/concurrency:
+- C001;
+- then C002 + C006 + C010;
+- then C003 + C007 + C017;
+- then C004 + C008 + C009;
+- then C005 + C011 + C012;
+- then C013 + C014 + C015;
+- then C016 + C018 + C020;
+- then C019 + C021 + C022.
+
+Maximum concurrent workers: 3.
+
+Do not declare the strongest public launch statement until G001-G003 are accepted.
+Do not dispatch a C item before its dependencies are verified on live main.
