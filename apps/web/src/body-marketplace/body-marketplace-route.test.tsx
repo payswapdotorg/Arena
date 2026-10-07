@@ -18,7 +18,6 @@ import {
   BodyMarketplaceLoadingView,
   BodyMarketplaceRequestPretrainingView,
   resolveBodyMarketplaceBrowseExperience,
-  resolveBodyMarketplaceDetailExperience,
   resolveBodyMarketplaceMyListingsExperience,
   resolveBodyMarketplaceRequestPretrainingExperience,
   resetDemoBodyMarketplaceContext,
