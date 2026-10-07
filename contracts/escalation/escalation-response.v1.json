@@ -1,0 +1,70 @@
+{
+  "$id": "arena:schema/escalation/escalation-response@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The per-surface result vocabulary of the escalation API (ES1.0 response fields travel on the status view): created | replayed | status. Replays carry duplicate=true and the ORIGINAL request id (idempotency-key semantics).",
+  "oneOf": [
+    {
+      "additionalProperties": false,
+      "properties": {
+        "correlationId": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "type": "string"
+        },
+        "duplicate": {
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "escalation-created",
+            "escalation-replayed"
+          ]
+        },
+        "requestId": {
+          "pattern": "^esc_[0-9a-f]{32}$",
+          "type": "string"
+        },
+        "responseVersion": {
+          "const": 1
+        }
+      },
+      "required": [
+        "responseVersion",
+        "kind",
+        "requestId",
+        "correlationId",
+        "duplicate"
+      ],
+      "type": "object"
+    },
+    {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "escalation-status"
+          ]
+        },
+        "record": {
+          "description": "The full EscalationRecord (request + state + append-only history + result/cost fields where applicable).",
+          "type": "object"
+        },
+        "responseVersion": {
+          "const": 1
+        }
+      },
+      "required": [
+        "responseVersion",
+        "kind",
+        "record"
+      ],
+      "type": "object"
+    }
+  ],
+  "title": "Arena escalation API response v1",
+  "type": "object",
+  "x-response-kinds": [
+    "escalation-created",
+    "escalation-replayed",
+    "escalation-status"
+  ]
+}

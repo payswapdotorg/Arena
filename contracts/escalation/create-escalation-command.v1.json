@@ -1,0 +1,135 @@
+{
+  "$comment": "Full per-field constraints live in escalation-request.v1.json; this envelope-payload contract re-states the identity-critical fields and carries the rest opaquely.",
+  "$id": "arena:schema/escalation/create-escalation-command@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The POST /v1/escalations wire form: a command envelope (REQUIRED non-null idempotency key — architecture-lock rule 17) whose payload is an EscalationRequest. Duplicate (tenant, idempotency key, correlation id) submissions REPLAY the original; conflicting key+body is a typed ESCALATION_IDENTITY_CONFLICT rejection.",
+  "properties": {
+    "budget": {
+      "type": "object"
+    },
+    "capabilityNeed": {
+      "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*){0,31}$",
+      "type": "string"
+    },
+    "clientAppId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "contextReferences": {
+      "type": "array"
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "createdAt": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "type": "string"
+    },
+    "deadline": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "type": "string"
+    },
+    "desiredOutputSchema": {
+      "type": "object"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environmentSessionPolicy": {
+      "type": "object"
+    },
+    "escalationModes": {
+      "items": {
+        "enum": [
+          "solve",
+          "correct",
+          "unblock",
+          "review",
+          "teach",
+          "tool_gap",
+          "knowledge",
+          "evaluate"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "expertRequirements": {
+      "type": "object"
+    },
+    "idempotencyKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "learningPermissions": {
+      "type": "object"
+    },
+    "locale": {
+      "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$",
+      "type": "string"
+    },
+    "permittedActions": {
+      "items": {
+        "enum": [
+          "read-context",
+          "run-approved-tools",
+          "propose-patch",
+          "annotate-evidence",
+          "ask-clarification",
+          "signal-tool-gap"
+        ]
+      },
+      "type": "array"
+    },
+    "privacyPolicy": {
+      "type": "object"
+    },
+    "requestId": {
+      "pattern": "^esc_[0-9a-f]{32}$",
+      "type": "string"
+    },
+    "requestVersion": {
+      "const": 1
+    },
+    "retentionPolicy": {
+      "type": "object"
+    },
+    "sourceRunRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "sourceWorkflowRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "taskRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "tenantId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "urgency": {
+      "enum": [
+        "routine",
+        "priority",
+        "urgent",
+        "critical"
+      ]
+    }
+  },
+  "required": [
+    "requestVersion",
+    "requestId",
+    "tenantId",
+    "idempotencyKey",
+    "correlationId",
+    "digest"
+  ],
+  "title": "Arena create-escalation-command v1",
+  "type": "object"
+}

@@ -1,0 +1,58 @@
+{
+  "$id": "arena:schema/escalation/escalation-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the escalation error taxonomy. Unknown codes are rejected when parsing (fail-closed).",
+  "properties": {
+    "category": {
+      "enum": [
+        "validation",
+        "state",
+        "scope",
+        "idempotency",
+        "integrity",
+        "versioning",
+        "unknown"
+      ]
+    },
+    "code": {
+      "enum": [
+        "ESCALATION_INVALID_REQUEST",
+        "ESCALATION_INVALID_TENANT",
+        "ESCALATION_INVALID_MODE",
+        "ESCALATION_INVALID_RESULT",
+        "ESCALATION_INVALID_EVENT",
+        "ESCALATION_INVALID_STATE",
+        "ESCALATION_INVALID_TRANSITION",
+        "ESCALATION_TERMINAL_STATE",
+        "ESCALATION_IDENTITY_CONFLICT",
+        "ESCALATION_CROSS_TENANT_ACCESS",
+        "ESCALATION_UNPERMITTED_ACTION",
+        "ESCALATION_DEADLINE_PASSED",
+        "ESCALATION_TAMPERED",
+        "ESCALATION_SCHEMA_MISMATCH",
+        "ESCALATION_UNSUPPORTED_VERSION",
+        "ESCALATION_UNKNOWN_ERROR"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context.",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena escalation error v1",
+  "type": "object"
+}

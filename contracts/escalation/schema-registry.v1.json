@@ -1,0 +1,18 @@
+{
+  "$id": "arena:schema/escalation/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Enumerates the escalation-domain schemas owned by @arena/escalation. A SchemaRef matching this enum is a known escalation schema at the listed version; anything else is not.",
+  "enum": [
+    "arena:schema/escalation/escalation-mode@1.0.0",
+    "arena:schema/escalation/escalation-state@1.0.0",
+    "arena:schema/escalation/escalation-error@1.0.0",
+    "arena:schema/escalation/escalation-request@1.0.0",
+    "arena:schema/escalation/escalation-result@1.0.0",
+    "arena:schema/escalation/escalation-webhook-event@1.0.0",
+    "arena:schema/escalation/escalation-response@1.0.0",
+    "arena:schema/escalation/create-escalation-command@1.0.0",
+    "arena:schema/escalation/get-escalation-status-query@1.0.0"
+  ],
+  "title": "Arena escalation schema registry v1",
+  "type": "string"
+}

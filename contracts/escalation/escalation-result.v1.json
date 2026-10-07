@@ -1,0 +1,113 @@
+{
+  "$id": "arena:schema/escalation/escalation-result@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "The closed 11-kind result taxonomy (ES1.0). Every kind carries kind-specific required fields enforced by the domain guards; an accepted result is operationally distinct from any reusable learning artifact (architecture-lock rule 31).",
+  "properties": {
+    "artifactRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "blockageRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "correctedRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "decision": {
+      "type": "string"
+    },
+    "evidenceRefs": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "findings": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "kind": {
+      "enum": [
+        "correction",
+        "unblock",
+        "answer",
+        "decision",
+        "solution",
+        "review",
+        "evidence-bundle",
+        "knowledge-patch",
+        "tool-gap-signal",
+        "evaluation-verdict",
+        "learning-artifact-ref"
+      ]
+    },
+    "missingToolId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "optionsConsidered": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "payload": {
+      "description": "Plain-JSON answer/solution payload."
+    },
+    "producedAt": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "type": "string"
+    },
+    "provenance": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "replacement": {
+      "description": "Plain-JSON corrected payload (correction)."
+    },
+    "resolution": {
+      "description": "Plain-JSON resolution payload (unblock)."
+    },
+    "resultVersion": {
+      "const": 1
+    },
+    "scope": {
+      "type": "string"
+    },
+    "statement": {
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "subjectRef": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$",
+      "type": "string"
+    },
+    "summary": {
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "verdict": {
+      "description": "review: approved|changes-requested|rejected; evaluation-verdict: pass|fail|inconclusive."
+    }
+  },
+  "required": [
+    "resultVersion",
+    "kind",
+    "producedAt",
+    "summary"
+  ],
+  "title": "Arena escalation result taxonomy v1",
+  "type": "object"
+}
