@@ -145,7 +145,14 @@ describe('client escalation projection (built from C001 canonical records)', () 
     });
     expect(breached.slaBreached).toBe(true);
     const paid = await recordAt('paid');
-    const notBreached = buildClientEscalationProjection(paid, {
+    // `paid` is NOT terminal in the C001 machine (learning capture follows);
+    // a CLOSED record past deadline is honestly not SLA-breached anymore.
+    const closed = applyEscalationTransition(
+      applyEscalationTransition(paid, 'learning_captured', { now: NOW }),
+      'closed',
+      { now: NOW },
+    );
+    const notBreached = buildClientEscalationProjection(closed, {
       environment: 'live',
       now: NOW + 3_600_001,
     });
