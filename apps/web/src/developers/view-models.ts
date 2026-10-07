@@ -313,7 +313,9 @@ export function mergeObservabilityDashboards(
   dashboards: readonly ObservabilityDashboard[],
 ): ObservabilityDashboard | null {
   if (dashboards.length === 0) return null;
-  const [first, ...rest] = dashboards;
+  const first = dashboards[0];
+  if (first === undefined) return null;
+  const rest = dashboards.slice(1);
   if (rest.length === 0) return first;
   const byState: Record<string, number> = { ...first.summary.byState };
   const costTotals: Record<
