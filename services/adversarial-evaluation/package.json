@@ -1,0 +1,39 @@
+{
+  "name": "@arena/adversarial-evaluation-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena adversarial expert evaluation / Expert Arena competition reference service (Work Order C013; issue #119). The competition lifecycle, submissions, challenges, responses and votes run as durable idempotent jobs (command-id-deduplicated job log) on the reference fabric; every cast judgment passes the structural guardrail battery BEFORE append (fail-closed admission); adjudication composes the A012 task-specific evaluator and A013 verifier through injected ports and delegates final verification authority to the C009/A013 seams (never claiming it); the community discovery signal is computed per submission as a labelled projection that structurally cannot drive the verdict; results feed Evaluation/Verification/Certification as candidates through the public ports and adversarial trajectories / disagreement data / benchmark material flow to the A030 research surfaces as candidates. Fail-closed error normalization, envelope conventions per sibling services.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/adversarial-evaluation": "workspace:*",
+    "@arena/escalation-validation": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
