@@ -528,7 +528,7 @@ export function createInterventionResult(
     }
     case 'teach': {
       const demonstration = freezeDemonstration(input.demonstration);
-      if (input.trajectoryRef === undefined) {
+      if (profile.captureMandatory && input.trajectoryRef === undefined) {
         throw new InterventionError(INTERVENTION_ERROR_CODES.CAPTURE_REQUIRED, {
           message:
             'teach results REQUIRE an A011 trajectory binding (capture is mandatory for TEACH — EES1.0 replay law)',

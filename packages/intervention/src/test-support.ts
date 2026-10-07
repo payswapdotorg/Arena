@@ -6,6 +6,24 @@
 import type { CreateInterventionResultInput } from './results.js';
 import type { InterventionStep, InterventionTrajectoryBinding } from './trajectory-binding.js';
 
+/** Override bag that permits explicit `undefined` (exactOptionalPropertyTypes). */
+export type ResultInputOverrides = {
+  -readonly [K in keyof CreateInterventionResultInput]?: CreateInterventionResultInput[K] | undefined;
+};
+
+/** Merge overrides while DROPPING explicit-undefined keys (exactOptionalPropertyTypes). */
+function withOverrides(
+  base: CreateInterventionResultInput,
+  overrides: ResultInputOverrides,
+): CreateInterventionResultInput {
+  const merged: Record<string, unknown> = { ...base };
+  for (const [key, value] of Object.entries(overrides)) {
+    if (value === undefined) delete merged[key];
+    else merged[key] = value;
+  }
+  return merged as unknown as CreateInterventionResultInput;
+}
+
 export const TENANT_A = 'tenant-alpha';
 export const TENANT_B = 'tenant-beta';
 export const REQUEST_ID_A = 'esc_11111111111111111111111111111111';
@@ -25,9 +43,9 @@ export const ALL_INFORMATIONAL_MODES = ['tool_gap', 'knowledge', 'evaluate'] as 
 
 /** A base contract input for every live mode (override per case). */
 export function makeCorrectionInput(
-  overrides: Partial<CreateInterventionResultInput> = {},
+  overrides: ResultInputOverrides = {},
 ): CreateInterventionResultInput {
-  return {
+  return withOverrides({
     mode: 'correct',
     permittedModes: ['correct'],
     requestId: REQUEST_ID_A,
@@ -38,14 +56,13 @@ export function makeCorrectionInput(
     replacement: { material: 'aggregate', quantity: 82.5, unit: 'm3', rate: 210 },
     beforeEvidenceRefs: ['artifact/boq-draft-7/v3'],
     afterEvidenceRefs: ['artifact/boq-draft-7/v4'],
-    ...overrides,
-  };
+    } satisfies CreateInterventionResultInput, overrides);
 }
 
 export function makeUnblockInput(
-  overrides: Partial<CreateInterventionResultInput> = {},
+  overrides: ResultInputOverrides = {},
 ): CreateInterventionResultInput {
-  return {
+  return withOverrides({
     mode: 'unblock',
     permittedModes: ['unblock'],
     requestId: REQUEST_ID_A,
@@ -62,14 +79,13 @@ export function makeUnblockInput(
       sourceRefs: ['artifact/local-construction-code-gh/2026'],
       method: 'consulted the scoped local construction rulebook and cited the clause',
     },
-    ...overrides,
-  };
+    } satisfies CreateInterventionResultInput, overrides);
 }
 
 export function makeSolveInput(
-  overrides: Partial<CreateInterventionResultInput> = {},
+  overrides: ResultInputOverrides = {},
 ): CreateInterventionResultInput {
-  return {
+  return withOverrides({
     mode: 'solve',
     permittedModes: ['solve'],
     requestId: REQUEST_ID_A,
@@ -83,14 +99,13 @@ export function makeSolveInput(
       'computed the consolidated BOQ totals',
     ],
     evidenceRefs: ['artifact/takeoff-sheet-1', 'artifact/boq-draft-7/v4'],
-    ...overrides,
-  };
+    } satisfies CreateInterventionResultInput, overrides);
 }
 
 export function makeReviewInput(
-  overrides: Partial<CreateInterventionResultInput> = {},
+  overrides: ResultInputOverrides = {},
 ): CreateInterventionResultInput {
-  return {
+  return withOverrides({
     mode: 'review',
     permittedModes: ['review'],
     requestId: REQUEST_ID_A,
@@ -107,14 +122,13 @@ export function makeReviewInput(
       { criteriaRef: 'criteria/local-code-compliance', verdict: 'met', note: 'wet-season rule applied correctly' },
     ],
     findings: ['aggregate wastage factor was correctly applied'],
-    ...overrides,
-  };
+    } satisfies CreateInterventionResultInput, overrides);
 }
 
 export function makeTeachInput(
-  overrides: Partial<CreateInterventionResultInput> = {},
+  overrides: ResultInputOverrides = {},
 ): CreateInterventionResultInput {
-  return {
+  return withOverrides({
     mode: 'teach',
     permittedModes: ['teach'],
     requestId: REQUEST_ID_A,
@@ -136,14 +150,13 @@ export function makeTeachInput(
         evidenceRefs: ['event/session-evt-5', 'artifact/takeoff-sheet-1'],
       },
     ],
-    ...overrides,
-  };
+    } satisfies CreateInterventionResultInput, overrides);
 }
 
 export function makeToolGapInput(
-  overrides: Partial<CreateInterventionResultInput> = {},
+  overrides: ResultInputOverrides = {},
 ): CreateInterventionResultInput {
-  return {
+  return withOverrides({
     mode: 'tool_gap',
     permittedModes: ['tool_gap'],
     requestId: REQUEST_ID_A,
@@ -153,14 +166,13 @@ export function makeToolGapInput(
     missingToolId: 'tool/gh-local-rate-db',
     rationale: 'the BOQ needs Accra market rates which are only available in the local rate database',
     evidenceOfUseRefs: ['event/session-evt-7'],
-    ...overrides,
-  };
+    } satisfies CreateInterventionResultInput, overrides);
 }
 
 export function makeKnowledgeInput(
-  overrides: Partial<CreateInterventionResultInput> = {},
+  overrides: ResultInputOverrides = {},
 ): CreateInterventionResultInput {
-  return {
+  return withOverrides({
     mode: 'knowledge',
     permittedModes: ['knowledge'],
     requestId: REQUEST_ID_A,
@@ -169,14 +181,13 @@ export function makeKnowledgeInput(
     summary: 'a scoped reusable construction rule for Accra BOQ work',
     statement: 'Accra aggregate wastage is 7.5% for hand-mixed foundations, 4% for pre-mix.',
     scope: 'construction.boq.gh-accra.foundation',
-    ...overrides,
-  };
+    } satisfies CreateInterventionResultInput, overrides);
 }
 
 export function makeEvaluateInput(
-  overrides: Partial<CreateInterventionResultInput> = {},
+  overrides: ResultInputOverrides = {},
 ): CreateInterventionResultInput {
-  return {
+  return withOverrides({
     mode: 'evaluate',
     permittedModes: ['evaluate'],
     requestId: REQUEST_ID_A,
@@ -185,8 +196,7 @@ export function makeEvaluateInput(
     summary: 'evaluated the agent BOQ draft against the golden set',
     verdict: 'pass',
     subjectRef: 'artifact/boq-draft-7/v4',
-    ...overrides,
-  };
+    } satisfies CreateInterventionResultInput, overrides);
 }
 
 /** A deterministic trajectory binding for the trajectory-binding suite. */

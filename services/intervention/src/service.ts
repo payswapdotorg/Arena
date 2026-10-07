@@ -44,6 +44,7 @@ import {
 } from '@arena/escalation';
 import type { CreateInterventionResultInput, InterventionStep } from '@arena/intervention';
 import type { CreateTrajectoryHeaderInput } from '@arena/trajectory';
+import { isInterventionStepKind } from '@arena/intervention';
 import {
   INTERVENTION_ERROR_CODES,
   InterventionError,
@@ -434,9 +435,15 @@ export class InterventionService {
     assertNoEscape(checkCredentials(session.capsule.barrier, now));
 
     const action = STEP_SESSION_ACTIONS[input.kind];
-    if (action === undefined) {
+    if (action === undefined || !isInterventionStepKind(input.kind)) {
       throw new InterventionError(INTERVENTION_ERROR_CODES.INVALID_REQUEST, {
         message: `intervention step kind is not in the closed vocabulary: ${JSON.stringify(input.kind)}`,
+      });
+    }
+    const eventKind = STEP_SESSION_EVENT_KINDS[input.kind];
+    if (eventKind === undefined) {
+      throw new InterventionError(INTERVENTION_ERROR_CODES.INVALID_REQUEST, {
+        message: `intervention step kind maps to no session event: ${JSON.stringify(input.kind)}`,
       });
     }
     // The C006 capsule is the enforcement authority for what the expert may DO.
@@ -454,7 +461,7 @@ export class InterventionService {
       input.payload as Parameters<typeof screenObservation>[1],
     );
     const nextSession = appendSessionEvent(session, {
-      kind: STEP_SESSION_EVENT_KINDS[input.kind],
+      kind: eventKind,
       payload: screened,
       now: occurredAt,
       ...(input.actor !== undefined ? { actor: input.actor } : {}),
@@ -465,7 +472,12 @@ export class InterventionService {
       ...record,
       steps: Object.freeze([
         ...record.steps,
-        Object.freeze({ kind: input.kind, stepId: input.stepId, payload: input.payload, occurredAt }),
+        Object.freeze({
+          kind: input.kind,
+          stepId: input.stepId,
+          payload: input.payload,
+          occurredAt,
+        }),
       ]),
       updatedAt: occurredAt,
     });

@@ -9,6 +9,7 @@ import { describe, expect, it } from 'vitest';
 import { createEscalationResult, isEscalationResult } from '@arena/escalation';
 import { InterventionError, INTERVENTION_ERROR_CODES } from './errors.js';
 import { createInterventionResult, evidenceRefsOfContract, toEscalationResultInput } from './results.js';
+import type { CreateInterventionResultInput } from './results.js';
 import {
   makeCorrectionInput,
   makeEvaluateInput,
@@ -173,10 +174,10 @@ describe('TEACH — observable demonstration record (capture mandatory)', () => 
     if (contract.kind !== 'teach-demonstration') throw new Error('unreachable');
     expect(contract.demonstration.length).toBe(2);
     const step = contract.demonstration[0];
-    expect(step.stateRef).toBe('capsule/boq-teach-1/state-0');
-    expect(step.humanAction).toContain('annotated');
-    expect(step.consequenceRef).toBe('artifact/takeoff-notes-1');
-    expect(step.evidenceRefs.length).toBe(2);
+    expect(step?.stateRef).toBe('capsule/boq-teach-1/state-0');
+    expect(step?.humanAction).toContain('annotated');
+    expect(step?.consequenceRef).toBe('artifact/takeoff-notes-1');
+    expect(step?.evidenceRefs.length).toBe(2);
     expect(contract.trajectoryRef?.chainHead).toBe('c'.repeat(64));
   });
 
@@ -205,7 +206,10 @@ describe('TEACH — observable demonstration record (capture mandatory)', () => 
   it('fails closed when a demonstration step lacks evidence', () => {
     expect(() =>
       createInterventionResult(
-        makeTeachInput({ demonstration: [{ stateRef: 's0', humanAction: 'act', consequenceRef: 'c0' }] }),
+        makeTeachInput({
+          demonstration:
+            [{ stateRef: 's0', humanAction: 'act', consequenceRef: 'c0' }] as unknown as CreateInterventionResultInput['demonstration'],
+        }),
       ),
     ).toThrowError(InterventionError);
   });
