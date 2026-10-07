@@ -47,7 +47,6 @@ import {
   toEngagementExpertId,
   toEngagementId,
   toEngagementLocator,
-  toEngagementNeutralText,
   toEngagementTenant,
   toEngagementTimestamp,
   toSlaUrgencyClass,
@@ -489,8 +488,6 @@ export function transitionDenialError(check: EngagementTransitionCheck): ExpertE
 
 export interface ApplyTransitionInput extends TransitionGuardInput {
   readonly transition: EngagementTransition;
-  /** Optional neutral-text note (never a narrative override of the state). */
-  readonly note?: string;
 }
 
 /**
@@ -509,8 +506,6 @@ export async function applyEngagementTransition(
     });
   }
   const at = toEngagementTimestamp(input.at, 'at');
-  const note =
-    input.note === undefined ? undefined : toEngagementNeutralText(input.note, 'note');
   const check = checkEngagementTransition(record, input.transition, {
     at: input.at,
     tenant: input.tenant,
@@ -521,8 +516,11 @@ export async function applyEngagementTransition(
   if (!check.allowed) {
     throw transitionDenialError(check);
   }
+  // The digest covers the VIEW ONLY — strip the prior digest before
+  // deriving the new one (the house digest discipline).
+  const { digest: _priorDigest, ...priorView } = record;
   const view: EngagementRecordView = {
-    ...record,
+    ...priorView,
     status: check.to,
     ...(input.transition === 'accept' ? { acceptedAt: at } : {}),
     ...(input.transition === 'activate' ? { activatedAt: at } : {}),
@@ -540,7 +538,6 @@ export async function applyEngagementTransition(
           ),
         }
       : {}),
-    ...(note !== undefined ? {} : {}),
   };
   const digest = (await digestCanonical(view)) as EngagementContentDigest;
   return deepFreeze({ ...view, digest });
