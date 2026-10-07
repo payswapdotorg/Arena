@@ -60,7 +60,6 @@ import {
 import type {
   BodyManifest,
   CreateBodyManifestInput,
-  ForgePolicy,
   ForgeRecord,
   ForgeResult,
 } from '@arena/body-forge';
@@ -87,7 +86,6 @@ import type {
   ReleaseRecord,
 } from '@arena/body-registry';
 import { createCompatibilityRegistry } from '@arena/compatibility';
-import type { CompatibilityRecord } from '@arena/compatibility';
 import { newIdempotencyKey } from '@arena/protocol-core';
 
 import {
@@ -733,15 +731,14 @@ export class BodyMarketplaceService {
 
   /** The default A024 wiring: the gate resolves against the fabric's own stores. */
   private createDefaultRegistry(): BodyRegistryPort {
-    const fabric = this;
     return new InMemoryBodyRegistryPort({
-      bodyVersions: (digest) => fabric.bodyVersions.get(digest) ?? null,
-      certificationRecords: (digest) => fabric.certificationRecords.get(digest) ?? null,
+      bodyVersions: (digest) => this.bodyVersions.get(digest) ?? null,
+      certificationRecords: (digest) => this.certificationRecords.get(digest) ?? null,
       compatibilityRecords: (digest) => {
-        const record = fabric.compatibilityRegistry.getRecord(digest);
+        const record = this.compatibilityRegistry.getRecord(digest);
         return record ?? null;
       },
-      forgeRecords: (digest) => fabric.forgeRecords.get(digest) ?? null,
+      forgeRecords: (digest) => this.forgeRecords.get(digest) ?? null,
     });
   }
 

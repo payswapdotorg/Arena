@@ -189,21 +189,17 @@ export function parseRequestPretrainingCommand(
     });
   }
   const base = payload['baseBodyVersionRef'];
-  const baseBodyVersionRef =
-    base === null || base === undefined
-      ? null
-      : {
-          tenant: expectString((base as Record<string, unknown>)['tenant'], 'baseBodyVersionRef.tenant'),
-          name: expectString((base as Record<string, unknown>)['name'], 'baseBodyVersionRef.name'),
-          version: expectString(
-            (base as Record<string, unknown>)['version'],
-            'baseBodyVersionRef.version',
-          ),
-          digest: expectString(
-            (base as Record<string, unknown>)['digest'],
-            'baseBodyVersionRef.digest',
-          ),
-        };
+  if (base !== null && base !== undefined) {
+    if (!isPlainObject(base)) {
+      throw new BodyMarketplaceError(BODY_MARKETPLACE_ERROR_CODES.INVALID_ENVELOPE, {
+        message: 'envelope payload field baseBodyVersionRef must be an object ref',
+      });
+    }
+    expectString(base['tenant'], 'baseBodyVersionRef.tenant');
+    expectString(base['name'], 'baseBodyVersionRef.name');
+    expectString(base['version'], 'baseBodyVersionRef.version');
+    expectString(base['digest'], 'baseBodyVersionRef.digest');
+  }
   return envelope as Envelope<RequestPretrainingCommandPayload>;
 }
 

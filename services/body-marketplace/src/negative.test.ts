@@ -128,7 +128,7 @@ describe('adversarial: rights-free data never trains', () => {
   it('BLOCKS the run without ever calling the forge port', async () => {
     let forgeSubmissions = 0;
     const countingForge: ForgePort = {
-      submit: async (submission: ForgeSubmission) => {
+      submit: async (_submission: ForgeSubmission) => {
         forgeSubmissions += 1;
         throw new Error('the forge must never see rights-free data');
       },
