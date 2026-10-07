@@ -418,9 +418,24 @@ export function createAdjudicationOutcome(
       maxRevisionAttempts: Number.MAX_SAFE_INTEGER,
     },
   );
-  if (combined.verdict !== input.verdict) {
-    // Fail-closed: the recorded verdict must match the EXPLICIT stage
-    // combination — a verdict may never disagree with its own stages.
+  // Fail-closed consistency (POLICY-INDEPENDENT half): the recorded
+  // verdict must agree with the EXPLICIT stage combination — accepted
+  // iff both stages passed, needs_more_evidence iff a stage was
+  // indeterminate, and revision_required|rejected (the policy-boundary
+  // half) iff a stage failed. A verdict may never disagree with its
+  // own stages.
+  const stagesIndeterminate =
+    input.evaluationStage.outcome === 'inconclusive' ||
+    input.verificationStage.outcome === 'unknown';
+  const stagesFailed =
+    input.evaluationStage.outcome === 'below-criteria' ||
+    input.verificationStage.outcome === 'fail';
+  const agreement = stagesIndeterminate
+    ? input.verdict === 'needs_more_evidence'
+    : stagesFailed
+      ? input.verdict === 'revision_required' || input.verdict === 'rejected'
+      : input.verdict === 'accepted';
+  if (!agreement) {
     throw new EscalationValidationError(ESCALATION_VALIDATION_ERROR_CODES.INVALID_VERDICT, {
       message: `recorded verdict ${JSON.stringify(input.verdict)} disagrees with the explicit stage combination (${combined.verdict})`,
       details: { recorded: input.verdict, combined: combined.verdict },
