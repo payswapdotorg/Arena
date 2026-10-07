@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@arena/protocol-core": ["../../packages/protocol-core/src/index.ts"],
+      "@arena/escalation": ["../../packages/escalation/src/index.ts"],
+      "@arena/escalation-api": ["../../services/escalation-api/src/index.ts"],
+      "@arena/escalation-adapters": ["../../adapters/escalation/src/index.ts"],
+      "@arena/epoch-escalation-adapter": ["../../adapters/epoch-escalation/src/index.ts"],
+      "@arena/expert-session": ["../../packages/expert-session/src/index.ts"],
+      "@arena/intervention": ["../../packages/intervention/src/index.ts"],
+      "@arena/payments": ["../../packages/payments/src/index.ts"],
+      "@arena/payments-service": ["../../services/payments/src/index.ts"],
+      "@arena/developer-platform": ["../../packages/developer-platform/src/index.ts"],
+      "@arena/developer-platform-service": ["../../services/developer-platform/src/index.ts"]
+    }
+  },
+  "include": ["src", "vitest.config.ts"]
+}
