@@ -19,7 +19,7 @@ import type { RoutingVerdict } from './engine.js';
 /** Wire version of the routing-decision record shape. */
 export const ROUTING_DECISION_RECORD_VERSION = 1 as const;
 
-const REQUEST_ID_PATTERN = /^esc_[a-z0-9]{8,}$/;
+const REQUEST_ID_PATTERN = /^esc_[0-9a-f]{32}$/;
 const TENANT_ID_PATTERN = /^[a-z][a-z0-9-]{0,63}$/;
 const ISO_TIMESTAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 

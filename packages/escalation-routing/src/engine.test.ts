@@ -62,7 +62,7 @@ describe('routing engine — matched path', () => {
     const profile = await compile(graph);
     const candidate = await qualifiedCandidate(graph);
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000001',
+      requestId: 'esc_00000001aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('matched');
@@ -83,7 +83,7 @@ describe('routing engine — matched path', () => {
     if (result.outcome !== 'compilable') throw new Error('compile failed');
     const candidate = await qualifiedCandidate(graph, { locale: 'fr' });
     const verdict = await routeEscalation(result.profile, [candidate], {
-      requestId: 'esc_00000002',
+      requestId: 'esc_00000002aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('matched');
@@ -95,7 +95,7 @@ describe('routing engine — matched path', () => {
     const profile = await compile(graph);
     const candidate = await qualifiedCandidate(graph, { tenant: 'public' });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000003',
+      requestId: 'esc_00000003aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('matched');
@@ -113,7 +113,7 @@ describe('routing engine — the filter order is the contract', () => {
       locale: 'fr',
     });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000004',
+      requestId: 'esc_00000004aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('no-match');
@@ -129,7 +129,7 @@ describe('routing engine — the filter order is the contract', () => {
       qualifiedCapabilities: [],
     });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000005',
+      requestId: 'esc_00000005aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('blocked-by-coi');
@@ -151,7 +151,7 @@ describe('routing engine — the filter order is the contract', () => {
       rateCard: { engagementRateMinorUnits: 999999, currency: 'EUR' },
     });
     const verdict = await routeEscalation(result.profile, [candidate], {
-      requestId: 'esc_00000006',
+      requestId: 'esc_00000006aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('blocked-by-privacy');
@@ -167,7 +167,7 @@ describe('routing engine — COI and privacy are explicit, tested blocks', () =>
       coi: { blockedTenantIds: ['tenant-a'], blockedClientAppIds: [] },
     });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000007',
+      requestId: 'esc_00000007aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('blocked-by-coi');
@@ -180,7 +180,7 @@ describe('routing engine — COI and privacy are explicit, tested blocks', () =>
       coi: { blockedTenantIds: [], blockedClientAppIds: ['app-alpha'] },
     });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000008',
+      requestId: 'esc_00000008aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('blocked-by-coi');
@@ -198,7 +198,7 @@ describe('routing engine — COI and privacy are explicit, tested blocks', () =>
       privacyClearance: { maxDataClassification: 'internal', piiHandling: 'forbid' },
     });
     const verdict = await routeEscalation(result.profile, [candidate], {
-      requestId: 'esc_00000009',
+      requestId: 'esc_00000009aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('blocked-by-privacy');
@@ -216,7 +216,7 @@ describe('routing engine — COI and privacy are explicit, tested blocks', () =>
       privacyClearance: { maxDataClassification: 'confidential', piiHandling: 'redact' },
     });
     const verdict = await routeEscalation(result.profile, [candidate], {
-      requestId: 'esc_00000010',
+      requestId: 'esc_00000010aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('blocked-by-privacy');
@@ -229,7 +229,7 @@ describe('routing engine — qualification is INPUT, never authorization', () =>
     const profile = await compile(graph);
     const candidate = await qualifiedCandidate(graph, { qualifiedCapabilities: [] });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000011',
+      requestId: 'esc_00000011aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('no-match');
@@ -241,7 +241,7 @@ describe('routing engine — qualification is INPUT, never authorization', () =>
     const profile = await compile(graph);
     const candidate = await qualifiedCandidate(graph, { supportedToolRefs: [] });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000012',
+      requestId: 'esc_00000012aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('no-match');
@@ -255,7 +255,7 @@ describe('routing engine — geography, budget, deadline', () => {
     const profile = await compile(graph);
     const candidate = await qualifiedCandidate(graph, { locale: 'fr' });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000013',
+      requestId: 'esc_00000013aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('locale-uncovered');
@@ -272,7 +272,7 @@ describe('routing engine — geography, budget, deadline', () => {
     if (result.outcome !== 'compilable') throw new Error('compile failed');
     const candidate = await qualifiedCandidate(graph, { jurisdictions: [{ country: 'FR' }] });
     const verdict = await routeEscalation(result.profile, [candidate], {
-      requestId: 'esc_00000014',
+      requestId: 'esc_00000014aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('no-match');
@@ -286,7 +286,7 @@ describe('routing engine — geography, budget, deadline', () => {
       rateCard: { engagementRateMinorUnits: 50001, currency: 'USD' },
     });
     const verdict = await routeEscalation(profile, [over], {
-      requestId: 'esc_00000015',
+      requestId: 'esc_00000015aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('budget-infeasible');
@@ -295,7 +295,7 @@ describe('routing engine — geography, budget, deadline', () => {
       rateCard: { engagementRateMinorUnits: 1, currency: 'EUR' },
     });
     const verdict2 = await routeEscalation(profile, [wrongCurrency], {
-      requestId: 'esc_00000016',
+      requestId: 'esc_00000016aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict2.outcome).toBe('budget-infeasible');
@@ -313,7 +313,7 @@ describe('routing engine — geography, budget, deadline', () => {
       rateCard: { engagementRateMinorUnits: 0, currency: 'USD' },
     });
     const verdict = await routeEscalation(result.profile, [zeroRate], {
-      requestId: 'esc_00000017',
+      requestId: 'esc_00000017aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('matched');
@@ -326,7 +326,7 @@ describe('routing engine — geography, budget, deadline', () => {
       availability: [{ recurrence: 'one-time', date: '2026-10-06', startUtc: '09:00', endUtc: '17:00' }],
     });
     const verdict = await routeEscalation(profile, [yesterday], {
-      requestId: 'esc_00000018',
+      requestId: 'esc_00000018aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('deadline-infeasible');
@@ -338,7 +338,7 @@ describe('routing engine — geography, budget, deadline', () => {
     const profile = await compile(graph);
     const candidate = await qualifiedCandidate(graph, { availability: [] });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000019',
+      requestId: 'esc_00000019aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('no-match');
@@ -353,7 +353,7 @@ describe('routing engine — geography, budget, deadline', () => {
       availability: [{ recurrence: 'weekly', dayOfWeek: 3, startUtc: '11:00', endUtc: '13:00' }],
     });
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000020',
+      requestId: 'esc_00000020aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('matched');
@@ -376,7 +376,7 @@ describe('routing engine — deterministic ranking', () => {
       reliability: { completed: 100, failed: 0, noResponse: 0 },
     });
     const verdict = await routeEscalation(profile, [reliableExpert, fitExpert], {
-      requestId: 'esc_00000021',
+      requestId: 'esc_00000021aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('matched');
@@ -397,7 +397,7 @@ describe('routing engine — deterministic ranking', () => {
     );
     if (result.outcome !== 'compilable') throw new Error('compile failed');
     const verdict = await routeEscalation(result.profile, [b, a], {
-      requestId: 'esc_00000022',
+      requestId: 'esc_00000022aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('matched');
@@ -408,7 +408,7 @@ describe('routing engine — deterministic ranking', () => {
     const c = await qualifiedCandidate(graph, { expertId: 'expert-ccc' });
     const d = await qualifiedCandidate(graph, { expertId: 'expert-aaa' });
     const tie = await routeEscalation(profile, [c, d], {
-      requestId: 'esc_00000023',
+      requestId: 'esc_00000023aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(tie.expertRef).toBe('expert-aaa');
@@ -421,11 +421,11 @@ describe('routing engine — deterministic ranking', () => {
     const two = await qualifiedCandidate(graph, { expertId: 'expert-two' });
     const three = await qualifiedCandidate(graph, { expertId: 'expert-three' });
     const first = await routeEscalation(profile, [one, two, three], {
-      requestId: 'esc_00000024',
+      requestId: 'esc_00000024aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     const second = await routeEscalation(profile, [three, two, one], {
-      requestId: 'esc_00000024',
+      requestId: 'esc_00000024aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(second.digest).toBe(first.digest);
@@ -435,7 +435,7 @@ describe('routing engine — deterministic ranking', () => {
     const graph = await buildFixtureGraph();
     const profile = await compile(graph);
     const verdict = await routeEscalation(profile, [], {
-      requestId: 'esc_00000025',
+      requestId: 'esc_00000025aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('no-match');
@@ -447,7 +447,7 @@ describe('routing engine — deterministic ranking', () => {
     const profile = await compile(graph);
     const candidate = await qualifiedCandidate(graph);
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000026',
+      requestId: 'esc_00000026aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     const tampered = { ...verdict, expertRef: 'expert-hacker' };
@@ -520,7 +520,7 @@ describe('demand compiler + engine — end-to-end digest discipline', () => {
     await expect(recomputeDemandProfileDigest(profile)).resolves.toBe(profile.digest);
     const candidate = await qualifiedCandidate(graph);
     const verdict = await routeEscalation(profile, [candidate], {
-      requestId: 'esc_00000027',
+      requestId: 'esc_00000027aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.profileDigest).toBe(profile.digest);

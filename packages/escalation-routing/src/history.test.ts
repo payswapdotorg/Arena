@@ -49,9 +49,9 @@ async function fixtureVerdict(requestId: string): Promise<{
 
 describe('routing decision history — append-only supersession', () => {
   it('appends the first decision with a null previous digest', async () => {
-    const { verdict } = await fixtureVerdict('esc_00000001');
+    const { verdict } = await fixtureVerdict('esc_00000001aaaaaaaaaaaaaaaaaaaaaaaa');
     const { history, record } = await appendRoutingDecision([], verdict, {
-      requestId: 'esc_00000001',
+      requestId: 'esc_00000001aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: FIXTURE_EVALUATED_AT,
     });
@@ -65,15 +65,15 @@ describe('routing decision history — append-only supersession', () => {
   });
 
   it('a later decision SUPERSEDES by appending — the earlier record stays immutable', async () => {
-    const first = await fixtureVerdict('esc_00000002');
-    const second = await fixtureVerdict('esc_00000002');
+    const first = await fixtureVerdict('esc_00000002aaaaaaaaaaaaaaaaaaaaaaaa');
+    const second = await fixtureVerdict('esc_00000002aaaaaaaaaaaaaaaaaaaaaaaa');
     const step1 = await appendRoutingDecision([], first.verdict, {
-      requestId: 'esc_00000002',
+      requestId: 'esc_00000002aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: '2026-10-07T12:01:00.000Z',
     });
     const step2 = await appendRoutingDecision(step1.history, second.verdict, {
-      requestId: 'esc_00000002',
+      requestId: 'esc_00000002aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: '2026-10-07T12:02:00.000Z',
     });
@@ -86,10 +86,10 @@ describe('routing decision history — append-only supersession', () => {
   });
 
   it('rejects a cross-tenant append (typed scope failure)', async () => {
-    const { verdict } = await fixtureVerdict('esc_00000003');
+    const { verdict } = await fixtureVerdict('esc_00000003aaaaaaaaaaaaaaaaaaaaaaaa');
     await expect(
       appendRoutingDecision([], verdict, {
-        requestId: 'esc_00000003',
+        requestId: 'esc_00000003aaaaaaaaaaaaaaaaaaaaaaaa',
         tenantId: 'tenant-b',
         recordedAt: FIXTURE_EVALUATED_AT,
       }),
@@ -97,7 +97,7 @@ describe('routing decision history — append-only supersession', () => {
   });
 
   it('rejects malformed request ids and timestamps', async () => {
-    const { verdict } = await fixtureVerdict('esc_00000004');
+    const { verdict } = await fixtureVerdict('esc_00000004aaaaaaaaaaaaaaaaaaaaaaaa');
     await expect(
       appendRoutingDecision([], verdict, {
         requestId: 'not-an-esc-id',
@@ -107,7 +107,7 @@ describe('routing decision history — append-only supersession', () => {
     ).rejects.toThrow(/requestId is invalid/);
     await expect(
       appendRoutingDecision([], verdict, {
-        requestId: 'esc_00000004',
+        requestId: 'esc_00000004aaaaaaaaaaaaaaaaaaaaaaaa',
         tenantId: 'tenant-a',
         recordedAt: '2026-10-07',
       }),
@@ -117,9 +117,9 @@ describe('routing decision history — append-only supersession', () => {
 
 describe('routing decision history — tamper detection', () => {
   it('detects a mutated record (digest mismatch)', async () => {
-    const { verdict } = await fixtureVerdict('esc_00000005');
+    const { verdict } = await fixtureVerdict('esc_00000005aaaaaaaaaaaaaaaaaaaaaaaa');
     const { history } = await appendRoutingDecision([], verdict, {
-      requestId: 'esc_00000005',
+      requestId: 'esc_00000005aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: FIXTURE_EVALUATED_AT,
     });
@@ -130,15 +130,15 @@ describe('routing decision history — tamper detection', () => {
   });
 
   it('detects a broken chain link', async () => {
-    const first = await fixtureVerdict('esc_00000006');
-    const second = await fixtureVerdict('esc_00000006');
+    const first = await fixtureVerdict('esc_00000006aaaaaaaaaaaaaaaaaaaaaaaa');
+    const second = await fixtureVerdict('esc_00000006aaaaaaaaaaaaaaaaaaaaaaaa');
     const step1 = await appendRoutingDecision([], first.verdict, {
-      requestId: 'esc_00000006',
+      requestId: 'esc_00000006aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: '2026-10-07T12:01:00.000Z',
     });
     const step2 = await appendRoutingDecision(step1.history, second.verdict, {
-      requestId: 'esc_00000006',
+      requestId: 'esc_00000006aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: '2026-10-07T12:02:00.000Z',
     });
@@ -149,15 +149,15 @@ describe('routing decision history — tamper detection', () => {
   });
 
   it('detects a sequence gap', async () => {
-    const first = await fixtureVerdict('esc_00000007');
-    const second = await fixtureVerdict('esc_00000007');
+    const first = await fixtureVerdict('esc_00000007aaaaaaaaaaaaaaaaaaaaaaaa');
+    const second = await fixtureVerdict('esc_00000007aaaaaaaaaaaaaaaaaaaaaaaa');
     const step1 = await appendRoutingDecision([], first.verdict, {
-      requestId: 'esc_00000007',
+      requestId: 'esc_00000007aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: '2026-10-07T12:01:00.000Z',
     });
     const step2 = await appendRoutingDecision(step1.history, second.verdict, {
-      requestId: 'esc_00000007',
+      requestId: 'esc_00000007aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: '2026-10-07T12:02:00.000Z',
     });
@@ -168,15 +168,15 @@ describe('routing decision history — tamper detection', () => {
   });
 
   it('detects mixed tenants in one history', async () => {
-    const first = await fixtureVerdict('esc_00000008');
-    const second = await fixtureVerdict('esc_00000008');
+    const first = await fixtureVerdict('esc_00000008aaaaaaaaaaaaaaaaaaaaaaaa');
+    const second = await fixtureVerdict('esc_00000008aaaaaaaaaaaaaaaaaaaaaaaa');
     const step1 = await appendRoutingDecision([], first.verdict, {
-      requestId: 'esc_00000008',
+      requestId: 'esc_00000008aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: '2026-10-07T12:01:00.000Z',
     });
     const step2 = await appendRoutingDecision(step1.history, second.verdict, {
-      requestId: 'esc_00000008',
+      requestId: 'esc_00000008aaaaaaaaaaaaaaaaaaaaaaaa',
       tenantId: 'tenant-a',
       recordedAt: '2026-10-07T12:02:00.000Z',
     });

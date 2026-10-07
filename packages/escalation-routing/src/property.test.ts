@@ -54,7 +54,7 @@ describe('routing determinism (property-style)', () => {
     const experts = new Set<string>();
     for (let offset = 0; offset < candidates.length; offset += 1) {
       const verdict = await routeEscalation(result.profile, rotate(candidates, offset), {
-        requestId: 'esc_property_1',
+        requestId: 'esc_00000001aaaaaaaaaaaaaaaaaaaaaaaa',
         evaluatedAt: FIXTURE_EVALUATED_AT,
       });
       digests.add(verdict.digest);
@@ -85,7 +85,7 @@ describe('routing determinism (property-style)', () => {
     if (result.outcome !== 'compilable') throw new Error('compile failed');
     const candidates = await candidateSet(graph);
     const verdict = await routeEscalation(result.profile, candidates, {
-      requestId: 'esc_property_2',
+      requestId: 'esc_00000002aaaaaaaaaaaaaaaaaaaaaaaa',
       evaluatedAt: FIXTURE_EVALUATED_AT,
     });
     expect(verdict.outcome).toBe('matched');
@@ -115,7 +115,7 @@ describe('routing determinism (property-style)', () => {
     for (let offset = 0; offset < candidates.length; offset += 1) {
       const rotated = rotate([...candidates, blocked], offset);
       const verdict = await routeEscalation(result.profile, rotated, {
-        requestId: 'esc_property_3',
+        requestId: 'esc_00000003aaaaaaaaaaaaaaaaaaaaaaaa',
         evaluatedAt: FIXTURE_EVALUATED_AT,
       });
       digests.add(verdict.digest);
