@@ -85,7 +85,7 @@ export interface SandboxScenario {
   readonly description: string;
   readonly capabilityNeed: string;
   readonly escalationMode: 'solve' | 'correct' | 'unblock' | 'review' | 'teach';
-  readonly urgency: 'routine' | 'expedited' | 'critical';
+  readonly urgency: 'routine' | 'priority' | 'urgent' | 'critical';
   /** Canned budget in minor units — DEMO money, never customer money. */
   readonly budgetMinorUnits: number;
   readonly currency: string;
@@ -99,7 +99,7 @@ export const SANDBOX_SCENARIOS: readonly SandboxScenario[] = Object.freeze([
       'Your agent produced a bill-of-quantities takeoff it cannot verify. Escalate to a qualified estimator and watch the full lifecycle arrive.',
     capabilityNeed: 'boq-estimation.quantity-takeoff',
     escalationMode: 'solve',
-    urgency: 'expedited',
+    urgency: 'urgent',
     budgetMinorUnits: 250_00,
     currency: 'USD',
   }),

@@ -1,0 +1,40 @@
+{
+  "name": "@arena/developer-platform-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena developer platform reference service (Work Order C017; issue #123). Key issuance/rotation/revocation, client-app/webhook registration, deterministic sandbox escalation runs and per-client-app escalation observability queries over injected C001/C010 seams. Envelope/verdict conventions per the sibling reference services; fail-closed errors; no network layer.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/developer-platform": "workspace:*",
+    "@arena/escalation": "workspace:*",
+    "@arena/payments": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

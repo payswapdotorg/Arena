@@ -21,7 +21,7 @@ export class SequentialMaterial implements SecretMaterialGenerator {
   bytes32Hex(): string {
     this.counter += 1;
     const suffix = String(this.counter).padStart(6, '0');
-    return `${this.prefix}${'0'.repeat(64 - this.prefix.length - suffix.length)}${suffix}`;
+    return `${this.prefix}${suffix}${'0'.repeat(64 - this.prefix.length - suffix.length)}`;
   }
 }
 
