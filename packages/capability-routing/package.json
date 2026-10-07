@@ -1,0 +1,39 @@
+{
+  "name": "@arena/capability-routing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena capability routing — the cross-resource capability-demand compiler and ResourceMatch composition engine (Work Order C015; issue #121; spec/human-escalation-work-items.md C015 row; spec/expert-escalation-api.md ES1.0 Routing generalized beyond experts). Generalizes the C002 DemandProfile discipline to the full capability catalog — human experts, Agent Bodies, tools, scoped knowledge and marketplace artifacts — with versioned resolution policies mapping the eight escalation modes to resource classes (never silent coercion), ranked typed ResourceMatch decisions per class plus typed compositions, per-class feasibility filters (substrate/environment compatibility, availability/entitlement state) and an append-only per-demand decision history. Qualification and performance evidence are INPUT to ranking, never access grants (lock rules 9/35).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/capability-graph": "workspace:*",
+    "@arena/escalation-routing": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
