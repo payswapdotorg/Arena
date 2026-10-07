@@ -1,0 +1,43 @@
+{
+  "name": "@arena/body-marketplace-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena body-marketplace reference service (Work Order C014; issue #120). On-demand Agent Body pretraining from rights-cleared validated intervention data \u2014 typed PretrainingRequests compiled from C009-validated intervention evidence, C008 improvement candidates and customer commissions (provenance, scope and rights metadata on every input; compilation has typed closed outcomes: compilable | blocked-with-reasons) \u2014 handing off to the A021 Forge as PROPOSALS of new immutable BodyVersions only (a certified Body is never mutated), entering the A023 certification pipeline as candidates, and the capability-body listing model over A024 body-registry releases (record-backed certification posture only, explicit versioned publication transitions with typed guard outcomes, append-only history, DRAFT \u2192 PUBLISHED \u2192 SUSPENDED/RETIRED lifecycle with reasons, offer/grant records per the A031/A032 house patterns). Fail-closed typed errors everywhere; durable idempotent commands on the reference fabric.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/agent-body": "workspace:*",
+    "@arena/body-forge": "workspace:*",
+    "@arena/body-registry": "workspace:*",
+    "@arena/certification": "workspace:*",
+    "@arena/compatibility": "workspace:*",
+    "@arena/escalation-validation": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
