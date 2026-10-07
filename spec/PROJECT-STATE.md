@@ -514,5 +514,49 @@ C001-C003, C006-C007, C010, C017 merged; 31 WOs total landed.
 
 C-series wave 4 AUTHORIZED on live main @ 4104f7c+ (frontier RECOMPUTED from the dependency
 table — AI_CONTINUATION's C009-in-wave-4 was wrong, C009 is blocked on C005): C004 (#111,
-work/C004-expert-calibration), C008 (#115, work/C008-tool-gap), C019 (#125,
+work/C004-expert-calibration), C008 (#115, work/C008-tool-gap-capture), C019 (#125,
 work/C019-reference-integrations). C005 (needs C004) and C018 (ready) queue next.
+
+- C019 MERGED — reference integrations: Epoch + generic AI application
+  PR #136 (merged 86bd684; issue #125). Harvest record (TL, 2026-10-07 19:27 UTC):
+  adapters/epoch-escalation — EPI1.0+ES1.0 trigger/posture mapping, read-only delivery
+  projection, signed webhook consumption, fail-closed Epoch authority boundary (45 tests);
+  examples/generic-ai-client — provider-neutral generic client proving the FINAL-HANDOFF
+  §15/§16 loop (escalate → webhook/status poll → result) over public contracts only + Epoch
+  loop over the same fabric + adversarial minimum (11 tests; self-contained per A027
+  precedent — examples/* outside workspace globs, disclosed). Worker battery green. Open
+  (recorded): reference fabric is in-process; MCP escalation surface not exercised by the
+  example; examples battery placement question in PR.
+
+- C004 MERGED — expert calibration, pre-training and continuous requalification
+  PR #137 (merged bfc0ed7; issue #111). Harvest record (TL, 2026-10-07): packages/
+  expert-calibration — probe-pinned CalibrationPrograms, append-only LE1.0 records with
+  applicability context, typed 5-member drift verdicts, pre-training tracks, requalification
+  policy + typed transition proposals, frozen DemonstratedPerformance read, tenant isolation,
+  masquerade fails closed; services/expert-calibration — C003/A017/A007 injected ports with
+  A007 type parity, program lifecycle, pre-training→A007 proposal-not-write, requalification
+  as durable idempotent A015 jobs, C002 routing read with inForce. 55 tests incl. 4
+  adversarial classes. Worker battery green (transient @arena/web build OOM under 3-concurrent
+  re-ran green — disclosed). Open (recorded): domain-pack-change/dispute-raised triggers
+  declared but not evaluated (no producer ports); in-process reference only.
+
+- C008 MERGED — tool-gap and domain-knowledge capture pipeline
+  PR #138 (merged 5814492; issue #115). Harvest record (TL, 2026-10-07): packages/tool-gap —
+  EES1.0 ToolGapSignal staged append-only records (full field set, content-key dedup, sha256
+  integrity walk) + closed guarded stage machine (nothing auto-promotes); packages/
+  knowledge-capture — four-tier typed lattice + structurally-enforced no-silent-promotion
+  wall + typed candidate-only KnowledgePatch; services/capability-improvement —
+  capture-to-disposition over injected C007/A019/A020/A021 ports, granted-consent gate,
+  sha256-chained append-only audit. 89 owned-surface tests (13 adversarial: overgeneralization,
+  ungranted consent, provenance tampering, duplicate-injection dedup). Worker battery green.
+  Open (recorded): in-process reference fabric; validation authority is C009's.
+
+Integrated-main TL station battery GREEN at 5814492 (check/boundary clean, contracts
+byte-identical, typecheck 97/97, lint 97/97, test 97/97 tasks, build 97/97, no OOM) —
+wave 4 complete: 10 of 22 C-WOs landed (C001-C004, C006-C008, C010, C017, C019).
+
+C-series wave 5 AUTHORIZED on live main @ 5814492+ (frontier recomputed): C005 (#112,
+work/C005-expert-performance — deps C004 ✓, A007 ✓, A019 ✓, A020 ✓) and C018 (#124,
+work/C018-expert-session-policy — deps C006 ✓, C007 ✓, A034 ✓). Only two dispatchable —
+every other C item is blocked on C005 (C009/C011/C016/C020/C021) or deeper. Wave 6 next:
+C009 + C011 (after C005 merges).

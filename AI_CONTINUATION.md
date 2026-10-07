@@ -201,12 +201,13 @@ Maximum concurrent workers: 3.
 
 The product thesis is locked: Arena is the Stripe of human expert escalation for AI automation.
 
-Wave 3 LANDED (2026-10-07 18:15 UTC): C007 (PR #133, 3836443), C003 (PR #134, 03f8186),
-C017 (PR #135, 4104f7c) — merged with TL lockfile intakes; integrated-main battery green at
-4104f7c (91/91 tasks all gates). 31 WOs landed (A36+B19+G3+C7). Worker channel: platform
-Task subagents with locally-adapted briefs (scripts/worker-prompts/*.md — all 22 exist).
-Sprint-safety law: workers push FIRST on session start, commit WIP before long gates; the
-TL re-dispatches continuation sessions when the Task channel orphans a worker (proven
-finisher pattern). Wave 4 (C004+C008+C019) AUTHORIZED — frontier RECOMPUTED: C009 is blocked
-on C005 (the earlier wave sketch was wrong); C005/C018 queue next. Recompute readiness from
-live GitHub state before each dispatch.
+Wave 4 LANDED (2026-10-07 19:27 UTC): C019 (PR #136, 86bd684), C004 (PR #137, bfc0ed7),
+C008 (PR #138, 5814492) — merged with TL lockfile intakes; integrated-main battery green at
+5814492 (97/97 tasks all gates). 10 of 22 C-WOs landed (C001-C004, C006-C008, C010, C017,
+C019). Worker channel: platform Task subagents; sprint-cycle cadence proven (autonomous
+~35-min session → reap → finisher re-dispatch returns with PR). Known infra note: 3-worker
+concurrent batteries can transiently OOM the 4GB box on @arena/web build (exit 137) —
+workers must re-run the gate solo and disclose; TL battery runs solo and is authoritative.
+Wave 5 (C005 + C018 — only two dispatchable; all other C items blocked on C005 or deeper)
+AUTHORIZED; wave 6 next: C009 + C011 after C005 merges. Recompute readiness from live
+GitHub state before each dispatch.
