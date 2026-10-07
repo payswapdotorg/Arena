@@ -308,7 +308,7 @@ export function verifyProvenanceIntegrity(record: ToolGapSignalRecord): Provenan
   ) {
     return { intact: false, reason: 'first_entry_not_capture' };
   }
-  let cursor: ToolGapStage = first.to;
+  let cursor: ToolGapStage | null = null;
   for (const entry of record.stageHistory) {
     if (entry.from !== cursor) return { intact: false, reason: 'history_discontiguous' };
     if (!isToolGapStage(entry.to)) return { intact: false, reason: 'history_discontiguous' };
