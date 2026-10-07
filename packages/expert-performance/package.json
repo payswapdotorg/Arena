@@ -1,0 +1,38 @@
+{
+  "name": "@arena/expert-performance",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert performance (Work Order C005; issue #112) — the long-term memory of expert quality. PerformanceProfile: the append-only, provenance-addressable, DIMENSION-SEPARATED longitudinal evidence profile per expert (spec/quality-model.md Expert quality: competency by skill, task-family performance, agreement, review outcomes, consistency, domain/jurisdiction fit, recentness/freshness, conflicts/limitations). The no-single-global-score law is enforced STRUCTURALLY: read surfaces return dimensional evidence only; any aggregate is a typed, versioned, SINGLE-DIMENSION summary that discloses its formula, sample sizes and known limitations — a cross-dimension aggregate or a global/overall score has no construction path (every attempt fails closed with EXPERT_PERFORMANCE_GLOBAL_SCORE_REJECTED). Attribution discipline (LE1.0 vocabulary via A020): every evidence record attributes expert-change vs evaluator-change vs measurement-variance, and a record whose evaluator version digest changed can NEVER be recorded as an expert performance change (EXPERT_PERFORMANCE_ATTRIBUTION_VIOLATION). Freshness/decay: an explicit versioned per-dimension staleness-window policy — evidence is never silently decayed; stale evidence surfaces as stale with reasons. Ingestion maps the merged dep surfaces (C004 calibration verdicts, A007 qualification + match history, A019 skill-extraction outcomes, A020 attribution records) into evidence records through pure, closed mapping tables — never direct writes into dep state. Performance evidence is DATA, never authorization and never correctness verification (lock rules 9/35). Tenant isolation at the domain level.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/expert-qualification": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
