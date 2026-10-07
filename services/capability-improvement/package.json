@@ -1,0 +1,41 @@
+{
+  "name": "@arena/capability-improvement-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena capability-improvement reference service (Work Order C008; issue #115). Consumes C007 completed-intervention outputs through injected ports (the EES1.0 session submission vocabulary: tool-gap signals, four-tier knowledge artifacts, consent/rights statements), captures them as staged ToolGapSignalRecords and LatticeKnowledgeRecords on append-only ledgers (durable + idempotent by content key — duplicate injections deduplicate instead of inflating triage counts), triages signals through the closed stage machine onto the EES1.0 feed destinations (tool specification proposal, adapter request, body improvement candidate, benchmark candidate, marketplace artifact candidate) and promotes knowledge explicitly through the no-silent-promotion wall, emitting KnowledgePatches to the A019/A020 learning surfaces as CANDIDATES ONLY. Every capture-to-disposition decision is append-only audited; all failures are typed and fail-closed.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/expert-session": "workspace:*",
+    "@arena/intervention": "workspace:*",
+    "@arena/knowledge-capture": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/tool-gap": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
