@@ -671,3 +671,39 @@ artifacts — deps C002 ✓, C005 ✓, C008 ✓, C014 ✓ all merged) and C020 (
 quality: reputation/disputes/anti-gaming/fraud — deps C005 ✓, C009 ✓, C010 ✓, C013 ✓
 all merged). Wave 9 (final) next: C016 + C021 + C022 (after C015). Cadence continues
 past 00:00 UTC per operator directive; the deadline miss is disclosed honestly.
+
+- C015 MERGED — capability-demand matching across experts, Bodies, tools, knowledge and artifacts
+  PR #146 (merged 934da7c; issue #121). Harvest record (TL, 2026-10-07 23:47 UTC):
+  packages/capability-routing — cross-resource DemandProfile compiler (expert facet delegates
+  to C002), resolution policy across all 8 escalation modes, catalog views for all 5 resource
+  classes via injected C002/C005/C008/C014/A032 ports, deterministic ResourceMatch composition
+  engine (fail-closed budget cap, closed outcome vocabulary), digest-chained decision history;
+  services/capability-routing — service seam + A015 durable idempotent jobs. 73 owned tests
+  (52 pkg + 21 svc) incl. adversarial (cross-tenant leakage, qualification-as-authorization,
+  budget-infeasible composition, stale/delisted artifacts). Worker battery green. Open
+  (recorded): host wiring of real catalogs + C001/C002/C021 adoption are other work orders;
+  mirror-shape confirmations in PR.
+
+- C020 MERGED — network quality: reputation, disputes, anti-gaming, fraud controls
+  PR #147 (merged b22d64f; issue #126). Harvest record (TL, 2026-10-07): packages/
+  network-quality — dimensional reputation (5 record families), dispute state machine, COI
+  registry, anti-gaming (sybil/brigading/vote-abuse/payout-anomaly) + fraud controls with
+  ingestion (92 tests); services/network-quality — dispute/COI/jobs with idempotency,
+  runCapacityGamingDetection wired to the C011 engagement seam (conduct-flag evidence,
+  requalification proposals, cross-tenant leak fails closed) (19 tests). Findings PROPOSE,
+  never silently adjust. Worker battery green (8m58s build, no OOM). Open (recorded):
+  in-memory reference fabric; policies injectable defaults not tenant-configurable; dep seams
+  are structural mirrors pending real event feeds; no dedicated canonical spec (derived from
+  work-items row + AE1.0 + FINAL-HANDOFF §7/§18 + security.md, disclosed).
+
+Integrated-main TL station battery GREEN at b22d64f (check/boundary clean, contracts
+byte-identical, typecheck 114/114, lint 114/114, test 114/114 tasks, build 114/114) —
+wave 8 complete: 19 of 22 C-WOs landed (C001-C015, C017-C020). The 00:00 UTC deadline
+passed during this harvest (23:47-00:0x) — cadence continues per operator directive
+("stay up until the entire roadmap is done"), disclosed honestly.
+
+C-series wave 9 (FINAL) AUTHORIZED on live main @ b22d64f+ (frontier recomputed after
+C015/C020 merges — ALL remaining deps verified): C016 (#122, capability economics — deps
+C005/C009/C010/C015 ✓), C021 (#127, escalation observability and SLA operations — deps
+C001/C005/C010/C011/C015 ✓), C022 (#128, capability learning compiler — deps
+C008/C009/C013/C014/A020-A023 ✓). These are the LAST three work orders of the roadmap.

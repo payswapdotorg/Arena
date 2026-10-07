@@ -208,13 +208,11 @@ cadence (autonomous ~35-min session → reap → finisher re-dispatch returns wi
 four times. Infra note: 3-worker concurrent batteries can transiently OOM the 4GB box on
 @arena/web build — re-run solo and disclose; TL battery is authoritative. Wave 6
 (C009 + C011, unlocked by C005) AUTHORIZED; wave 7 next: C012+C013+C014 after C009.
-Wave 7 LANDED (2026-10-07 22:41 UTC): C013 (PR #143, 6cf70c8), C014 (PR #144, 6d52864),
-C012 (PR #145, bf5d763) — merged with TL lockfile intakes; integrated-main battery green at
-bf5d763 (110/110 tasks all gates). 17 of 22 C-WOs landed (C001-C014, C017-C019). Worker
-channel: platform Task subagents; sprint-cycle (session-1 autonomous ~35 min → reap →
-finisher re-dispatch returns with PR; C012 needed 3 sessions — battery fixes landed each
-time, nothing lost). Infra note: 3-worker concurrent builds can OOM @arena/web (exit 137) —
-solo re-run + disclose. Wave 8 (C015 + C020, both deps verified) AUTHORIZED; final wave 9
-next: C016 + C021 + C022 (after C015). Per the operator directive ("stay up until the
-entire roadmap is done") the TL continues the cadence past 00:00 UTC — deadline miss
-disclosed honestly. Recompute readiness from live GitHub state before each dispatch.
+Wave 8 LANDED (2026-10-07 23:47 UTC): C015 (PR #146, 934da7c), C020 (PR #147, b22d64f) —
+merged with TL lockfile intakes; integrated-main battery green at b22d64f (114/114 tasks all
+gates). 19 of 22 C-WOs landed (C001-C015, C017-C020). The 00:00 UTC deadline passed during
+this harvest — cadence continues per operator directive ("stay up until the entire roadmap
+is done"), disclosed honestly in PROJECT-STATE. Wave 9 (FINAL — C016 + C021 + C022, all
+deps verified) AUTHORIZED: these are the LAST three work orders of the entire roadmap.
+Sprint-cycle cadence (session-1 autonomous ~35 min → reap → finisher re-dispatch) continues.
+Recompute readiness from live GitHub state before each dispatch.
