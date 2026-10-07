@@ -287,7 +287,7 @@ export class WebhookDeliveryAdapter {
         const timestamp = this.clock.now();
         const signature = this.signer.sign(timestamp, delivery.payload);
         const headers = this.headersFor(delivery, attemptNo, timestamp, signature);
-        let ok = false;
+        let ok: boolean;
         let status: number | null = null;
         try {
           const result = await this.transport.post(this.endpoint.url, headers, delivery.payload);

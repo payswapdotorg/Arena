@@ -49,9 +49,9 @@ function makeAdapter(options: {
     clock,
     ledger,
     backoff: {
-      maxAttempts: options.maxAttempts,
-      baseDelayMs: options.baseDelayMs,
-      multiplier: options.multiplier,
+      ...(options.maxAttempts !== undefined ? { maxAttempts: options.maxAttempts } : {}),
+      ...(options.baseDelayMs !== undefined ? { baseDelayMs: options.baseDelayMs } : {}),
+      ...(options.multiplier !== undefined ? { multiplier: options.multiplier } : {}),
     },
   });
   return { source, transport, ledger, clock, signer, adapter };

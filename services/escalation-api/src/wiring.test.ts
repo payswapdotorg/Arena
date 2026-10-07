@@ -18,7 +18,7 @@ import {
   hmacSha256WebhookSigner,
   verifyWebhookSignature,
 } from '@arena/escalation-adapters';
-import type { WebhookSignatureVerification } from '@arena/escalation-adapters';
+import type { WebhookDeadLetterRecord, WebhookDeliveryAttemptRecord, WebhookSignatureVerification } from '@arena/escalation-adapters';
 import { McpToolServer } from './mcp.js';
 import { referenceService, validCreateInput } from './test-support.js';
 
@@ -28,7 +28,7 @@ const SIGNING = { signingKeyId: 'wh-2026-10', hmacInput: 'host-injected-material
 describe('wiring — service outbox drains through the signed webhook delivery adapter', () => {
   it('delivers every lifecycle webhook with verifiable signatures and unique consumer keys', async () => {
     const { service } = referenceService(START);
-    const created = await service.createEscalation(validCreateInput());
+    const created = await service.createEscalation(validCreateInput() as never);
     expect(created.outcome).toBe('created');
 
     const transport = new RecordingTransport();
@@ -74,7 +74,7 @@ describe('wiring — service outbox drains through the signed webhook delivery a
 
   it('a tampered payload fails consumer verification (fail-closed integration)', async () => {
     const { service } = referenceService(START);
-    await service.createEscalation(validCreateInput());
+    await service.createEscalation(validCreateInput() as never);
     const transport = new RecordingTransport();
     const adapter = new WebhookDeliveryAdapter({
       source: service.outbox,
@@ -98,7 +98,7 @@ describe('wiring — service outbox drains through the signed webhook delivery a
 
   it('timeout sweep failures are delivered as escalation.failed through the adapter', async () => {
     const { service, clock } = referenceService(START);
-    await service.createEscalation(validCreateInput());
+    await service.createEscalation(validCreateInput() as never);
     clock.advanceTo(START + 3_600_000 + 1); // past deadlineInMs
     const timedOut = await service.sweepTimeouts();
     expect(timedOut).toHaveLength(1);
@@ -121,7 +121,7 @@ describe('wiring — service outbox drains through the signed webhook delivery a
 
   it('an endpoint outage retries with backoff then dead-letters — nothing is dropped silently', async () => {
     const { service } = referenceService(START);
-    await service.createEscalation(validCreateInput());
+    await service.createEscalation(validCreateInput() as never);
     const transport = new RecordingTransport();
     transport.failuresRemaining = Number.POSITIVE_INFINITY;
     const ledger = new RecordingLedger();
@@ -157,7 +157,7 @@ describe('wiring — MCP tool server behind the stdio transport binding', () => 
       jsonrpc: '2.0',
       id: 'call-1',
       method: 'tools/call',
-      params: { name: 'create-escalation', arguments: validCreateInput() },
+      params: { name: 'create-escalation', arguments: validCreateInput() as never },
     });
     // split across two chunks to prove line buffering on real traffic
     expect(await transport.handleChunk(createCall.slice(0, 60))).toEqual([]);
@@ -221,22 +221,22 @@ class RecordingTransport {
 }
 
 class RecordingLedger {
-  private readonly attempts: { eventId: string; attempt: number; outcome: string }[] = [];
-  private readonly deadLetters: { eventId: string }[] = [];
+  private readonly attempts: WebhookDeliveryAttemptRecord[] = [];
+  private readonly deadLetters: WebhookDeadLetterRecord[] = [];
 
-  async recordAttempt(attempt: { eventId: string; attempt: number; outcome: string }): Promise<void> {
+  async recordAttempt(attempt: WebhookDeliveryAttemptRecord): Promise<void> {
     this.attempts.push(attempt);
   }
 
-  async recordDeadLetter(record: { eventId: string }): Promise<void> {
+  async recordDeadLetter(record: WebhookDeadLetterRecord): Promise<void> {
     this.deadLetters.push(record);
   }
 
-  async listDeadLetters(): Promise<{ eventId: string }[]> {
+  async listDeadLetters(): Promise<readonly WebhookDeadLetterRecord[]> {
     return [...this.deadLetters];
   }
 
-  async attemptsFor(eventId: string): Promise<{ eventId: string; attempt: number; outcome: string }[]> {
+  async attemptsFor(eventId: string): Promise<readonly WebhookDeliveryAttemptRecord[]> {
     return this.attempts.filter((a) => a.eventId === eventId);
   }
 }
