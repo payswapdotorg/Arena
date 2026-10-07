@@ -929,6 +929,34 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/intervention:
+    dependencies:
+      '@arena/escalation':
+        specifier: workspace:*
+        version: link:../escalation
+      '@arena/expert-session':
+        specifier: workspace:*
+        version: link:../expert-session
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+      '@arena/trajectory':
+        specifier: workspace:*
+        version: link:../trajectory
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/job-protocol:
     dependencies:
       '@arena/protocol-core':
@@ -1847,6 +1875,37 @@ importers:
       '@arena/expert-environment-adapters':
         specifier: workspace:*
         version: link:../../adapters/expert-environment
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/intervention:
+    dependencies:
+      '@arena/escalation':
+        specifier: workspace:*
+        version: link:../../packages/escalation
+      '@arena/expert-session':
+        specifier: workspace:*
+        version: link:../../packages/expert-session
+      '@arena/intervention':
+        specifier: workspace:*
+        version: link:../../packages/intervention
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+      '@arena/trajectory':
+        specifier: workspace:*
+        version: link:../../packages/trajectory
+    devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4
