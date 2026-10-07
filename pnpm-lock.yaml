@@ -1160,6 +1160,40 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/human-data:
+    dependencies:
+      '@arena/artifact-protocol':
+        specifier: workspace:*
+        version: link:../artifact-protocol
+      '@arena/datasets':
+        specifier: workspace:*
+        version: link:../datasets
+      '@arena/escalation':
+        specifier: workspace:*
+        version: link:../escalation
+      '@arena/escalation-validation':
+        specifier: workspace:*
+        version: link:../escalation-validation
+      '@arena/expert-session':
+        specifier: workspace:*
+        version: link:../expert-session
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/intervention:
     dependencies:
       '@arena/escalation':
@@ -2432,6 +2466,40 @@ importers:
       '@arena/security':
         specifier: workspace:*
         version: link:../../packages/security
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/human-data:
+    dependencies:
+      '@arena/datasets':
+        specifier: workspace:*
+        version: link:../../packages/datasets
+      '@arena/escalation':
+        specifier: workspace:*
+        version: link:../../packages/escalation
+      '@arena/escalation-validation':
+        specifier: workspace:*
+        version: link:../../packages/escalation-validation
+      '@arena/expert-session':
+        specifier: workspace:*
+        version: link:../../packages/expert-session
+      '@arena/human-data':
+        specifier: workspace:*
+        version: link:../../packages/human-data
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
