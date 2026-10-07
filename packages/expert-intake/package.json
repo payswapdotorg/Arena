@@ -1,0 +1,39 @@
+{
+  "name": "@arena/expert-intake",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert intake — the adaptive capability interview agent (Work Order C003; issue #110). Runs versioned, deterministic, seed-driven interview sessions over the C002 DemandProfile / A004 capability vocabulary with typed interview items (capability probe, experience probe, evidence request, scenario item), next-item selection by expected information value with an inspectable rationale (the capability-case active-learning law), an append-only digest-chained transcript of questions + DECLARED answers, and a typed output contract: a structured IntakeProfile proposal for the A006 registry field groups plus qualification claim candidates with evidence pointers for A007. Claims are INPUT to qualification, never an access grant (lock rules 9/35). The interviewer model sits behind an adapter port with a deterministic scripted reference implementation (lock rule 10); tenant isolation and minimal-PII capture are enforced under the expert's declared privacy policy.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation-routing": "workspace:*",
+    "@arena/expert-qualification": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
