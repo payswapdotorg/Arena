@@ -1,0 +1,38 @@
+{
+  "name": "@arena/network-quality-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena network-quality reference service (Work Order C020; issue #126). Dispute intake/resolution, COI registration/checks and the anti-gaming + fraud detection jobs over @arena/network-quality: every command carries a REQUIRED idempotency key (lock rule 17) and replays recorded outcomes verbatim; disputes reference escalations, validation verdicts and payment records through the owning surfaces' PUBLIC ports (C009 validation-outcome source, C013 voting source, C010 payout-audit source, registry identity signals, C011 engagement signals) — never writes into dep state; reviewer COI is checked at the service boundary (a reviewer party to the dispute is excluded); detection jobs are idempotent per (tenant, scope) and never double-count; findings PROPOSE actions into the owning surfaces through the injected proposal sinks (profile evidence into the C005 ingestion ports — AQ-1; requalification triggers into C004); enforcement actions (HOLD/SUSPEND/INVESTIGATE) are explicit state transitions with append-only audit history; cross-tenant reads fail closed; tampered store entries fail closed on digest re-verification; deterministic under the injected clock (no hidden clocks).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/network-quality": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
