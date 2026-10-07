@@ -53,3 +53,5 @@ export * from './resolution.js';
 
 /** Version of this package's protocol surface. */
 export const EXPERT_SESSION_POLICY_PACKAGE_VERSION = 1 as const;
+
+export * from './test-support.js';
