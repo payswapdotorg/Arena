@@ -412,6 +412,34 @@ importers:
         specifier: 5.0.1
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/adversarial-evaluation:
+    dependencies:
+      '@arena/escalation-validation':
+        specifier: workspace:*
+        version: link:../escalation-validation
+      '@arena/evaluation':
+        specifier: workspace:*
+        version: link:../evaluation
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+      '@arena/verification':
+        specifier: workspace:*
+        version: link:../verification
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/agent-body:
     dependencies:
       '@arena/protocol-core':
@@ -1688,6 +1716,31 @@ importers:
         specifier: 5.0.1
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  services/adversarial-evaluation:
+    dependencies:
+      '@arena/adversarial-evaluation':
+        specifier: workspace:*
+        version: link:../../packages/adversarial-evaluation
+      '@arena/escalation-validation':
+        specifier: workspace:*
+        version: link:../../packages/escalation-validation
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   services/api:
     dependencies:
       '@arena/agent-body':
@@ -1861,6 +1914,43 @@ importers:
       '@arena/verification':
         specifier: workspace:*
         version: link:../../packages/verification
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/body-marketplace:
+    dependencies:
+      '@arena/agent-body':
+        specifier: workspace:*
+        version: link:../../packages/agent-body
+      '@arena/body-forge':
+        specifier: workspace:*
+        version: link:../../packages/body-forge
+      '@arena/body-registry':
+        specifier: workspace:*
+        version: link:../../packages/body-registry
+      '@arena/certification':
+        specifier: workspace:*
+        version: link:../../packages/certification
+      '@arena/compatibility':
+        specifier: workspace:*
+        version: link:../../packages/compatibility
+      '@arena/escalation-validation':
+        specifier: workspace:*
+        version: link:../../packages/escalation-validation
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4

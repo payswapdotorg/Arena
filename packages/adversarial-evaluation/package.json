@@ -1,0 +1,40 @@
+{
+  "name": "@arena/adversarial-evaluation",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena adversarial expert evaluation / Expert Arena competition domain core (Work Order C013; issue #119; spec/adversarial-expert-evaluation.md AE1.0 — THE canonical spec). The competition lifecycle (OPEN -> SOLICITING -> SUBMITTED -> CHALLENGE -> RESPONSE -> VOTING -> ADJUDICATION -> VERIFIED_RESULT plus abandoned / insufficient-participation terminal states with typed reasons), the six AE1.0 judgment types (UPVOTE_WITH_PROOF / DOWNVOTE_WITH_PROOF / CHALLENGE / ACCEPT_CHALLENGE / REJECT_CHALLENGE / NEEDS_MORE_EVIDENCE — typed, evidence-carrying, append-only, every judgment identifying a concrete claim/step/artifact/outcome WITH evidence), the structurally enforced guardrail battery (no self-voting, conflict-of-interest exclusion, duplicate-account protection, rate limiting, qualification-aware visibility and aggregation, minimum vote/evidence thresholds, small-sample status, explicit tie/unknown states — each a tested filter, never a convention comment), the evidence-weighted adjudication engine over the full AE1.0 input list (qualified expert votes, challenge validity, evidence quality, verifier outcome, task-specific evaluator, historical calibration, agreement/disagreement patterns) with deterministic versioned Bradley-Terry-style pairwise aggregation and disclosed limitations, the discovery-signal law (raw upvote/downvote ratio retained ONLY as a labelled discovery signal, structurally unable to drive a verdict — adjudication inputs exclude it by construction), the certification boundary (results feed Evaluation/Verification/Certification as candidate inputs through public ports; they cannot redefine certification scope or bypass Verifier authority — architecture-lock rule 34), and the byproduct records (adversarial trajectories, disagreement data, benchmark material -> A030 research/benchmarks as candidates, rights/provenance-carrying).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation-validation": "workspace:*",
+    "@arena/evaluation": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/verification": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
