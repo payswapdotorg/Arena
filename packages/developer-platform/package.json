@@ -1,0 +1,39 @@
+{
+  "name": "@arena/developer-platform",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena developer platform domain core (Work Order C017; issue #123). Scoped API keys for client applications (hashed-at-rest secrets, rotation/revocation as append-only transitions, never role authority), client-app and webhook registration over the C001 delivery seam, visibly-labelled deterministic sandbox escalations (demo money is not customer money) and per-client-app escalation observability projections (lifecycle, validation, SLA timestamps, cost/fee) built from C001 events and C010 records.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/payments": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
