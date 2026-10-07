@@ -1,0 +1,42 @@
+{
+  "name": "@arena/escalation-validation",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena escalation validation/adjudication domain core (Work Order C009; issue #116; spec/expert-escalation-api.md ES1.0 VALIDATING -> ACCEPTED | REVISION_REQUIRED | REJECTED lifecycle + spec/evaluation.md EV1.0). Deterministic typed versioned validation-plan derivation from an escalation request's DECLARED validation condition (evaluator kind + criteria + threshold + output schema + verifier method + required evidence + pass/fail/unknown semantics, with typed closed plan-derivable / under-specified-with-reasons outcomes, never a bare boolean), the adjudication engine that judges a C007 SUBMITTED payload through EXPLICITLY DISTINCT evaluation (judgment against criteria) and verification (evidence supports claims) stages (architecture-lock rule 7) into ACCEPTED / REVISION_REQUIRED / REJECTED / NEEDS_MORE_EVIDENCE verdicts with machine-readable reasons and stage outcome refs, the bounded versioned revision loop (typed revision requests, resubmission deadlines, attempt numbers, exhausted attempts -> REJECTED), typed expert-replacement triggers that return the escalation to MATCHING through the C001 explicit replacement state, and validator selection over C005 dimensional evidence with conflict-of-interest exclusion as a tested filter (performance evidence is INPUT to selection, never authorization — lock rule 35).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/evaluation": "workspace:*",
+    "@arena/expert-performance": "workspace:*",
+    "@arena/intervention": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/verification": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
