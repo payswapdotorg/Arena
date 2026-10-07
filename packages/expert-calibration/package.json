@@ -1,0 +1,39 @@
+{
+  "name": "@arena/expert-calibration",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert calibration (Work Order C004; issue #111) — the quality flywheel of the expert network. CalibrationProgram: a versioned, content-addressed composition of calibration probes per capability (A004 vocabulary via the C003/A007 seams), each probe pinned to evaluator/verifier criteria with declared minimum evidence (EV1.0 Certification Suite discipline), deterministic and reproducible given identical inputs (seeded ordering, injected times — no hidden clocks). Calibration records compare expert-PREDICTED confidence/score against LATER-OBSERVED outcomes per LE1.0 Calibration, each preserving full applicability context (capability, domain, environment); append-only and content-addressed; backdated outcome injection fails closed. Drift verdicts are TYPED (calibrated / overconfident / underconfident / insufficient-sample / stale) — never a bare score. The pre-training track derives gap-filling assignments from the C003 intake gap-list for execution through the A017 workbench surface with an explicit pre-trained / not-yet state; completion PROPOSES a qualification update to A007 (a proposal, never a direct write). The requalification policy declares freshness windows + closed triggers (time, drift verdict, domain-pack change, dispute); expiry produces a typed status-transition proposal in the A007 vocabulary (quality-model REVOKED law: revocation is a transition, history remains auditable) — enforcement belongs to the A007/routing consumers. A calibration verdict is DATA, never an authorization (lock rules 9/35): consuming calibration output as an access grant fails closed. Tenant isolation at the domain level.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/expert-intake": "workspace:*",
+    "@arena/expert-qualification": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
