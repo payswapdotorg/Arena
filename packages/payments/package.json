@@ -1,0 +1,39 @@
+{
+  "name": "@arena/payments",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena human-expert payments domain core (Work Order C010; issue #77; docs/LLM-ARCHITECT-FINAL-HANDOFF.md §8 commercial model). Money primitives (string-scaled minor units — never floats), the append-only escrow/hold ledger with a guarded commercial state machine (HOLD → offer/acceptance → CAPTURE → RELEASE → REFUND), versioned deterministic platform-fee/expert-payout splits, idempotent correlation-addressable money operations, tamper-evident digest-chained entries, commercial audit events, the provider-neutral PaymentProvider port and the demo/customer truth-label law. Provider settlement, merchant-of-record, tax and jurisdiction responsibilities stay behind adapters (architecture-lock rule 33).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json",
+    "contracts:generate": "node scripts/generate-contracts.mjs",
+    "contracts:check": "node scripts/generate-contracts.mjs --check"
+  },
+  "dependencies": {
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

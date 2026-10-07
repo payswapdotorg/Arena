@@ -1,0 +1,59 @@
+{
+  "$id": "arena:schema/payments/payments-error@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Structured, serializable form of the payments error taxonomy. Unknown codes are rejected when parsing (fail-closed).",
+  "properties": {
+    "category": {
+      "enum": [
+        "validation",
+        "state",
+        "scope",
+        "idempotency",
+        "integrity",
+        "versioning",
+        "unknown"
+      ]
+    },
+    "code": {
+      "enum": [
+        "PAYMENTS_INVALID_REQUEST",
+        "PAYMENTS_INVALID_MONEY",
+        "PAYMENTS_CURRENCY_MISMATCH",
+        "PAYMENTS_INVALID_STATE",
+        "PAYMENTS_INVALID_TRANSITION",
+        "PAYMENTS_TERMINAL_STATE",
+        "PAYMENTS_LIFECYCLE_STATE_NOT_ALLOWED",
+        "PAYMENTS_IDENTITY_CONFLICT",
+        "PAYMENTS_CROSS_TENANT_ACCESS",
+        "PAYMENTS_INSUFFICIENT_FUNDS",
+        "PAYMENTS_SPLIT_MISMATCH",
+        "PAYMENTS_TRUTH_LABEL_VIOLATION",
+        "PAYMENTS_TAMPERED",
+        "PAYMENTS_SCHEMA_MISMATCH",
+        "PAYMENTS_UNSUPPORTED_VERSION",
+        "PAYMENTS_PROVIDER_FAILURE",
+        "PAYMENTS_UNKNOWN_ERROR"
+      ]
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "type": "string"
+    },
+    "details": {
+      "description": "Structured, JSON-serializable context.",
+      "type": "object"
+    },
+    "message": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "Arena payments error v1",
+  "type": "object"
+}

@@ -1,0 +1,49 @@
+{
+  "$id": "arena:schema/payments/fee-split@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The exhaustive platform-fee + expert-payout split of a gross amount. The legs always sum back to the gross. Caller-supplied splits are recomputed and any divergence is a typed PAYMENTS_SPLIT_MISMATCH (fee-split tampering fails closed).",
+  "properties": {
+    "currency": {
+      "pattern": "^[A-Z]{3}$",
+      "type": "string"
+    },
+    "expertPayoutMinorUnits": {
+      "pattern": "^(0|[1-9][0-9]{0,15})$",
+      "type": "string"
+    },
+    "grossMinorUnits": {
+      "pattern": "^(0|[1-9][0-9]{0,15})$",
+      "type": "string"
+    },
+    "platformFeeMinorUnits": {
+      "pattern": "^(0|[1-9][0-9]{0,15})$",
+      "type": "string"
+    },
+    "scheduleId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "scheduleVersion": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "scheduleId",
+    "scheduleVersion",
+    "currency",
+    "grossMinorUnits",
+    "platformFeeMinorUnits",
+    "expertPayoutMinorUnits"
+  ],
+  "title": "Arena fee split v1",
+  "type": "object",
+  "x-invalid-reasons": [
+    "split_wrong_schedule",
+    "split_currency_mismatch",
+    "split_gross_mismatch",
+    "split_sum_mismatch",
+    "split_negative"
+  ]
+}
