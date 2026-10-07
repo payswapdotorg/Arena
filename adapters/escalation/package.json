@@ -1,9 +1,9 @@
 {
-  "name": "@arena/escalation-api",
+  "name": "@arena/escalation-adapters",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Arena expert escalation API reference service (Work Order C001; issue #75; spec/expert-escalation-api.md ES1.0). REST-shaped create/status surfaces over the canonical @arena/escalation lifecycle, durable webhook emission (at-least-once outbox), the C002 routing seam with a deterministic reference stub, an MCP tool layer, and A015 idempotency/correlation wiring.",
+  "description": "Escalation wire-transport adapters (Work Order C001; issue #75; spec/expert-escalation-api.md ES1.0): signed webhook delivery with deterministic retry/backoff and dead-letter state (at-least-once, eventId consumer dedupe) over the services/escalation-api webhook outbox, plus the MCP stdio transport binding over the MCP tool layer. Pure structural ports — zero workspace runtime dependencies (architecture-lock rule 10: adapters never leak into domain packages; boundary rule B4: adapters never import services).",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -25,13 +25,7 @@
     "test": "vitest run",
     "build": "tsc -p tsconfig.build.json"
   },
-  "dependencies": {
-    "@arena/escalation": "workspace:*",
-    "@arena/job-protocol": "workspace:*",
-    "@arena/protocol-core": "workspace:*"
-  },
   "devDependencies": {
-    "@arena/escalation-adapters": "workspace:*",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "typescript": "catalog:",
