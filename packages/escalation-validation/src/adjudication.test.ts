@@ -14,7 +14,7 @@ import {
 } from './adjudication.js';
 import type { EvaluationStageResult, VerificationStageResult } from './adjudication.js';
 import { newAdjudicationVerdictId } from './shared.js';
-import { ESCALATION_VALIDATION_ERROR_CODES, EscalationValidationError } from './errors.js';
+import { EscalationValidationError } from './errors.js';
 
 function evaluationStage(outcome: EvaluationStageResult['outcome']): EvaluationStageResult {
   return {

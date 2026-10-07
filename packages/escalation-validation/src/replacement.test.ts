@@ -11,7 +11,7 @@ import {
   createReplacementRequest,
   isReplacementRequest,
 } from './replacement.js';
-import { ESCALATION_VALIDATION_ERROR_CODES, EscalationValidationError } from './errors.js';
+import { ESCALATION_VALIDATION_ERROR_CODES } from './errors.js';
 
 describe('checkReplacementTrigger (typed state/trigger guard)', () => {
   it('allows the beyond-revision trigger ONLY from result_rejected', () => {
@@ -89,9 +89,11 @@ describe('createReplacementRequest (typed record)', () => {
     expect(isReplacementRequest(request)).toBe(true);
   });
 
-  it('rejects an unknown trigger (closed vocabulary)', () => {
+  it('rejects an unknown trigger (closed vocabulary, typed error)', () => {
     expect(() =>
       createReplacementRequest({ ...base, trigger: 'vibes' as never }),
-    ).toThrow(/closed vocabulary/u);
+    ).toThrow(
+      expect.objectContaining({ code: ESCALATION_VALIDATION_ERROR_CODES.INVALID_REPLACEMENT }),
+    );
   });
 });
