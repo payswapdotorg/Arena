@@ -208,6 +208,10 @@ cadence (autonomous ~35-min session → reap → finisher re-dispatch returns wi
 four times. Infra note: 3-worker concurrent batteries can transiently OOM the 4GB box on
 @arena/web build — re-run solo and disclose; TL battery is authoritative. Wave 6
 (C009 + C011, unlocked by C005) AUTHORIZED; wave 7 next: C012+C013+C014 after C009.
-HONEST DEADLINE PROJECTION (20:35 UTC): waves 6-7 land by ~23:59; waves 8-9 (C015+C020,
-C016+C021+C022) will NOT complete before 00:00 UTC — leave pristine continuation state.
+Wave 6 LANDED (2026-10-07 21:25 UTC): C011 (PR #141, 4d12303), C009 (PR #142, d0aab70) —
+merged with TL lockfile intakes; integrated-main battery green at d0aab70 (105/105 tasks all
+gates). 14 of 22 C-WOs landed. Wave 7 (C012+C013+C014 — three-way, all deps verified)
+AUTHORIZED; wave 8 next: C015+C020. Per the operator directive ("stay up until the entire
+roadmap is done") the TL continues the cadence past 00:00 UTC — the midnight deadline miss
+for waves 8-9 (C015/C016/C020/C021/C022) is disclosed honestly here and in PROJECT-STATE.
 Recompute readiness from live GitHub state before each dispatch.

@@ -594,3 +594,35 @@ C011 (#117, work/C011-expert-engagement — deps C005 ✓, C010 ✓, A031 ✓). 
 C012 + C013 + C014 (after C009). Deadline note (honest, 20:35 UTC): waves 8-9
 (C015+C020, C016+C021+C022) are unlikely to complete before 00:00 UTC — continuation
 state will be left pristine per the stateless doctrine.
+
+- C011 MERGED — expert engagement, availability, scheduling and SLA management
+  PR #141 (merged 4d12303; issue #117). Harvest record (TL, 2026-10-07 21:25 UTC): packages/
+  expert-engagement — engagement lifecycle bound to C001/C002, availability/capacity model +
+  ES1.0 routing-input projection, versioned SLA policies/clocks + append-only breach records;
+  services/expert-engagement — durable idempotent SLA jobs on the A015 seam. 68 tests incl.
+  adversarial (expiry fail-closed, duplicate-accept idempotency, overcommit, cross-tenant,
+  tampering). Worker battery green. Open (recorded): in-memory reference fabric; no HTTP
+  binding (sibling-consistent); SLA rollup index ownership question (C011 vs C021).
+
+- C009 MERGED — escalation validation, adjudication and expert replacement
+  PR #142 (merged d0aab70; issue #116). Harvest record (TL, 2026-10-07): packages/
+  escalation-validation — typed validation-plan derivation, two-stage A012/A013 adjudication
+  (ACCEPTED/REVISION_REQUIRED/REJECTED/NEEDS_MORE_EVIDENCE), bounded append-only revision
+  loop, typed replacement triggers → C002 seam, COI-failing validator selection over C005
+  evidence; services/escalation-validation — C001 lifecycle binding +
+  escalation.validation.updated events. 91 tests (58 pkg + 33 svc incl. 13 adversarial,
+  2 integration); C007 tests stay green (plug-compat with its former stub). Worker battery
+  green. Open (recorded): no JSON contracts registered (manifest script outside owned
+  surfaces); in-process reference fabric.
+
+Integrated-main TL station battery GREEN at d0aab70 (check/boundary clean, contracts
+byte-identical, typecheck 105/105, lint 105/105, test 105/105 tasks, build 105/105) —
+wave 6 complete: 14 of 22 C-WOs landed (C001-C009, C010, C011, C017, C018, C019).
+
+C-series wave 7 AUTHORIZED on live main @ d0aab70+ (frontier recomputed after C009/C011
+merges — three-way wave): C012 (#118, human-data production studio — deps C001/C006/C007/
+C009/A014/A017 all ✓), C013 (#119, adversarial expert evaluation — deps C009/A012/A013/
+A030 all ✓), C014 (#120, agent body pretraining + capability-body marketplace — deps
+C008/C009/A021/A023/A024 all ✓). Wave 8 next: C015 + C020 (after C013/C014). The TL will
+continue the cadence past 00:00 UTC per operator directive ("stay up until the entire
+roadmap is done") — deadline misses will be disclosed honestly in these records.
