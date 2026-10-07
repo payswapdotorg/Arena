@@ -557,6 +557,40 @@ wave 4 complete: 10 of 22 C-WOs landed (C001-C004, C006-C008, C010, C017, C019).
 
 C-series wave 5 AUTHORIZED on live main @ 5814492+ (frontier recomputed): C005 (#112,
 work/C005-expert-performance — deps C004 ✓, A007 ✓, A019 ✓, A020 ✓) and C018 (#124,
-work/C018-expert-session-policy — deps C006 ✓, C007 ✓, A034 ✓). Only two dispatchable —
+work/C018-session-policy — deps C006 ✓, C007 ✓, A034 ✓). Only two dispatchable —
 every other C item is blocked on C005 (C009/C011/C016/C020/C021) or deeper. Wave 6 next:
 C009 + C011 (after C005 merges).
+
+- C018 MERGED — enterprise privacy, retention and session policy packs
+  PR #139 (merged b3465ac; issue #124). Harvest record (TL, 2026-10-07 20:23 UTC):
+  packages/expert-session-policy — versioned tenant-scoped PolicyPacks over the full EES1.0
+  control set; typed closed conflict/infeasibility verdicts (never silently weakened);
+  RETAIN/ANONYMIZE/DELETE_PENDING/DELETED disposition machine with post-deletion audit;
+  withdrawal/erasure state machines with deletion double-spend typed-duplicate; cross-tenant
+  grants with expiry+revocation; services/expert-session-policy — resolution over injected
+  C006/C007/C001 seams with pack pinning, digest-chained audit. 74 tests (58 domain + 16
+  service) incl. adversarial minimum. Worker battery green. Open (recorded): in-memory
+  reference fabric; jurisdiction/residency declarative metadata only; retention-sweep
+  scheduler ownership question in PR.
+
+- C005 MERGED — expert performance / longitudinal evidence profile
+  PR #140 (merged 2062e4e; issue #112). Harvest record (TL, 2026-10-07): packages/
+  expert-performance — 8 quality-model record families, structural no-single-global-score
+  law, LE1.0 attribution discipline (evaluator-version change ≠ expert change), versioned
+  freshness policy with reasons, pure ingestion mapping from C004/A007/A019/A020, two
+  same-object lenses; services/expert-performance — injected dep ports, content-digest
+  re-verification, replay defense, cross-tenant fail-closed. 69 tests (49 domain + 20
+  service) incl. adversarial (replay inflation, tampering, cross-tenant, score smuggling).
+  Worker battery green (7m33s build, no OOM). Open (recorded): in-memory reference fabric;
+  freshness defaults illustrative; C002/C013 consumers not yet present.
+
+Integrated-main TL station battery GREEN at 2062e4e (check/boundary clean, contracts
+byte-identical, typecheck 101/101, lint 101/101, test 101/101 tasks, build 101/101) —
+wave 5 complete: 12 of 22 C-WOs landed (C001-C005, C006-C008, C010, C017-C019).
+
+C-series wave 6 AUTHORIZED on live main @ 2062e4e+ (frontier recomputed after C005 merge):
+C009 (#116, work/C009-escalation-validation — deps C007 ✓, C005 ✓, A012 ✓, A013 ✓) and
+C011 (#117, work/C011-expert-engagement — deps C005 ✓, C010 ✓, A031 ✓). Wave 7 next:
+C012 + C013 + C014 (after C009). Deadline note (honest, 20:35 UTC): waves 8-9
+(C015+C020, C016+C021+C022) are unlikely to complete before 00:00 UTC — continuation
+state will be left pristine per the stateless doctrine.

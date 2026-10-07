@@ -201,13 +201,13 @@ Maximum concurrent workers: 3.
 
 The product thesis is locked: Arena is the Stripe of human expert escalation for AI automation.
 
-Wave 4 LANDED (2026-10-07 19:27 UTC): C019 (PR #136, 86bd684), C004 (PR #137, bfc0ed7),
-C008 (PR #138, 5814492) — merged with TL lockfile intakes; integrated-main battery green at
-5814492 (97/97 tasks all gates). 10 of 22 C-WOs landed (C001-C004, C006-C008, C010, C017,
-C019). Worker channel: platform Task subagents; sprint-cycle cadence proven (autonomous
-~35-min session → reap → finisher re-dispatch returns with PR). Known infra note: 3-worker
-concurrent batteries can transiently OOM the 4GB box on @arena/web build (exit 137) —
-workers must re-run the gate solo and disclose; TL battery runs solo and is authoritative.
-Wave 5 (C005 + C018 — only two dispatchable; all other C items blocked on C005 or deeper)
-AUTHORIZED; wave 6 next: C009 + C011 after C005 merges. Recompute readiness from live
-GitHub state before each dispatch.
+Wave 5 LANDED (2026-10-07 20:23 UTC): C018 (PR #139, b3465ac), C005 (PR #140, 2062e4e) —
+merged with TL lockfile intakes; integrated-main battery green at 2062e4e (101/101 tasks
+all gates). 12 of 22 C-WOs landed. Worker channel: platform Task subagents; sprint-cycle
+cadence (autonomous ~35-min session → reap → finisher re-dispatch returns with PR) proven
+four times. Infra note: 3-worker concurrent batteries can transiently OOM the 4GB box on
+@arena/web build — re-run solo and disclose; TL battery is authoritative. Wave 6
+(C009 + C011, unlocked by C005) AUTHORIZED; wave 7 next: C012+C013+C014 after C009.
+HONEST DEADLINE PROJECTION (20:35 UTC): waves 6-7 land by ~23:59; waves 8-9 (C015+C020,
+C016+C021+C022) will NOT complete before 00:00 UTC — leave pristine continuation state.
+Recompute readiness from live GitHub state before each dispatch.
