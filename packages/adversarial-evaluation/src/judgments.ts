@@ -108,7 +108,11 @@ export interface JudgmentRecord {
   readonly judgmentId: JudgmentId;
   readonly competitionId: CompetitionId;
   readonly submissionId: CompetitionSubmissionId;
-  /** Present on challenge-verdict judgments (accept/reject) and responses; null otherwise. */
+  /**
+   * The challenge this judgment belongs to: REQUIRED on accept/reject
+   * verdicts; on a CHALLENGE judgment it is the challenge's OWN id;
+   * null on solution votes and needs-more-evidence judgments.
+   */
   readonly challengeId: ChallengeId | null;
   readonly expertRef: string;
   readonly type: JudgmentType;
@@ -215,15 +219,25 @@ export function createJudgment(input: CreateJudgmentInput): JudgmentRecord {
     });
   }
   requireBoundedString(input.claim, 'claim');
-  // CHALLENGE and the challenge verdicts MUST name their challenge; a
-  // bare solution vote must NOT carry one (typed shape, not convention).
+  // The challenge verdicts MUST cite their challenge; a solution vote
+  // must NOT carry one; a CHALLENGE may carry its OWN cha_ id (the
+  // challenge reference later verdicts cite) — typed shape, not
+  // convention.
   const needsChallenge = input.type === 'accept_challenge' || input.type === 'reject_challenge';
+  const forbiddenChallenge =
+    input.type === 'upvote_with_proof' ||
+    input.type === 'downvote_with_proof' ||
+    input.type === 'needs_more_evidence';
   const hasChallenge = input.challengeId !== undefined && input.challengeId !== null;
-  if (needsChallenge !== hasChallenge) {
+  if (needsChallenge && !hasChallenge) {
     throw new AdversarialEvaluationError(ADVERSARIAL_EVALUATION_ERROR_CODES.INVALID_JUDGMENT, {
-      message: `judgment type ${input.type} ${
-        needsChallenge ? 'REQUIRES' : 'must NOT carry'
-      } a challengeId`,
+      message: `judgment type ${input.type} REQUIRES a challengeId`,
+      details: { type: input.type, hasChallenge },
+    });
+  }
+  if (forbiddenChallenge && hasChallenge) {
+    throw new AdversarialEvaluationError(ADVERSARIAL_EVALUATION_ERROR_CODES.INVALID_JUDGMENT, {
+      message: `judgment type ${input.type} must NOT carry a challengeId`,
       details: { type: input.type, hasChallenge },
     });
   }
