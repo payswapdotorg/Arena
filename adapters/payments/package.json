@@ -1,0 +1,37 @@
+{
+  "name": "@arena/payments-adapters",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic DEMO payment-provider adapter (Work Order C010; issue #77; architecture-lock rule 33: expert payment, Arena fees, settlement and payout stay behind the provider-neutral PaymentProviderPort from @arena/payments). No real provider integration: the demo adapter executes clearly-labelled demo transfers (the truth-label law — demo money is never customer money), idempotently and deterministically on the instruction key, with an append-only in-memory transfer log as the reference fabric. Merchant-of-record, payout/settlement rails, tax and jurisdiction responsibilities remain explicit OPEN production questions (PROVIDER_POSTURE_OPEN_QUESTIONS), recorded — never guessed. Adapters never import services (boundary rule B4).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/payments": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
