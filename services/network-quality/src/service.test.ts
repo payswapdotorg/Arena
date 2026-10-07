@@ -241,3 +241,70 @@ describe('validation-outcome ingestion (the C009 seam)', () => {
     ).rejects.toMatchObject({ code: NETWORK_QUALITY_ERROR_CODES.DUPLICATE_EVIDENCE });
   });
 });
+
+describe('the capacity-gaming detection job (the C011 engagement seam)', () => {
+  it('books typed findings + conduct-flag evidence + a requalification proposal, idempotently', async () => {
+    const { service, fabric } = makeService();
+    fabric.fakes.engagementSignals.add([
+      {
+        expertRef: 'expert-9',
+        tenant: 'tenant-1',
+        concurrentEngagements: 9,
+        acceptedBeyondAvailability: 2,
+        observedAt: '2026-10-04T00:00:00.000Z',
+        signalDigest: 'e'.repeat(64),
+      },
+    ]);
+    const run = await service.runCapacityGamingDetection({ tenant: 'tenant-1' }, OPTIONS);
+    expect(run.replayed).toBe(false);
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]?.kind).toBe('capacity-gaming');
+    expect(run.findings[0]?.severity).toBe('high');
+    // conduct-flag reputation evidence is booked (append-only dimensional record)
+    expect(run.reputationRecords).toHaveLength(1);
+    expect(run.reputationRecords[0]?.family).toBe('conduct-flag');
+    expect(run.reputationRecords[0]?.outcome).toBe('flag-raised');
+    // the high-severity finding PROPOSES a requalification trigger (never silently adjusts)
+    expect(fabric.requalificationProposals.proposals).toHaveLength(1);
+    expect(fabric.requalificationProposals.proposals[0]?.trigger).toBe('anti-gaming-finding');
+    // a finding-recorded envelope event was emitted
+    expect(
+      fabric.eventSink.events.some((event) => event.schema.includes('finding-recorded')),
+    ).toBe(true);
+
+    // re-running the job over the SAME signals books nothing new (idempotence)
+    const rerun = await service.runCapacityGamingDetection(
+      { tenant: 'tenant-1' },
+      { ...OPTIONS, idempotencyKey: toIdempotencyKey('key-cap-2') },
+    );
+    expect(rerun.findings).toHaveLength(0);
+    expect(rerun.reputationRecords).toHaveLength(0);
+    expect(fabric.requalificationProposals.proposals).toHaveLength(1);
+  });
+
+  it('a rogue seam leaking a cross-tenant signal fails closed (never silently absorbed)', async () => {
+    const { service: _service, fabric } = makeService();
+    void _service;
+    const rogueSources = {
+      ...fabric.sources,
+      engagementSignals: {
+        async listEngagementSignals(_tenant: string) {
+          return [
+            {
+              expertRef: 'expert-9',
+              tenant: 'tenant-2',
+              concurrentEngagements: 9,
+              acceptedBeyondAvailability: 0,
+              observedAt: '2026-10-04T00:00:00.000Z',
+              signalDigest: 'e'.repeat(64),
+            },
+          ];
+        },
+      },
+    };
+    const rogue = new NetworkQualityService(rogueSources, fabric.stores, fabric.sinks, fabric.clock);
+    await expect(rogue.runCapacityGamingDetection({ tenant: 'tenant-1' }, OPTIONS)).rejects.toMatchObject(
+      { code: NETWORK_QUALITY_ERROR_CODES.INVALID_SOURCE },
+    );
+  });
+});

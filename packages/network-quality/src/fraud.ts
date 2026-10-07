@@ -26,7 +26,6 @@ import { NETWORK_QUALITY_ERROR_CODES, NetworkQualityError } from './errors.js';
 import {
   deepFreeze,
   expectFields,
-  expectNonEmptyString,
   expectNonNegativeInteger,
   expectPositiveInteger,
   screenFieldNames,

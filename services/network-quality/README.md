@@ -30,10 +30,12 @@ fail-closed errors, envelope events, REQUIRED idempotency keys).
   provenance-verified dimensional reputation ingestion (fabricated or
   cross-tenant provenance fails closed; the same source digest cannot
   book twice);
-- `runAntiGamingDetection` / `runFraudDetection` — idempotent detection
-  jobs (per tenant + scope): typed findings, finding-recorded events,
-  conduct-flag reputation evidence, requalification + enforcement
-  proposals;
+- `runAntiGamingDetection` / `runCapacityGamingDetection` /
+  `runFraudDetection` — idempotent detection jobs (per tenant + scope):
+  typed findings, finding-recorded events, conduct-flag reputation
+  evidence, requalification + enforcement proposals (the capacity-gaming
+  job consumes the C011 engagement seam; a cross-tenant signal leak fails
+  closed);
 - `openEnforcement` / `transitionEnforcement` — explicit HOLD / SUSPEND /
   INVESTIGATE state transitions with append-only audit history;
 - `getReputationFamily` / `listFindings` — tenant-scoped reads.

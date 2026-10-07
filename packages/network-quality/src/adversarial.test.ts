@@ -14,7 +14,6 @@ import { describe, expect, it } from 'vitest';
 import {
   detectDuplicateAccountSignals,
   detectCoordinatedBrigading,
-  detectSelfVotingAttempts,
   openDispute,
   transitionDispute,
   createReputationRecord,

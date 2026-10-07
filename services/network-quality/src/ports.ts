@@ -36,7 +36,6 @@
 
 import type {
   CompetitionOutcomeSourceData,
-  CoiCheckResult,
   CoiRecord,
   DisputeRecord,
   EngagementSignal,

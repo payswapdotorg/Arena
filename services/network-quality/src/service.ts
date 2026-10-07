@@ -253,7 +253,7 @@ export class NetworkQualityService {
       },
       { correlationId: toCorrelationId(options.correlationId), idempotencyKey: toIdempotencyKey(options.idempotencyKey) },
     );
-    const { idempotencyKey, canonical } = this.requireIdempotency(options, command);
+    const { canonical } = this.requireIdempotency(options, command);
     const existing = await this.stores.disputes.get(input.disputeId, input.tenant);
     const binding = this.idempotency.get(options.idempotencyKey);
     if (binding !== undefined) {
@@ -737,6 +737,104 @@ export class NetworkQualityService {
       }
     }
     this.detectionRuns.set(runKey, Object.freeze(findingIds));
+    return { findings: Object.freeze(findings), reputationRecords: Object.freeze(reputationRecords), replayed: false };
+  }
+
+  // -------------------------------------------------------------------------
+  // The capacity-gaming detection job (C011 engagement seam; idempotent per
+  // tenant — already-ingested signals are filtered by evidence digest)
+  // -------------------------------------------------------------------------
+
+  async runCapacityGamingDetection(
+    input: { readonly tenant: string },
+    options: CommandOptions,
+  ): Promise<DetectionJobResult> {
+    const at = this.now();
+    const signals = await this.ports.engagementSignals.listEngagementSignals(input.tenant);
+    // tenant isolation at the source seam: a signal leaked across tenants
+    // fails closed rather than being silently absorbed
+    for (const signal of signals) {
+      if (signal.tenant !== input.tenant) {
+        throw new NetworkQualityError(NETWORK_QUALITY_ERROR_CODES.INVALID_SOURCE, {
+          message: `run-capacity-gaming-detection: the C011 seam returned a signal for tenant ${JSON.stringify(signal.tenant)} while tenant ${JSON.stringify(input.tenant)} was requested`,
+        });
+      }
+    }
+    // idempotence: re-running the job ingests only signals whose digest has
+    // not already been booked as finding evidence (never double-counts)
+    const storedFindings = await this.stores.findings.list(input.tenant);
+    const knownEvidence = new Set(
+      storedFindings.flatMap((finding) => finding.evidence.map((entry) => entry.refId)),
+    );
+    const freshSignals = signals.filter((signal) => !knownEvidence.has(signal.signalDigest));
+    const findings: FindingRecord[] = [
+      ...(await detectCapacityGaming({
+        signals: freshSignals,
+        policy: this.antiGamingPolicy,
+        detectedAt: at,
+      })),
+    ];
+    const reputationRecords: ReputationRecord[] = [];
+    for (const finding of findings) {
+      await this.stores.findings.insert(finding);
+      await this.sinks.events.emit(
+        makeFindingRecordedEvent(
+          {
+            findingId: finding.findingId,
+            tenant: finding.tenant,
+            subjectParty: finding.subjectParty,
+            kind: finding.kind,
+            severity: finding.severity,
+            proposalCount: finding.proposals.length,
+            findingDigest: finding.digest,
+            at,
+          },
+          { correlationId: toCorrelationId(options.correlationId) },
+        ),
+      );
+      // conduct-flag reputation evidence (append-only dimensional record)
+      const conductInput = mapFindingToConductFlag({
+        recordId: `nq-conduct-${finding.findingId}`,
+        recordedAt: at,
+        finding: {
+          tenant: finding.tenant,
+          subjectParty: finding.subjectParty,
+          digest: finding.digest,
+          observedAt: finding.observedAt,
+          evidenceSurface: finding.evidence[0]?.surface ?? 'expert-engagement',
+          kind: finding.kind,
+          severity: finding.severity,
+          domain: 'network',
+        },
+      });
+      const record = await createReputationRecord(conductInput);
+      await this.stores.reputation.insert(record);
+      reputationRecords.push(record);
+      // requalification proposals for finding kinds that warrant them
+      if (finding.severity === 'critical' || finding.severity === 'high') {
+        await this.sinks.requalificationProposals.proposeRequalificationTrigger(
+          proposeRequalificationTrigger({
+            tenant: finding.tenant,
+            expertRef: finding.subjectParty,
+            trigger: 'anti-gaming-finding',
+            evidenceDigests: [finding.digest],
+            reason: `${finding.kind} (${finding.severity}) detected over the C011 engagement seam`,
+          }),
+        );
+        await this.sinks.events.emit(
+          makeRequalificationProposalEvent(
+            {
+              tenant: finding.tenant,
+              expertRef: finding.subjectParty,
+              trigger: 'anti-gaming-finding',
+              evidenceCount: 1,
+              at,
+            },
+            { correlationId: toCorrelationId(options.correlationId) },
+          ),
+        );
+      }
+    }
     return { findings: Object.freeze(findings), reputationRecords: Object.freeze(reputationRecords), replayed: false };
   }
 
