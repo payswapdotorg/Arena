@@ -1,0 +1,41 @@
+{
+  "name": "@arena/capability-routing-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena capability-routing reference service (Work Order C015; issue #121). Wires the @arena/capability-routing cross-resource compiler + ResourceMatch engine to injected catalog ports only (C002 expert directory views + C005 performance-profile digests, C014 capability-body listings, C008 tool-gap/tool-specification and knowledge-tier records, A032 marketplace offers — structural mirrors, no service-to-service imports per boundary rule B2), with fail-closed per-class catalog handling, an append-only decision log and durable idempotent routing jobs over the A015 job-protocol submission identity.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/capability-graph": "workspace:*",
+    "@arena/capability-routing": "workspace:*",
+    "@arena/escalation-routing": "workspace:*",
+    "@arena/job-protocol": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

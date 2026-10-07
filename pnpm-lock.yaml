@@ -647,6 +647,31 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/capability-routing:
+    dependencies:
+      '@arena/capability-graph':
+        specifier: workspace:*
+        version: link:../capability-graph
+      '@arena/escalation-routing':
+        specifier: workspace:*
+        version: link:../escalation-routing
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/certification:
     dependencies:
       '@arena/agent-body':
@@ -2049,6 +2074,37 @@ importers:
       '@arena/tool-gap':
         specifier: workspace:*
         version: link:../../packages/tool-gap
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/capability-routing:
+    dependencies:
+      '@arena/capability-graph':
+        specifier: workspace:*
+        version: link:../../packages/capability-graph
+      '@arena/capability-routing':
+        specifier: workspace:*
+        version: link:../../packages/capability-routing
+      '@arena/escalation-routing':
+        specifier: workspace:*
+        version: link:../../packages/escalation-routing
+      '@arena/job-protocol':
+        specifier: workspace:*
+        version: link:../../packages/job-protocol
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
