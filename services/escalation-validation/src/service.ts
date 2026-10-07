@@ -80,14 +80,12 @@ import {
 import type {
   AdjudicationOutcome,
   CreateDeclaredValidationConditionInput,
-  DeclaredValidationCondition,
   RevisionRequest,
   ReplacementRequest,
   ReplacementTrigger,
   ValidationPlan,
   ValidationRecord,
   ValidatorCandidate,
-  ValidatorSelectionResult,
 } from '@arena/escalation-validation';
 import { ESCALATION_VALIDATION_ERROR_CODES, EscalationValidationError } from '@arena/escalation-validation';
 import {
@@ -381,7 +379,7 @@ export class EscalationValidationService {
       });
     }
 
-    let validation = await this.store.get(input.requestId, input.tenantId);
+    const validation = await this.store.get(input.requestId, input.tenantId);
     if (validation === undefined || validation.plan === undefined) {
       throw new EscalationValidationError(ESCALATION_VALIDATION_ERROR_CODES.INVALID_STATE, {
         message: `escalation ${input.requestId} has no routed validation plan to adjudicate`,
