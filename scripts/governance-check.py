@@ -151,7 +151,7 @@ def parse_frontier(project_state_text: str) -> dict[str, str]:
             in_section = line.strip() == "## Current frontier"
             continue
         if in_section:
-            match = re.match(r"^-\s+([AB]\d{3})\s+(\S+)\s*$", line.strip())
+            match = re.match(r"^-\s+([ABCG]\d{3})\s+(\S+)\s*$", line.strip())
             if match:
                 frontier[match.group(1)] = match.group(2)
     return frontier
@@ -159,7 +159,7 @@ def parse_frontier(project_state_text: str) -> dict[str, str]:
 
 def parse_work_item_ids(work_items_text: str) -> set[str]:
     ids: set[str] = set()
-    for match in re.finditer(r"^\|\s*([AB]\d{3})\s*\|", work_items_text, re.M):
+    for match in re.finditer(r"^\|\s*([ABCG]\d{3})\s*\|", work_items_text, re.M):
         ids.add(match.group(1))
     return ids
 
@@ -569,6 +569,14 @@ def run_repo_checks(root: Path, base_override: str | None) -> tuple[list[str], d
     post_v1_items_path = root / "spec" / "post-v1-work-items.md"
     if post_v1_items_path.is_file():
         work_items_text += "\n" + post_v1_items_path.read_text(encoding="utf-8")
+    # C-series (CWO roster) and G-series (post-B019 closure) work items live in
+    # their own specs; the frontier may reference them, so they are authoritative.
+    human_escalation_items_path = root / "spec" / "human-escalation-work-items.md"
+    if human_escalation_items_path.is_file():
+        work_items_text += "\n" + human_escalation_items_path.read_text(encoding="utf-8")
+    closure_spec_path = root / "spec" / "post-b019-launch-integrity-closure.md"
+    if closure_spec_path.is_file():
+        work_items_text += "\n" + closure_spec_path.read_text(encoding="utf-8")
     violations += check_frontier_consistency(project_state_text, work_items_text)
 
     surfaces = load_surfaces(SURFACES_REGISTRY)

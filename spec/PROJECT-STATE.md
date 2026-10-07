@@ -382,3 +382,6 @@ Maximum concurrent workers: 3.
 
 Do not declare the strongest public launch statement until G001-G003 are accepted.
 Do not dispatch a C item before its dependencies are verified on live main.
+- G001 AUTHORIZED — dispatched 2026-10-07 10:24 UTC (post-B019 launch-integrity closure; fresh-machine local proof; issue #104)
+- G002 AUTHORIZED — dispatched 2026-10-07 10:24 UTC (post-B019 launch-integrity closure; hosted live proof + provider/quota reconciliation; issue #105)
+- G003 AUTHORIZED — dispatched 2026-10-07 10:24 UTC (post-B019 launch-integrity closure; fresh-browser UX/product audit; issue #106)

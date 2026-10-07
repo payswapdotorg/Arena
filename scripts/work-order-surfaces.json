@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "description": "Machine-readable work-order owned-surface registry. Derived from spec/work-items.md (A-series, AWO1.0) and spec/post-v1-work-items.md (B-series, BWO1.0). The governance checker (scripts/governance-check.py) enforces: (1) every changed path in a work-order branch matches at least one surface of SOME work order; (2) concurrently ACTIVE/AUTHORIZED work orders have pairwise-disjoint surfaces.",
+  "description": "Machine-readable work-order owned-surface registry. Derived from spec/work-items.md (A-series, AWO1.0), spec/post-v1-work-items.md (B-series, BWO1.0), spec/human-escalation-work-items.md (C-series, CWO roster) and spec/post-b019-launch-integrity-closure.md (G-series). The governance checker (scripts/governance-check.py) enforces: (1) every changed path in a work-order branch matches at least one surface of SOME work order; (2) concurrently ACTIVE/AUTHORIZED work orders have pairwise-disjoint surfaces.",
   "semantics": {
     "globs": "fnmatch-style. '*' matches any characters including '/'. A pattern without '*' is an exact path. A pattern ending in '/*' covers the directory tree beneath the prefix.",
     "root_manifests": "A001's 'root manifests' surface from spec/work-items.md, expanded to explicit root-level file paths.",
@@ -393,6 +393,165 @@
         "ops/preview/*",
         "docs/launch/*",
         "release/preview/*"
+      ]
+    },
+    "G001": {
+      "surfaces": [
+        "docs/evidence/local/*",
+        "release/evidence/local/*"
+      ]
+    },
+    "G002": {
+      "surfaces": [
+        "docs/evidence/hosted/*",
+        "release/evidence/hosted/*"
+      ]
+    },
+    "G003": {
+      "surfaces": [
+        "docs/evidence/ux/*",
+        "release/evidence/ux/*"
+      ]
+    },
+    "C001": {
+      "surfaces": [
+        "packages/escalation/*",
+        "services/escalation-api/*",
+        "adapters/escalation/*",
+        "contracts/escalation/*"
+      ]
+    },
+    "C002": {
+      "surfaces": [
+        "packages/escalation-routing/*",
+        "services/escalation-routing/*"
+      ]
+    },
+    "C003": {
+      "surfaces": [
+        "packages/expert-intake/*",
+        "services/expert-intake/*"
+      ]
+    },
+    "C004": {
+      "surfaces": [
+        "packages/expert-calibration/*",
+        "services/expert-calibration/*"
+      ]
+    },
+    "C005": {
+      "surfaces": [
+        "packages/expert-performance/*",
+        "services/expert-performance/*"
+      ]
+    },
+    "C006": {
+      "surfaces": [
+        "packages/expert-session/*",
+        "services/expert-session/*",
+        "adapters/expert-environment/*"
+      ]
+    },
+    "C007": {
+      "surfaces": [
+        "packages/intervention/*",
+        "services/intervention/*"
+      ]
+    },
+    "C008": {
+      "surfaces": [
+        "packages/tool-gap/*",
+        "packages/knowledge-capture/*",
+        "services/capability-improvement/*"
+      ]
+    },
+    "C009": {
+      "surfaces": [
+        "packages/escalation-validation/*",
+        "services/escalation-validation/*"
+      ]
+    },
+    "C010": {
+      "surfaces": [
+        "packages/payments/*",
+        "services/payments/*",
+        "adapters/payments/*"
+      ]
+    },
+    "C011": {
+      "surfaces": [
+        "packages/expert-engagement/*",
+        "services/expert-engagement/*"
+      ]
+    },
+    "C012": {
+      "surfaces": [
+        "apps/web/src/human-data/*",
+        "packages/human-data/*",
+        "services/human-data/*"
+      ]
+    },
+    "C013": {
+      "surfaces": [
+        "packages/adversarial-evaluation/*",
+        "services/adversarial-evaluation/*",
+        "apps/web/src/competitions/*"
+      ]
+    },
+    "C014": {
+      "surfaces": [
+        "services/body-marketplace/*",
+        "apps/web/src/body-marketplace/*"
+      ]
+    },
+    "C015": {
+      "surfaces": [
+        "packages/capability-routing/*",
+        "services/capability-routing/*"
+      ]
+    },
+    "C016": {
+      "surfaces": [
+        "packages/capability-economics/*",
+        "services/capability-economics/*"
+      ]
+    },
+    "C017": {
+      "surfaces": [
+        "apps/web/src/developers/*",
+        "packages/developer-platform/*",
+        "services/developer-platform/*"
+      ]
+    },
+    "C018": {
+      "surfaces": [
+        "packages/expert-session-policy/*",
+        "services/expert-session-policy/*"
+      ]
+    },
+    "C019": {
+      "surfaces": [
+        "adapters/epoch-escalation/*",
+        "examples/generic-ai-client/*"
+      ]
+    },
+    "C020": {
+      "surfaces": [
+        "packages/network-quality/*",
+        "services/network-quality/*"
+      ]
+    },
+    "C021": {
+      "surfaces": [
+        "packages/escalation-observability/*",
+        "services/escalation-observability/*",
+        "apps/web/src/escalation-ops/*"
+      ]
+    },
+    "C022": {
+      "surfaces": [
+        "packages/capability-learning/*",
+        "services/capability-learning/*"
       ]
     }
   }
