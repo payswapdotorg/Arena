@@ -362,6 +362,12 @@ export async function appendQuestion(
   askedAt: string,
 ): Promise<InterviewSession> {
   const at = toIntakeTimestamp(askedAt, 'transcript askedAt');
+  if (session.state !== 'CREATED' && session.state !== 'IN_PROGRESS') {
+    throw new ExpertIntakeError(EXPERT_INTAKE_ERROR_CODES.LIFECYCLE_CONFLICT, {
+      message: `questions can only be asked while the interview is CREATED or IN_PROGRESS (session ${session.sessionId} is ${session.state})`,
+      details: { sessionId: session.sessionId, state: session.state },
+    });
+  }
   if (session.transcript.some((entry) => entry.itemId === item.itemId)) {
     throw new ExpertIntakeError(EXPERT_INTAKE_ERROR_CODES.LIFECYCLE_CONFLICT, {
       message: `item ${item.itemId} was already asked in session ${session.sessionId} (transcript is append-only — no re-asks)`,
