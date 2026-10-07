@@ -1,5 +1,7 @@
 # Arena Human Escalation Dependency Graph
 
+## Canonical dependencies
+
 B019
 └→ C001
    ├→ C002
@@ -10,7 +12,10 @@ B019
    │  └→ C007
    │     ├→ C008
    │     └→ C009
+   │        ├→ C011
+   │        └→ C013
    └→ C010
+      └→ C011
 
 C005 + C010
 └→ C011
@@ -48,44 +53,77 @@ C001 + C005 + C010 + C011 + C015
 C008 + C009 + C013 + C014
 └→ C022
 
-## Recommended three-worker waves
+## Corrected three-worker dispatch plan
 
-### Wave C1
-C001 — Escalation API/MCP/webhooks
-C002 — demand/routing compiler
-C010 — payment infrastructure
+### Gate closure
 
-### Wave C2
-C003 — AI expert intake
-C004 — expert calibration
-C006 — expert environment session
+G001, G002, G003
+- may run concurrently;
+- disjoint evidence surfaces;
+- final launch-integrity reconciliation is TL-owned.
 
-### Wave C3
-C005 — expert performance
-C007 — intervention modes
-C009 — validation/adjudication
+### C wave 1
 
-### Wave C4
-C008 — tool/knowledge capture
-C011 — engagement/SLA
-C012 — human-data production
+After G closure, dispatch:
+- C001 — Escalation API / MCP / webhooks / lifecycle
+- C010 waits on C001 and therefore MUST NOT be dispatched with C001.
 
-### Wave C5
-C013 — adversarial expert evaluation
-C014 — Body pretraining marketplace
-C015 — capability-demand routing
+### C wave 2
 
-### Wave C6
-C016 — economics
-C017 — developer portal
-C018 — enterprise session policy
+After C001:
+- C002 — capability-demand compiler / routing
+- C006 — expert environment session
+- C010 — payments / platform fee / payout
 
-### Wave C7
-C019 — Epoch/generic integrations
-C020 — network quality/fraud/disputes
-C021 — escalation operations
+These three are independent after C001 and have disjoint surfaces.
 
-### Wave C8
-C022 — capability learning compiler
+### C wave 3
 
-The Tech Lead must validate all dependencies and ownership against the live repository before dispatch.
+After C002/C006/C010:
+- C003 — adaptive expert intake
+- C007 — intervention modes
+- C017 — developer portal / sandbox / SDK
+
+### C wave 4
+
+After C003/C007 as required:
+- C004 — expert calibration / requalification
+- C008 — tool + knowledge capture
+- C009 — escalation validation/adjudication
+
+### C wave 5
+
+- C005 — expert performance
+- C011 — engagement/availability/SLA
+- C012 — human-data production
+
+### C wave 6
+
+- C013 — adversarial expert evaluation
+- C014 — Agent Body pretraining / capability-body marketplace
+- C015 — cross-resource capability-demand routing
+
+### C wave 7
+
+- C016 — capability economics
+- C018 — enterprise session privacy/retention policy
+- C020 — network quality / dispute / anti-fraud
+
+### C wave 8
+
+- C019 — Epoch + generic reference integrations
+- C021 — escalation observability / SLA operations
+- C022 — capability learning compiler
+
+The Tech Lead must recompute actual readiness from main before every dispatch and may pull an independently-ready item forward when doing so preserves disjoint write surfaces and dependency correctness.
+
+## Rules
+
+- One Work Order = one branch = one PR.
+- Maximum three concurrent workers.
+- Root manifests/lockfiles are TL-owned serialized surfaces.
+- No worker may redefine canonical Arena authority.
+- C002 is blocked by C001.
+- C010 is blocked by C001.
+- C003 is blocked by C002.
+- Commercial live claims remain blocked until launch-integrity closure is complete.
