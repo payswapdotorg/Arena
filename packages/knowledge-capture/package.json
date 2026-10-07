@@ -1,0 +1,38 @@
+{
+  "name": "@arena/knowledge-capture",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena domain-knowledge capture lattice (Work Order C008; issue #115; spec/expert-environment-session.md EES1.0 'Knowledge capture'). The four knowledge tiers (task-specific guidance / scoped reusable knowledge / candidate domain rule / verified domain constraint) as a typed lattice over the C006 KnowledgeArtifact vocabulary with structured scope declarations (task/case/domain/jurisdiction), evidence refs, validation state and rights/consent statements. NO-SILENT-PROMOTION is enforced STRUCTURALLY (architecture-lock rule 31): tier promotion is an explicit append-only operation requiring granted rights, provenance, evidence, validation (for the verified tier) and at most one scope-rank widening per step — task-specific advice can never surface as universal knowledge (the overgeneralization wall is machine-checked and tested). Ships the KnowledgePatch: the scoped, rights-carrying, evidence-backed statement A019/A020 consume as a LEARNING CANDIDATE ONLY.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/expert-session": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
