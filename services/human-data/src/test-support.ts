@@ -4,7 +4,7 @@
  * the merged dependency vocabularies. NOT exported from the service index.
  */
 
-import type { AdjudicationOutcome } from '@arena/escalation-validation';
+import type { AdjudicationOutcome, AdjudicationVerdictId } from '@arena/escalation-validation';
 import { createEscalationResult } from '@arena/escalation';
 import type { EscalationResult } from '@arena/escalation';
 import type { CreateHumanDataCommissionInput } from '@arena/human-data';
@@ -71,15 +71,15 @@ export function makeCommissionInput(
 export function makeAdjudicationOutcome(input: {
   readonly requestId: string;
   readonly tenantId?: string;
-  readonly verdict?: 'ACCEPTED' | 'REVISION_REQUIRED' | 'REJECTED' | 'NEEDS_MORE_EVIDENCE';
+  readonly verdict?: 'accepted' | 'revision_required' | 'rejected' | 'needs_more_evidence';
 }): AdjudicationOutcome {
   return {
     adjudicationVersion: 1,
-    verdictId: `av_${input.requestId.replaceAll(/[^0-9a-f]/g, '0').slice(0, 32).padEnd(32, '0')}`,
+    verdictId: `av_${input.requestId.replaceAll(/[^0-9a-f]/g, '0').slice(0, 32).padEnd(32, '0')}` as AdjudicationVerdictId,
     requestId: input.requestId,
     tenantId: input.tenantId ?? TENANT_A,
     attemptNumber: 1,
-    verdict: input.verdict ?? 'ACCEPTED',
+    verdict: input.verdict ?? 'accepted',
     reasons: [
       { code: 'evaluation-meets-criteria', detail: 'all declared criteria met', ref: null },
       { code: 'verification-pass', detail: 'evidence supports claims', ref: null },
@@ -104,7 +104,7 @@ export function makeAdjudicationOutcome(input: {
       executedAt: '2026-10-07T10:05:00.000Z',
       provenance: 'test-fixture',
     },
-    validationStatus: (input.verdict ?? 'ACCEPTED') === 'ACCEPTED' ? 'passed' : 'pending',
+    validationStatus: (input.verdict ?? 'accepted') === 'accepted' ? 'passed' : 'pending',
     adjudicatedAt: '2026-10-07T10:10:00.000Z',
   };
 }

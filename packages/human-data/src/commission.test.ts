@@ -154,8 +154,8 @@ describe('compileCommissionEscalations (THE C001 SEAM)', () => {
     expect(first.map((item) => item.input.idempotencyKey)).toEqual(
       second.map((item) => item.input.idempotencyKey),
     );
-    expect(first[0].input.idempotencyKey).toBe(`hdcm_${commission.commissionId}_1`);
-    expect(first[1].input.idempotencyKey).toBe(`hdcm_${commission.commissionId}_2`);
+    expect(first[0]?.input.idempotencyKey).toBe(`hdcm_${commission.commissionId}_1`);
+    expect(first[1]?.input.idempotencyKey).toBe(`hdcm_${commission.commissionId}_2`);
   });
 
   it('the compiled input round-trips through the C001 validator unchanged', async () => {
@@ -163,8 +163,8 @@ describe('compileCommissionEscalations (THE C001 SEAM)', () => {
     const compiled = await compileCommissionEscalations(commission, { now: NOW });
     // The service port receives the INPUT; the C001 host rebuilds the same
     // request from it (idempotent replay contract).
-    expect(compiled[0].input.clientAppId).toBe(commission.clientAppId);
-    expect(compiled[0].input.deadlineInMs).toBe(commission.productionWindowMs);
-    expect(compiled[0].input.escalationModes).toEqual([...commission.escalationModes]);
+    expect(compiled[0]?.input.clientAppId).toBe(commission.clientAppId);
+    expect(compiled[0]?.input.deadlineInMs).toBe(commission.productionWindowMs);
+    expect(compiled[0]?.input.escalationModes).toEqual([...commission.escalationModes]);
   });
 });

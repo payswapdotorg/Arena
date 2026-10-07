@@ -196,7 +196,7 @@ export async function assembleHumanDataset(
           version,
         },
         content: {
-          verdict: 'ACCEPTED',
+          verdict: 'accepted',
           verdictId: deliverable.sourceProvenance.adjudicationVerdictId,
           requestId: deliverable.sourceProvenance.escalationRequestId,
           adjudicatedAt: deliverable.sourceProvenance.adjudicatedAt,
@@ -206,8 +206,13 @@ export async function assembleHumanDataset(
     ),
   );
   for (let index = 0; index < input.deliverables.length; index += 1) {
-    const deliverableArtifact = deliverableArtifacts[index];
-    const verdictArtifact = verdictArtifacts[index];
+    const deliverableArtifact = deliverableArtifacts.at(index);
+    const verdictArtifact = verdictArtifacts.at(index);
+    if (deliverableArtifact === undefined || verdictArtifact === undefined) {
+      throw new HumanDataError(HUMAN_DATA_ERROR_CODES.UNKNOWN_ERROR, {
+        message: 'materialization mismatch: an assembled artifact is missing (fail closed)',
+      });
+    }
     artifacts.push(deliverableArtifact, verdictArtifact);
     entries.push({
       role: 'output',

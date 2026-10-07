@@ -5,7 +5,7 @@
  * traces and C001 escalation results. NOT exported from the package index.
  */
 
-import type { AdjudicationOutcome } from '@arena/escalation-validation';
+import type { AdjudicationOutcome, AdjudicationVerdictId } from '@arena/escalation-validation';
 import type { EscalationResult } from '@arena/escalation';
 import { createEscalationResult } from '@arena/escalation';
 import type { ReplayTrace } from '@arena/expert-session';
@@ -79,16 +79,16 @@ export async function makeCommission(
 export function makeAdjudicationOutcome(input: {
   readonly requestId: string;
   readonly tenantId?: string;
-  readonly verdict?: 'ACCEPTED' | 'REVISION_REQUIRED' | 'REJECTED' | 'NEEDS_MORE_EVIDENCE';
+  readonly verdict?: 'accepted' | 'revision_required' | 'rejected' | 'needs_more_evidence';
   readonly attemptNumber?: number;
 }): AdjudicationOutcome {
   return {
     adjudicationVersion: 1,
-    verdictId: `av_${requestIdHash(input.requestId)}`,
+    verdictId: `av_${requestIdHash(input.requestId)}` as AdjudicationVerdictId,
     requestId: input.requestId,
     tenantId: input.tenantId ?? TENANT_A,
     attemptNumber: input.attemptNumber ?? 1,
-    verdict: input.verdict ?? 'ACCEPTED',
+    verdict: input.verdict ?? 'accepted',
     reasons: [
       { code: 'evaluation-meets-criteria', detail: 'all declared criteria met', ref: null },
       { code: 'verification-pass', detail: 'evidence supports claims', ref: null },
@@ -113,7 +113,7 @@ export function makeAdjudicationOutcome(input: {
       executedAt: '2026-10-07T10:05:00.000Z',
       provenance: 'test-fixture',
     },
-    validationStatus: (input.verdict ?? 'ACCEPTED') === 'ACCEPTED' ? 'passed' : 'pending',
+    validationStatus: (input.verdict ?? 'accepted') === 'accepted' ? 'passed' : 'pending',
     adjudicatedAt: '2026-10-07T10:10:00.000Z',
   };
 }

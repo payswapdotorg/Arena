@@ -36,8 +36,14 @@ import type {
   PermittedAction,
   PrivacyPolicy,
   RetentionPolicy,
+  SessionMode,
 } from '@arena/escalation';
+import type { PiiPolicy, PrivacyClassification, RetentionDisposition } from '@arena/escalation';
 import {
+  PII_POLICIES,
+  PRIVACY_CLASSIFICATIONS,
+  RETENTION_DISPOSITIONS,
+  SESSION_MODES,
   createEscalationRequest,
   isEscalationMode,
   isEscalationUrgency,
@@ -442,8 +448,44 @@ export async function createHumanDataCommission(
       });
     }
   }
+  if (
+    typeof input.environmentSessionPolicy?.sessionMode !== 'string' ||
+    !SESSION_MODES.includes(input.environmentSessionPolicy.sessionMode as SessionMode)
+  ) {
+    throw new HumanDataError(HUMAN_DATA_ERROR_CODES.INVALID_COMMISSION, {
+      message: `environmentSessionPolicy.sessionMode must be one of ${JSON.stringify(SESSION_MODES)}: ${JSON.stringify(input.environmentSessionPolicy?.sessionMode)}`,
+    });
+  }
+  if (!RETENTION_DISPOSITIONS.includes(input.retentionPolicy?.disposition as RetentionDisposition)) {
+    throw new HumanDataError(HUMAN_DATA_ERROR_CODES.INVALID_COMMISSION, {
+      message: `retentionPolicy.disposition is invalid: ${JSON.stringify(input.retentionPolicy?.disposition)} (known: ${RETENTION_DISPOSITIONS.join(', ')})`,
+    });
+  }
+  if (
+    !PRIVACY_CLASSIFICATIONS.includes(
+      input.privacyPolicy?.dataClassification as PrivacyClassification,
+    )
+  ) {
+    throw new HumanDataError(HUMAN_DATA_ERROR_CODES.INVALID_COMMISSION, {
+      message: `privacyPolicy.dataClassification is invalid: ${JSON.stringify(input.privacyPolicy?.dataClassification)} (known: ${PRIVACY_CLASSIFICATIONS.join(', ')})`,
+    });
+  }
+  if (!PII_POLICIES.includes(input.privacyPolicy?.pii as PiiPolicy)) {
+    throw new HumanDataError(HUMAN_DATA_ERROR_CODES.INVALID_COMMISSION, {
+      message: `privacyPolicy.pii is invalid: ${JSON.stringify(input.privacyPolicy?.pii)} (known: ${PII_POLICIES.join(', ')})`,
+    });
+  }
+  const sanitization =
+    input.environmentSessionPolicy.sanitization === undefined
+      ? 'standard'
+      : input.environmentSessionPolicy.sanitization;
+  if (sanitization !== 'standard' && sanitization !== 'strict') {
+    throw new HumanDataError(HUMAN_DATA_ERROR_CODES.INVALID_COMMISSION, {
+      message: `environmentSessionPolicy.sanitization must be 'standard' or 'strict': ${JSON.stringify(sanitization)}`,
+    });
+  }
   if (BOUNDED_SESSION_KINDS.includes(input.deliverableKind)) {
-    if (input.environmentSessionPolicy?.sessionMode !== 'bounded-replica') {
+    if (input.environmentSessionPolicy.sessionMode !== 'bounded-replica') {
       throw new HumanDataError(HUMAN_DATA_ERROR_CODES.INVALID_COMMISSION, {
         message: `deliverableKind ${JSON.stringify(input.deliverableKind)} requires environmentSessionPolicy.sessionMode 'bounded-replica' (the EES1.0 replay law: a demonstration is visibly a bounded session, never a live-world mutation)`,
       });
@@ -491,17 +533,17 @@ export async function createHumanDataCommission(
     locale: input.locale,
     permittedActions: Object.freeze([...input.permittedActions] as readonly PermittedAction[]),
     environmentSessionPolicy: Object.freeze({
-      sessionMode: input.environmentSessionPolicy.sessionMode,
-      sanitization: input.environmentSessionPolicy.sanitization ?? 'standard',
+      sessionMode: input.environmentSessionPolicy.sessionMode as SessionMode,
+      sanitization,
     }),
     privacyPolicy: Object.freeze({
-      dataClassification: input.privacyPolicy.dataClassification,
-      pii: input.privacyPolicy.pii,
+      dataClassification: input.privacyPolicy.dataClassification as PrivacyClassification,
+      pii: input.privacyPolicy.pii as PiiPolicy,
     }),
     learningPermissions: Object.freeze({ ...input.learningPermissions }),
     retentionPolicy: Object.freeze({
       retentionMs: input.retentionPolicy.retentionMs,
-      disposition: input.retentionPolicy.disposition,
+      disposition: input.retentionPolicy.disposition as RetentionDisposition,
     }),
     rights,
     consent,
@@ -603,4 +645,45 @@ export async function compileCommissionEscalations(
     );
   }
   return Object.freeze(compiled);
+}
+
+// ---------------------------------------------------------------------------
+// State advancement (immutable, digest-preserving discipline)
+// ---------------------------------------------------------------------------
+
+/** The fields a lifecycle advance may set (everything else carries over). */
+export interface CommissionAdvancePatch {
+  readonly submittedAt?: string;
+  readonly deliveredAt?: string;
+  readonly escalationRequestIds?: readonly string[];
+  readonly bundleRef?: CommissionBundleRef;
+}
+
+/**
+ * Advance a commission to the next state (typed transition check — illegal
+ * and terminal transitions fail closed with HUMAN_DATA_INVALID_STATE) and
+ * return the NEW immutable commission with a RECOMPUTED content digest.
+ * The studio lifecycle is append-only: there is no mutation API.
+ */
+export async function advanceCommission(
+  commission: HumanDataCommission,
+  to: CommissionState,
+  patch: CommissionAdvancePatch = {},
+): Promise<HumanDataCommission> {
+  const check = checkCommissionTransition(commission.state, to);
+  if (!check.allowed) {
+    throw new HumanDataError(HUMAN_DATA_ERROR_CODES.INVALID_STATE, {
+      message: `illegal commission transition ${JSON.stringify(commission.state)} → ${JSON.stringify(to)} (${check.reason}) for commission ${commission.commissionId}`,
+      details: { from: commission.state, to, reason: check.reason },
+    });
+  }
+  const view: Omit<HumanDataCommission, 'digest'> = deepFreeze({
+    ...commission,
+    ...patch,
+    state: to,
+  });
+  const digest = await digestCanonical(digestFreeView(view));
+  const next: HumanDataCommission = Object.freeze({ ...view, digest });
+  deepFreeze(next as unknown as PlainJsonValue);
+  return next;
 }

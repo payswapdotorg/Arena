@@ -195,7 +195,7 @@ export async function deriveDeliverable(
       message: 'the deliverable source result is not a structurally valid EscalationResult',
     });
   }
-  if (input.adjudication.verdict !== 'ACCEPTED') {
+  if (input.adjudication.verdict !== 'accepted') {
     throw new HumanDataError(HUMAN_DATA_ERROR_CODES.VALIDATION_GATE, {
       message: `deliverables derive ONLY from C009-ACCEPTED intervention outputs — the adjudication verdict for escalation ${JSON.stringify(input.adjudication.requestId)} is ${JSON.stringify(input.adjudication.verdict)} (no self-certified deliverables)`,
       details: {
@@ -307,7 +307,7 @@ export async function deriveDeliverable(
       adjudicationVerdictId: input.adjudication.verdictId,
       adjudicatedAt: input.adjudication.adjudicatedAt,
       attemptNumber: input.adjudication.attemptNumber,
-      escalationMode: commission.escalationModes[0],
+      escalationMode: commission.escalationModes.at(0) ?? 'unspecified',
       resultKind: input.result.kind,
     }),
     rights,

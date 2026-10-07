@@ -33,6 +33,13 @@ function setup(atMs: number = NOW): { readonly fabric: HumanDataReferenceFabric;
   return { fabric, service };
 }
 
+/** The first escalation request id of a submitted commission (fail loudly if missing). */
+function firstRequestId(commission: { readonly escalationRequestIds?: readonly string[] }): string {
+  const requestId = (commission.escalationRequestIds ?? []).at(0);
+  if (requestId === undefined) throw new Error('fixture: no escalation request ids');
+  return requestId;
+}
+
 async function submittedCommission(service: HumanDataService, quantity = 1) {
   const commission = await service.createCommission(makeCommissionInput({ quantity }));
   const submitted = await service.submitCommission({
@@ -64,7 +71,7 @@ describe('cross-tenant isolation (customer data never crosses tenants)', () => {
   it('a cross-tenant deliverable source is never collected', async () => {
     const { fabric, service } = setup();
     const { submitted } = await submittedCommission(service, 1);
-    const requestId = (submitted.escalationRequestIds ?? [])[0];
+    const requestId = firstRequestId(submitted);
     fabric.sources.script(requestId, {
       result: makeResult(),
       adjudication: makeAdjudicationOutcome({ requestId, tenantId: TENANT_B }),
@@ -85,7 +92,7 @@ describe('the walls hold at the service boundary (fail closed)', () => {
   it('ADVERSARIAL: a source without granted consent NEVER enters the delivered bundle', async () => {
     const { fabric, service } = setup();
     const { submitted } = await submittedCommission(service, 1);
-    const requestId = (submitted.escalationRequestIds ?? [])[0];
+    const requestId = firstRequestId(submitted);
     fabric.sources.script(requestId, {
       result: makeResult(),
       adjudication: makeAdjudicationOutcome({ requestId }),
@@ -99,10 +106,10 @@ describe('the walls hold at the service boundary (fail closed)', () => {
   it('ADVERSARIAL: a REVISION_REQUIRED outcome never becomes a deliverable', async () => {
     const { fabric, service } = setup();
     const { submitted } = await submittedCommission(service, 1);
-    const requestId = (submitted.escalationRequestIds ?? [])[0];
+    const requestId = firstRequestId(submitted);
     fabric.sources.script(requestId, {
       result: makeResult(),
-      adjudication: makeAdjudicationOutcome({ requestId, verdict: 'REVISION_REQUIRED' }),
+      adjudication: makeAdjudicationOutcome({ requestId, verdict: 'revision_required' }),
       consent: CONSENT,
     });
     await expect(

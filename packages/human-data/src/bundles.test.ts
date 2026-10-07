@@ -74,8 +74,8 @@ describe('assembleHumanDataset (the A014 vocabulary, walled)', () => {
     });
     expect(assembly.manifest.provenance.rights).toEqual(commission.rights);
     expect(assembly.manifest.provenance.verification).toHaveLength(1);
-    expect(assembly.manifest.provenance.verification[0].kind).toBe('verification');
-    expect(assembly.manifest.provenance.verification[0].evidence.namespace).toBe('tenant-a');
+    expect(assembly.manifest.provenance.verification[0]?.kind).toBe('verification');
+    expect(assembly.manifest.provenance.verification[0]?.evidence.namespace).toBe('tenant-a');
     expect(assembly.manifest.provenance.parents).toEqual([]);
   });
 
@@ -99,12 +99,14 @@ describe('assembleHumanDataset (the A014 vocabulary, walled)', () => {
     ];
     // A record whose consent statement was flipped to not-granted after
     // derivation (the wall must hold at ASSEMBLY, not only at derivation).
+    const second = deliverables.at(1);
+    if (second === undefined) throw new Error('fixture deliverable missing');
     const unconsented: DeliverableRecord = {
-      ...deliverables[1],
+      ...second,
       consent: { granted: false, statement: 'expert declined reuse rights' },
     };
     await expect(
-      assembleHumanDataset({ commission, deliverables: [deliverables[0], unconsented], now: NOW }),
+      assembleHumanDataset({ commission, deliverables: [unconsented], now: NOW }),
     ).rejects.toMatchObject({ code: HUMAN_DATA_ERROR_CODES.CONSENT_WALL });
   });
 
@@ -166,8 +168,8 @@ describe('assembleHumanDataset (the A014 vocabulary, walled)', () => {
     expect(second.manifest.identity.version).toBe('1.1.0');
     expect(second.manifest.digest).not.toBe(first.manifest.digest);
     expect(second.manifest.provenance.parents).toHaveLength(1);
-    expect(second.manifest.provenance.parents[0].relation).toBe('derived-from');
-    expect(second.manifest.provenance.parents[0].parent.digest).toBe(first.manifest.digest);
+    expect(second.manifest.provenance.parents[0]?.relation).toBe('derived-from');
+    expect(second.manifest.provenance.parents[0]?.parent.digest).toBe(first.manifest.digest);
     await expect(verifyDatasetManifest(second.manifest)).resolves.toBe(second.manifest.digest);
   });
 });

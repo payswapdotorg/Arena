@@ -21,6 +21,13 @@ import {
   makeResult,
 } from './test-support.js';
 
+/** The first escalation request id of a submitted commission (fail loudly if missing). */
+function firstRequestId(commission: { readonly escalationRequestIds?: readonly string[] }): string {
+  const requestId = (commission.escalationRequestIds ?? []).at(0);
+  if (requestId === undefined) throw new Error('fixture: no escalation request ids');
+  return requestId;
+}
+
 function setup(atMs: number = NOW): { readonly fabric: HumanDataReferenceFabric; readonly service: HumanDataService } {
   const fabric = createHumanDataReferenceFabric(atMs);
   const service = new HumanDataService({
@@ -83,8 +90,10 @@ describe('commission → escalation → validated result → delivered bundle', 
     expect(assembled.commission.bundleRef?.manifestDigest).toMatch(/^[0-9a-f]{64}$/);
     expect(assembled.deliverables).toHaveLength(2);
     expect(assembled.manifest).not.toBeNull();
+    const manifest = assembled.manifest;
+    if (manifest === null) throw new Error('fixture: the manifest must be assembled');
     // The delivered manifest verifies through the REUSED A014 guard.
-    await expect(verifyDatasetManifest(assembled.manifest)).resolves.toBe(
+    await expect(verifyDatasetManifest(manifest)).resolves.toBe(
       assembled.commission.bundleRef?.manifestDigest,
     );
     // The bundle ships the C009 verification evidence (no self-certification).
@@ -152,8 +161,7 @@ describe('commission → escalation → validated result → delivered bundle', 
       commissionId: commission.commissionId,
       tenantId: TENANT_A,
     });
-    const ids = submitted.escalationRequestIds ?? [];
-    await scriptAcceptedSources(fabric, [ids[0]]); // only 1 of 2 accepted
+    await scriptAcceptedSources(fabric, [firstRequestId(submitted)]); // only 1 of 2 accepted
     const result = await service.assembleCommission({
       commissionId: commission.commissionId,
       tenantId: TENANT_A,

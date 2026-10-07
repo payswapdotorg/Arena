@@ -22,7 +22,7 @@ const REQUEST_ID = 'esc_11111111111111111111111111111111';
 
 async function deriveFor(
   overrides: {
-    readonly verdict?: 'ACCEPTED' | 'REVISION_REQUIRED' | 'REJECTED' | 'NEEDS_MORE_EVIDENCE';
+    readonly verdict?: 'accepted' | 'revision_required' | 'rejected' | 'needs_more_evidence';
     readonly tenantId?: string;
     readonly consent?: { granted: boolean; statement: string };
     readonly kind?: string;
@@ -119,16 +119,16 @@ describe('deriveDeliverable (ONLY from C009-ACCEPTED outputs)', () => {
     if (demonstration.payload.recordKind === 'demonstration') {
       expect(demonstration.payload.trace.liveMutation).toBe(false);
       expect(demonstration.payload.trace.frames).toHaveLength(1);
-      expect(demonstration.payload.trace.frames[0].state).toEqual({
+      expect(demonstration.payload.trace.frames[0]?.state).toEqual({
         queueDepth: 3,
         oldestTicketMinutes: 42,
       });
-      expect(demonstration.payload.trace.frames[0].action).toEqual({
+      expect(demonstration.payload.trace.frames[0]?.action).toEqual({
         tool: 'triage-console',
         command: 'reclassify',
         expert: 'expert-1',
       });
-      expect(demonstration.payload.trace.frames[0].consequence).toEqual({
+      expect(demonstration.payload.trace.frames[0]?.consequence).toEqual({
         ticketId: 'T-1001',
         newPriority: 'P1',
       });
@@ -143,13 +143,13 @@ describe('deriveDeliverable (ONLY from C009-ACCEPTED outputs)', () => {
   });
 
   it('THE VALIDATION GATE: a non-ACCEPTED verdict never becomes a deliverable', async () => {
-    await expect(deriveFor({ verdict: 'REVISION_REQUIRED' })).rejects.toMatchObject({
+    await expect(deriveFor({ verdict: 'revision_required' })).rejects.toMatchObject({
       code: HUMAN_DATA_ERROR_CODES.VALIDATION_GATE,
     });
-    await expect(deriveFor({ verdict: 'REJECTED' })).rejects.toMatchObject({
+    await expect(deriveFor({ verdict: 'rejected' })).rejects.toMatchObject({
       code: HUMAN_DATA_ERROR_CODES.VALIDATION_GATE,
     });
-    await expect(deriveFor({ verdict: 'NEEDS_MORE_EVIDENCE' })).rejects.toMatchObject({
+    await expect(deriveFor({ verdict: 'needs_more_evidence' })).rejects.toMatchObject({
       code: HUMAN_DATA_ERROR_CODES.VALIDATION_GATE,
     });
   });
