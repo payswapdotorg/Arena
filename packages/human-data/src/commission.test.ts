@@ -17,11 +17,10 @@ import {
   HumanDataError,
   checkCommissionTransition,
   compileCommissionEscalations,
-  createHumanDataCommission,
   isCommissionDeliverableKind,
   verifyHumanDataCommission,
 } from './index.js';
-import { makeCommission, makeCommissionInput } from './test-support.js';
+import { makeCommission } from './test-support.js';
 
 const NOW = Date.parse('2026-10-07T09:00:00.000Z');
 
