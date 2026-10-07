@@ -150,3 +150,45 @@ wave is C001, C002, C010 (issues #75/#76/#77 already track them).
 - B016 MERGED
 - B011 MERGED
 - B013 MERGED
+
+
+## FINAL ROADMAP FRONTIER — 2026-10-07
+
+A001-A036: COMPLETE / MERGED.
+B001-B019: COMPLETE / MERGED.
+Current post-B019 launch-integrity closure:
+- G001 — issue #104 — fresh-machine/local proof
+- G002 — issue #105 — current hosted proof/provider reconciliation
+- G003 — issue #106 — fresh-browser UX/product audit
+
+These three are disjoint and may run concurrently.
+
+After G closure, C001-C022 becomes the active implementation roadmap.
+
+Authoritative final handoff:
+- docs/LLM-ARCHITECT-FINAL-HANDOFF.md
+
+C-series canonical documents:
+- spec/human-escalation-work-items.md
+- spec/human-escalation-dependency-graph.md
+- spec/arena-product-thesis.md
+- spec/expert-escalation-api.md
+- spec/expert-environment-session.md
+- spec/adversarial-expert-evaluation.md
+- spec/escalation-reference-flow.md
+
+Correct C concurrency:
+C001
+→ C002 + C006 + C010
+→ C003 + C007 + C017
+→ C004 + C008 + C009
+→ C005 + C011 + C012
+→ C013 + C014 + C015
+→ C016 + C018 + C020
+→ C019 + C021 + C022
+
+Maximum concurrent workers: 3.
+
+The product thesis is locked: Arena is the Stripe of human expert escalation for AI automation.
+
+Do not claim full launch proof until G001-G003 are accepted. Do not begin C002/C006/C010 until C001 is merged. Recompute readiness from live GitHub state before each dispatch.
