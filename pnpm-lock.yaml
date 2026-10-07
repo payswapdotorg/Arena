@@ -941,6 +941,25 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/expert-engagement:
+    dependencies:
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/expert-intake:
     dependencies:
       '@arena/escalation-routing':
@@ -2102,6 +2121,28 @@ importers:
       '@arena/job-protocol':
         specifier: workspace:*
         version: link:../../packages/job-protocol
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/expert-engagement:
+    dependencies:
+      '@arena/expert-engagement':
+        specifier: workspace:*
+        version: link:../../packages/expert-engagement
       '@arena/protocol-core':
         specifier: workspace:*
         version: link:../../packages/protocol-core
