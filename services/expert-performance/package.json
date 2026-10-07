@@ -1,0 +1,39 @@
+{
+  "name": "@arena/expert-performance-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert-performance reference service (Work Order C005; issue #112). In-process read/projection service over @arena/expert-performance: append-only evidence ingestion resolved through the injected PUBLIC dep source ports (the C004 calibration-verdict source, the A007 qualification + match-history source, the A019 skill-extraction source, the A020 learning-attribution source) — evidence NEVER enters the profile unless the owning port resolves its provenance digest (fabricated/tampered provenance fails closed), and the same source digest can never be counted twice in a dimension (evidence-replay inflation defense). Serves TWO lenses over the SAME canonical dimensional profile (roles-and-contexts same-object/different-lens rule): the routing input for the C002 demonstrated-performance / historical-task-fit seam, and the expert-facing capability-history projection — both deterministic given injected times (no hidden clocks), both staleness-aware under the explicit versioned freshness policy. Commands carry REQUIRED idempotency keys (lock rule 17); cross-tenant record reads fail closed; tampered store entries fail closed with digest re-verification; a global/overall score request has no code path at all (the no-single-global-score law).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/expert-performance": "workspace:*",
+    "@arena/expert-qualification": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
