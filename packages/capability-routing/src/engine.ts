@@ -442,30 +442,19 @@ function classifyNoMatch(causes: readonly EliminationCause[]): ResourceMatchOutc
   if (reasons.size === 1 && reasons.has('incompatible-substrate')) {
     return 'incompatible-substrate';
   }
-  const deadlineish =
-    reasons.has('deadline-infeasible') ||
-    reasons.has('unavailable') ||
-    reasons.has('catalog-unavailable');
+  if (reasons.size === 1 && reasons.has('budget-infeasible')) return 'budget-infeasible';
+  // Availability-shaped causes (deadline, unavailability, broken catalog
+  // ports) compress to the closed deadline-infeasible outcome — the C002
+  // mapping of routing-unavailability.
   if (
-    deadlineish &&
     [...reasons].every((reason) =>
       ['deadline-infeasible', 'unavailable', 'catalog-unavailable'].includes(reason),
     )
   ) {
     return 'deadline-infeasible';
   }
-  const budgetish =
-    reasons.has('budget-infeasible') ||
-    reasons.has('entitlement-missing') ||
-    reasons.has('offer-delisted');
-  if (
-    budgetish &&
-    [...reasons].every((reason) =>
-      ['budget-infeasible', 'entitlement-missing', 'offer-delisted'].includes(reason),
-    )
-  ) {
-    return 'budget-infeasible';
-  }
+  // Everything else — including delisted offers and missing entitlements
+  // mixed with other causes — is the honest no-match.
   return 'no-match';
 }
 
