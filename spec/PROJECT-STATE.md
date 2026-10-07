@@ -430,3 +430,47 @@ C-series wave 2 AUTHORIZED on live main @ 8c49635+: C002 (#76, work/C002-escalat
 C006 (#113, work/C006-expert-session), C010 (#77, work/C010-payments) — disjoint surfaces;
 dependencies verified on live main (C001 merged; A004/A006/A007/B002/A009/A010/A033/A034
 merged in prior programs). Wave 3 staged (C003+C007+C017, briefs pre-written).
+
+- C002 MERGED — capability-demand compiler and expert routing
+  PR #130 (merged c2e1ae0; +33 files, +4704; issue #76). Harvest record (TL, 2026-10-07 17:15 UTC):
+  packages/escalation-routing — demand compiler with typed closed outcomes over the A004 graph,
+  deterministic 9-filter routing engine covering all 10 ES1.0 routing inputs, RoutingCandidate
+  view, digest-chained append-only decision history; services/escalation-routing — C001
+  RoutingPort structural replacement (vocabulary parity test), injected ports, fail-closed
+  routing-unavailable degradation, A015 durable routing jobs. 90 new tests incl. adversarial
+  (qualification-as-authorization, cross-tenant leakage, COI bypass). Worker battery green.
+  Open (recorded): escalation-api default port remains the labelled stub — TL integration
+  decision; RoutingPort hoist to a package proposed in the PR.
+
+- C006 MERGED — expert environment capsule and privacy-safe session replication
+  PR #132 (merged 6a3469e; +48 files, +7189; issue #113). Harvest record (TL, 2026-10-07):
+  packages/expert-session — capsule derivation (bounded, escalation-scoped, time-bounded,
+  privacy-controlled, non-authoritative), six EES1.0 modes as typed capability policy, privacy
+  barrier control set with fail-closed escape detection, approved observable event stream (never
+  private chain-of-thought), ToolGapSignal, knowledge tiers with no-silent-promotion, session
+  completion contract, replay traces; services/expert-session — lifecycle bound to C001 states
+  via injected ports, fail-closed on every event; adapters/expert-environment — A009-aware
+  deterministic materializer (secret-tool exclusion; live-world mounts never replicate). 97
+  owned tests; all four adversarial minimums green (escape fail-closed, secret leakage
+  screened, mode escalation rejected, replay≠live). Open (recorded): A015 durability is the
+  in-memory reference fabric; A010 runner execution deferred (adapter derives the view only).
+
+- C010 MERGED — payments, escrow/hold, platform fees and payouts
+  PR #131 (merged fadbb06; +50 files, +7719; issue #77). Harvest record (TL, 2026-10-07):
+  packages/payments — money primitives (string-scaled minor units), versioned deterministic
+  fee splits, digest-chained append-only ledger, lifecycle binding, idempotency, commercial
+  audit events, provider port + truth-label law; services/payments — HOLD/offer/acceptance/
+  CAPTURE/RELEASE/REFUND with fee-split payout, explicit-state dispute surface,
+  escalation.payment.updated outbox events, typed cross-tenant denials; adapters/payments —
+  deterministic DemoPaymentProvider (byte-stable ids, idempotent replay, typed failures).
+  106 new tests incl. all five FINAL-HANDOFF §18 adversarial minimums at domain+service+provider
+  seams. Open (recorded): MoR/settlement/tax/jurisdiction are explicit open production questions;
+  disputes in-memory; outbox drain host-wired.
+
+Integrated-main TL station battery GREEN at fadbb06 (boundary B1-B4 clean, contracts
+byte-identical, typecheck 85/85, lint 85/85, test 85/85 tasks, build 85/85) — wave 2 complete:
+C001+C002+C006+C010 landed entirely via platform Task subagents during the z-ai gateway outage.
+
+C-series wave 3 AUTHORIZED on live main @ fadbb06+: C003 (#110, work/C003-expert-intake),
+C007 (#114, work/C007-intervention), C017 (#123, work/C017-developer-platform). Briefs
+pre-written (scripts/worker-prompts/). All 22 C-series briefs exist.

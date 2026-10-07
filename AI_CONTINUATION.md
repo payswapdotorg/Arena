@@ -201,11 +201,12 @@ Maximum concurrent workers: 3.
 
 The product thesis is locked: Arena is the Stripe of human expert escalation for AI automation.
 
-G001-G003 accepted and merged (2026-10-07, PRs #107/#108/#109) — launch-integrity closure
-complete. C001 MERGED (PR #129, merge commit 8c49635, 2026-10-07): ES1.0 escalation domain +
-REST + webhook outbox + MCP + routing seam are live on main. Worker channel during the z-ai
-gateway outage: platform-native Task subagents dispatched by the TL with locally-adapted
-briefs (scripts/worker-prompts/*.md) — milestone-push law enforced, workers never self-merge.
-Wave 2 (C002+C006+C010) AUTHORIZED and dispatched 2026-10-07 ~16:05 UTC; wave 3 next
-(C003+C007+C017, briefs pre-written). Recompute readiness from live GitHub state before
-each dispatch.
+Wave 2 LANDED (2026-10-07 ~17:15 UTC): C002 (PR #130, c2e1ae0), C006 (PR #132, 6a3469e),
+C010 (PR #131, fadbb06) — all merged with TL serialized lockfile intakes; integrated-main
+battery green at fadbb06 (85/85 tasks, all gates). Worker channel during the z-ai gateway
+outage: platform-native Task subagents with locally-adapted briefs
+(scripts/worker-prompts/*.md — ALL 22 C-series briefs now exist). Sprint-safety law (added
+after a Task-channel timeout orphaned workers): workers push FIRST on session start, commit
+WIP before long gates; a fresh agent continues from the pushed branch. Wave 3 (C003+C007+C017)
+AUTHORIZED on main @ fadbb06+; wave 4 next (C004+C008+C009). Recompute readiness from live
+GitHub state before each dispatch.
