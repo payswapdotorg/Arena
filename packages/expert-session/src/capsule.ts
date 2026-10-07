@@ -88,6 +88,8 @@ export interface ExecutionCapsuleSource {
   readonly files: readonly CapsuleFileRef[];
   /** Tool availability inside the agent's environment. */
   readonly toolAvailability: readonly string[];
+  /** Host-declared secret-bound tools excluded from the expert surface (EES1.0 secret/tool exclusion). */
+  readonly excludedTools?: readonly string[];
   /** Host-side policy driving privacy derivation. */
   readonly policy: CapsuleSourcePolicy;
   /** Relevant history references (trajectories, artifacts). */

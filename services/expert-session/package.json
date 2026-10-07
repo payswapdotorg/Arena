@@ -1,0 +1,40 @@
+{
+  "name": "@arena/expert-session-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert environment session reference service (Work Order C006; issue #113; spec/expert-environment-session.md EES1.0). Session lifecycle bound to the C001 escalation states (SESSION_READY → IN_PROGRESS → SUBMITTED) through injected ports, capsule materialization through the adapters/expert-environment seam, fail-closed privacy-barrier and mode enforcement on every expert action, and the EES1.0 session completion contract handed back to C001 validation.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/expert-session": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@arena/expert-environment-adapters": "workspace:*",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
