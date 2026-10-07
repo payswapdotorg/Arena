@@ -36,7 +36,6 @@ import {
   expectRefList,
   expectTenantId,
 } from './shared.js';
-import { toRetentionSchedule } from './retention.js';
 import type { RetentionSchedule } from './retention.js';
 
 /** Wire version of the policy pack shape. */
