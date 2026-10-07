@@ -1,0 +1,79 @@
+{
+  "metadata": {
+    "generatedAt": "2026-10-07T13:21:43.668Z",
+    "version": "1.0.0",
+    "previewUrl": "https://arena-preview-five.vercel.app",
+    "generator": "@arena/deploy-preview"
+  },
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": "100.00%"
+  },
+  "tests": [
+    {
+      "name": "Health Readiness",
+      "status": "passed",
+      "duration": 365
+    },
+    {
+      "name": "Provider Capacity Visibility",
+      "status": "passed",
+      "duration": 593
+    },
+    {
+      "name": "Quota Exhaustion Fail-Closed",
+      "status": "passed",
+      "duration": 15
+    },
+    {
+      "name": "Hosted Demo Route Walk",
+      "status": "passed",
+      "duration": 612
+    },
+    {
+      "name": "No Hidden Paid Fallback",
+      "status": "passed",
+      "duration": 1297
+    }
+  ],
+  "gates": {
+    "Gate B": {
+      "status": "PASSED",
+      "tests": [
+        {
+          "name": "Health Readiness",
+          "status": "passed",
+          "duration": 365
+        },
+        {
+          "name": "Provider Capacity Visibility",
+          "status": "passed",
+          "duration": 593
+        },
+        {
+          "name": "Quota Exhaustion Fail-Closed",
+          "status": "passed",
+          "duration": 15
+        },
+        {
+          "name": "Hosted Demo Route Walk",
+          "status": "passed",
+          "duration": 612
+        }
+      ],
+      "checklistItems": [
+        "Vercel production deployment is live",
+        "Health/readiness checks are live",
+        "Provider capacity state is visible",
+        "Free-tier exhaustion is fail-closed",
+        "No hidden paid fallback exists"
+      ]
+    }
+  },
+  "recommendations": [
+    "Ready for launch gate verification"
+  ]
+}
