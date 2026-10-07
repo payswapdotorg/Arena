@@ -472,5 +472,47 @@ byte-identical, typecheck 85/85, lint 85/85, test 85/85 tasks, build 85/85) — 
 C001+C002+C006+C010 landed entirely via platform Task subagents during the z-ai gateway outage.
 
 C-series wave 3 AUTHORIZED on live main @ fadbb06+: C003 (#110, work/C003-expert-intake),
-C007 (#114, work/C007-intervention), C017 (#123, work/C017-developer-platform). Briefs
+C007 (#114, work/C007-intervention-modes), C017 (#123, work/C017-developer-portal). Briefs
 pre-written (scripts/worker-prompts/). All 22 C-series briefs exist.
+
+- C007 MERGED — live human intervention modes
+  PR #133 (merged 3836443; issue #114). Harvest record (TL, 2026-10-07 18:15 UTC): packages/
+  intervention — 8-mode table mirroring C006 EES1.0 session modes, fail-closed authorization
+  guards, escalation-modes law, per-mode result contracts onto C001's single taxonomy, A011
+  trajectory binding (TEACH captureMandatory), C009 validation seam as labelled stub;
+  services/intervention — lifecycle SESSION_READY→IN_PROGRESS→SUBMITTED, idempotent,
+  escalation.progressed events. 100 new tests (68 domain + 32 service) incl. all adversarial
+  minimums. Worker battery green. Open (recorded): validation stub awaits C009; in-memory
+  reference fabric; captureMandatory scope + resubmitted-state questions in PR.
+
+- C003 MERGED — AI expert intake and adaptive capability interview
+  PR #134 (merged 03f8186; issue #110). Harvest record (TL, 2026-10-07): packages/expert-intake —
+  typed items over C002/A004 vocabulary, expected-information-value selection with inspectable
+  rationale, full lifecycle + ABANDONED/TIMED_OUT, digest-chained append-only transcript, typed
+  outcomes, IntakeProfile → A006 proposal + A007 claims-with-evidence (qualification never
+  authorization), InterviewerModelPort scripted reference, PII/authority screens, consent;
+  services/expert-intake — in-memory reference fabric, injected A006/A007 public ports only,
+  fail-closed TENANT_MISMATCH/TAMPERED/PORT_FAILURE, REQUIRED idempotency, deterministic demo.
+  72 new tests (52 domain + 20 service) incl. all four adversarial minimums. Worker battery
+  green. Open (recorded): in-memory fabric + scripted model are house reference patterns
+  (disclosed); IntakeProfile seam versioning proposed for C004.
+
+- C017 MERGED — developer portal, API keys, sandbox and SDK quickstarts
+  PR #135 (merged 4104f7c; issue #123). Harvest record (TL, 2026-10-07): packages/developer-
+  platform + services/developer-platform (API-key domain with scopes/rotation/revocation — keys
+  never role authority; sandbox truth-labels; webhook registration; observability projections)
+  + apps/web/src/developers portal module (host wiring over real C001 + dev-platform services,
+  fail-closed route resolvers, 5 /developers/** routes with loading gate, deterministic demo
+  corpus, live+sandbox dashboards with per-row truth labels). 57 owned tests (34 pkg + 23 svc)
+  + 603 web-suite tests green. Worker battery green. Open (recorded): wire contracts not yet
+  generated; routes read-only in session posture (interactive key writes + sandbox runs are a
+  proposed follow-up with CSRF/idempotency posture); route-mount pattern question in PR.
+
+Integrated-main TL station battery GREEN at 4104f7c (check/boundary clean, contracts
+byte-identical, typecheck 91/91, lint 91/91, test 91/91 tasks, build 91/91) — wave 3 complete:
+C001-C003, C006-C007, C010, C017 merged; 31 WOs total landed.
+
+C-series wave 4 AUTHORIZED on live main @ 4104f7c+ (frontier RECOMPUTED from the dependency
+table — AI_CONTINUATION's C009-in-wave-4 was wrong, C009 is blocked on C005): C004 (#111,
+work/C004-expert-calibration), C008 (#115, work/C008-tool-gap), C019 (#125,
+work/C019-reference-integrations). C005 (needs C004) and C018 (ready) queue next.

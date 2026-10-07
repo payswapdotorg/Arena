@@ -201,12 +201,12 @@ Maximum concurrent workers: 3.
 
 The product thesis is locked: Arena is the Stripe of human expert escalation for AI automation.
 
-Wave 2 LANDED (2026-10-07 ~17:15 UTC): C002 (PR #130, c2e1ae0), C006 (PR #132, 6a3469e),
-C010 (PR #131, fadbb06) — all merged with TL serialized lockfile intakes; integrated-main
-battery green at fadbb06 (85/85 tasks, all gates). Worker channel during the z-ai gateway
-outage: platform-native Task subagents with locally-adapted briefs
-(scripts/worker-prompts/*.md — ALL 22 C-series briefs now exist). Sprint-safety law (added
-after a Task-channel timeout orphaned workers): workers push FIRST on session start, commit
-WIP before long gates; a fresh agent continues from the pushed branch. Wave 3 (C003+C007+C017)
-AUTHORIZED on main @ fadbb06+; wave 4 next (C004+C008+C009). Recompute readiness from live
-GitHub state before each dispatch.
+Wave 3 LANDED (2026-10-07 18:15 UTC): C007 (PR #133, 3836443), C003 (PR #134, 03f8186),
+C017 (PR #135, 4104f7c) — merged with TL lockfile intakes; integrated-main battery green at
+4104f7c (91/91 tasks all gates). 31 WOs landed (A36+B19+G3+C7). Worker channel: platform
+Task subagents with locally-adapted briefs (scripts/worker-prompts/*.md — all 22 exist).
+Sprint-safety law: workers push FIRST on session start, commit WIP before long gates; the
+TL re-dispatches continuation sessions when the Task channel orphans a worker (proven
+finisher pattern). Wave 4 (C004+C008+C019) AUTHORIZED — frontier RECOMPUTED: C009 is blocked
+on C005 (the earlier wave sketch was wrong); C005/C018 queue next. Recompute readiness from
+live GitHub state before each dispatch.
