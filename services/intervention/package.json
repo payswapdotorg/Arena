@@ -1,0 +1,41 @@
+{
+  "name": "@arena/intervention-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena live human intervention reference service (Work Order C007; issue #114). Binds C006 expert sessions to the C001 escalation lifecycle (SESSION_READY → IN_PROGRESS → SUBMITTED) through injected ports, enforces mode authorization and the escalation-modes law on every mode selection/transition, records observable expert work into the C006 session stream AND an A011 trajectory-backed record, emits escalation.progressed webhook events, and routes SUBMITTED payloads onto the validation seam (A012/A013) through a clearly-labelled deterministic C009 stub.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/expert-session": "workspace:*",
+    "@arena/intervention": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/trajectory": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
