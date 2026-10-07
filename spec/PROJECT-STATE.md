@@ -401,5 +401,11 @@ Do not dispatch a C item before its dependencies are verified on live main.
   (/tasks renders the landing shell — backlog note). TL station battery green.
 
 Post-B019 launch-integrity closure: G001+G002+G003 ACCEPTED AND MERGED (2026-10-07).
+
+C-series issue tracker COMPLETE: #75 (C001), #76 (C002), #77 (C010) plus #110-#128
+(C003-C009, C011-C022) — every C work order has its tracking issue with scope,
+dependencies, owned surfaces and wave schedule (created 2026-10-07 by the TL).
+C001 sandbox pre-staged (branch work/C001-escalation-api at f222599) with an armed
+brain-recovery auto-launcher (worker-brain outage disclosed in AI_CONTINUATION).
 Arena may now truthfully state: installable, usable and publicly previewable.
 C-series (C001-C022) is the active implementation roadmap; first wave C001 (#75).
