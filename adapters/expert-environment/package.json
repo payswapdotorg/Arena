@@ -1,0 +1,39 @@
+{
+  "name": "@arena/expert-environment-adapters",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert-environment adapter (Work Order C006; issue #113; spec/expert-environment-session.md EES1.0). Materializes bounded ExpertSessionCapsules against the A009 environment protocol vocabulary (EnvironmentDefinition action surface, filesystem mounts, network egress, secret isolation) with a deterministic in-memory reference implementation for tests/demo. Structural port: zero imports of service internals — hosts wire the composition.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/environment-protocol": "workspace:*",
+    "@arena/expert-session": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
