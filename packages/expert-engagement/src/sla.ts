@@ -31,7 +31,6 @@ import {
   deepFreeze,
   isEngagementContentDigest,
   isEngagementTimestamp,
-  isSlaUrgencyClass,
   toEngagementContentDigest,
   toEngagementId,
   toEngagementTimestamp,
@@ -42,7 +41,6 @@ import {
 } from './shared.js';
 import type {
   EngagementContentDigest,
-  EngagementId,
   EngagementTimestamp,
   SlaUrgencyClass,
 } from './shared.js';

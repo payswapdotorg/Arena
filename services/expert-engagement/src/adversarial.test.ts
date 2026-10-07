@@ -108,7 +108,7 @@ async function issue(
 
 describe('ADVERSARIAL: offer acceptance after expiry (must fail closed)', () => {
   it('acceptance at/after offerExpiresAt fails closed with OFFER_EXPIRED', async () => {
-    const { escalation, breaches, ports, service } = setup();
+    const { escalation, service } = setup();
     await declareWindow(service);
     await issue(service, 'eng-alpha-1', 'offer-key-1');
     // The escalation DID advance — only the expiry guard may deny.
@@ -140,7 +140,7 @@ describe('ADVERSARIAL: offer acceptance after expiry (must fail closed)', () => 
 
 describe('ADVERSARIAL: duplicate offer acceptance (idempotent typed duplicate)', () => {
   it('the same accept instruction replays the recorded outcome verbatim', async () => {
-    const { escalation, breaches, ports, service } = setup();
+    const { escalation, service } = setup();
     await declareWindow(service);
     await issue(service, 'eng-alpha-1', 'offer-key-1');
     escalation.setState('tenant-a', 'req-1001', 'accepted');
@@ -167,7 +167,7 @@ describe('ADVERSARIAL: duplicate offer acceptance (idempotent typed duplicate)',
   });
 
   it('the same key with a DIFFERENT body is a typed conflict (never a silent rebind)', async () => {
-    const { escalation, breaches, ports, service } = setup();
+    const { escalation, service } = setup();
     await declareWindow(service);
     await issue(service, 'eng-alpha-1', 'offer-key-1');
     escalation.setState('tenant-a', 'req-1001', 'accepted');
@@ -260,7 +260,7 @@ describe('ADVERSARIAL: cross-tenant engagement access', () => {
 
 describe('ADVERSARIAL: SLA breach-record tampering', () => {
   it('a tampered stored breach record fails closed with TAMPERED on read', async () => {
-    const { escalation, breaches, ports, service } = setup();
+    const { breaches, service } = setup();
     await declareWindow(service);
     await issue(service, 'eng-alpha-1', 'offer-key-1');
     // Evaluate past the request deadline → three canonical breach records.

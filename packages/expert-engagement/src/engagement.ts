@@ -37,7 +37,6 @@ import { digestCanonical } from '@arena/protocol-core';
 import { EXPERT_ENGAGEMENT_ERROR_CODES, ExpertEngagementError } from './errors.js';
 import {
   deepFreeze,
-  expectFields,
   isEngagementContentDigest,
   isEngagementExpertId,
   isEngagementId,

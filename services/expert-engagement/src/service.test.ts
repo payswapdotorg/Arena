@@ -154,7 +154,7 @@ describe('issueOffer over the injected C001/C002/C010 ports', () => {
   });
 
   it('fails closed when the escalation state does not bind to OFFERED', async () => {
-    const { escalation, breaches, ports, service } = setup();
+    const { escalation, service } = setup();
     escalation.setState('tenant-a', 'req-1001', 'matching');
     await declareWindow(service);
     await expect(
@@ -177,7 +177,7 @@ describe('issueOffer over the injected C001/C002/C010 ports', () => {
 
 describe('offer → accept → session handoff → complete (the ERF1.0 path)', () => {
   it('walks accept → activate → complete as the escalation advances', async () => {
-    const { escalation, breaches, ports, service } = setup();
+    const { escalation, service } = setup();
     await declareWindow(service);
     await service.issueOffer(
       {
@@ -307,7 +307,7 @@ describe('availability declarations and the routing-input projection', () => {
   });
 
   it('the projection reflects committed capacity (accepted engagements occupy slots)', async () => {
-    const { escalation, breaches, ports, service } = setup();
+    const { escalation, service } = setup();
     await declareWindow(service, 1);
     await service.issueOffer(
       {
@@ -335,7 +335,7 @@ describe('availability declarations and the routing-input projection', () => {
 
 describe('SLA clock evaluation as a durable idempotent job', () => {
   it('derives clocks, records breaches once and completes the job', async () => {
-    const { escalation, breaches, ports, service } = setup();
+    const { service } = setup();
     await declareWindow(service);
     await service.issueOffer(
       {
@@ -373,7 +373,6 @@ describe('SLA clock evaluation as a durable idempotent job', () => {
       { correlationId: 'corr-sla' },
     );
     expect(stored.length).toBe(3);
-    void ports;
   });
 
   it('the job replay is idempotent (same key replays the recorded job)', async () => {

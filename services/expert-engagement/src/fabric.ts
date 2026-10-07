@@ -65,7 +65,6 @@ import {
   makeGetAvailabilityResponse,
   makeGetEngagementQuery,
   makeGetEngagementResponse,
-  makeGetSlaEvaluationQuery,
   makeGetSlaEvaluationResponse,
   makeIssueOfferCommand,
   makeOfferIssuedEvent,
@@ -685,7 +684,7 @@ export class ExpertEngagementService {
     options: CommandOptions,
   ): Promise<EvaluateSlaResult> {
     const correlationId = toCorrelationId(options.correlationId);
-    const idempotencyKey = toIdempotencyKey(options.idempotencyKey);
+    toIdempotencyKey(options.idempotencyKey); // validated (the job port carries the key)
     // One durable job per evaluation run: the default job id is derived
     // from the engagement + the idempotency key (each run is its own
     // idempotent, correlation-addressable job on the A015 seam).

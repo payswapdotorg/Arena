@@ -37,21 +37,13 @@ import {
   expectFields,
   isEngagementContentDigest,
   isEngagementTimestamp,
-  toEngagementContentDigest,
   toEngagementExpertId,
-  toEngagementId,
   toEngagementTenant,
   toEngagementTimestamp,
   toNonNegativeInteger,
   toPositiveInteger,
 } from './shared.js';
-import type {
-  EngagementContentDigest,
-  EngagementExpertId,
-  EngagementId,
-  EngagementTenant,
-  EngagementTimestamp,
-} from './shared.js';
+import type { EngagementContentDigest } from './shared.js';
 
 /** Wire version of the availability-declaration record shape. */
 export const AVAILABILITY_DECLARATION_VERSION = 1 as const;
