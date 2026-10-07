@@ -1,0 +1,38 @@
+{
+  "name": "@arena/expert-session",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert environment session domain core (Work Order C006; issue #113; spec/expert-environment-session.md EES1.0). ExpertSessionCapsule derivation from an ExecutionCapsule reference (bounded, escalation-scoped, time-bounded, privacy-policy controlled, non-authoritative), the six session modes as a typed capability policy, the EES1.0 privacy barrier control set, the approved observable event stream (never private chain-of-thought), ToolGapSignal records, knowledge-capture tiers with the no-silent-promotion law, session completion submissions and replay traces.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "@arena/escalation-routing-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena escalation routing reference service (Work Order C002; issue #76). Wires the @arena/escalation-routing compiler + engine to the C001 routing seam (RoutingPort replacement — structural plug compatibility, no service-to-service import per boundary rule B2), with injected ports only, fail-closed error normalization, an append-only decision log and durable routing jobs over the A015 job-protocol submission identity.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/capability-graph": "workspace:*",
+    "@arena/escalation": "workspace:*",
+    "@arena/escalation-routing": "workspace:*",
+    "@arena/job-protocol": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@arena/escalation-routing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena escalation routing — the capability-demand compiler and expert routing engine (Work Order C002; issue #76; spec/expert-escalation-api.md ES1.0 Routing). Compiles an EscalationRequest capability need into a versioned DemandProfile over the A004 capability graph, then routes over the ES1.0 routing inputs (qualified capabilities, demonstrated performance, current availability, historical task fit, geography/locale, required tools, conflict-of-interest rules, privacy clearance, budget, deadline) with typed machine-readable decisions and an append-only per-escalation decision history. Qualification is INPUT to ranking, never authorization (lock rule 9).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/capability-graph": "workspace:*",
+    "@arena/expert-qualification": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
