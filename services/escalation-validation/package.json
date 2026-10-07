@@ -1,0 +1,40 @@
+{
+  "name": "@arena/escalation-validation-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena escalation validation/adjudication reference service (Work Order C009; issue #116). Implements C007's labelled validation seam for real (the C002 precedent): SUBMITTED payloads route onto a derived typed validation plan, the C001 lifecycle binds VALIDATING -> ACCEPTED | REVISION_REQUIRED | REJECTED through injected ports, the A012 evaluation and A013 verification stages run as EXPLICITLY DISTINCT adjudication stages, the bounded revision loop and typed expert-replacement triggers (returning the escalation to MATCHING through the C002 routing seam) are driven through the C001 public lifecycle functions, and escalation.validation.updated webhook events are emitted through the A015 fabric conventions. Fail-closed error normalization, envelope conventions per sibling services.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/escalation-validation": "workspace:*",
+    "@arena/intervention": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
