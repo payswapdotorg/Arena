@@ -1,0 +1,40 @@
+{
+  "name": "@arena/expert-calibration-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena expert-calibration reference service (Work Order C004; issue #111). In-process orchestration over @arena/expert-calibration: calibration program lifecycle (register/record-outcome/run-verdict), pre-training tracks derived from the C003 intake gap-list and dispatched to the A017 workbench surface, and scheduled requalification checks as durable idempotent jobs on the A015 job fabric (@arena/job-protocol JobRecords) — all over an in-memory reference store with injected ports (the A015-fabric house pattern for reference services). Submissions hand proposals to the PUBLIC ports (the C003 intake gap source, the A007 qualification proposal port, the A017 workbench assignment port) — never direct writes into another surface's state. Commands carry REQUIRED idempotency keys; cross-tenant reads fail closed; tampered store entries fail closed; the C002 routing engine consumes the demonstrated-performance read surface (a port, not a write into routing); calibration is measurement DATA, never an authorization (lock rules 9/35).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/expert-calibration": "workspace:*",
+    "@arena/expert-qualification": "workspace:*",
+    "@arena/job-protocol": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

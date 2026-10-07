@@ -88,6 +88,28 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  adapters/epoch-escalation:
+    dependencies:
+      '@arena/escalation':
+        specifier: workspace:*
+        version: link:../../packages/escalation
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   adapters/escalation:
     devDependencies:
       '@types/node':
@@ -877,6 +899,31 @@ importers:
 
   packages/evaluation:
     dependencies:
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  packages/expert-calibration:
+    dependencies:
+      '@arena/expert-intake':
+        specifier: workspace:*
+        version: link:../expert-intake
+      '@arena/expert-qualification':
+        specifier: workspace:*
+        version: link:../expert-qualification
       '@arena/protocol-core':
         specifier: workspace:*
         version: link:../protocol-core
@@ -1902,6 +1949,34 @@ importers:
       '@arena/trajectory':
         specifier: workspace:*
         version: link:../../packages/trajectory
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/expert-calibration:
+    dependencies:
+      '@arena/expert-calibration':
+        specifier: workspace:*
+        version: link:../../packages/expert-calibration
+      '@arena/expert-qualification':
+        specifier: workspace:*
+        version: link:../../packages/expert-qualification
+      '@arena/job-protocol':
+        specifier: workspace:*
+        version: link:../../packages/job-protocol
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
