@@ -1,0 +1,42 @@
+{
+  "name": "@arena/human-data-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena human-data production studio reference service (Work Order C012; issue #118). The commission lifecycle (DRAFT -> SUBMITTED -> IN_PRODUCTION -> ASSEMBLING -> DELIVERED, with abandoned/failed states) as durable idempotent jobs on the reference fabric: commissions compile to ES1.0 EscalationRequests created and tracked through the injected C001 port (one seam, no new lifecycle), deliverables are collected from C009-ACCEPTED results through the injected deliverable-source port (the consent wall and the validation gate live in @arena/human-data and are fail-closed here too), and accepted, rights-gated sets assemble into versioned immutable dataset bundles over the A014 vocabulary. Fail-closed error normalization, envelope conventions per sibling services.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/datasets": "workspace:*",
+    "@arena/escalation": "workspace:*",
+    "@arena/escalation-validation": "workspace:*",
+    "@arena/expert-session": "workspace:*",
+    "@arena/human-data": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
