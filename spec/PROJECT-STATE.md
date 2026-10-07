@@ -409,3 +409,24 @@ C001 sandbox pre-staged (branch work/C001-escalation-api at f222599) with an arm
 brain-recovery auto-launcher (worker-brain outage disclosed in AI_CONTINUATION).
 Arena may now truthfully state: installable, usable and publicly previewable.
 C-series (C001-C022) is the active implementation roadmap; first wave C001 (#75).
+
+- C001 MERGED — Expert Escalation API, MCP, webhooks and durable lifecycle
+  PR #129 (merged 8c49635; +64 files, +8593 lines; issue #75). Harvest record (TL, 2026-10-07
+  15:57 UTC): packages/escalation — ES1.0 request model, durable lifecycle state machine with
+  explicit timeout/cancelled/expert-replaced states, typed verdicts, append-only history,
+  11-kind result taxonomy, idempotency-key + correlation semantics, domain tenant isolation,
+  13-event webhook taxonomy; services/escalation-api — REST create/status, at-least-once
+  webhook outbox, A015 idempotent submission wiring, timeout sweep, permitted-action guard,
+  C002 RoutingPort seam with labelled round-robin stub, MCP tool layer; adapters/escalation —
+  HMAC-SHA256 signed delivery (host-injected material, deterministic backoff, auditable
+  dead-letter, timing-safe verification), MCP stdio binding, zero workspace deps;
+  contracts/escalation — 10 G9-registered schemas. Worker battery all-green (164 owned tests);
+  TL station battery green at fe15a47 + TL lockfile intake 27744a9. Disclosed in PR: routing
+  stub awaits C002; HTTP listener is a host/C017 concern; persistence is in-memory reference
+  fabric. Worker channel: platform-native Task subagents (z-ai gateway outage continues —
+  disclosed in AI_CONTINUATION).
+
+C-series wave 2 AUTHORIZED on live main @ 8c49635+: C002 (#76, work/C002-escalation-routing),
+C006 (#113, work/C006-expert-session), C010 (#77, work/C010-payments) — disjoint surfaces;
+dependencies verified on live main (C001 merged; A004/A006/A007/B002/A009/A010/A033/A034
+merged in prior programs). Wave 3 staged (C003+C007+C017, briefs pre-written).

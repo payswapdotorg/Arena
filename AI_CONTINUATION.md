@@ -201,4 +201,11 @@ Maximum concurrent workers: 3.
 
 The product thesis is locked: Arena is the Stripe of human expert escalation for AI automation.
 
-Do not claim full launch proof until G001-G003 are accepted. Do not begin C002/C006/C010 until C001 is merged. Recompute readiness from live GitHub state before each dispatch.
+G001-G003 accepted and merged (2026-10-07, PRs #107/#108/#109) — launch-integrity closure
+complete. C001 MERGED (PR #129, merge commit 8c49635, 2026-10-07): ES1.0 escalation domain +
+REST + webhook outbox + MCP + routing seam are live on main. Worker channel during the z-ai
+gateway outage: platform-native Task subagents dispatched by the TL with locally-adapted
+briefs (scripts/worker-prompts/*.md) — milestone-push law enforced, workers never self-merge.
+Wave 2 (C002+C006+C010) AUTHORIZED and dispatched 2026-10-07 ~16:05 UTC; wave 3 next
+(C003+C007+C017, briefs pre-written). Recompute readiness from live GitHub state before
+each dispatch.
