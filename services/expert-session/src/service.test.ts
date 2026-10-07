@@ -248,7 +248,7 @@ describe('beginSession / events / submitSession — the full EES1.0 flow', () =>
 
   it('beginSession fails closed on expired capsules and wrong states', async () => {
     const { service, escalation } = await setup();
-    const opened = await service.openSession({
+    await service.openSession({
       requestId: escalation.request.requestId,
       tenantId: TENANT_A,
       source: capsuleSource(),
