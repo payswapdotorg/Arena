@@ -382,6 +382,24 @@ Maximum concurrent workers: 3.
 
 Do not declare the strongest public launch statement until G001-G003 are accepted.
 Do not dispatch a C item before its dependencies are verified on live main.
-- G001 AUTHORIZED — dispatched 2026-10-07 10:24 UTC (post-B019 launch-integrity closure; fresh-machine local proof; issue #104)
-- G002 AUTHORIZED — dispatched 2026-10-07 10:24 UTC (post-B019 launch-integrity closure; hosted live proof + provider/quota reconciliation; issue #105)
-- G003 AUTHORIZED — dispatched 2026-10-07 10:24 UTC (post-B019 launch-integrity closure; fresh-browser UX/product audit; issue #106)
+- G001 MERGED — fresh-machine local product proof
+  PR #108 (merged 61d1f4f). Harvest record (TL, 2026-10-07 14:04 UTC): genuinely fresh E2B machine
+  (node 22.23.3 + pnpm 10.34.5 downloaded in-run, fresh clone); product:install 111s exit 0, corpus
+  hash 4dfd1acd, zero providers/zero credentials; doctor 7/1/0; landing 200 byte-identical to hosted;
+  demo+reset contracts; test:e2e 28/28; test:ux 46/46 (real headless Chromium); test:product 66/66;
+  persistence semantics verified. TL station battery green on the branch and on integrated main (1ca2603).
+- G002 MERGED — hosted live proof, provider/quota proof and current deployment reconciliation
+  PR #107 (merged 3126596). Harvest record (TL, 2026-10-07 14:04 UTC): current 2026-10-07 probes —
+  3× landing HTTP 200; Vercel production deploys READY at 05:02Z/10:36Z (stale-Oct-4 concern resolved);
+  Neon project verified (direct-DB probe honestly NOT-DERIVABLE); R2 bucket valid (0 objects current);
+  Upstash PONG; B019 acceptance harness 5/5 Gate B PASSED at 13:21Z; no paid fallback; 0 secret patterns
+  in served bundles. TL station battery green.
+- G003 MERGED — fresh-browser UX/product audit and launch evidence closure
+  PR #109 (merged 1ca2603). Harvest record (TL, 2026-10-07 14:04 UTC): fresh-profile audit of 13
+  surfaces + 404 on the hosted preview; truth labels verbatim; role-lens interaction (?role=expert);
+  mobile 390x844 no-overflow; keyboard focus-visible throughout; one minor disclosed finding
+  (/tasks renders the landing shell — backlog note). TL station battery green.
+
+Post-B019 launch-integrity closure: G001+G002+G003 ACCEPTED AND MERGED (2026-10-07).
+Arena may now truthfully state: installable, usable and publicly previewable.
+C-series (C001-C022) is the active implementation roadmap; first wave C001 (#75).

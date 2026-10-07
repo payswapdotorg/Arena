@@ -14,10 +14,9 @@ The repository records a hosted preview at https://arena-preview-five.vercel.app
 Important status distinction:
 - B-series implementation is complete.
 - B019 deployment wiring is implemented and has recorded successful launch-day probes.
-- launch evidence is not yet fully independently closed; G001-G003 are the mandatory evidence-closure stage.
-- C001-C022 have not yet been implemented.
-
-Do not describe Arena as fully launch-proven until G001-G003 are accepted.
+- launch evidence closure is COMPLETE: G001 (PR #108), G002 (PR #107), G003 (PR #109) merged 2026-10-07.
+- Arena is installable, usable and publicly previewable (evidence-backed).
+- C001-C022 have not yet been implemented; C001 is the first dispatch of the active roadmap.
 
 ## 2. Mission
 

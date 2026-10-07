@@ -152,18 +152,28 @@ wave is C001, C002, C010 (issues #75/#76/#77 already track them).
 - B013 MERGED
 
 
+## G-CLOSURE — 2026-10-07 14:04 UTC
+
+G001 (PR #108, 61d1f4f), G002 (PR #107, 3126596), G003 (PR #109, 1ca2603) are MERGED and
+ACCEPTED. The post-B019 launch-integrity closure is COMPLETE:
+Arena is installable, usable and publicly previewable (the strongest statement the
+closure spec permits, now evidence-backed).
+
+Operational note (honest infrastructure record): the 2026-10-07 G-wave ran under a
+worker-brain outage — the z-ai worker gateway was quota-blocked from 12:08 UTC and
+OpenRouter free-tier quota exhausted until midnight UTC; the three G work orders were
+delivered by TL direct execution with full method disclosure in each PR/evidence set.
+The C-series dispatches require a recovered worker brain (z-ai gateway recovery or the
+OpenRouter daily reset at 00:00 UTC).
+
 ## FINAL ROADMAP FRONTIER — 2026-10-07
 
 A001-A036: COMPLETE / MERGED.
 B001-B019: COMPLETE / MERGED.
-Current post-B019 launch-integrity closure:
-- G001 — issue #104 — fresh-machine/local proof
-- G002 — issue #105 — current hosted proof/provider reconciliation
-- G003 — issue #106 — fresh-browser UX/product audit
+Post-B019 launch-integrity closure: COMPLETE (G001/G002/G003 MERGED 2026-10-07; issues #104/#105/#106 closed).
 
-These three are disjoint and may run concurrently.
-
-After G closure, C001-C022 becomes the active implementation roadmap.
+C001-C022 is the active implementation roadmap. First wave: C001 (#75).
+Worker-brain status governs dispatch timing (see the operational note above).
 
 Authoritative final handoff:
 - docs/LLM-ARCHITECT-FINAL-HANDOFF.md
