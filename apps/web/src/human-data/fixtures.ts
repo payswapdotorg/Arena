@@ -25,6 +25,7 @@ import {
 import type { HumanDataCommission } from '../../../../packages/human-data/src/index.js';
 import type { DatasetManifest } from '../../../../packages/datasets/src/index.js';
 import type { HumanDatasetDeliveryDescriptor } from '../../../../packages/human-data/src/index.js';
+import type { AdjudicationVerdictId } from '../../../../packages/escalation-validation/src/index.js';
 import type { ProductionProjection } from '../../../../services/human-data/src/index.js';
 
 const CONSENT = {
@@ -53,10 +54,12 @@ function correctionResultFixture(index: number) {
 function acceptedAdjudication(requestId: string, index: number) {
   return {
     adjudicationVersion: 1 as const,
-    verdictId: `av_${requestId.replaceAll(/[^0-9a-f]/g, '0').slice(0, 30)}${index}`.padEnd(
+    // Deterministic av_ + 32 lowercase hex (the AdjudicationVerdictId shape),
+    // differentiated per item index so demo verdict ids never collide.
+    verdictId: `av_${requestId.replaceAll(/[^0-9a-f]/g, '0').slice(0, 31)}${index}`.padEnd(
       35,
       '0',
-    ) as `av_${string}`,
+    ) as AdjudicationVerdictId,
     requestId,
     tenantId: DEMO_TENANT_ID,
     attemptNumber: 1,
