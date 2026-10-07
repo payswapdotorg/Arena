@@ -1,0 +1,59 @@
+{
+  "$id": "arena:schema/payments/schema-registry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The versioned schema registry of the payments domain (the payments SchemaRef namespace). Mirrors PAYMENTS_SCHEMAS in packages/payments/src/envelopes.ts; parity is asserted by contracts.parity.test.ts.",
+  "properties": {
+    "namespace": {
+      "const": "payments"
+    },
+    "schemaVersion": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "type": "string"
+    },
+    "schemas": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "version"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "namespace",
+    "schemaVersion",
+    "schemas"
+  ],
+  "title": "Arena payments schema registry v1",
+  "type": "object",
+  "x-schema-names": [
+    "payments/hold-budget-command",
+    "payments/payment-event",
+    "payments/payments-error",
+    "payments/money",
+    "payments/fee-schedule",
+    "payments/fee-split",
+    "payments/commercial-audit-event",
+    "payments/escrow-ledger-entry",
+    "payments/payments-error-code",
+    "payments/schema-registry"
+  ],
+  "x-truth-label-violation-reasons": [
+    "customer_ledger_on_demo_provider",
+    "demo_ledger_on_customer_provider",
+    "instruction_truth_mismatch"
+  ]
+}

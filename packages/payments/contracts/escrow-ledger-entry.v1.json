@@ -1,0 +1,233 @@
+{
+  "$id": "arena:schema/payments/escrow-ledger-entry@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One append-only, digest-chained entry of the per-escalation escrow/hold ledger: budget HOLD at creation, offer/acceptance markers, CAPTURE at ACCEPTED, RELEASE (platform fee + expert payout) on completion, REFUND on revision/rejection/cancellation/timeout. Entries are contiguous 1..n; each digest covers the previous digest (silent mutation of a committed money record is detectable).",
+  "properties": {
+    "actor": {
+      "type": "string"
+    },
+    "correlationId": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "type": "string"
+    },
+    "currency": {
+      "pattern": "^[A-Z]{3}$",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "entryVersion": {
+      "const": 1
+    },
+    "kind": {
+      "enum": [
+        "hold",
+        "offer",
+        "acceptance",
+        "capture",
+        "release",
+        "refund"
+      ]
+    },
+    "lifecycleStateAtOperation": {
+      "description": "The observed C001 escalation lifecycle state at operation time.",
+      "enum": [
+        "created",
+        "triaged",
+        "matching",
+        "offered",
+        "accepted",
+        "session_ready",
+        "in_progress",
+        "submitted",
+        "validating",
+        "result_accepted",
+        "revision_required",
+        "result_rejected",
+        "paid",
+        "learning_captured",
+        "expert_replaced",
+        "closed",
+        "cancelled",
+        "timed_out"
+      ]
+    },
+    "lines": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "account": {
+            "enum": [
+              "customer-source",
+              "escrow",
+              "payable",
+              "platform-fee",
+              "expert-payout",
+              "refunds"
+            ]
+          },
+          "minorUnits": {
+            "pattern": "^(0|[1-9][0-9]{0,15})$",
+            "type": "string"
+          },
+          "side": {
+            "enum": [
+              "debit",
+              "credit"
+            ]
+          }
+        },
+        "required": [
+          "account",
+          "side",
+          "minorUnits"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "occurredAt": {
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "type": "string"
+    },
+    "operationId": {
+      "pattern": "^payop_[0-9a-f]{32}$",
+      "type": "string"
+    },
+    "operationKey": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "type": "string"
+    },
+    "payload": {
+      "description": "Discriminated operation payload (kind-matched).",
+      "properties": {
+        "kind": {
+          "enum": [
+            "hold",
+            "offer",
+            "acceptance",
+            "capture",
+            "release",
+            "refund"
+          ]
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    },
+    "prevDigest": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "providerTransferIds": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "sequence": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "truth": {
+      "enum": [
+        "demo",
+        "customer"
+      ]
+    }
+  },
+  "required": [
+    "entryVersion",
+    "sequence",
+    "operationId",
+    "operationKey",
+    "kind",
+    "currency",
+    "lines",
+    "payload",
+    "occurredAt",
+    "correlationId",
+    "lifecycleStateAtOperation",
+    "truth",
+    "prevDigest",
+    "digest"
+  ],
+  "title": "Arena escrow ledger entry v1",
+  "type": "object",
+  "x-denial-reasons": [
+    "ledger_not_adjacent",
+    "ledger_terminal_state",
+    "lifecycle_state_not_allowed",
+    "tenant_mismatch",
+    "currency_mismatch",
+    "amount_exceeds_held",
+    "capture_must_be_full",
+    "amount_exceeds_available",
+    "amount_not_positive",
+    "offer_sequence_unknown",
+    "split_mismatch",
+    "timestamp_not_monotonic",
+    "operation_key_conflict",
+    "invalid_payload",
+    "operation_ok"
+  ],
+  "x-ledger-states": [
+    "opened",
+    "held",
+    "offered",
+    "accepted",
+    "captured",
+    "released",
+    "refunded"
+  ],
+  "x-ledger-terminal-states": [
+    "released",
+    "refunded"
+  ],
+  "x-operation-lifecycle-allowlists": {
+    "acceptance": [
+      "accepted"
+    ],
+    "capture": [
+      "accepted"
+    ],
+    "hold": [
+      "created",
+      "triaged",
+      "matching",
+      "offered",
+      "expert_replaced"
+    ],
+    "offer": [
+      "offered"
+    ],
+    "refund": [
+      "revision_required",
+      "result_rejected",
+      "cancelled",
+      "timed_out"
+    ],
+    "release": [
+      "result_accepted"
+    ]
+  },
+  "x-refund-reasons": [
+    "revision_required",
+    "result_rejected",
+    "cancelled",
+    "timed_out",
+    "dispute_resolved"
+  ]
+}

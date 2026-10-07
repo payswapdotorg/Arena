@@ -1,0 +1,40 @@
+{
+  "name": "@arena/payments-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena payments reference service (Work Order C010; issue #77; handoff §8 commercial model). Envelope-wired facade over the @arena/payments escrow ledger, bound to the C001 escalation lifecycle through injected ports (budget HOLD at creation, offer/acceptance, CAPTURE at ACCEPTED, RELEASE with the platform-fee/expert-payout split on completion, REFUND on revision/rejection/cancellation/timeout), driving the provider-neutral PaymentProviderPort, emitting escalation.payment.updated events on the A015 fabric, and hosting the explicit dispute/refund request surface. Fail-closed; cross-tenant access is typed; MoR/tax/jurisdiction stay open provider questions.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/job-protocol": "workspace:*",
+    "@arena/payments": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

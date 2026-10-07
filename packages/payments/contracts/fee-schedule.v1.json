@@ -1,0 +1,45 @@
+{
+  "$id": "arena:schema/payments/fee-schedule@1.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The versioned, deterministic platform-fee rule: fee = clamp(floor(gross * bps / 10000), min, max); expert payout = gross - fee. The reference schedule is arena-reference v1 (10%). Splits record the schedule used so audits reproduce it.",
+  "properties": {
+    "maxPlatformFeeMinorUnits": {
+      "anyOf": [
+        {
+          "pattern": "^(0|[1-9][0-9]{0,15})$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "null = uncapped."
+    },
+    "minPlatformFeeMinorUnits": {
+      "pattern": "^(0|[1-9][0-9]{0,15})$",
+      "type": "string"
+    },
+    "platformFeeBps": {
+      "maximum": 10000,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "scheduleId": {
+      "pattern": "^[a-z][a-z0-9-]{1,62}$",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "scheduleId",
+    "version",
+    "platformFeeBps",
+    "minPlatformFeeMinorUnits"
+  ],
+  "title": "Arena fee schedule v1",
+  "type": "object"
+}
