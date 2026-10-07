@@ -1,0 +1,38 @@
+{
+  "name": "@arena/epoch-escalation-adapter",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Epoch escalation reference adapter (Work Order C019; issue #125; spec/epoch-integration.md EPI1.0 + spec/expert-escalation-api.md ES1.0 + docs/architecture-lock.md rule 36). Maps Epoch-side capability-failure/uncertainty events into ES1.0 EscalationRequests with the EPI1.0 asynchronous contract (job id, correlation id, causation id, idempotency key, artifact digests, authorization metadata, explicit lifecycle), maps Arena's typed escalation results back into Epoch-consumable refs, and consumes signed escalation webhooks — with a structurally enforced NO-WRITE-BACK authority boundary (Epoch is a reference customer of the generic Escalation API, never a special semantic authority inside Arena).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
