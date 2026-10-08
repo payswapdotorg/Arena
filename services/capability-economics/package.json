@@ -1,0 +1,40 @@
+{
+  "name": "@arena/capability-economics-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena capability-economics reference service (Work Order C016; issue #122). Wires the @arena/capability-economics domain core to injected source ports only — the C010 ledger read surface (the REQUIRED commercial backing; a missing ledger is a typed fail-closed denial, never a silent skip), the C009 validation-outcome and C015 routing-decision read surfaces, the C005/expert-session effort-signal read surface and the Q1.0 capability-lift value source — computing and serving unit-economics read models with tenant isolation, idempotent supersession-by-append recomputation and durable idempotent recompute jobs over the A015 job-protocol submission identity. No service-to-service imports (boundary rule B2); hosts wire the real read surfaces, the reference fabric wires in-memory ones.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/capability-economics": "workspace:*",
+    "@arena/job-protocol": "workspace:*",
+    "@arena/payments": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
