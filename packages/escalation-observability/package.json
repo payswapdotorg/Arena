@@ -1,0 +1,40 @@
+{
+  "name": "@arena/escalation-observability",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena escalation observability (Work Order C021; issue #127) — the operator-side nervous system of the escalation network. PROJECTIONS ONLY, no domain truth (spec/service-boundaries.md): (1) Lifecycle projections over the C001 event taxonomy — per-escalation timelines with state dwell times, validation-verdict refs, payment-state refs and replacement events, plus per-client-app / per-capability / per-tenant rollups; (2) SLA measurement over the C011 clocks — typed versioned SLA definitions (accept-by / start-by / submit-by / validate-by per urgency class) and measured SLA records derived from C001/C011 events with states met / pending / at-risk / breached-with-reasons; corrections are SUPERSESSIONS (append-only — no retroactive silent edits) and a 'met' record without milestone evidence fails closed; (3) SLO rollups in the A035 vocabulary — aggregate SloEvaluation views per capability / tenant / resource class (C015 routing decisions) with disclosed formulas, sample sizes, explicit small-sample status and cross-tenant detail suppression on aggregate endpoints; (4) operational health signals — matching latency, queue depth, validation backlog, replacement rate, expert availability coverage — typed, dimensional, deterministic given identical event inputs; (5) alert-rule PROJECTIONS mapping breach/at-risk conditions onto the docs/operations/alert-catalog.md closed condition vocabulary (a mapping surface — the catalog itself is not owned). Tenant isolation at the domain level; all timestamps injected (lock rule 17).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/expert-engagement": "workspace:*",
+    "@arena/observability": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
