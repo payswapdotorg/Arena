@@ -1,0 +1,38 @@
+{
+  "name": "@arena/capability-economics",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena capability economics / intervention unit economics domain core (Work Order C016; issue #122; spec/human-escalation-work-items.md C016 row; docs/LLM-ARCHITECT-FINAL-HANDOFF.md §8 commercial model + spec/quality-model.md Q1.0). The economic VIEW over the escalation network — never the money truth: per-intervention UnitEconomicsRecords whose cost figures are folded ONLY out of real C010 PaymentLedger state (a cost figure with no C010 backing is unrepresentable — enforced structurally, integrity-verified via the C010 digest chain), effort signals and routing class joined from the C005/C009/C015 seams, the Q1.0 value side gated by the five capability-lift conditions with LE1.0 attribution separation (a changed evaluator score is never an economics gain), versioned deterministic economics policies (supersession, never silent restatement) and dimensional disclosure-carrying aggregates (formula, sample size, small-sample status, limitations — no collapsed ROI score). Fee-split formulas stay C010-owned; demo/customer truth labels ride every record and never mix.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/payments": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
