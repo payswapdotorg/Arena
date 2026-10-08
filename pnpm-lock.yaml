@@ -969,6 +969,34 @@ importers:
         specifier: 'catalog:'
         version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
 
+  packages/escalation-observability:
+    dependencies:
+      '@arena/escalation':
+        specifier: workspace:*
+        version: link:../escalation
+      '@arena/expert-engagement':
+        specifier: workspace:*
+        version: link:../expert-engagement
+      '@arena/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../protocol-core
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
   packages/escalation-routing:
     dependencies:
       '@arena/capability-graph':
@@ -2377,6 +2405,34 @@ importers:
       '@arena/escalation-adapters':
         specifier: workspace:*
         version: link:../../adapters/escalation
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.4
+      eslint:
+        specifier: 'catalog:'
+        version: 10.11.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.1(@types/node@22.20.4)(vite@8.3.1(@types/node@22.20.4))
+
+  services/escalation-observability:
+    dependencies:
+      '@arena/escalation':
+        specifier: workspace:*
+        version: link:../../packages/escalation
+      '@arena/escalation-observability':
+        specifier: workspace:*
+        version: link:../../packages/escalation-observability
+      '@arena/expert-engagement':
+        specifier: workspace:*
+        version: link:../../packages/expert-engagement
+      '@arena/protocol-core':
+        specifier: workspace:*
+        version: link:../../packages/protocol-core
+    devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.4
