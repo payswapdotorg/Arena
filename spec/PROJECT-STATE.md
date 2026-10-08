@@ -707,3 +707,55 @@ C015/C020 merges — ALL remaining deps verified): C016 (#122, capability econom
 C005/C009/C010/C015 ✓), C021 (#127, escalation observability and SLA operations — deps
 C001/C005/C010/C011/C015 ✓), C022 (#128, capability learning compiler — deps
 C008/C009/C013/C014/A020-A023 ✓). These are the LAST three work orders of the roadmap.
+
+- C016 MERGED — capability economics / intervention unit economics
+  PR #148 (merged 336c4b4; issue #122). Harvest record (TL, 2026-10-08 01:14 UTC):
+  packages/capability-economics — unit-economics projections over the C010 commercial truth,
+  Q1.0 "verified capability gain per unit of expert effort" value side, no-money-truth and
+  no-collapsed-score invariants (48 tests); services/capability-economics — durable idempotent
+  recompute jobs, EXPLICIT demo/customer truth lens (20 tests). Worker battery green. Open
+  (recorded): shared job-runner migration question + read-model lens pattern question in PR.
+
+- C022 MERGED — capability learning compiler (the FINAL work order)
+  PR #149 (merged 36b5fc6; issue #128). Harvest record (TL, 2026-10-08): packages/
+  capability-learning — LE1.0 class-explicit ImprovementPrograms with closed
+  compilable/blocked outcomes, A020 experiment assembly, Q1.0 five-condition typed-verdict
+  gate, structurally-impossible ungated proposals into A021/A022/A023, tested boundary wall,
+  CC1.0 feedback/IEV ranking (67 tests); services/capability-learning — ingest→compile→
+  experiment→dispatch pipeline, idempotent, audited (22 tests). All 5 adversarial minimums
+  verified. Worker battery green. Open (recorded): proposal-envelope lineage question; Q1.0
+  thresholds are injectable defaults.
+
+- C021 MERGED — human escalation observability and SLA operations
+  PR #150 (merged fcc9215; issue #127). Harvest record (TL, 2026-10-08): packages/
+  escalation-observability — C001 timeline projections, C011 SLA measurement with evidence
+  law + supersession, A035 SLO rollups with disclosed formulas, health signals, alert-rule
+  projections (55 tests); services/escalation-observability — durable idempotent projection
+  jobs over C001/C011/C010/C015 ports, fail-closed (12 tests); apps/web/src/escalation-ops —
+  operator board with fail-closed session boundary + labelled demo corpus (5 route tests).
+  Worker battery green. Open (recorded): C005 declared-but-unconsumed dependency question in
+  PR; projection feeding model question.
+
+Integrated-main TL station battery GREEN at fcc9215 (check/boundary clean, contracts
+byte-identical, typecheck 120/120, lint 120/120, test 120/120 tasks, build 120/120) —
+THE FINAL STATE OF THE COMPLETE ROADMAP.
+
+=== ROADMAP COMPLETE ===
+
+A001-A036 (36) + B001-B019 (19) + G001-G003 (3) + C001-C022 (22) = 80 work orders —
+ALL MERGED. The Arena product thesis is fully implemented on main: the Stripe of human
+expert escalation for AI automation — escalation API/MCP/webhooks with a durable lifecycle,
+capability-demand routing, expert intake/calibration/performance, privacy-safe expert
+sessions with policy packs, live intervention modes, validation/adjudication, payments and
+escrow, developer portal with API keys and sandbox, human-data studio, adversarial expert
+evaluation, capability-body marketplace, cross-resource matching, economics, network
+quality, observability/SLA operations, reference integrations (Epoch + generic AI app),
+tool-gap/knowledge capture, and the capability learning compiler closing the loop.
+
+Honest disclosures at completion: (1) the 00:00 UTC Oct 8 deadline was missed by ~1.25h —
+the final wave (C016/C021/C022) merged 01:14 UTC per the operator directive to continue
+until the roadmap was done; (2) reference fabrics are in-memory by house design — production
+host wiring (persistence, HTTP listeners, real providers, route mounts for the three
+unmounted web features) is the post-roadmap program; (3) workers' recorded architecture
+questions (one per PR, all preserved in PR bodies and this file) define the next
+architecture-review backlog.

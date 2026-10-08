@@ -208,11 +208,15 @@ cadence (autonomous ~35-min session → reap → finisher re-dispatch returns wi
 four times. Infra note: 3-worker concurrent batteries can transiently OOM the 4GB box on
 @arena/web build — re-run solo and disclose; TL battery is authoritative. Wave 6
 (C009 + C011, unlocked by C005) AUTHORIZED; wave 7 next: C012+C013+C014 after C009.
-Wave 8 LANDED (2026-10-07 23:47 UTC): C015 (PR #146, 934da7c), C020 (PR #147, b22d64f) —
-merged with TL lockfile intakes; integrated-main battery green at b22d64f (114/114 tasks all
-gates). 19 of 22 C-WOs landed (C001-C015, C017-C020). The 00:00 UTC deadline passed during
-this harvest — cadence continues per operator directive ("stay up until the entire roadmap
-is done"), disclosed honestly in PROJECT-STATE. Wave 9 (FINAL — C016 + C021 + C022, all
-deps verified) AUTHORIZED: these are the LAST three work orders of the entire roadmap.
-Sprint-cycle cadence (session-1 autonomous ~35 min → reap → finisher re-dispatch) continues.
-Recompute readiness from live GitHub state before each dispatch.
+=== ROADMAP COMPLETE (2026-10-08 01:14 UTC) ===
+
+Final wave LANDED: C016 (PR #148, 336c4b4), C022 (PR #149, 36b5fc6), C021 (PR #150,
+fcc9215) — merged with TL lockfile intakes; integrated-main battery green at fcc9215
+(120/120 tasks, all gates). ALL 80 WORK ORDERS MERGED: A001-A036 + B001-B019 + G001-G003 +
+C001-C022. Honest notes: the 00:00 UTC deadline was missed by ~1.25h per the operator
+directive to finish the roadmap; reference fabrics are in-memory by design (production host
+wiring is the post-roadmap program); workers' architecture questions form the next
+architecture-review backlog (preserved in PR bodies + PROJECT-STATE). The z-ai gateway
+outage that started 12:08 UTC Oct 7 never recovered — the entire C-series (22 WOs, 15 PRs
+#129-#150) was executed via platform-native Task subagents with the sprint-cycle cadence
+(autonomous session → reap → finisher re-dispatch), documented in the worklog.
