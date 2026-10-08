@@ -1,0 +1,38 @@
+{
+  "name": "@arena/capability-learning",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena capability learning compiler (Work Order C022; issue #128) — the LE1.0 compiler that turns validated intervention-derived improvement candidates into typed ImprovementPrograms, one per LE1.0 intervention class, each with the changed surface EXPLICIT. Compilation is DETERMINISTIC given identical candidates and emits typed closed outcomes (compilable / blocked-with-reasons: rights-insufficient, evidence-insufficient, scope-conflict). Each compilable program assembles to an A020 ExperimentDescriptor carrying EVERY LE1.0 minimum field (baseline vs intervention, target capability, task population, evaluation + verification suites, environment versions, outcome metrics, uncertainty method, provenance) through @arena/learning's REAL constructor. Adoption happens ONLY through the Q1.0 five-condition capability-lift gate over the A020 run record — pinned evaluation population improvement, verification audit survival, evaluator/version attribution accounted (an evaluator change is NEVER recorded as a capability improvement), protected-capability regression measured, uncertainty reported — emitting typed verdicts (adopted-with-evidence / rejected-with-reasons / unknown-insufficient-sample), never a bare boolean. Adopted improvements become GATED PROPOSALS into A021 (new immutable BodyVersions), A022 (substrate-affecting compatibility re-test obligations) and A023 (recertification triggers) through their public ports — adoption of an ungated improvement is STRUCTURALLY IMPOSSIBLE (the proposal constructor rejects every non-adopted gate verdict). The learning boundary is enforced and tested: compiler outputs are NEW versioned content-addressed artifacts with full lineage; historical trajectories, task/environment versions, certification evidence and original customer records are never rewritten. The append-only feedback record links interventions → improvements → measured lift and ranks future selection by expected information value with an inspectable rationale (CC1.0 active-learning law). Globally reusable outputs require explicit rights + provenance + validation + scope (lock rules 31/32); tenant isolation at the domain level.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/learning": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@arena/capability-learning-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena capability-learning reference compiler service (Work Order C022; issue #128). Candidate ingestion → program compilation → experiment orchestration → gated proposal dispatch as durable idempotent jobs on the A015 fabric: intervention-derived improvement candidates are ingested through the injected seam (C008 tool-gap/knowledge candidates, C009 escalation-validation evidence, C013 adversarial research candidates, C014 marketplace pretraining candidates — projected into @arena/capability-learning's typed candidate views by the host), compiled deterministically into typed ImprovementPrograms (one per LE1.0 intervention class; blocked outcomes are audited, never silently dropped), each compilable program assembles to an A020 ExperimentDescriptor and executes through the injected A020 experiment-engine port, the Q1.0 five-condition capability-lift gate decides adoption (typed verdicts, never a bare boolean), and ONLY adopted improvements are dispatched as gated proposals into the A021 Body Forge, A022 compatibility re-testing and A023 recertification surfaces through their public ports (adoption of an ungated improvement is structurally impossible). Every compile→gate→dispatch decision lands in the append-only, tamper-evident audit stream; the feedback ledger records which interventions produced which improvements with what measured lift and ranks future selection by expected information value. All failures are typed and fail-closed; time is injected; tenant isolation is enforced at every seam.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/capability-learning": "workspace:*",
+    "@arena/evaluation": "workspace:*",
+    "@arena/learning": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/trajectory": "workspace:*",
+    "@arena/verification": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
