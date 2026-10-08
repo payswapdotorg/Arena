@@ -39,7 +39,6 @@ import {
   evaluateSlaClocks,
 } from '@arena/expert-engagement';
 import type {
-  SlaClockKind as EngagementClockKind,
   SlaClocks,
   SlaEvaluation,
   SlaPolicy,
