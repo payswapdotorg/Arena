@@ -1,0 +1,40 @@
+{
+  "name": "@arena/escalation-observability-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena escalation-observability reference service (Work Order C021; issue #127). In-process read/projection service over @arena/escalation-observability: subscribes to the C001/C011/C010/C015 surfaces through INJECTED PUBLIC ports (the escalation event stream, the engagement SLA clocks, the payment-state refs, the C015 routing decisions — data-in seams only, never writes into another surface's state), materializes lifecycle timelines + measured SLA records as DURABLE IDEMPOTENT JOBS on the A015-discipline reference fabric (correlation-addressable, idempotency-key REQUIRED — lock rule 17), and serves the ops query surface: per-escalation timelines, per-tenant SLA overviews with met/at-risk/breached vocabulary, dimensional SLO rollups with disclosed formulas and small-sample suppression, network-health signals and alert-rule projections. Projections own no domain truth (spec/service-boundaries.md): there is NO code path that mutates an escalation, engagement, payment or routing record. Cross-tenant reads fail closed (TENANT_MISMATCH); a measured SLA-met record not backed by resolved events fails closed (the domain evidence law); tampered store entries fail closed with digest re-verification.",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/escalation-observability": "workspace:*",
+    "@arena/expert-engagement": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
