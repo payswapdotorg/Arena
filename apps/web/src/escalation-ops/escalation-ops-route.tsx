@@ -16,6 +16,7 @@ import {
   resolveSessionEscalationOps,
 } from './runtime.js';
 import type { ResolveSessionCockpitOptions, SessionCockpitOutcome } from './runtime.js';
+import type { TimelineStepViewModel } from './view-models.js';
 import {
   toAlertRuleRowViewModel,
   toEscalationRowViewModel,
@@ -46,9 +47,7 @@ interface BoardContext {
   readonly tenantLabel: string;
   readonly grantedRoleIds: readonly string[];
   readonly rows: readonly ReturnType<typeof toEscalationRowViewModel>[];
-  readonly timelines: Readonly<
-    Record<string, readonly ReturnType<typeof toTimelineViewModel>[number][]>
-  >;
+  readonly timelines: Readonly<Record<string, readonly TimelineStepViewModel[]>>;
   readonly slaRecords: readonly ReturnType<typeof toSlaRecordViewModel>[];
   readonly sloRows: readonly ReturnType<typeof toSloRollupRowViewModel>[];
   readonly networkHealth: ReturnType<typeof toNetworkHealthBoardViewModel> | null;
@@ -86,7 +85,9 @@ async function resolveBoardContext(
       },
       { correlationId: 'web-demo-health', at: demo.at },
     );
-    const timelines: BoardContext['timelines'] = {};
+    // A MUTABLE accumulator (frozen by construction into the board context
+    // through the Readonly board-context type below).
+    const timelines: Record<string, readonly TimelineStepViewModel[]> = {};
     for (const summary of summaries) {
       const timeline = await demo.service.getEscalationTimeline(
         { tenant: demo.tenant, requestId: summary.requestId },
