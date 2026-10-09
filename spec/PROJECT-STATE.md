@@ -318,7 +318,8 @@ boundary of issue #102, provisioned ahead of the B019 merge):
 - P007 threat-model register MERGED (PR #165, main b3f4427) + integrated adversarial pass MERGED (PR #168, main bdd09e1; issue #159 closed; F-08/F-09 filed with reproduced regressions)
 - P006 MERGED (PR #167, main f662603; issue #158 closed)
 - P002-F1 MERGED (PR #170, main 5d9e8a5; issue #169 closed; TL lockfile+registry intake f49edec; F-08/F-09 FIXED — ac09 flipped to exactly-one applied + N-1 duplicate over the durable payment ledger/outbox, ac07 losers now served the 200 replay; P006 integrated battery re-run green on fresh transcripts)
-- P008 AUTHORIZED (terminal WO — release evidence, checklist reconciliation, governance gate; entry criterion met: F-09 HIGH fixed via PR #170; F-07 remains BLOCKED-COMMERCIAL — the release owner's decision to be documented at the gate)
+- P008 MERGED (PR #171, main 44b8577; issue #160 closed at the gate decision) — release gate verdict: **NO-GO** (F-07 BLOCKED-COMMERCIAL remains the release owner's written settlement; branch protection enabled by the TL post-merge per the recorded payload; final-RC deployed↔source linkage verified: Vercel production serves 44b85772c2, CI + deploy-preview green at that SHA). The post-roadmap productionization program P000–P008 is COMPLETE as delivered; the gate re-run criteria live in release/evidence/production/release-gate-record.md §7/§9.
+- ROADMAP COMPLETE: A001–A036 + B001–B019 + G001–G003 + C001–C022 + P000–P008 (+ P002-F1) all MERGED. The release gate stands at NO-GO pending the release owner's F-07 settlement; no tag, no GitHub Release until a gate re-run issues GO.
 
 ## Long-term product direction
 

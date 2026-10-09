@@ -514,3 +514,44 @@ release owner settles it in writing. Worker dispatched; frontier docs are TL-ser
 Resident TL watch loop continues per the operator directive (monitor → harvest →
 review → approve/require-changes → dispatch next; no early returns). Replay stack
 healthy (console :3000, replayd :3100 frames flowing, CDP :9222 Chrome 153).
+
+## P008 HARVESTED — ROADMAP COMPLETE — 2026-10-09 (UTC)
+
+P008 MERGED: PR #171 (main 44b8577), issue #160 closed at the gate decision. Lineage: worker
+delivered M1–M3 (33a26a2 — live provider re-proof on a dedicated Neon project, hosted
+availability + deploy-linkage diagnosis, branch-protection admin-scoped reads) then died;
+finisher completed M1/M4/M5 (40a10be main-merge + a22ad8d): launch-checklist reconciled —
+69/69 rows classified (DEMONSTRATED-LIVE 10 / AUTOMATED-TEST-ONLY 54 / OPEN 5 / BLOCKED 0 /
+WAIVED 0, every row evidence-linked), release-gate decision record written (§5 bundle 12/12),
+battery green everywhere (six gates 123/123; deploy 103; integration 7; security 66;
+resilience 6; product-e2e 28; ux 46 on real Chromium; performance 18; epoch 17; api-host 20).
+
+**GATE VERDICT: NO-GO** (§6 applied mechanically): F-07 BLOCKED-COMMERCIAL (hard gate 1 —
+the release owner's written settlement of payment provider / merchant-of-record / payouts /
+tax / refunds / jurisdiction; nobody else may settle or waive it) plus, at gate time, branch
+protection absent and final-RC linkage pending. Blockers tracked with owners + next steps in
+release/evidence/production/release-gate-record.md §7; the gate re-run criteria stand there
+and in §9.
+
+TL post-merge closures (record §9, dated addendum):
+- Deploy pipeline REPAIRED: the B015-era wiring-test migration pin [1,2] went stale when the
+  P002-series added migrations 3–6 — Deploy preview had been red on every main push since
+  377e4fe. TL fix 4d50ab5 (expectation now derives from SQL_MIGRATION_SOURCES; deploy battery
+  11 files / 103 tests green). Verified end-to-end at the RC: CI + deploy-preview green at
+  44b8577 and Vercel production serves 44b85772c2 (hard gate 3 CLOSED at the final RC).
+- Branch protection ENABLED by the TL (admin scope) immediately after the final governance
+  commit, with the recorded payload: required check "Battery (install / governance /
+  boundary / typecheck / lint / test / build)" strict, enforce_admins, 1 approving review,
+  no force-pushes/deletions (hard gate 4 satisfied by live API state — verification command
+  in branch-protection-record.md §6; future commits to main flow through PRs).
+- F-07 routed to the release owner — the sole remaining §6-blocking item.
+
+**ROADMAP COMPLETE as delivered**: A001–A036, B001–B019, G001–G003, C001–C022, P000–P008
+(+ P002-F1 remediation) — every work order merged with evidence; every P-series PR merged
+by the TL after CI green; no tag and no GitHub Release (there is no GO). The program's
+honest terminal state: productionization delivered, release gate NO-GO pending the
+commercial settlement, re-run path recorded.
+
+Resident TL watch loop ends its roadmap scope here per the operator directive (monitor →
+harvest → review → approve → dispatch next — no early returns). Replay stack healthy
+throughout (console :3000, replayd :3100 frames flowing, CDP :9222 Chrome 153).

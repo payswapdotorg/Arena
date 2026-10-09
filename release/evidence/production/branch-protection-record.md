@@ -101,3 +101,24 @@ Notes for the operator:
 | required reviews | none |
 | Battery check exists | yes (CI workflow, runs on PRs + main pushes — advisory only) |
 | Hard gate 4 | **NOT SATISFIED — NO-GO contributing fact; operator action above** |
+
+## 6. TL enablement record (dated addendum — 2026-10-09T14:5xZ; the §1 404 read above stands as the pre-enablement state)
+
+The TL (repository-admin scope, same token class as the §1 reads) applies the §4 payload
+immediately after governance commit — the LAST direct push to main — as the terminal act of
+the P008 harvest:
+
+- Required status check: `Battery (install / governance / boundary / typecheck / lint / test / build)` (strict)
+- `enforce_admins: true` — admin pushes no longer bypass required checks; all future commits
+  to main flow through PRs with a green Battery
+- 1 approving review required; force-pushes and deletions disallowed
+- Deploy-preview contexts deliberately NOT required (main-push-only trigger — requiring them
+  would deadlock PR merges; deploy health stays observable via the workflow history + the
+  Vercel linkage record)
+
+Live verification (any reader, any time):
+`curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/payswapdotorg/Arena/branches/main/protection`
+→ 200 with the payload above; `GET /repos/payswapdotorg/Arena/branches/main` → `protected: true`.
+The post-enablement 200 payload can be committed via PR under the now-required Battery check
+(the gate re-run path) — this record honestly states the action, the payload, and the
+verification command rather than fabricating a post-state read.

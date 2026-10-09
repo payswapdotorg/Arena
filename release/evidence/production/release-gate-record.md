@@ -190,3 +190,43 @@ updates (PROJECT-STATE / AI_CONTINUATION status lines) are TL-serialized, not P0
 4. Final frontier/governance update (PROJECT-STATE, AI_CONTINUATION, work-order registry) —
    TL-serialized.
 5. Route F-07 to the release owner (B-1). **No tag, no GitHub Release — there is no GO.**
+
+## 9. Post-merge TL verification (dated addendum — 2026-10-09T14:5xZ; §9: dated probes carry their own dates; nothing above is rewritten)
+
+The P008 PR was merged by the TL after CI green: **main `44b8577` (merge of PR #171)** — this
+is the final release-candidate SHA by construction. The §8 TL post-merge actions, executed
+and recorded:
+
+1. **Merge** — done: PR #171 merged at `44b8577` (CI Battery check completed/success on the
+   PR head `a22ad8d`; no self-merge by P008).
+2. **B-3 (final-RC deployed↔source linkage) — CLOSED, verified live:**
+   - CI run on `44b8577`: completed / success (2026-10-09T14:41Z).
+   - Deploy-preview run on `44b8577`: completed / success (the wiring self-test + deploy
+     battery + Vercel deploy all green — the pipeline repaired by `4d50ab5` held at the RC).
+   - Vercel API (the §3.1 exact command): newest production deployment **READY, serving
+     `44b85772c2`** (created 1791556958674) — the deployed artifact IS the final-RC SHA.
+   - Fresh hosted probe: `GET https://arena-preview-five.vercel.app/` → **HTTP 200**.
+   - Hard gate 3 is now fully satisfied at the final RC (mechanism + current deployment +
+     green CI/deploy at that exact SHA).
+3. **B-2 (branch protection) — executed immediately after this commit:** the TL applies the
+   recorded payload (branch-protection-record.md §4: required check
+   "Battery (install / governance / boundary / typecheck / lint / test / build)", strict,
+   `enforce_admins: true`, 1 approving review, no force-pushes/deletions). The Deploy-preview
+   contexts are deliberately NOT required (that workflow triggers on main pushes only —
+   requiring it would deadlock PR merges). This commit is the last direct push to main;
+   live verification after enablement: `GET /repos/payswapdotorg/Arena/branches/main/protection`
+   must answer 200 with the payload and `branches/main` shows `protected: true`. The
+   post-enablement 200 read can be committed via PR (the re-run path) — the pre-enablement
+   404 read stands dated above.
+4. **Final frontier/governance update** — this commit (PROJECT-STATE + AI_CONTINUATION):
+   P008 MERGED; the post-roadmap productionization program P000–P008 is COMPLETE as
+   delivered; the release gate stands at **NO-GO** with B-1 as the sole remaining
+   §6-blocking item.
+5. **B-1 (F-07 commercial boundary) — REMAINS OPEN, routed to the release owner.** The
+   verdict is unchanged: NO-GO while F-07 is unsettled (§6: zero BLOCKED rows). The gate
+   re-run criteria in §7 stand as written.
+
+**Post-merge verdict: NO-GO (B-1 only).** The delivered state: every work order merged;
+checklist 69/69 classified; hard gates 2/3/5 satisfied, 4 satisfied-by-live-API-state
+(enablement recorded here, verifiable live), 1 open at the release owner. No tag, no GitHub
+Release — there is no GO. The gate may be re-run when the F-07 settlement is committed.
