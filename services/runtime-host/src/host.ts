@@ -43,10 +43,15 @@
 
 import { toCorrelationId } from '@arena/protocol-core';
 import type { CorrelationId, IdempotencyKey } from '@arena/protocol-core';
-import { makeEscalationResponse } from '@arena/escalation';
+import {
+  createEscalationRequest,
+  escalationConflictError,
+  makeEscalationResponse,
+  resolveEscalationIdempotency,
+} from '@arena/escalation';
 import { isTerminalJobRecord, toJobSubmissionIdentity } from '@arena/job-protocol';
 import type { JobRecord } from '@arena/job-protocol';
-import { SystemClock } from '@arena/persistence';
+import { PERSISTENCE_ERROR_CODES, SystemClock } from '@arena/persistence';
 import type { Clock } from '@arena/persistence';
 import {
   bindSqlMigrations,
@@ -458,7 +463,25 @@ class RuntimeHostServiceImpl implements RuntimeHostService {
         { submittedTenant: input.tenantId, callerTenant: tenantId },
       );
     }
-    const outcome = await this.deps.engines.escalations.createEscalation(input);
+    let outcome: EscalationCreateOutcome;
+    try {
+      outcome = await this.deps.engines.escalations.createEscalation(input);
+    } catch (error) {
+      // F-08 REMEDIATION (P002-F1): a racing same-identity submission that
+      // lost the durable insert converts to the recorded-outcome REPLAY —
+      // the C001 law under contention — instead of surfacing the raw
+      // typed conflict as a 500. The http-host maps a replay outcome to
+      // the 200 verbatim response automatically.
+      const replayed = await this.replayConcurrentSubmission(tenantId, input, error);
+      if (replayed === undefined) throw error;
+      // The racing loser records NO idempotency outcome: the winner (whose
+      // engine call succeeded) records the authoritative 'created' outcome
+      // for this identity — recording the loser's replay variant first
+      // would collide with it (recorded outcomes are never rewritten). A
+      // hard kill of the winner before its record is healed by the next
+      // sequential replay (the deterministic-replay path below).
+      return replayed;
+    }
     // Record the accepted outcome (P002 acceptance criterion d): retries
     // return the RECORDED outcome — first write wins; a hard kill between
     // the store insert and this record is healed by the next replay (the
@@ -486,6 +509,80 @@ class RuntimeHostServiceImpl implements RuntimeHostService {
       await this.deps.durable.idempotencyStore.record(recorded);
     }
     return outcome;
+  }
+
+  /**
+   * THE F-08 CATCH-AND-REPLAY CONVERSION (P002-F1). When a concurrent
+   * same-identity insert loses to the durable store's typed
+   * PERSISTENCE_RECORD_EXISTS, re-read the winner's record through the
+   * durable escalation store and resolve the submission through the C001
+   * domain resolver — identical client bodies replay the winner's
+   * recorded outcome VERBATIM (kind 'escalation-replayed', duplicate: true);
+   * a DIFFERENT body re-surfacing is the typed ESCALATION_IDENTITY_CONFLICT
+   * (an idempotency key is never silently rebound, under contention
+   * either). Anything that does not resolve (unknown failure shape, the
+   * winner not (yet) readable, a cross-tenant mismatch) returns undefined
+   * and the ORIGINAL failure propagates (fail closed).
+   */
+  private async replayConcurrentSubmission(
+    tenantId: string,
+    input: Parameters<EscalationLifecycleSurface['createEscalation']>[0],
+    error: unknown,
+  ): Promise<EscalationCreateOutcome | undefined> {
+    if (
+      typeof error !== 'object' ||
+      error === null ||
+      !('code' in error) ||
+      (error as { readonly code: unknown }).code !== PERSISTENCE_ERROR_CODES.RECORD_EXISTS
+    ) {
+      return undefined;
+    }
+    const identity = toJobSubmissionIdentity({
+      idempotencyScope: `escalation-${tenantId}`,
+      idempotencyKey: input.idempotencyKey,
+      correlationId: input.correlationId,
+    });
+    const winner = await this.deps.durable.escalationStore.findByIdempotencyKey(identity);
+    if (winner === undefined || winner.request.tenantId !== tenantId) {
+      // The winner's record is not (yet) readable through this identity —
+      // do not fabricate a replay; the original failure stands.
+      return undefined;
+    }
+    // Classify against the C001 law with the loser's OWN body — the exact
+    // resolution the engine performs on its sequential replay path.
+    const request = await createEscalationRequest({
+      ...input,
+      now: Date.parse(winner.request.createdAt),
+      requestId: winner.request.requestId,
+    });
+    const resolution = resolveEscalationIdempotency(request, winner);
+    if (resolution.outcome === 'conflict') {
+      throw escalationConflictError(resolution);
+    }
+    if (resolution.outcome !== 'replay') {
+      // Unreachable with a resolved winner (a record exists, so the domain
+      // resolver classifies replay-or-conflict only) — fail closed.
+      return undefined;
+    }
+    const response = makeEscalationResponse(
+      {
+        responseVersion: 1,
+        kind: 'escalation-replayed',
+        requestId: resolution.originalRequestId,
+        correlationId: winner.request.correlationId,
+        duplicate: true,
+      },
+      toCorrelationId(winner.request.correlationId),
+    );
+    return {
+      outcome: 'replay',
+      requestId: resolution.originalRequestId,
+      duplicate: true,
+      record: winner,
+      emittedEvents: [],
+      response,
+      serializedResponse: JSON.stringify({ ...response.payload }),
+    };
   }
 
   private async escalationStatus(
