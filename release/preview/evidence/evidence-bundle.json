@@ -1,0 +1,155 @@
+{
+  "id": "evidence-gate-f-2026-10-09T15-20-00Z",
+  "timestamp": "2026-10-09T15:20:00Z",
+  "version": "1.0.0",
+  "records": [
+    {
+      "id": "ci-001",
+      "type": "ci",
+      "name": "Continuous Integration Pipeline",
+      "description": "GitHub Actions CI pipeline status for the launch commit",
+      "command": "gh run list --workflow ci.yml --limit 1 --json status,conclusion,duration",
+      "exitStatus": -1,
+      "artifactRef": ".github/workflows/ci.yml",
+      "reproducibility": "Reproducible via commit SHA on the main branch",
+      "timestamp": "2026-10-09T15:20:00Z",
+      "version": "1.0.0",
+      "metadata": {
+        "workflow": "ci.yml",
+        "commitSha": "TL-owned at the launch gate",
+        "conclusion": "pending launch-day evidence"
+      }
+    },
+    {
+      "id": "e2e-001",
+      "type": "product-e2e",
+      "name": "Product End-to-End Tests",
+      "description": "B017 product E2E battery: deterministic lifecycle walk, role-switch regression, served-app walk",
+      "command": "pnpm run test:e2e",
+      "exitStatus": -1,
+      "artifactRef": "tests/product-e2e/run.mjs",
+      "reproducibility": "Self-contained runner (fixed seed; boot → serve → vitest → reset cleanup)",
+      "timestamp": "2026-10-09T15:20:00Z",
+      "version": "1.0.0",
+      "metadata": {
+        "suites": [
+          "tests/product-e2e/determinism.test.ts",
+          "tests/product-e2e/lifecycle-walk.test.ts",
+          "tests/product-e2e/role-switch.test.ts",
+          "tests/product-e2e/served-walk.test.ts"
+        ],
+        "testCounts": "pending launch-day evidence"
+      }
+    },
+    {
+      "id": "a11y-001",
+      "type": "accessibility",
+      "name": "Accessibility Conformance Battery",
+      "description": "B018 WCAG 2.1 AA conformance battery (focus management, screen-reader semantics, contrast)",
+      "command": "pnpm --filter @arena/web exec vitest run src/a11y/testing/a11y.test.ts",
+      "exitStatus": -1,
+      "artifactRef": "apps/web/src/a11y/testing/a11y.test.ts",
+      "reproducibility": "Composition-layer assertions (renderToStaticMarkup) — deterministic",
+      "timestamp": "2026-10-09T15:20:00Z",
+      "version": "1.0.0",
+      "metadata": {
+        "auditTool": "B018 a11y testing harness (composition layer)",
+        "violations": "pending launch-day evidence"
+      }
+    },
+    {
+      "id": "perf-001",
+      "type": "performance",
+      "name": "Performance Budget Battery",
+      "description": "B018 performance battery: product budget conformance and load-shape harness",
+      "command": "pnpm --filter @arena/performance test",
+      "exitStatus": -1,
+      "artifactRef": "tests/performance/src/product-budget.test.ts",
+      "reproducibility": "Deterministic RNG + fixed load shapes (no wall-clock dependence in the green path)",
+      "timestamp": "2026-10-09T15:20:00Z",
+      "version": "1.0.0",
+      "metadata": {
+        "budgetReport": "pending launch-day evidence"
+      }
+    },
+    {
+      "id": "sec-001",
+      "type": "security",
+      "name": "Adversarial Security Battery",
+      "description": "A034 adversarial battery: cross-tenant denial matrix, audit-replay attacks, data-rights violations",
+      "command": "cd services/security && pnpm run battery:test",
+      "exitStatus": -1,
+      "artifactRef": "tests/security/battery.test.ts",
+      "reproducibility": "Deterministic adversarial fixtures (services/security-owned vitest root)",
+      "timestamp": "2026-10-09T15:20:00Z",
+      "version": "1.0.0",
+      "metadata": {
+        "scanTool": "@arena/security battery (tests/security)",
+        "vulnerabilities": "pending launch-day evidence"
+      }
+    },
+    {
+      "id": "quota-001",
+      "type": "quota",
+      "name": "Free-Tier Quota Ceiling Tests",
+      "description": "B015 quota catalog pinned to docs/deployment/free-tier-architecture.md + fail-closed wiring tests",
+      "command": "pnpm --filter @arena/deploy exec vitest run src/hosted/quotas.test.ts src/hosted/fail-closed.test.ts",
+      "exitStatus": -1,
+      "artifactRef": "deploy/src/hosted/quotas.test.ts",
+      "reproducibility": "Catalog constants pinned by test; dry-run wiring is hermetic",
+      "timestamp": "2026-10-09T15:20:00Z",
+      "version": "1.0.0",
+      "metadata": {
+        "quotaCatalog": "deploy/src/hosted/quotas.ts (normative source: docs/deployment/free-tier-architecture.md)",
+        "exhaustTests": "pending launch-day evidence"
+      }
+    },
+    {
+      "id": "deploy-001",
+      "type": "deployment",
+      "name": "Deployment Health (Gate B acceptance)",
+      "description": "Hosted preview deployment health: deployment-root smoke check (GET / → 2xx/3xx, deploy-workflow parity) plus the B019 acceptance battery",
+      "command": "curl -sS -o /dev/null -w '%{http_code}' \"__ARENA_PREVIEW_URL__\" && ARENA_PREVIEW_URL=\"__ARENA_PREVIEW_URL__\" pnpm --filter @arena/deploy-preview run run",
+      "exitStatus": -1,
+      "artifactRef": "deploy/preview/src/acceptance/health-checker.test.ts",
+      "reproducibility": "The product exposes no dedicated /api/health endpoint; the probe is the deployment root + real route walks (workflow smoke-check parity)",
+      "timestamp": "2026-10-09T15:20:00Z",
+      "version": "1.0.0",
+      "metadata": {
+        "deploymentUrl": "__ARENA_PREVIEW_URL__",
+        "probeSurface": "GET / (2xx/3xx), GET /demo, GET /operations, GET /demo/operations, POST /demo/reset (303 → /demo)",
+        "healthStatus": "pending launch-day evidence"
+      }
+    },
+    {
+      "id": "install-001",
+      "type": "installation",
+      "name": "Fresh-Machine Installation",
+      "description": "B016 fresh-machine install: prereq check → pnpm install → build → verify (no provider accounts)",
+      "command": "node scripts/product/install.mjs",
+      "exitStatus": 0,
+      "artifactRef": "docs/evidence/production/launch/install-fresh-machine-2026-10-09.md",
+      "reproducibility": "Plain-Node installer (zero external deps; Node ≥ 22; honest prereq failures)",
+      "timestamp": "2026-10-09T15:20:00Z",
+      "version": "1.0.0",
+      "metadata": {
+        "environment": "Node 22 (repo engines pin) + pnpm@10.34.5 via corepack",
+        "installLog": "docs/evidence/production/launch/install-fresh-machine-2026-10-09.md (committed transcript — Linux leg)",
+        "executedBy": "TL (post-P008 follow-up, recorded next step 'TL executes')",
+        "runWindow": "2026-10-09T15:04:20Z-15:13:24Z",
+        "sourceSha": "04e6b6121ea0a8398fd7a0d4ab559b14b5ff3c25",
+        "hostClass": "Linux x64 sandbox (fresh clone from origin; shared warm pnpm store disclosed; cold-registry leg covered green by CI)",
+        "buildTasks": "123/123, 0 cached (cold)",
+        "demoCorpusHash": "4dfd1acd",
+        "notExercised": "macOS, Windows (OPEN, release owner)"
+      }
+    }
+  ],
+  "summary": {
+    "totalRecords": 8,
+    "passedRecords": 1,
+    "failedRecords": 0,
+    "pendingRecords": 7,
+    "gateStatus": "INCOMPLETE"
+  }
+}
