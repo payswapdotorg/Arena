@@ -1,0 +1,7 @@
+{
+  "name": "@arena/integration-production-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "P006 integrated generic-AI-app + Epoch end-to-end acceptance battery (tests/integration/production — NOT a pnpm workspace project; run via node tests/integration/production/run.mjs, which drives services/runtime-host's typescript + vitest). Boots the REAL P002 composition pattern (deploy/runtime/src/composition.ts — durable components over ONE SqlTransport, REAL EscalationApiService/routing/JobOrchestrator engines injected through the frozen host seam createRuntimeHost) over the REAL embedded Postgres engine (@electric-sql/pglite; the P002 battery's zero-credential CI path) and binds the REAL P003 public transport (services/escalation-api/src/http-host listener on a REAL port + the REAL webhook-delivery service draining the REAL durable outbox + the REAL developer-platform key model). TWO clients, both over PUBLIC TRANSPORT ONLY: the generic AI application client harness and the Epoch adapter. Full core flow, resilience matrix, payment sandbox posture, consent/rights-gated learning candidate + Q1.0, observational replay with external live-world writeback denied."
+}

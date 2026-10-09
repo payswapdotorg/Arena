@@ -1,0 +1,7 @@
+{
+  "name": "@arena/epoch-escalation-host-integration-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "P006 Epoch-adapter host-integration battery (adapters/epoch-escalation/host-integration-tests — NOT a pnpm workspace project and NOT part of the adapter package's own vitest include; run via node adapters/epoch-escalation/host-integration-tests/run.mjs, which drives services/runtime-host's typescript + vitest, or as part of the full integrated battery via node tests/integration/production/run.mjs). Drives the REAL Epoch adapter (adapters/epoch-escalation public surface: posture + wire trigger mapping, consumeEpochWebhook, the read-only delivery projection, the fail-closed authority boundary) through the IDENTICAL §15 public flow against the REAL integrated deployment booted by the shared tests/integration/production/support harness (embedded real Postgres engine; REAL public HTTP listener + REAL webhook-delivery service + REAL developer-platform key model)."
+}
