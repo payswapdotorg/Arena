@@ -310,7 +310,10 @@ boundary of issue #102, provisioned ahead of the B019 merge):
   injected — deploy-preview.yml is now unblocked on push to main.
 
 - P000 MERGED
-- P001 AUTHORIZED
+- P001 MERGED (PR #161, main d2f364f; issue #153 closed)
+- P002 AUTHORIZED (wave 1, issue #154)
+- P004 AUTHORIZED (wave 1, issue #156)
+- P005 AUTHORIZED (wave 1, issue #157)
 
 ## Long-term product direction
 

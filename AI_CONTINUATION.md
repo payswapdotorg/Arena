@@ -269,3 +269,44 @@ PING-only Upstash evidence, the three unnamed unmounted web surfaces, the /tasks
 finding, the 7/69 launch checklist, the 2026-10-07-dated hosted probes, the unverified
 branch protection and the unsettled commercial payment responsibilities all remain open
 and are tracked by the P-series. No live-money claim before the hard gates clear.
+
+## P001 ACCEPTANCE AND WAVE-1 AUTHORIZATION (2026-10-09, TL)
+
+PR #161 (P001 architecture-question closure, head e5821b0) was merged by the TL at main
+d2f364f after the normal merge gate: CI Battery success on the exact head SHA
+(install/governance/boundary/typecheck/lint/test/build), mergeable state clean against
+5067356, and TL content review of the delivery — an 85-row architecture-question register
+(docs/architecture-review/register.md: 83 PR questions from #129-#150, 11 material
+limitations, the three unmounted web surfaces named) plus nine ADRs (ADR-P001-01..09)
+covering the shared durable job runner, the Demo/customer truth lens, proposal-envelope
+lineage, the fourth SLA clock, C005 read-surface ownership, host-side learning projection,
+the host/provider responsibility split, the public transport lifecycle, and the
+three-surface naming. Issue #153 closed by the merge. Honest lineage: the original P001
+worker session died after ADR batch 1 (last activity 01:53:57Z); a finisher session of the
+same worker identity completed ADR batch 2 per the sprint-cycle reap protocol — disclosed
+in the PR body and the issue record. The ADRs bind downstream dispatch as of this merge
+(Status: Proposed → ratified by TL acceptance in this harvest).
+
+Wave 1 AUTHORIZED on live main d2f364f per spec/post-roadmap-production-dependency-graph.md
+(scopes frozen, disjoint; maximum three concurrent workers):
+
+- **P002** (issue #154) — durable host runtime, persistence and jobs. Surfaces:
+  services/runtime-host/*, packages/runtime-host/*, adapters/hosted/neon-postgres/*,
+  deploy/runtime/*, tests/runtime-host/*. Bound decisions: ADR-P001-01 (shared durable
+  job runner over services/job-orchestrator + @arena/job-protocol), ADR-P001-06
+  (host-side learning-candidate projection), ADR-P001-07 (host owns composition/
+  persistence/jobs/secrets/tenant policy), plus register Part 5 rows.
+- **P004** (issue #156) — real hosted-provider lifecycle and capacity. Surfaces:
+  adapters/hosted/r2-object-store/*, adapters/hosted/upstash-redis/*,
+  tests/hosted-provider-e2e/*, docs/evidence/production/providers/*. Bound decision:
+  ADR-P001-07 (providers own only primitives behind adapters/hosted/*; fail-closed,
+  never a silent paid fallback). No Neon code edits (P002 owns those).
+- **P005** (issue #157) — route inventory, mount completion and /tasks UX finding.
+  Surfaces: apps/web/src/app/* (route mounts), docs/evidence/production/ux/*. Bound
+  decisions: ADR-P001-09 (the three named surfaces: competitions S-01, body-marketplace
+  S-02, developer-portal interactive writes S-03; route/nested/non-UI disposition belongs
+  to this WO), ADR-P001-02 (Demo/customer truth lens on read surfaces).
+
+Dependencies were revalidated from live main post-merge per the dependency-graph law.
+P003 (wave 2) waits on P002 freezing the host/runtime interface. The release boundary
+stands: no live-money claim before the P008 hard gates clear.
