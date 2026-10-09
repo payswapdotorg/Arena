@@ -120,6 +120,17 @@ body {
   margin-inline: auto;
 }
 
+/* P005 (/tasks): the index signpost's follow-on hint, muted like the
+   other honest secondary copy. */
+.route-stub__hint {
+  font-size: var(--arena-text-sm);
+  color: var(--arena-color-ink-muted);
+}
+
+.route-stub__hint code {
+  font-family: inherit;
+}
+
 /* ------------------------------------------------------------------ */
 /* Capability surfaces (B008: cases, case detail, tasks, guided flow)  */
 /* ------------------------------------------------------------------ */

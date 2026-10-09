@@ -311,9 +311,9 @@ boundary of issue #102, provisioned ahead of the B019 merge):
 
 - P000 MERGED
 - P001 MERGED (PR #161, main d2f364f; issue #153 closed)
-- P002 AUTHORIZED (wave 1, issue #154)
-- P004 AUTHORIZED (wave 1, issue #156)
-- P005 AUTHORIZED (wave 1, issue #157)
+- P002 IN FLIGHT (wave 1, issue #154; worker lineage session 3 — M1 interface package pushed 426a764, M2 adapter extension in progress)
+- P004 MERGED (PR #162, main 9d2c9bc; issue #156 closed)
+- P005 MERGED (PR #163, main 81dbb0e; issue #157 closed)
 
 ## Long-term product direction
 
