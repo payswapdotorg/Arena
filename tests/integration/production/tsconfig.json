@@ -1,0 +1,75 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "typeRoots": ["../../../services/runtime-host/node_modules/@types"],
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@arena/capability-learning/test-support": [
+        "../../../packages/capability-learning/src/test-support.ts"
+      ],
+      "@arena/runtime-host-service/test-support": [
+        "../../../services/runtime-host/src/test-support.ts"
+      ],
+      "@arena/runtime-host-composition": ["../../../deploy/runtime/src/composition.ts"],
+      "@arena/escalation-api/http-host": [
+        "../../../services/escalation-api/src/http-host/index.ts"
+      ],
+      "@arena/escalation-api/mcp-host": [
+        "../../../services/escalation-api/src/mcp-host/index.ts"
+      ],
+      "@arena/escalation-api": ["../../../services/escalation-api/src/index.ts"],
+      "@arena/webhook-delivery": ["../../../services/webhook-delivery/src/index.ts"],
+      "@arena/escalation-routing-service": [
+        "../../../services/escalation-routing/src/index.ts"
+      ],
+      "@arena/job-orchestrator": ["../../../services/job-orchestrator/src/index.ts"],
+      "@arena/runtime-host-service": ["../../../services/runtime-host/src/index.ts"],
+      "@arena/payments-service": ["../../../services/payments/src/index.ts"],
+      "@arena/escalation-adapters": ["../../../adapters/escalation/src/index.ts"],
+      "@arena/payments-adapters": ["../../../adapters/payments/src/index.ts"],
+      "@arena/hosted-neon-postgres": [
+        "../../../adapters/hosted/neon-postgres/src/index.ts"
+      ],
+      "@arena/epoch-escalation-adapter": [
+        "../../../adapters/epoch-escalation/src/index.ts"
+      ],
+      "@arena/runtime-host": ["../../../packages/runtime-host/src/index.ts"],
+      "@arena/developer-platform": ["../../../packages/developer-platform/src/index.ts"],
+      "@arena/capability-learning": ["../../../packages/capability-learning/src/index.ts"],
+      "@arena/escalation-observability": [
+        "../../../packages/escalation-observability/src/index.ts"
+      ],
+      "@arena/escalation-routing": ["../../../packages/escalation-routing/src/index.ts"],
+      "@arena/capability-graph": ["../../../packages/capability-graph/src/index.ts"],
+      "@arena/expert-qualification": [
+        "../../../packages/expert-qualification/src/index.ts"
+      ],
+      "@arena/expert-session": ["../../../packages/expert-session/src/index.ts"],
+      "@arena/intervention": ["../../../packages/intervention/src/index.ts"],
+      "@arena/escalation": ["../../../packages/escalation/src/index.ts"],
+      "@arena/learning": ["../../../packages/learning/src/index.ts"],
+      "@arena/payments": ["../../../packages/payments/src/index.ts"],
+      "@arena/persistence": ["../../../packages/persistence/src/index.ts"],
+      "@arena/job-protocol": ["../../../packages/job-protocol/src/index.ts"],
+      "@arena/protocol-core": ["../../../packages/protocol-core/src/index.ts"],
+      "@arena/trajectory": ["../../../packages/trajectory/src/index.ts"],
+      "@arena/environment-protocol": [
+        "../../../packages/environment-protocol/src/index.ts"
+      ],
+      "@arena/evaluation": ["../../../packages/evaluation/src/index.ts"],
+      "@arena/verification": ["../../../packages/verification/src/index.ts"],
+      "@arena/artifact-protocol": ["../../../packages/artifact-protocol/src/index.ts"],
+      "@arena/security": ["../../../packages/security/src/index.ts"],
+      "@arena/observability": ["../../../packages/observability/src/index.ts"],
+      "@arena/expert-engagement": ["../../../packages/expert-engagement/src/index.ts"],
+      "@electric-sql/pglite": [
+        "../../../services/runtime-host/node_modules/@electric-sql/pglite/dist/index.d.ts"
+      ],
+      "vitest": ["../../../services/runtime-host/node_modules/vitest/dist/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts", "vitest.config.ts"]
+}
