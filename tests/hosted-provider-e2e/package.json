@@ -1,0 +1,7 @@
+{
+  "name": "@arena/hosted-provider-e2e-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "P004 hosted-provider E2E battery (tests/hosted-provider-e2e — NOT a pnpm workspace project; run via node tests/hosted-provider-e2e/run.mjs, which drives adapters/hosted's vitest with --root). Live R2/Upstash suites self-skip with explicit reasons when credentials are absent; evidence transcripts are captured into docs/evidence/production/providers/."
+}
