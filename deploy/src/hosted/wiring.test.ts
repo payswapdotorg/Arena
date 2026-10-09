@@ -7,6 +7,7 @@
 import { describe, expect, it } from 'vitest';
 import { isPersistenceCapacityError, ManualClock, PERSISTENCE_ERROR_CODES } from '@arena/persistence';
 import type { Clock } from '@arena/persistence';
+import { SQL_MIGRATION_SOURCES } from '@arena/hosted-neon-postgres';
 import {
   composeHostedBootstrap,
   composeHostedPersistenceStack,
@@ -165,7 +166,16 @@ describe('B015 deterministic hosted bootstrap (migrations -> seed)', () => {
 
     const first = await bootstrapStack.bootstrap.bootstrap(bootstrapStack.migrations);
     expect(first.migrations.applied.length).toBe(bootstrapStack.migrations.length);
-    expect(first.migrations.applied.map((entry) => entry.version)).toEqual([1, 2]);
+    // The applied-version pin tracks the adapter's exported migration ledger
+    // (SQL_MIGRATION_SOURCES) rather than a hardcoded list: the P002-series
+    // work added migrations 0003-0006 and the B015-era [1, 2] pin went stale,
+    // turning the whole Deploy preview workflow red on every main push after
+    // 377e4fe (P008 diagnosis, 2026-10-09). Deriving the expectation keeps the
+    // cross-check (deploy bootstrap applies EXACTLY the exported ledger, in
+    // ascending order) without drifting on the next migration.
+    expect(first.migrations.applied.map((entry) => entry.version)).toEqual(
+      SQL_MIGRATION_SOURCES.map((source) => source.version),
+    );
     expect(first.seedCheck.outcome).toBe('seeded');
 
     const second = await bootstrapStack.bootstrap.bootstrap(bootstrapStack.migrations);
