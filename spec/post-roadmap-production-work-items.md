@@ -75,3 +75,18 @@ Map each checklist row to direct evidence and classify demonstrated, automated-t
 
 **Acceptance:** no checked item lacks evidence; every open/blocked item has owner and next step; CI/deploy pass on final integrated SHA; deployed artifact is linked to source SHA; release claims match evidence; branch protection is recorded.
 
+
+
+## GitHub tracking issues
+
+- P000 handoff/governance registration: #152 (implementation PR #151).
+- P001 architecture-question closure: #153.
+- P002 durable runtime/persistence/jobs: #154.
+- P003 HTTP/MCP/webhook host: #155.
+- P004 hosted-provider lifecycle: #156.
+- P005 route inventory/mounts/UX: #157.
+- P006 generic-app + Epoch integration: #158.
+- P007 security/privacy/resilience: #159.
+- P008 final evidence/release governance: #160.
+
+P001 must not dispatch implementation until the P000 handoff/governance PR is merged and the P001 dependencies are revalidated from live main.
