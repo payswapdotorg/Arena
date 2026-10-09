@@ -564,7 +564,8 @@
         "docs/launch-checklist.md",
         "spec/PROJECT-STATE.md",
         "spec/post-roadmap-production-work-items.md",
-        "spec/post-roadmap-production-dependency-graph.md"
+        "spec/post-roadmap-production-dependency-graph.md",
+        "AGENTS.md"
       ]
     },
     "P001": {
