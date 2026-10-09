@@ -2,6 +2,19 @@
 
 **Snapshot:** 2026-10-09. A001–A036, B001–B019, G001–G003 and C001–C022 are complete/merged (80 work orders). P001–P008 are a follow-on productionization program, not a reopening of the original roadmap.
 
+
+| ID | Scope | Depends | Owned surfaces |
+|---|---|---|---|
+| P000 | Post-roadmap handoff and governance registration | roadmap complete | governance handoff/docs and P-series registry/checker intake |
+| P001 | Architecture-question closure and host-boundary decisions | P000 | docs/architecture-review/*; docs/decisions/post-roadmap/* |
+| P002 | Durable host runtime, Neon persistence and jobs | P001 | services/runtime-host/*; packages/runtime-host/*; adapters/hosted/neon-postgres/*; deploy/runtime/*; tests/runtime-host/* |
+| P003 | Real HTTP/MCP/webhook transport | P002 | apps/api/*; services/escalation-api/src/http-host/*; services/escalation-api/src/mcp-host/*; services/webhook-delivery/*; tests/api-host/* |
+| P004 | Real hosted-provider lifecycle | P001 | adapters/hosted/r2-object-store/*; adapters/hosted/upstash-redis/*; tests/hosted-provider-e2e/*; docs/evidence/production/providers/* |
+| P005 | Web route inventory and mount completion | P001 | apps/web/src/app/*; docs/evidence/production/ux/* |
+| P006 | Integrated generic-app + Epoch E2E | P002,P003,P004,P005 | tests/integration/production/*; docs/evidence/production/integration/*; examples/generic-ai-client/deployment-tests/*; adapters/epoch-escalation/host-integration-tests/* |
+| P007 | Integrated security/privacy/resilience acceptance | P001,P002,P003,P004,P005,P006 | docs/security/post-roadmap/*; tests/security/production/*; tests/resilience/production/*; docs/evidence/production/security/* |
+| P008 | Release evidence, checklist and governance | P006,P007 | docs/launch-checklist.md; docs/evidence/production/*; release/evidence/production/*; final handoff/frontier docs |
+
 ## Rules
 
 One WO = one issue, one branch, one PR with frozen write surfaces. Maximum three concurrent workers. TL owns root manifests, lockfiles, workspace globs, contract generation and release-state reconciliation. Every WO records exact base/head SHA, tests, limitations, architecture questions and evidence. Reference-fabric tests and real host/provider proof are different evidence classes. Architecture Lock A2.0 remains binding unless an approved ACR changes it.
