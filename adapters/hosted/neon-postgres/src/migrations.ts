@@ -82,6 +82,159 @@ CREATE TABLE IF NOT EXISTS arena_migration_ledger (
 );
 `,
   },
+  {
+    version: 3,
+    name: 'create-runtime-escalation-records',
+    sql: `-- P002 migration 0003 (neon-postgres): durable escalation lifecycle records,
+-- append-only lifecycle event records and the durable at-least-once webhook
+-- outbox for the host runtime (ADR-P001-07 §2 persistence; ADR-P001-02 lens
+-- stamping on lifecycle records).
+-- Reproducible: CREATE IF NOT EXISTS guards make re-runs idempotent.
+CREATE TABLE IF NOT EXISTS arena_escalation_record (
+  request_id        TEXT PRIMARY KEY,
+  tenant_id         TEXT NOT NULL,
+  lens              TEXT NOT NULL,
+  state             TEXT NOT NULL,
+  correlation_id    TEXT NOT NULL,
+  idempotency_scope TEXT NOT NULL,
+  idempotency_key   TEXT NOT NULL,
+  history_length    INTEGER NOT NULL,
+  record            JSONB NOT NULL,
+  created_at        BIGINT NOT NULL,
+  updated_at        BIGINT NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS arena_escalation_submission_idx
+  ON arena_escalation_record (idempotency_scope, idempotency_key, correlation_id);
+
+CREATE INDEX IF NOT EXISTS arena_escalation_tenant_idx
+  ON arena_escalation_record (tenant_id);
+
+CREATE INDEX IF NOT EXISTS arena_escalation_correlation_idx
+  ON arena_escalation_record (correlation_id);
+
+-- Append-only lifecycle event records: one row per history entry the
+-- escalation record carries (UNIQUE (request_id, sequence) makes re-append
+-- idempotent — a restarted host never duplicates a transition record).
+CREATE TABLE IF NOT EXISTS arena_escalation_event (
+  request_id  TEXT NOT NULL,
+  sequence    INTEGER NOT NULL,
+  tenant_id   TEXT NOT NULL,
+  event       JSONB NOT NULL,
+  appended_at BIGINT NOT NULL,
+  PRIMARY KEY (request_id, sequence)
+);
+
+-- The durable at-least-once webhook outbox (C001's WebhookOutbox port).
+-- event_id IS the idempotent consumer key (dedupe on the consumer side).
+CREATE TABLE IF NOT EXISTS arena_webhook_outbox (
+  event_id     TEXT PRIMARY KEY,
+  request_id   TEXT NOT NULL,
+  tenant_id    TEXT NOT NULL,
+  sequence     INTEGER NOT NULL,
+  payload      TEXT NOT NULL,
+  created_at   BIGINT NOT NULL,
+  delivered_at BIGINT
+);
+
+CREATE INDEX IF NOT EXISTS arena_webhook_outbox_pending_idx
+  ON arena_webhook_outbox (created_at) WHERE delivered_at IS NULL;
+`,
+  },
+  {
+    version: 4,
+    name: 'create-runtime-job-records',
+    sql: `-- P002 migration 0004 (neon-postgres): durable job records with claim/lease
+-- columns and the dead-letter lot (ADR-P001-01 — one shared durable job
+-- runner: job-table migrations, claiming semantics, poison/dead-letter
+-- handling), plus the durable job-event envelopes and the tamper-evident
+-- audit chain the A015 protocol defines.
+-- Reproducible: CREATE IF NOT EXISTS guards make re-runs idempotent.
+CREATE TABLE IF NOT EXISTS arena_job_record (
+  job_id            TEXT PRIMARY KEY,
+  kind_namespace    TEXT NOT NULL,
+  kind_name         TEXT NOT NULL,
+  kind_version      TEXT NOT NULL,
+  definition_digest TEXT NOT NULL,
+  correlation_id    TEXT NOT NULL,
+  idempotency_scope TEXT NOT NULL,
+  idempotency_key   TEXT NOT NULL,
+  lens              TEXT,
+  status            TEXT NOT NULL,
+  attempts          INTEGER NOT NULL,
+  events_length     INTEGER NOT NULL,
+  record            JSONB NOT NULL,
+  lease_owner       TEXT,
+  lease_expires_at  BIGINT,
+  created_at        BIGINT NOT NULL,
+  updated_at        BIGINT NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS arena_job_submission_idx
+  ON arena_job_record (idempotency_scope, idempotency_key, correlation_id);
+
+CREATE INDEX IF NOT EXISTS arena_job_correlation_idx
+  ON arena_job_record (correlation_id);
+
+CREATE INDEX IF NOT EXISTS arena_job_status_idx
+  ON arena_job_record (status);
+
+-- Durable job-event envelopes (per-job append-only sequence 1..n).
+CREATE TABLE IF NOT EXISTS arena_job_event (
+  job_id      TEXT NOT NULL,
+  sequence    INTEGER NOT NULL,
+  envelope    JSONB NOT NULL,
+  appended_at BIGINT NOT NULL,
+  PRIMARY KEY (job_id, sequence)
+);
+
+-- The tamper-evident audit chain (A015): every consequential job mutation
+-- appends exactly one record; each digest includes the previous digest.
+CREATE TABLE IF NOT EXISTS arena_audit_record (
+  sequence        INTEGER PRIMARY KEY,
+  previous_digest TEXT NOT NULL,
+  digest          TEXT NOT NULL,
+  payload         JSONB NOT NULL,
+  appended_at     BIGINT NOT NULL
+);
+
+-- The dead-letter lot: poison jobs (terminal-failed / unrecoverable) are
+-- parked here with the reason and the terminal snapshot. The main record
+-- stays queryable; the lot is the operator surface (ADR-P001-01).
+CREATE TABLE IF NOT EXISTS arena_job_dead_letter (
+  job_id   TEXT PRIMARY KEY,
+  reason   TEXT NOT NULL,
+  record   JSONB NOT NULL,
+  moved_at BIGINT NOT NULL
+);
+`,
+  },
+  {
+    version: 5,
+    name: 'create-runtime-idempotency-and-projections',
+    sql: `-- P002 migration 0005 (neon-postgres): durable idempotency outcomes and
+-- projection state for the host runtime (P002 acceptance: retries return
+-- the deterministic recorded outcome; ADR-P001-01 feeding model —
+-- projection backstop sweeps checkpoint their position).
+-- Reproducible: CREATE IF NOT EXISTS guards make re-runs idempotent.
+CREATE TABLE IF NOT EXISTS arena_runtime_idempotency (
+  idempotency_scope TEXT NOT NULL,
+  idempotency_key   TEXT NOT NULL,
+  correlation_id    TEXT NOT NULL,
+  outcome           JSONB NOT NULL,
+  recorded_at       BIGINT NOT NULL,
+  PRIMARY KEY (idempotency_scope, idempotency_key, correlation_id)
+);
+
+CREATE TABLE IF NOT EXISTS arena_projection_state (
+  projection  TEXT NOT NULL,
+  tenant_id   TEXT NOT NULL,
+  position    BIGINT NOT NULL,
+  updated_at  BIGINT NOT NULL,
+  PRIMARY KEY (projection, tenant_id)
+);
+`,
+  },
 ]);
 
 /** Bind the SQL migration sources to a transport as executable Migration objects. */

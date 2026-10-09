@@ -1,0 +1,37 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "typeRoots": ["../../services/runtime-host/node_modules/@types"],
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@arena/runtime-host-service/test-support": [
+        "../../services/runtime-host/src/test-support.ts"
+      ],
+      "@arena/runtime-host-service/memory-transport": [
+        "../../services/runtime-host/src/memory-transport.ts"
+      ],
+      "@arena/runtime-host-service": ["../../services/runtime-host/src/index.ts"],
+      "@arena/runtime-host-composition": ["../../deploy/runtime/src/composition.ts"],
+      "@arena/escalation-api": ["../../services/escalation-api/src/index.ts"],
+      "@arena/escalation-routing-service": ["../../services/escalation-routing/src/index.ts"],
+      "@arena/job-orchestrator": ["../../services/job-orchestrator/src/index.ts"],
+      "@arena/runtime-host": ["../../packages/runtime-host/src/index.ts"],
+      "@arena/hosted-neon-postgres": ["../../adapters/hosted/neon-postgres/src/index.ts"],
+      "@arena/persistence": ["../../packages/persistence/src/index.ts"],
+      "@arena/protocol-core": ["../../packages/protocol-core/src/index.ts"],
+      "@arena/escalation": ["../../packages/escalation/src/index.ts"],
+      "@arena/job-protocol": ["../../packages/job-protocol/src/index.ts"],
+      "@neondatabase/serverless": [
+        "../../adapters/hosted/node_modules/@neondatabase/serverless/index.d.ts"
+      ],
+      "@electric-sql/pglite": [
+        "../../services/runtime-host/node_modules/@electric-sql/pglite/dist/index.d.ts"
+      ],
+      "vitest": ["../../services/runtime-host/node_modules/vitest/dist/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts", "vitest.config.ts"]
+}

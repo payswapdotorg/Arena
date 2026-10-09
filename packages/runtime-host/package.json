@@ -1,0 +1,40 @@
+{
+  "name": "@arena/runtime-host",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena durable host runtime interface package (Work Order P002; issue #154; ADR-P001-01/02/07). The FROZEN composition-root contract surface: host lifecycle (construct/start/stop), health/readiness, the injected port contracts as pure data (Clock, job store, event sink, escalation store, webhook outbox — A015 law: no I/O in the interface package), the structural service surfaces the host composes (escalation lifecycle, shared durable job runner), the canonical demo/customer truth lens (ADR-P001-02) and the registered host job kinds (ADR-P001-01 recompute/projection/retention-sweep; ADR-P001-06 learning-candidate projection).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/job-protocol": "workspace:*",
+    "@arena/persistence": "workspace:*",
+    "@arena/protocol-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

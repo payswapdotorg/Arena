@@ -1,0 +1,42 @@
+{
+  "name": "@arena/runtime-host-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena durable host runtime core (Work Order P002; issue #154; ADR-P001-01/02/07). The REAL implementation of @arena/runtime-host's frozen RuntimeHostApi: the durable port set over the Neon/Postgres adapter surface (one shared SqlTransport, versioned migrations 0001-0005, the named durable-runtime statement set), host lifecycle/health/readiness, the registered host job kinds with host-side claiming semantics (lease stamp -> execute -> complete/fail; expired-lease reclaim at start; dead-letter lot), tenant-gated + lens-stamped escalation surfaces, recorded outcomes for deterministic replay, and the restart-recovery sweep. The composed SERVICE engines (services/escalation-api, services/job-orchestrator) are INJECTED through the frozen package's structural surfaces (boundary law B2: a service never imports another service) and are wired at the composition site (deploy/runtime/src/composition.ts \u2014 the M1-designated wiring point; tests/runtime-host pins the real-class parity). The nested adapters/hosted/neon-postgres adapter is composed through tsconfig/vitest path aliases (the TL-flagged nested-adapter glob-gap precedent from deploy/src/hosted); for the same reason the package build is tsc --noEmit (the deploy/src/hosted precedent \u2014 an emitted dist would pull adapter sources outside rootDir). @electric-sql/pglite is the tests/runtime-host battery's embedded real-Postgres engine pin, owned here because tests/* is not a pnpm workspace project (the P004 @aws-sdk-in-adapters/hosted pin-ownership precedent).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@arena/escalation": "workspace:*",
+    "@arena/job-protocol": "workspace:*",
+    "@arena/persistence": "workspace:*",
+    "@arena/protocol-core": "workspace:*",
+    "@arena/runtime-host": "workspace:*"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

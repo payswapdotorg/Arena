@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@arena/hosted-neon-postgres": [
+        "../../adapters/hosted/neon-postgres/src/index.ts"
+      ]
+    }
+  },
+  "include": ["src", "vitest.config.ts"]
+}
