@@ -350,3 +350,44 @@ package (packages/runtime-host, M1 commit 426a764) is pushed; the neon-postgres 
 extension (M2) is in progress. TL lockfile intake is expected at P002 harvest (new
 workspace package — the A017 reconcile precedent). P003 (wave 2) waits on P002 freezing
 the host/runtime interface. The release boundary stands.
+
+## P002 ACCEPTANCE AND WAVE-2 AUTHORIZATION (2026-10-09, TL)
+
+PR #164 (P002 durable host runtime, head 23c8760 after TL lockfile intake) was merged by
+the TL at main 377e4fe after the normal merge gate: CI Battery success on the exact head
+SHA, mergeable state clean, and TL content review. Issue #154 closed by the merge.
+
+P002 delivered (five-session worker lineage, each death + continuation disclosed in the
+PR body): packages/runtime-host (the frozen host runtime interface — ports as pure data
+per A015, lifecycle, health/readiness, registered job kinds per ADR-P001-01/06, truth lens
+per ADR-P001-02); the neon-postgres durable extension (migrations 0003-0005: runtime
+escalation/event/job/idempotency records; durable JobStore/EventSink; the multi-command
+DDL split fix for the Neon HTTP driver with 12 credential-free transport tests);
+services/runtime-host (the composition root: REAL escalation + routing + job-orchestrator
+wiring); tests/runtime-host (the five acceptance proofs on BOTH embedded Postgres and live
+Neon); deploy/runtime (the production composition + release-gate evidence summary). Live
+Neon evidence: dedicated project arena-p002-evidence (square-glitter-02449657), PostgreSQL
+18.6, migration ledger versions 1-5, restart-resume with verbatim history + digest-linked
+audit chain, idempotent replay byte-stable, cross-tenant fail-closed typed errors. TL
+lockfile intake 23c8760 registered the two new workspace packages after a green station
+battery (governance/boundary clean, typecheck/lint/test/build 122/122; 8105 tests passed,
+0 failed). Wave 1 is now COMPLETE: P002 + P004 + P005 all merged.
+
+Wave 2 AUTHORIZED on live main 377e4fe per the dependency graph:
+
+- **P003** (issue #155) — real HTTP/MCP/webhook transport over the NOW-FROZEN host
+  runtime interface (packages/runtime-host is the binding seam). Surfaces:
+  apps/api/*, services/escalation-api/src/http-host/*, services/escalation-api/src/
+  mcp-host/*, services/webhook-delivery/*, tests/api-host/*. Bound decisions: ADR-P001-08
+  (public transport lifecycle: scoped API-key auth, idempotent replay with typed conflict,
+  at-least-once signed webhooks deduped per event id, shared error taxonomy, no
+  Epoch-specific API) + ADR-P001-07 (host owns transport mounting).
+- **P007 threat-model register** (issue #159, PARALLEL, read-only docs-only scope per the
+  dependency graph's wave-2 note) — docs/security/post-roadmap/* only: the threat model
+  from ADR-P001-07/08 attack classes + R-008 BLOCKED-COMMERCIAL in the threat model +
+  register Part 5 P007 rows. NO test code, NO production code — the integrated P007 pass
+  waits for P006.
+
+The resident TL watch loop continues: monitor → harvest → review → approve/require-changes
+→ dispatch next. The release boundary stands: no live-money claim before the P008 hard
+gates clear.

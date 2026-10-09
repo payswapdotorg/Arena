@@ -311,9 +311,11 @@ boundary of issue #102, provisioned ahead of the B019 merge):
 
 - P000 MERGED
 - P001 MERGED (PR #161, main d2f364f; issue #153 closed)
-- P002 IN FLIGHT (wave 1, issue #154; worker lineage session 3 — M1 interface package pushed 426a764, M2 adapter extension in progress)
+- P002 MERGED (PR #164, main 377e4fe; issue #154 closed; TL lockfile intake 23c8760)
+- P003 AUTHORIZED (wave 2, issue #155)
 - P004 MERGED (PR #162, main 9d2c9bc; issue #156 closed)
 - P005 MERGED (PR #163, main 81dbb0e; issue #157 closed)
+- P007 threat-model register AUTHORIZED (wave 2 parallel, docs-only read-only scope; full P007 waits on P006)
 
 ## Long-term product direction
 
