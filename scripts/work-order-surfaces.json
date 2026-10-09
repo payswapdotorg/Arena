@@ -26,6 +26,13 @@
         "tests/resilience/production/tsconfig.json"
       ],
       "reason": "Issue #169 (the P002-F1 authorization) requires the five P006 evidence transcripts re-run fresh against the delivered head (P006-owned surface), and the resilience battery's tsconfig gained the @arena/payments path mapping for its typecheck stage (P007-owned surface). Recorded transparently so the ownership check stays machine-auditable."
+    },
+    {
+      "work_order": "P007",
+      "paths": [
+        "spec/ux-route-matrix.md"
+      ],
+      "reason": "F-06 closure carve-out (2026-10-09, rides the F-06 branch): the findings-register F-06 row's recorded next step is 'Reconcile at the TL station: update the UXM1.0 matrix text' \u2014 the register is P007-owned, and its closure requires editing the TL-owned UXM1.0 spec (written in the pre-registry A-series era; owned by no work order). Attached to P007 transparently so the ownership check stays machine-auditable. Spec-text-only change: no route added, removed, or re-pointed."
     }
   ],
   "work_orders": {
