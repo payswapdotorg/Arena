@@ -17,10 +17,19 @@ import type { Envelope } from '@arena/protocol-core';
 import type { JobRecord, MutationAuditedEvent } from '@arena/job-protocol';
 import { toJobSubmissionIdentity } from '@arena/job-protocol';
 import {
+  applyHoldOperation,
+  applyOfferOperation,
+  openPaymentLedger,
+  toMoney,
+} from '@arena/payments';
+import type { PaymentLedger } from '@arena/payments';
+import {
   DurableEscalationStore,
   DurableEventSink,
   DurableIdempotencyStore,
   DurableJobStore,
+  DurablePaymentEventOutbox,
+  DurablePaymentLedgerStore,
   DurableProjectionStateStore,
   DurableWebhookOutbox,
 } from './durable.js';
@@ -374,5 +383,155 @@ describe('DurableProjectionStateStore + DurableEventSink hydration', () => {
     expect(sinkB.lastAuditRecord()?.sequence).toBe(2);
     const chain = await sinkB.auditRecords();
     expect(chain.map((entry) => entry.sequence)).toEqual([1, 2]);
+  });
+});
+
+describe('DurablePaymentLedgerStore + DurablePaymentEventOutbox (P002-F1, F-09)', () => {
+  /**
+   * A domain-valid escrow ledger built through the domain's own
+   * constructors (openPaymentLedger + applyHoldOperation), the same way
+   * the payments service produces one.
+   */
+  async function ledgerFixture(options: {
+    readonly requestId: string;
+    readonly holdKey: string;
+    readonly amountMinorUnits?: number;
+  }): Promise<PaymentLedger> {
+    const base = openPaymentLedger({
+      requestId: options.requestId,
+      tenantId: 'tenant-alpha',
+      correlationId: 'corr-pay',
+      currency: 'USD',
+      truth: 'demo',
+      now: T0,
+    });
+    const result = await applyHoldOperation(base, {
+      amount: toMoney({ amount: options.amountMinorUnits ?? 25_000, currency: 'USD' }),
+      operationKey: options.holdKey,
+      lifecycleState: 'created',
+      now: T0,
+    });
+    return result.ledger;
+  }
+
+  it('inserts and reads back tenant-scoped; duplicate request ids fail closed typed', async () => {
+    const transport = new MemoryRuntimeTransport();
+    const clock = new ManualClock(T0);
+    const store = new DurablePaymentLedgerStore({ transport, clock });
+    const ledger = await ledgerFixture({ requestId: 'req_pay_1', holdKey: 'op-hold-1' });
+    await store.insert(ledger);
+    const read = await store.get('req_pay_1', 'tenant-alpha');
+    expect(read?.requestId).toBe('req_pay_1');
+    expect(read?.state).toBe('held');
+    // Cross-tenant read returns undefined (never a leak).
+    expect(await store.get('req_pay_1', 'tenant-beta')).toBeUndefined();
+    expect((await store.findById('req_pay_1'))?.requestId).toBe('req_pay_1');
+    // A concurrent insert of the SAME request id loses exactly-once.
+    await expect(store.insert(ledger)).rejects.toMatchObject({
+      code: 'PERSISTENCE_RECORD_EXISTS',
+    });
+    expect((await store.list())).toHaveLength(1);
+  });
+
+  it('enforces the append-only entry guard on update (no regressions, no rewrites)', async () => {
+    const transport = new MemoryRuntimeTransport();
+    const clock = new ManualClock(T0);
+    const store = new DurablePaymentLedgerStore({ transport, clock });
+    const base = await ledgerFixture({ requestId: 'req_pay_1', holdKey: 'op-hold-1' });
+    await store.insert(base);
+    // Same-length rewrite: rejected typed.
+    await expect(store.update(base)).rejects.toMatchObject({
+      code: 'PERSISTENCE_REVISION_CONFLICT',
+    });
+    // Growing history (hold → offer): accepted.
+    const offered = await applyOfferOperation(base, {
+      amount: toMoney({ amount: 25_000, currency: 'USD' }),
+      operationKey: 'op-offer-1',
+      lifecycleState: 'offered',
+      now: T0 + 1,
+    });
+    await store.update(offered.ledger);
+    expect((await store.get('req_pay_1', 'tenant-alpha'))?.state).toBe('offered');
+    // A stale-base same-length update (the racing loser's shape): rejected.
+    await expect(store.update(offered.ledger)).rejects.toMatchObject({
+      code: 'PERSISTENCE_REVISION_CONFLICT',
+    });
+  });
+
+  it('makes a second application of the SAME operation key unrepresentable (the F-09 gate)', async () => {
+    const transport = new MemoryRuntimeTransport();
+    const clock = new ManualClock(T0);
+    const store = new DurablePaymentLedgerStore({ transport, clock });
+    const base = await ledgerFixture({ requestId: 'req_pay_1', holdKey: 'op-hold-1' });
+    await store.insert(base);
+
+    // (a) The DOMAIN idempotency index (the sequential-replay guard): a
+    // same-key re-submission against the recorded ledger replays as a
+    // duplicate — nothing new is appended.
+    const reHeld = await applyHoldOperation(base, {
+      amount: toMoney({ amount: 25_000, currency: 'USD' }),
+      operationKey: 'op-hold-1',
+      lifecycleState: 'created',
+      now: T0 + 1,
+    });
+    expect(reHeld.outcome).toBe('duplicate');
+
+    // (b) The STORAGE-level exactly-once gate: a structurally-valid ledger
+    // document that grew while REPEATING an already-recorded operation key
+    // (the charge-succeeded/record-failed double-act shape — exactly what a
+    // racing loser would try to append) is refused by the UNIQUE
+    // (request_id, operation_key) index — fail closed, never a silent
+    // double-application.
+    const doubleAct = {
+      ...base,
+      entries: [
+        ...base.entries,
+        { ...base.entries[0], sequence: 2, occurredAt: new Date(T0 + 1).toISOString() },
+      ],
+      operations: [...base.operations],
+      updatedAt: new Date(T0 + 1).toISOString(),
+    } as unknown as PaymentLedger;
+    await expect(store.update(doubleAct)).rejects.toBeInstanceOf(Error);
+
+    // The durable state is untouched: still exactly ONE entry row for the
+    // operation key, still the recorded state.
+    const read = await store.get('req_pay_1', 'tenant-alpha');
+    expect(read?.entries.length).toBe(1);
+    expect(read?.state).toBe('held');
+  });
+
+  it('dedupes payment outbox events by eventId and marks deliveries idempotently', async () => {
+    const transport = new MemoryRuntimeTransport();
+    const clock = new ManualClock(T0);
+    const outbox = new DurablePaymentEventOutbox({ transport, clock });
+    const event = {
+      eventVersion: 1,
+      eventId: 'evt_pay_1',
+      eventType: 'escalation.payment.updated',
+      requestId: 'req_pay_1',
+      tenantId: 'tenant-alpha',
+      sequence: 1,
+      occurredAt: new Date(T0).toISOString(),
+      state: null,
+      data: {},
+    } as unknown as Parameters<DurablePaymentEventOutbox['append']>[0];
+    const envelope = {
+      envelopeVersion: 1,
+      id: 'env_pay_1',
+      issuedAt: new Date(T0).toISOString(),
+      correlationId: 'corr-pay',
+      idempotencyKey: 'idem-pay',
+      payload: event,
+    } as unknown as Parameters<DurablePaymentEventOutbox['append']>[1];
+    await outbox.append(event, envelope);
+    await expect(outbox.append(event, envelope)).rejects.toMatchObject({
+      code: 'PERSISTENCE_RECORD_EXISTS',
+    });
+    expect(await outbox.listPending()).toHaveLength(1);
+    await outbox.markDelivered('evt_pay_1', T0 + 1);
+    await outbox.markDelivered('evt_pay_1', T0 + 2); // idempotent
+    expect(await outbox.listPending()).toEqual([]);
+    expect(await outbox.listAll()).toHaveLength(1);
+    expect((await outbox.listAll())[0]?.deliveredAt).toBe(T0 + 1);
   });
 });

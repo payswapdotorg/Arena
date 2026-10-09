@@ -188,6 +188,17 @@ export class PaymentService {
     readonly operationKey: string;
     readonly actor?: string;
   }): Promise<PaymentOperationOutcome> {
+    // F-09: settle against the durable per-operation-key uniqueness — a
+    // racing same-key loser converts to the recorded-outcome replay.
+    return this.settleDurably(() => this.holdBudgetFresh(input));
+  }
+
+  private async holdBudgetFresh(input: {
+    readonly requestId: string;
+    readonly tenantId: string;
+    readonly operationKey: string;
+    readonly actor?: string;
+  }): Promise<PaymentOperationOutcome> {
     const snapshot = await this.requireSnapshot(input.requestId, input.tenantId);
     const budget = toMoney({
       amount: snapshot.budget.amountMinorUnits,
@@ -239,6 +250,17 @@ export class PaymentService {
     readonly amountMinorUnits?: number;
     readonly actor?: string;
   }): Promise<PaymentOperationOutcome> {
+    return this.settleDurably(() => this.recordOfferFresh(input));
+  }
+
+  private async recordOfferFresh(input: {
+    readonly requestId: string;
+    readonly tenantId: string;
+    readonly operationKey: string;
+    /** Defaults to the full held budget. */
+    readonly amountMinorUnits?: number;
+    readonly actor?: string;
+  }): Promise<PaymentOperationOutcome> {
     const { ledger, snapshot } = await this.requireLedger(input.requestId, input.tenantId);
     const held = ledgerBalances(ledger).escrow;
     const amount = toMoney({
@@ -256,6 +278,15 @@ export class PaymentService {
   }
 
   async recordAcceptance(input: {
+    readonly requestId: string;
+    readonly tenantId: string;
+    readonly operationKey: string;
+    readonly actor?: string;
+  }): Promise<PaymentOperationOutcome> {
+    return this.settleDurably(() => this.recordAcceptanceFresh(input));
+  }
+
+  private async recordAcceptanceFresh(input: {
     readonly requestId: string;
     readonly tenantId: string;
     readonly operationKey: string;
@@ -281,6 +312,15 @@ export class PaymentService {
     readonly operationKey: string;
     readonly actor?: string;
   }): Promise<PaymentOperationOutcome> {
+    return this.settleDurably(() => this.captureBudgetFresh(input));
+  }
+
+  private async captureBudgetFresh(input: {
+    readonly requestId: string;
+    readonly tenantId: string;
+    readonly operationKey: string;
+    readonly actor?: string;
+  }): Promise<PaymentOperationOutcome> {
     const { ledger, snapshot } = await this.requireLedger(input.requestId, input.tenantId);
     // Duplicate capture instruction: replay the recorded outcome (the
     // derived amount is post-state-unstable after the first application).
@@ -301,6 +341,17 @@ export class PaymentService {
   // -------------------------------------------------------------------------
 
   async releasePayout(input: {
+    readonly requestId: string;
+    readonly tenantId: string;
+    readonly operationKey: string;
+    /** Optional CALLER-DECLARED split — recomputed and tamper-checked. */
+    readonly declaredSplit?: FeeSplit;
+    readonly actor?: string;
+  }): Promise<PaymentOperationOutcome> {
+    return this.settleDurably(() => this.releasePayoutFresh(input));
+  }
+
+  private async releasePayoutFresh(input: {
     readonly requestId: string;
     readonly tenantId: string;
     readonly operationKey: string;
@@ -378,6 +429,18 @@ export class PaymentService {
   // -------------------------------------------------------------------------
 
   async refund(input: {
+    readonly requestId: string;
+    readonly tenantId: string;
+    readonly reason: RefundReason;
+    readonly operationKey: string;
+    /** Defaults to the full refundable amount (held + committed). */
+    readonly amountMinorUnits?: number;
+    readonly actor?: string;
+  }): Promise<PaymentOperationOutcome> {
+    return this.settleDurably(() => this.refundFresh(input));
+  }
+
+  private async refundFresh(input: {
     readonly requestId: string;
     readonly tenantId: string;
     readonly reason: RefundReason;
@@ -543,6 +606,49 @@ export class PaymentService {
   // -------------------------------------------------------------------------
   // Internals
   // -------------------------------------------------------------------------
+
+  /**
+   * THE F-09 REMEDIATION SEAM — settle one money operation against the
+   * DURABLE per-operation-key uniqueness (findings-register F-08/F-09's
+   * shared law: a racing same-identity loser is served the RECORDED
+   * outcome with the replay marker — the C001 law under contention —
+   * instead of surfacing the raw storage conflict).
+   *
+   * The reference in-process fabric (InMemoryPaymentLedgerStore — the
+   * check-then-act fabric the integrated pass reproduced the 6/6
+   * charge-succeeded/record-failed double-act on) never throws the typed
+   * conflicts below, so its behavior is unchanged: it stays the test-only
+   * default exactly as before. A DURABLE ledger store (the P002-F1
+   * DurablePaymentLedgerStore) refuses a lost race with the typed
+   * PERSISTENCE_RECORD_EXISTS (fresh-ledger insert race) or
+   * PERSISTENCE_REVISION_CONFLICT (append-only guard race); this seam
+   * catches exactly those two typed conflicts and RE-DRIVES the whole
+   * operation against the winner's recorded ledger — the domain
+   * idempotency index then replays the recorded entry verbatim
+   * (outcome 'duplicate'), no provider legs re-execute, no event is
+   * emitted. A re-drive that resolves to anything else surfaces the
+   * ORIGINAL race failure (fail closed, bounded single retry — never a
+   * silent second application).
+   */
+  private async settleDurably(
+    fresh: () => Promise<PaymentOperationOutcome>,
+  ): Promise<PaymentOperationOutcome> {
+    try {
+      return await fresh();
+    } catch (error) {
+      if (!isLedgerRaceLostError(error)) throw error;
+      try {
+        return await fresh();
+      } catch (replayError) {
+        // A typed PAYMENTS verdict against the winner's recorded state
+        // (denial / idempotency conflict) is the honest answer — surface it.
+        if (replayError instanceof PaymentError) throw replayError;
+        // Anything else (still racing, transport failure): surface the
+        // ORIGINAL durable-race failure — fail closed, never a double-act.
+        throw error;
+      }
+    }
+  }
 
   /**
    * Service-level duplicate replay for the amount-DERIVING operations
@@ -748,4 +854,18 @@ function isBoundLifecycleStateValue(value: string): value is BoundLifecycleState
     value === 'cancelled' ||
     value === 'timed_out'
   );
+}
+
+/**
+ * The two typed durable-ledger race failures the F-09 settlement seam
+ * converts into a recorded-outcome replay (structural code match — the
+ * persistence package's PersistenceError shape, without importing it:
+ * services/payments depends only on the domain packages by design).
+ * Anything else (including the in-process reference fabric's plain
+ * errors) propagates untouched.
+ */
+function isLedgerRaceLostError(error: unknown): boolean {
+  if (typeof error !== 'object' || error === null || !('code' in error)) return false;
+  const code = (error as { readonly code: unknown }).code;
+  return code === 'PERSISTENCE_RECORD_EXISTS' || code === 'PERSISTENCE_REVISION_CONFLICT';
 }

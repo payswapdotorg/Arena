@@ -137,11 +137,13 @@ describe('neon-postgres secret hygiene (canary never surfaces)', () => {
       },
     };
     const migrations = bindSqlMigrations(transport);
-    expect(migrations).toHaveLength(5);
+    // 0001-0002 control plane + 0003-0005 durable runtime + 0006 payments.
+    expect(migrations).toHaveLength(6);
     for (const migration of migrations) {
       await migration.apply();
     }
     expect(executed).toEqual([
+      'apply_migration',
       'apply_migration',
       'apply_migration',
       'apply_migration',

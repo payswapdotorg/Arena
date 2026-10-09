@@ -131,7 +131,7 @@ describe('P006 M1 — the production composition boots and serves the public tra
       transcript.push(
         `- composition.start: migrations ${start.migrationsApplied.map((entry) => entry.version).join(',')} applied from zero; recovery=${JSON.stringify(start.recovery)}`,
       );
-      expect(start.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5]);
+      expect(start.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5, 6]);
 
       // (2) The REAL public transport onto the composed host.
       const { startEscalationHttpHost } = await import('@arena/escalation-api/http-host');

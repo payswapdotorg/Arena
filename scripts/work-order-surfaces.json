@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "description": "Machine-readable work-order owned-surface registry. Derived from spec/work-items.md (A-series, AWO1.0), spec/post-v1-work-items.md (B-series, BWO1.0), spec/human-escalation-work-items.md (C-series, CWO roster) and spec/post-b019-launch-integrity-closure.md (G-series). The governance checker (scripts/governance-check.py) enforces: (1) every changed path in a work-order branch matches at least one surface of SOME work order; (2) concurrently ACTIVE/AUTHORIZED work orders have pairwise-disjoint surfaces. P-series productionization WOs are defined in spec/post-roadmap-production-work-items.md.",
+  "description": "Machine-readable work-order owned-surface registry. Derived from spec/work-items.md (A-series, AWO1.0), spec/post-v1-work-items.md (B-series, BWO1.0), spec/human-escalation-work-items.md (C-series, CWO roster) and spec/post-b019-launch-integrity-closure.md (G-series). The governance checker (scripts/governance-check.py) enforces: (1) every changed path in a work-order branch matches at least one surface of SOME work order; (2) concurrently ACTIVE/AUTHORIZED work orders have pairwise-disjoint surfaces. P-series productionization WOs are defined in spec/post-roadmap-production-work-items.md; the serialized remediation P002-F1 (F-08/F-09, P008 entry criterion) is authorized in issue #169.",
   "semantics": {
     "globs": "fnmatch-style. '*' matches any characters including '/'. A pattern without '*' is an exact path. A pattern ending in '/*' covers the directory tree beneath the prefix.",
     "root_manifests": "A001's 'root manifests' surface from spec/work-items.md, expanded to explicit root-level file paths.",
@@ -18,6 +18,14 @@
         "docs/verification-baseline.md"
       ],
       "reason": "Dispatched A001 acceptance criteria item 10 explicitly requires these two files, although spec/work-items.md A001 surfaces do not include docs/*. Recorded here transparently so the ownership check remains machine-auditable; flagged to the Tech Lead as an architecture question in the A001 final report."
+    },
+    {
+      "work_order": "P002-F1",
+      "paths": [
+        "docs/evidence/production/integration/*",
+        "tests/resilience/production/tsconfig.json"
+      ],
+      "reason": "Issue #169 (the P002-F1 authorization) requires the five P006 evidence transcripts re-run fresh against the delivered head (P006-owned surface), and the resilience battery's tsconfig gained the @arena/payments path mapping for its typecheck stage (P007-owned surface). Recorded transparently so the ownership check stays machine-auditable."
     }
   ],
   "work_orders": {
@@ -581,6 +589,20 @@
         "adapters/hosted/neon-postgres/*",
         "deploy/runtime/*",
         "tests/runtime-host/*"
+      ]
+    },
+    "P002-F1": {
+      "surfaces": [
+        "adapters/hosted/neon-postgres/*",
+        "services/runtime-host/*",
+        "packages/runtime-host/*",
+        "deploy/runtime/*",
+        "tests/runtime-host/*",
+        "services/payments/src/*",
+        "packages/payments/src/*",
+        "tests/security/production/ac07*",
+        "tests/security/production/ac09*",
+        "tests/integration/production/*"
       ]
     },
     "P003": {

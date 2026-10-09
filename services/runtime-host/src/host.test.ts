@@ -90,9 +90,14 @@ describe('runtime-host composition root — lifecycle', () => {
 
     const result = await host.start();
     expect(host.state).toBe('started');
-    expect(result.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5]);
+    expect(result.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5, 6]);
     expect(result.migrationsApplied.map((entry) => entry.name)).toContain(
       'create-runtime-job-records',
+    );
+    // P002-F1: the durable payment ledger/outbox migration is part of the
+    // from-zero set (F-09 remediation).
+    expect(result.migrationsApplied.map((entry) => entry.name)).toContain(
+      'create-payment-ledger-and-outbox',
     );
     expect(result.recovery).toEqual({
       nonTerminalJobs: 0,

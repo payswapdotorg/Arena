@@ -51,7 +51,7 @@ describe.skipIf(liveUrl === null)(
       });
 
       // (a) the fresh branch migrated all five versions from zero.
-      expect(verdict.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5]);
+      expect(verdict.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5, 6]);
       // (b) the real adapter persisted + read the accepted escalation back.
       expect(verdict.escalationReadBack).toBe(true);
       // (c) the hard restart resumed: one non-terminal job reclaimed, no

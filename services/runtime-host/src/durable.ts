@@ -9,6 +9,9 @@
  *   - DurableJobStore              — job snapshots + claim/lease/dead-letter
  *   - DurableEventSink             — job-event envelopes + the audit chain
  *   - DurableProjectionStateStore  — projection sweep checkpoints
+ *   - DurablePaymentLedgerStore    — payment escrow ledger snapshots +
+ *                                    per-operation-key entry rows (F-09)
+ *   - DurablePaymentEventOutbox    — the durable payment event outbox (F-09)
  *
  * Posture (identical to the control-plane adapter):
  *   - configuration comes ONLY from server-side env vars (see ./env.ts);
@@ -74,6 +77,8 @@ import type { Clock } from '@arena/persistence';
 import { missingNeonEnvVarNames, readNeonConfigFromEnv } from '@arena/hosted-neon-postgres';
 import { createNeonHttpSqlTransport, executeStatement } from '@arena/hosted-neon-postgres';
 import type { SqlRow, SqlTransport } from '@arena/hosted-neon-postgres';
+import { isPaymentLedger } from '@arena/payments';
+import type { PaymentLedger } from '@arena/payments';
 import {
   appendEscalationEventStatement,
   clearExpiredJobLeasesStatement,
@@ -82,12 +87,18 @@ import {
   insertEscalationRecordStatement,
   insertJobEventStatement,
   insertJobRecordStatement,
+  insertPaymentLedgerEntryStatement,
+  insertPaymentLedgerStatement,
+  insertPaymentOutboxDeliveryStatement,
   insertWebhookDeliveryStatement,
+  markPaymentOutboxDeliveryDeliveredStatement,
   markWebhookDeliveryDeliveredStatement,
   recordIdempotencyOutcomeStatement,
   selectAllAuditRecordsStatement,
   selectAllEscalationsStatement,
   selectAllJobsStatement,
+  selectAllPaymentLedgersStatement,
+  selectAllPaymentOutboxDeliveriesStatement,
   selectAllWebhookDeliveriesStatement,
   selectDeadLettersStatement,
   selectEscalationBySubmissionStatement,
@@ -99,11 +110,14 @@ import {
   selectJobRecordStatement,
   selectJobsByCorrelationStatement,
   selectLastAuditRecordStatement,
+  selectPaymentLedgerStatement,
+  selectPendingPaymentOutboxDeliveriesStatement,
   selectPendingWebhookDeliveriesStatement,
   selectProjectionStateStatement,
   stampJobLeaseStatement,
   updateEscalationRecordStatement,
   updateJobRecordStatement,
+  updatePaymentLedgerStatement,
   upsertProjectionStateStatement,
 } from '@arena/hosted-neon-postgres';
 
@@ -127,6 +141,12 @@ export interface DurableRuntimeAdapterOptions {
  * engines and the host core, so the audit-chain cache stays singular
  * (the orchestrator's writes and the host's hydration read the same
  * DurableEventSink).
+ *
+ * P002-F1 (F-09): the set now carries the durable payment components too —
+ * the escrow-ledger store and the payment event outbox the payments
+ * service's ports consume (structurally — services/payments owns the port
+ * contracts; a service may never import another service, so the adapters
+ * here are typed directly on the @arena/payments domain document).
  */
 export interface DurableRuntimeComponents {
   readonly escalationStore: DurableEscalationStore;
@@ -135,6 +155,8 @@ export interface DurableRuntimeComponents {
   readonly jobStore: DurableJobStore;
   readonly eventSink: DurableEventSink;
   readonly projectionStore: DurableProjectionStateStore;
+  readonly paymentLedgerStore: DurablePaymentLedgerStore;
+  readonly paymentOutbox: DurablePaymentEventOutbox;
 }
 
 /**
@@ -153,6 +175,8 @@ export function createDurableRuntimeComponents(
     jobStore: new DurableJobStore(options),
     eventSink: new DurableEventSink(options),
     projectionStore: new DurableProjectionStateStore(options),
+    paymentLedgerStore: new DurablePaymentLedgerStore(options),
+    paymentOutbox: new DurablePaymentEventOutbox(options),
   });
 }
 
@@ -546,6 +570,269 @@ function toWebhookDelivery(row: SqlRow): WebhookDeliveryRecordJson {
     deliveredAt:
       deliveredAt === null || deliveredAt === undefined ? null : numeric(deliveredAt),
   });
+}
+
+// ---------------------------------------------------------------------------
+// DurablePaymentLedgerStore (P002-F1 — findings-register F-09)
+// ---------------------------------------------------------------------------
+
+function toPaymentLedger(row: SqlRow): PaymentLedger {
+  const candidate = rowJson(row['ledger']);
+  if (!isPaymentLedger(candidate)) {
+    throw new PersistenceError(PERSISTENCE_ERROR_CODES.INVALID_RECORD_DATA, {
+      message: 'payment ledger row does not map onto the domain ledger shape (fail closed)',
+      details: { requestId: String(row['request_id']) },
+    });
+  }
+  return candidate;
+}
+
+/**
+ * The durable escrow-ledger store over arena_payment_ledger +
+ * arena_payment_ledger_entry (migration 0006). Satisfies the payments
+ * service's `PaymentLedgerStore` port STRUCTURALLY (the port contract is
+ * consumer-owned in services/payments/src/ports.ts; boundary law B2 keeps
+ * this service from importing it).
+ *
+ * THE F-09 REMEDIATION — durable per-operation-key uniqueness:
+ *   - `insert` is a single guarded INSERT (ON CONFLICT (request_id) DO
+ *     NOTHING + RETURNING): a concurrent fresh-ledger race resolves
+ *     exactly-once — the loser gets the typed RECORD_EXISTS, never a
+ *     second application;
+ *   - `update` appends the entry rows under UNIQUE (request_id,
+ *     operation_key) — a second application of the SAME operation key is
+ *     UNREPRESENTABLE at the storage layer (the unique index raises
+ *     BEFORE the snapshot row is touched, so the read model never records
+ *     the refused double-act);
+ *   - the snapshot replacement carries the same strictly-longer
+ *     entries_length guard the escalation/job snapshots established, so a
+ *     concurrent update race surfaces as the typed REVISION_CONFLICT.
+ * The payments service's port seam catches those two typed conflicts and
+ * re-drives the operation through the domain idempotency index, returning
+ * the RECORDED outcome with the replay marker (the C001 law under
+ * contention) — the service layer owns that conversion (services/payments/
+ * src/service.ts, `settleDurably`).
+ */
+export class DurablePaymentLedgerStore extends GatedTransport {
+  async insert(ledger: PaymentLedger): Promise<void> {
+    const transport = this.gate();
+    const requestId = ledger.requestId;
+    if (!isPaymentLedger(ledger)) {
+      throw new PersistenceError(PERSISTENCE_ERROR_CODES.INVALID_RECORD_DATA, {
+        message: 'payment ledger is not a valid domain ledger (fail closed)',
+        details: { requestId },
+      });
+    }
+    // Entry rows FIRST (the exactly-once gate): a refused entry append
+    // raises before the snapshot row exists, so a hand-carried invalid
+    // document never materializes as durable read state. A racing loser's
+    // entry rows are either content-identical to the winner's (same
+    // operation key) or (request_id, sequence)-conflicting (a different
+    // operation racing for the same sequence) — both no-ops.
+    await this.appendEntryRows(transport, ledger, this.clock.now());
+    const inserted = await executeStatement(
+      transport,
+      insertPaymentLedgerStatement({
+        requestId: ledger.requestId,
+        tenantId: ledger.tenantId,
+        correlationId: ledger.correlationId,
+        currency: ledger.currency,
+        truth: ledger.truth,
+        state: ledger.state,
+        entriesLength: ledger.entries.length,
+        ledgerJson: JSON.stringify(ledger),
+        createdAt: this.clock.now(),
+        updatedAt: this.clock.now(),
+      }),
+    );
+    if (inserted.length === 0) {
+      // Lost the primary-key race: a concurrent create of the SAME
+      // escalation's escrow ledger won — typed conflict, never a silent
+      // overwrite (exactly-once at the storage layer).
+      throw new PersistenceError(PERSISTENCE_ERROR_CODES.RECORD_EXISTS, {
+        message: `escrow ledger ${ledger.requestId} already exists (concurrent insert won)`,
+        details: { requestId: ledger.requestId },
+      });
+    }
+  }
+
+  async update(ledger: PaymentLedger): Promise<void> {
+    const transport = this.gate();
+    const requestId = ledger.requestId;
+    if (!isPaymentLedger(ledger)) {
+      throw new PersistenceError(PERSISTENCE_ERROR_CODES.INVALID_RECORD_DATA, {
+        message: 'payment ledger is not a valid domain ledger (fail closed)',
+        details: { requestId },
+      });
+    }
+    const currentRows = await executeStatement(
+      transport,
+      selectPaymentLedgerStatement(ledger.requestId),
+    );
+    if (currentRows.length === 0) {
+      throw new PersistenceError(PERSISTENCE_ERROR_CODES.RECORD_NOT_FOUND, {
+        message: `escrow ledger ${ledger.requestId} not found; only existing ledgers can be updated`,
+        details: { requestId: ledger.requestId },
+      });
+    }
+    const current = toPaymentLedger(currentRows[0] as SqlRow);
+    if (
+      current.tenantId !== ledger.tenantId ||
+      current.currency !== ledger.currency ||
+      current.truth !== ledger.truth
+    ) {
+      throw new PersistenceError(PERSISTENCE_ERROR_CODES.INVALID_RECORD_DATA, {
+        message: `escrow ledger ${ledger.requestId} cannot change its tenant, currency or truth label (immutable addressability)`,
+        details: { requestId: ledger.requestId },
+      });
+    }
+    if (ledger.entries.length <= current.entries.length) {
+      throw new PersistenceError(PERSISTENCE_ERROR_CODES.REVISION_CONFLICT, {
+        message: `escrow ledger ${ledger.requestId} cannot be updated to a non-growing entry history (append-only)`,
+        details: { current: current.entries.length, attempted: ledger.entries.length },
+      });
+    }
+    // Entry rows FIRST (the exactly-once gate): a refused entry append
+    // raises BEFORE the snapshot row is replaced, so the read model never
+    // records a double-act the unique index refused. A crash between the
+    // entry appends and the guarded snapshot replacement below is healed
+    // by the NEXT update's idempotent re-append (every entry row is
+    // (request_id, sequence)-addressed).
+    await this.appendEntryRows(transport, ledger, this.clock.now());
+    // Guarded snapshot replacement: the strictly-longer entries_length
+    // predicate makes a lost concurrent update race unrepresentable (zero
+    // rows → typed revision conflict).
+    const updated = await executeStatement(
+      transport,
+      updatePaymentLedgerStatement({
+        requestId: ledger.requestId,
+        tenantId: ledger.tenantId,
+        correlationId: ledger.correlationId,
+        currency: ledger.currency,
+        truth: ledger.truth,
+        state: ledger.state,
+        entriesLength: ledger.entries.length,
+        ledgerJson: JSON.stringify(ledger),
+        updatedAt: this.clock.now(),
+      }),
+    );
+    if (updated.length === 0) {
+      throw new PersistenceError(PERSISTENCE_ERROR_CODES.REVISION_CONFLICT, {
+        message: `escrow ledger ${ledger.requestId} update lost the append-only guard (concurrent update won)`,
+        details: { requestId: ledger.requestId },
+      });
+    }
+  }
+
+  async get(requestId: string, tenantId: string): Promise<PaymentLedger | undefined> {
+    const transport = this.gate();
+    const rows = await executeStatement(transport, selectPaymentLedgerStatement(requestId));
+    if (rows.length === 0) return undefined;
+    const row = rows[0] as SqlRow;
+    // TENANT SCOPING: a cross-tenant read is simply not found.
+    if (row['tenant_id'] !== tenantId) return undefined;
+    return toPaymentLedger(row);
+  }
+
+  async findById(requestId: string): Promise<PaymentLedger | undefined> {
+    const transport = this.gate();
+    const rows = await executeStatement(transport, selectPaymentLedgerStatement(requestId));
+    return rows.length > 0 ? toPaymentLedger(rows[0] as SqlRow) : undefined;
+  }
+
+  async list(): Promise<readonly PaymentLedger[]> {
+    const transport = this.gate();
+    const rows = await executeStatement(transport, selectAllPaymentLedgersStatement());
+    return Object.freeze(rows.map((row) => toPaymentLedger(row)));
+  }
+
+  /**
+   * Append entry rows for every entry (idempotent on (request_id,
+   * sequence): a replayed snapshot append is a no-op). The UNIQUE
+   * (request_id, operation_key) index makes a second application of the
+   * same operation key RAISE — the storage-level exactly-once gate the
+   * F-09 remediation is; the raised violation surfaces as the typed
+   * TRANSPORT_FAILED and the application is refused (fail closed).
+   */
+  private async appendEntryRows(
+    transport: SqlTransport,
+    ledger: PaymentLedger,
+    appendedAt: number,
+  ): Promise<void> {
+    for (const entry of ledger.entries) {
+      await executeStatement(
+        transport,
+        insertPaymentLedgerEntryStatement({
+          requestId: ledger.requestId,
+          sequence: entry.sequence,
+          operationKey: entry.operationKey,
+          tenantId: ledger.tenantId,
+          entryJson: JSON.stringify(entry),
+          appendedAt,
+        }),
+      );
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DurablePaymentEventOutbox (P002-F1 — findings-register F-09)
+// ---------------------------------------------------------------------------
+
+/**
+ * The durable at-least-once payment event outbox over arena_payment_outbox
+ * (migration 0006). Satisfies the payments service's `PaymentEventOutbox`
+ * port STRUCTURALLY; event_id IS the idempotent consumer key (the webhook
+ * outbox's dedupe contract, verbatim).
+ */
+export class DurablePaymentEventOutbox extends GatedTransport {
+  async append(
+    event: EscalationWebhookEvent,
+    envelope: Envelope<EscalationWebhookEvent>,
+  ): Promise<void> {
+    const transport = this.gate();
+    // PARITY with C010's InMemoryPaymentEventOutbox and the durable
+    // webhook outbox: the payload is the serialized event ENVELOPE and
+    // createdAt rides the event's occurredAt (deterministic replay).
+    const payload = serializeEnvelope(envelope);
+    const createdAt = event.occurredAt ? Date.parse(event.occurredAt) : this.clock.now();
+    const inserted = await executeStatement(
+      transport,
+      insertPaymentOutboxDeliveryStatement({
+        eventId: event.eventId,
+        requestId: event.requestId,
+        tenantId: event.tenantId,
+        sequence: event.sequence,
+        payload,
+        createdAt,
+      }),
+    );
+    if (inserted.length === 0) {
+      // Duplicate eventId — the dedupe contract (typed failure, no rewrite).
+      throw new PersistenceError(PERSISTENCE_ERROR_CODES.RECORD_EXISTS, {
+        message: `payment event ${event.eventId} is already in the outbox (dedupe)`,
+        details: { eventId: event.eventId },
+      });
+    }
+  }
+
+  async listPending(): Promise<readonly WebhookDeliveryRecordJson[]> {
+    const transport = this.gate();
+    const rows = await executeStatement(transport, selectPendingPaymentOutboxDeliveriesStatement());
+    return Object.freeze(rows.map((row) => toWebhookDelivery(row)));
+  }
+
+  async listAll(): Promise<readonly WebhookDeliveryRecordJson[]> {
+    const transport = this.gate();
+    const rows = await executeStatement(transport, selectAllPaymentOutboxDeliveriesStatement());
+    return Object.freeze(rows.map((row) => toWebhookDelivery(row)));
+  }
+
+  async markDelivered(eventId: string, at: number): Promise<void> {
+    const transport = this.gate();
+    // Idempotent: an already-delivered row returns no rows — not an error.
+    await executeStatement(transport, markPaymentOutboxDeliveryDeliveredStatement(eventId, at));
+  }
 }
 
 // ---------------------------------------------------------------------------

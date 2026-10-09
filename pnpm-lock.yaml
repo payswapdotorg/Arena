@@ -3058,6 +3058,9 @@ importers:
       '@arena/job-protocol':
         specifier: workspace:*
         version: link:../../packages/job-protocol
+      '@arena/payments':
+        specifier: workspace:*
+        version: link:../../packages/payments
       '@arena/persistence':
         specifier: workspace:*
         version: link:../../packages/persistence

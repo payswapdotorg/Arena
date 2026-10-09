@@ -32,10 +32,7 @@
 import { describe, expect, it } from 'vitest';
 import { ManualClock } from '@arena/persistence';
 import { PaymentService } from '@arena/payments-service';
-import {
-  InMemoryPaymentLedgerStore,
-  InMemoryPaymentEventOutbox,
-} from '@arena/payments-service';
+
 import {
   DemoPaymentProvider,
   DEMO_PROVIDER_POSTURE,
@@ -76,10 +73,14 @@ describe('AC-09 — partial payment state + the BLOCKED-COMMERCIAL boundary', ()
 
       // --- the payment service over the REAL host reads + demo rail ---
       const clock: ManualClock = battery.clock;
+      // P002-F1: the DURABLE payment ledger/outbox (per-operation-key
+      // uniqueness on the durable host stores) — the F-09 remediation.
+      // The racing same-key loser now converts to the recorded-outcome
+      // replay via the service's settleDurably seam.
       const payments = new PaymentService({
         clock,
-        store: new InMemoryPaymentLedgerStore(),
-        outbox: new InMemoryPaymentEventOutbox(),
+        store: battery.durable.paymentLedgerStore,
+        outbox: battery.durable.paymentOutbox,
         lifecycle: {
           get: async (requestId: string, tenantId: string) => {
             try {
@@ -103,13 +104,13 @@ describe('AC-09 — partial payment state + the BLOCKED-COMMERCIAL boundary', ()
         provider: new DemoPaymentProvider({ clock }),
       });
 
-      // --- (2) THE F-09 FINDING REPRODUCTION: the settlement race ----
-      // The payments service's in-process ledger/outbox reference fabric
-      // is check-then-act: concurrent SAME-operation-key holds ALL apply
-      // (N applied outcomes — the charge-succeeded/record-failed race
-      // double-acts). This is the integrated-pass reproduction the threat
-      // model mandates; the durable payment ledger (P002-surface) is the
-      // remediation and MUST flip this expectation to exactly-one.
+      // --- (2) THE F-09 REMEDIATION PROOF (P002-F1): the settlement race
+      // on the DURABLE ledger resolves exactly-once — ONE applied entry
+      // + N-1 recorded-outcome duplicates (the charge-succeeded/
+      // record-failed double-act is now unreachable by construction:
+      // per-operation-key uniqueness at the durable store).
+      // [History: the F-09 reproduction on the in-process fabric pinned
+      // 6/6 applied; the durable flip was this work order's acceptance.]
       const holdResults = await Promise.allSettled(
         Array.from({ length: 6 }, () =>
           payments.holdBudget({ requestId, tenantId: 'tenant-alpha', operationKey: 'ac09-race-hold' }),
@@ -120,10 +121,13 @@ describe('AC-09 — partial payment state + the BLOCKED-COMMERCIAL boundary', ()
         (r): r is PromiseFulfilledResult<PaymentOperationOutcome> =>
           r.status === 'fulfilled' && r.value.outcome === 'applied',
       );
-      // THE FINDING: more than one applied outcome under the same key —
-      // the ledger is not race-safe while it is an in-process fabric.
-      expect(appliedHolds.length).toBeGreaterThan(1);
-      expect(appliedHolds.length).toBe(6);
+      const duplicateHolds = holdResults.filter(
+        (r): r is PromiseFulfilledResult<PaymentOperationOutcome> =>
+          r.status === 'fulfilled' && r.value.outcome === 'duplicate',
+      );
+      // THE FLIP: exactly-one applied + five recorded-outcome duplicates.
+      expect(appliedHolds.length).toBe(1);
+      expect(duplicateHolds.length).toBe(5);
 
       // --- (5) SEQUENTIAL replay (no contention) returns the recorded --
       // outcome verbatim — the fabric's idempotency is correct when

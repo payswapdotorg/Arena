@@ -21,6 +21,11 @@ export default {
         here,
         '../../adapters/hosted/neon-postgres/src/index.ts',
       ),
+      // The durable payment adapters (P002-F1, F-09) type on the
+      // @arena/payments domain document — resolved through the same
+      // tsconfig-matching RUNTIME alias (the package manifest stays
+      // lockfile-frozen; the nested-adapter glob-gap precedent).
+      '@arena/payments': resolve(here, '../../packages/payments/src/index.ts'),
     },
   },
   test: {

@@ -1,7 +1,7 @@
 /**
  * Durable host-runtime statement-set discipline (Work Order P002; issue
  * #154) — credential-free proofs over the PURE SQL DATA in
- * ./runtime-statements.ts + migrations 0003-0005:
+ * ./runtime-statements.ts + migrations 0003-0006:
  *
  *   1. the runtime statement vocabulary is CLOSED and registered in the
  *      transport's SQL_STATEMENT_NAMES (the prepared-statement idiom);
@@ -15,8 +15,11 @@
  *   5. the idempotent inserts (event rows, outbox rows, dead letters,
  *      audit rows, projection state) declare ON CONFLICT DO NOTHING (or
  *      the guarded upsert) — replayed appends never duplicate;
- *   6. migrations 0003-0005 create EXACTLY the tables the statement set
- *      addresses (the schema/statement coupling is machine-checked).
+ *   6. migrations 0003-0006 create EXACTLY the tables the statement set
+ *      addresses (the schema/statement coupling is machine-checked);
+ *   7. the durable payment statements (P002-F1, F-09) carry the same
+ *      append-only guard, the per-operation-key uniqueness gate and the
+ *      replay-idempotent inserts the escalation set established.
  */
 
 import { describe, expect, it } from 'vitest';
@@ -30,13 +33,19 @@ import {
   insertEscalationRecordStatement,
   insertJobEventStatement,
   insertJobRecordStatement,
+  insertPaymentLedgerEntryStatement,
+  insertPaymentLedgerStatement,
+  insertPaymentOutboxDeliveryStatement,
   insertWebhookDeliveryStatement,
+  markPaymentOutboxDeliveryDeliveredStatement,
   markWebhookDeliveryDeliveredStatement,
   recordIdempotencyOutcomeStatement,
   RUNTIME_SQL_STATEMENT_NAMES,
   selectAllAuditRecordsStatement,
   selectAllEscalationsStatement,
   selectAllJobsStatement,
+  selectAllPaymentLedgersStatement,
+  selectAllPaymentOutboxDeliveriesStatement,
   selectAllWebhookDeliveriesStatement,
   selectDeadLettersStatement,
   selectEscalationBySubmissionStatement,
@@ -49,16 +58,19 @@ import {
   selectJobRecordStatement,
   selectJobsByCorrelationStatement,
   selectLastAuditRecordStatement,
+  selectPaymentLedgerStatement,
+  selectPendingPaymentOutboxDeliveriesStatement,
   selectPendingWebhookDeliveriesStatement,
   selectProjectionStateStatement,
   stampJobLeaseStatement,
   updateEscalationRecordStatement,
   updateJobRecordStatement,
+  updatePaymentLedgerStatement,
   upsertProjectionStateStatement,
 } from './runtime-statements.js';
 import { SQL_MIGRATION_SOURCES } from './migrations.js';
 
-/** The P002 runtime tables (migrations 0003-0005) — the ONLY relations allowed. */
+/** The P002(+P002-F1) runtime tables (migrations 0003-0006) — the ONLY relations allowed. */
 const RUNTIME_TABLES = Object.freeze([
   'arena_escalation_record',
   'arena_escalation_event',
@@ -69,6 +81,9 @@ const RUNTIME_TABLES = Object.freeze([
   'arena_job_dead_letter',
   'arena_runtime_idempotency',
   'arena_projection_state',
+  'arena_payment_ledger',
+  'arena_payment_ledger_entry',
+  'arena_payment_outbox',
 ] as const);
 
 /** The control-plane relations the runtime SQL must never touch. */
@@ -212,6 +227,50 @@ function sampleStatements(): readonly SqlStatement[] {
       updatedAt: 2,
     }),
     selectProjectionStateStatement('learning-candidate-projection', 'tenant-alpha'),
+    insertPaymentLedgerStatement({
+      requestId: 'req-pay-1',
+      tenantId: 'tenant-alpha',
+      correlationId: 'corr-pay',
+      currency: 'USD',
+      truth: 'demo',
+      state: 'held',
+      entriesLength: 1,
+      ledgerJson: '{}',
+      createdAt: 1,
+      updatedAt: 1,
+    }),
+    selectPaymentLedgerStatement('req-pay-1'),
+    selectAllPaymentLedgersStatement(),
+    updatePaymentLedgerStatement({
+      requestId: 'req-pay-1',
+      tenantId: 'tenant-alpha',
+      correlationId: 'corr-pay',
+      currency: 'USD',
+      truth: 'demo',
+      state: 'offered',
+      entriesLength: 2,
+      ledgerJson: '{}',
+      updatedAt: 2,
+    }),
+    insertPaymentLedgerEntryStatement({
+      requestId: 'req-pay-1',
+      sequence: 2,
+      operationKey: 'op-offer-1',
+      tenantId: 'tenant-alpha',
+      entryJson: '{}',
+      appendedAt: 2,
+    }),
+    insertPaymentOutboxDeliveryStatement({
+      eventId: 'evt-pay-1',
+      requestId: 'req-pay-1',
+      tenantId: 'tenant-alpha',
+      sequence: 2,
+      payload: '{}',
+      createdAt: 2,
+    }),
+    selectPendingPaymentOutboxDeliveriesStatement(),
+    selectAllPaymentOutboxDeliveriesStatement(),
+    markPaymentOutboxDeliveryDeliveredStatement('evt-pay-1', 3),
   ]);
 }
 
@@ -304,6 +363,20 @@ describe('runtime statement-set discipline (P002 durable host runtime)', () => {
     });
     expect(jobUpdate.sql).toContain('WHERE job_id = $1 AND events_length < $12');
     expect(jobUpdate.sql).toContain('RETURNING');
+
+    const paymentLedgerUpdate = updatePaymentLedgerStatement({
+      requestId: 'req-pay-1',
+      tenantId: 'tenant-alpha',
+      correlationId: 'corr-pay',
+      currency: 'USD',
+      truth: 'demo',
+      state: 'offered',
+      entriesLength: 2,
+      ledgerJson: '{}',
+      updatedAt: 2,
+    });
+    expect(paymentLedgerUpdate.sql).toContain('WHERE request_id = $1 AND entries_length < $7');
+    expect(paymentLedgerUpdate.sql).toContain('RETURNING');
   });
 
   it('makes replayed appends idempotent (ON CONFLICT DO NOTHING / guarded upsert)', () => {
@@ -344,6 +417,24 @@ describe('runtime statement-set discipline (P002 durable host runtime)', () => {
         recordJson: '{}',
         movedAt: 3,
       }),
+      // P002-F1 (F-09): the durable payment ledger/outbox statements are
+      // replay-idempotent exactly like their escalation counterparts.
+      insertPaymentLedgerEntryStatement({
+        requestId: 'req-pay-1',
+        sequence: 2,
+        operationKey: 'op-offer-1',
+        tenantId: 'tenant-alpha',
+        entryJson: '{}',
+        appendedAt: 2,
+      }),
+      insertPaymentOutboxDeliveryStatement({
+        eventId: 'evt-pay-1',
+        requestId: 'req-pay-1',
+        tenantId: 'tenant-alpha',
+        sequence: 2,
+        payload: '{}',
+        createdAt: 2,
+      }),
     ];
     for (const statement of idempotent) {
       expect(
@@ -363,9 +454,9 @@ describe('runtime statement-set discipline (P002 durable host runtime)', () => {
     expect(clearExpiredJobLeasesStatement(1).sql).toContain('lease_expires_at <= $1');
   });
 
-  it('creates EXACTLY the tables the statement set addresses (0003-0005)', () => {
+  it('creates EXACTLY the tables the statement set addresses (0003-0006)', () => {
     const runtimeMigrations = SQL_MIGRATION_SOURCES.filter((source) => source.version >= 3);
-    expect(runtimeMigrations.map((source) => source.version)).toEqual([3, 4, 5]);
+    expect(runtimeMigrations.map((source) => source.version)).toEqual([3, 4, 5, 6]);
     const created = new Set<string>();
     for (const source of runtimeMigrations) {
       for (const table of referencedTables(source.sql)) {

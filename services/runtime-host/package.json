@@ -28,6 +28,7 @@
   "dependencies": {
     "@arena/escalation": "workspace:*",
     "@arena/job-protocol": "workspace:*",
+    "@arena/payments": "workspace:*",
     "@arena/persistence": "workspace:*",
     "@arena/protocol-core": "workspace:*",
     "@arena/runtime-host": "workspace:*"

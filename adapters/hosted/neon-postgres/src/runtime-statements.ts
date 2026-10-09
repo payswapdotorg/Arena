@@ -5,7 +5,7 @@
  * reviewable and unit-testable without a live database — the same
  * discipline statements.ts established for the control-plane tables.
  *
- * Tables (migrations 0003-0005):
+ * Tables (migrations 0003-0006):
  *   arena_escalation_record     — escalation lifecycle snapshots + lens
  *   arena_escalation_event      — append-only lifecycle event records
  *   arena_webhook_outbox        — the durable at-least-once webhook outbox
@@ -15,6 +15,10 @@
  *   arena_job_dead_letter       — the poison-job lot (ADR-P001-01)
  *   arena_runtime_idempotency   — recorded outcomes for deterministic replay
  *   arena_projection_state      — projection sweep checkpoints
+ *   arena_payment_ledger        — payment escrow ledger snapshots (F-09)
+ *   arena_payment_ledger_entry  — per-operation entry rows (UNIQUE operation
+ *                                 key — the durable exactly-once gate)
+ *   arena_payment_outbox        — the durable payment event outbox (F-09)
  */
 
 import type { JsonSafeValue } from '@arena/persistence';
@@ -516,6 +520,185 @@ export function selectAllAuditRecordsStatement(): SqlStatement {
 }
 
 // ---------------------------------------------------------------------------
+// Payment escrow ledger + entry rows + the payment event outbox
+// (P002-F1; F-09 remediation — migration 0006)
+// ---------------------------------------------------------------------------
+
+const PAYMENT_LEDGER_COLUMNS =
+  'request_id, tenant_id, correlation_id, currency, truth, state, entries_length, ledger, created_at, updated_at';
+
+export function insertPaymentLedgerStatement(row: {
+  readonly requestId: string;
+  readonly tenantId: string;
+  readonly correlationId: string;
+  readonly currency: string;
+  readonly truth: string;
+  readonly state: string;
+  readonly entriesLength: number;
+  readonly ledgerJson: string;
+  readonly createdAt: number;
+  readonly updatedAt: number;
+}): SqlStatement {
+  return {
+    name: 'insert_payment_ledger',
+    // RETURNING request_id: zero rows means the INSERT lost the primary-key
+    // race — the ONLY success signal the caller can dispatch on (the
+    // insert_escalation_record / insert_job_record shape).
+    sql: `INSERT INTO arena_payment_ledger (${PAYMENT_LEDGER_COLUMNS})
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, $10)
+ON CONFLICT (request_id) DO NOTHING
+RETURNING request_id`,
+    params: [
+      row.requestId,
+      row.tenantId,
+      row.correlationId,
+      row.currency,
+      row.truth,
+      row.state,
+      row.entriesLength,
+      row.ledgerJson,
+      row.createdAt,
+      row.updatedAt,
+    ],
+  };
+}
+
+export function selectPaymentLedgerStatement(requestId: string): SqlStatement {
+  return {
+    name: 'select_payment_ledger',
+    sql: `SELECT ${PAYMENT_LEDGER_COLUMNS} FROM arena_payment_ledger WHERE request_id = $1`,
+    params: [requestId],
+  };
+}
+
+export function selectAllPaymentLedgersStatement(): SqlStatement {
+  return {
+    name: 'select_all_payment_ledgers',
+    sql: `SELECT ${PAYMENT_LEDGER_COLUMNS} FROM arena_payment_ledger ORDER BY request_id ASC`,
+    params: [],
+  };
+}
+
+/**
+ * Replace the ledger snapshot. Append-only guard identical to the escalation/
+ * job snapshots: the new entry history must be STRICTLY LONGER than the
+ * stored one — a regressing or same-length rewrite is unrepresentable at the
+ * SQL layer, so a concurrent update race surfaces as zero rows (the caller
+ * resolves the typed revision conflict).
+ */
+export function updatePaymentLedgerStatement(row: {
+  readonly requestId: string;
+  readonly tenantId: string;
+  readonly correlationId: string;
+  readonly currency: string;
+  readonly truth: string;
+  readonly state: string;
+  readonly entriesLength: number;
+  readonly ledgerJson: string;
+  readonly updatedAt: number;
+}): SqlStatement {
+  return {
+    name: 'update_payment_ledger',
+    sql: `UPDATE arena_payment_ledger
+SET tenant_id = $2, correlation_id = $3, currency = $4, truth = $5,
+    state = $6, entries_length = $7, ledger = $8::jsonb, updated_at = $9
+WHERE request_id = $1 AND entries_length < $7
+RETURNING request_id`,
+    params: [
+      row.requestId,
+      row.tenantId,
+      row.correlationId,
+      row.currency,
+      row.truth,
+      row.state,
+      row.entriesLength,
+      row.ledgerJson,
+      row.updatedAt,
+    ],
+  };
+}
+
+/**
+ * Append one ledger entry row (idempotent on (request_id, sequence)). The
+ * UNIQUE (request_id, operation_key) index is THE exactly-once gate: a
+ * same-key row at a different sequence RAISES instead of silently skipping,
+ * so the storage layer alone makes a double-application unrepresentable.
+ */
+export function insertPaymentLedgerEntryStatement(input: {
+  readonly requestId: string;
+  readonly sequence: number;
+  readonly operationKey: string;
+  readonly tenantId: string;
+  readonly entryJson: string;
+  readonly appendedAt: number;
+}): SqlStatement {
+  return {
+    name: 'insert_payment_ledger_entry',
+    sql: `INSERT INTO arena_payment_ledger_entry (request_id, sequence, operation_key, tenant_id, entry, appended_at)
+VALUES ($1, $2, $3, $4, $5::jsonb, $6)
+ON CONFLICT (request_id, sequence) DO NOTHING
+RETURNING sequence`,
+    params: [
+      input.requestId,
+      input.sequence,
+      input.operationKey,
+      input.tenantId,
+      input.entryJson,
+      input.appendedAt,
+    ],
+  };
+}
+
+export function insertPaymentOutboxDeliveryStatement(input: {
+  readonly eventId: string;
+  readonly requestId: string;
+  readonly tenantId: string;
+  readonly sequence: number;
+  readonly payload: string;
+  readonly createdAt: number;
+}): SqlStatement {
+  return {
+    name: 'insert_payment_outbox_delivery',
+    sql: `INSERT INTO arena_payment_outbox (event_id, request_id, tenant_id, sequence, payload, created_at, delivered_at)
+VALUES ($1, $2, $3, $4, $5, $6, NULL)
+ON CONFLICT (event_id) DO NOTHING
+RETURNING event_id`,
+    params: [input.eventId, input.requestId, input.tenantId, input.sequence, input.payload, input.createdAt],
+  };
+}
+
+export function selectPendingPaymentOutboxDeliveriesStatement(): SqlStatement {
+  return {
+    name: 'select_pending_payment_outbox_deliveries',
+    sql: `SELECT event_id, request_id, tenant_id, sequence, payload, created_at, delivered_at
+FROM arena_payment_outbox WHERE delivered_at IS NULL ORDER BY created_at ASC, event_id ASC`,
+    params: [],
+  };
+}
+
+export function selectAllPaymentOutboxDeliveriesStatement(): SqlStatement {
+  return {
+    name: 'select_all_payment_outbox_deliveries',
+    sql: `SELECT event_id, request_id, tenant_id, sequence, payload, created_at, delivered_at
+FROM arena_payment_outbox ORDER BY created_at ASC, event_id ASC`,
+    params: [],
+  };
+}
+
+/** Idempotent delivered-mark: only an UNDELIVERED row flips (RETURNING). */
+export function markPaymentOutboxDeliveryDeliveredStatement(
+  eventId: string,
+  deliveredAt: number,
+): SqlStatement {
+  return {
+    name: 'mark_payment_outbox_delivery_delivered',
+    sql: `UPDATE arena_payment_outbox SET delivered_at = $2
+WHERE event_id = $1 AND delivered_at IS NULL RETURNING event_id`,
+    params: [eventId, deliveredAt],
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Projection state
 // ---------------------------------------------------------------------------
 
@@ -579,6 +762,15 @@ export const RUNTIME_SQL_STATEMENT_NAMES = Object.freeze([
   'select_all_audit_records',
   'upsert_projection_state',
   'select_projection_state',
+  'insert_payment_ledger',
+  'select_payment_ledger',
+  'select_all_payment_ledgers',
+  'update_payment_ledger',
+  'insert_payment_ledger_entry',
+  'insert_payment_outbox_delivery',
+  'select_pending_payment_outbox_deliveries',
+  'select_all_payment_outbox_deliveries',
+  'mark_payment_outbox_delivery_delivered',
 ] as const);
 
 export type RuntimeSqlStatementName = (typeof RUNTIME_SQL_STATEMENT_NAMES)[number];

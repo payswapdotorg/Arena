@@ -6,6 +6,9 @@
     "paths": {
       "@arena/hosted-neon-postgres": [
         "../../adapters/hosted/neon-postgres/src/index.ts"
+      ],
+      "@arena/payments": [
+        "../../packages/payments/src/index.ts"
       ]
     }
   },
