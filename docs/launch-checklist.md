@@ -1,3 +1,5 @@
+> **Current-status warning (2026-10-09):** this checklist's checkbox matrix is the historical B019 launch-gate snapshot and is not reconciled to post-B019 evidence. The old 7/69 checked count must not be interpreted as the current pass/fail tally. G001–G003 evidence is committed under docs/evidence/local, docs/evidence/hosted and docs/evidence/ux. P008 in spec/post-roadmap-production-work-items.md owns row-by-row evidence reconciliation. Until P008 merges, rely on the evidence artifacts and their stated limitations, not the checkbox count.
+
 # Arena Public Preview Launch Checklist L1.0
 
 ## TL finalization record (2026-10-04, B019 launch gate)

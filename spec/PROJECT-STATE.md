@@ -309,6 +309,8 @@ boundary of issue #102, provisioned ahead of the B019 merge):
 - GitHub repository secrets VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID
   injected — deploy-preview.yml is now unblocked on push to main.
 
+- P001 READY
+
 ## Long-term product direction
 
 Approved north star:
@@ -759,3 +761,14 @@ host wiring (persistence, HTTP listeners, real providers, route mounts for the t
 unmounted web features) is the post-roadmap program; (3) workers' recorded architecture
 questions (one per PR, all preserved in PR bodies and this file) define the next
 architecture-review backlog.
+
+
+## AUTHORITATIVE FRONTIER — POST-ROADMAP PRODUCTIONIZATION (2026-10-09)
+
+**The full original roadmap is complete: A001–A036 (36) + B001–B019 (19) + G001–G003 (3) + C001–C022 (22) = 80/80 merged.** Latest reviewed main is 07a6b72d0fd82e087e159176a999b19adf8ced05. The recorded integrated-main battery passed 120/120 tasks at fcc9215; CI and Deploy preview on 07a6b72 succeeded.
+
+The next frontier is P001–P008 in spec/post-roadmap-production-work-items.md, with sequence/concurrency in spec/post-roadmap-production-dependency-graph.md. Start P001 architecture-question closure; after its blocking decisions, P002/P004/P005 can run concurrently on disjoint surfaces (maximum three workers). Do not re-dispatch or relabel completed A/B/G/C work orders.
+
+Known productionization limits (must not be hidden): multiple C-series services still use in-memory reference fabrics/injected ports; C019 generic client uses an in-process reference fabric and does not exercise MCP; G002 could not directly prove Neon migration/connectivity; the R2 bucket was empty at probe time and full object lifecycle is unproven; Upstash PING is not end-to-end coordination evidence; three web surfaces/mounts require a source-tree inventory; /tasks was observed to render the generic landing shell; launch checklist remains 7/69 checked and unreconciled; this review could not re-probe the current hosted endpoint and could not verify main branch protection through the connected GitHub integration. See docs/LLM-ARCHITECT-FINAL-HANDOFF.md and docs/evidence/* for evidence dates and full qualifications.
+
+Commercial/payment readiness is distinct from deterministic payment abstractions. Confirm real-provider, merchant-of-record, tax, payout, refund/dispute and jurisdiction responsibilities before any live-money claim.

@@ -9,8 +9,10 @@ The repository is the only durable source of truth. Never rely on conversation m
 Read, in order:
 - README.md
 - AI_CONTINUATION.md
-- docs/LLM-ARCHITECT-HANDOFF.md
+- docs/LLM-ARCHITECT-FINAL-HANDOFF.md
 - spec/PROJECT-STATE.md
+- spec/post-roadmap-production-work-items.md
+- spec/post-roadmap-production-dependency-graph.md
 - spec/architecture.md
 - spec/architecture-lock.md
 - spec/product-requirements.md
@@ -39,22 +41,17 @@ The Tech Lead reconciles worker claims against live GitHub/API state, including 
 
 Implements exactly one Work Order, stays within declared ownership, never edits governance state in flight, never silently broadens scope, provides reproducible verification evidence, and never merges its own PR.
 
-## V1 completion
+## Roadmap completion
 
-A001-A036 are complete. They are not reopened for convenience.
+A001-A036, B001-B019, G001-G003 and C001-C022 are complete/merged (80 work orders). They are not reopened for convenience. Consult the authoritative final handoff for current productionization tasks; do not follow historical C-series or launch-closure dispatch instructions.
 
-Any change to a locked A-series contract requires an Architecture Change Request.
+Any change to a locked architecture contract requires an Architecture Change Request.
 
-## B-series productization
+## Current objective: productionization
 
-The active objective is B001-B019:
-- local install/use;
-- deterministic Demo mode;
-- polished multi-role UX;
-- hosted preview;
-- free-tier provider adapters;
-- product E2E/UX validation;
-- launch readiness.
+The active frontier is P001-P008 in `spec/post-roadmap-production-work-items.md`, sequenced by `spec/post-roadmap-production-dependency-graph.md`.
+
+P001 closes architecture questions first. Then P002/P004/P005 may run concurrently on disjoint scopes, up to a maximum of three workers. Production host/persistence/transport/provider/integration proof is distinct from roadmap completion.
 
 ## Concurrency
 
@@ -127,7 +124,7 @@ Architect findings are fixed on the same PR with regression evidence.
 
 Arena's north star is: **the Stripe of human expert escalation for AI automation**.
 
-The C-series turns the V1 capability infrastructure into an API-native human escalation network. Any AI application may:
+The completed C-series turns the V1 capability infrastructure into an API-native human escalation network. The next work is P001-P008 productionization described in the authoritative final TL handoff. Any AI application may:
 - escalate a capability boundary;
 - request the required expert capability;
 - receive a qualified human intervention;

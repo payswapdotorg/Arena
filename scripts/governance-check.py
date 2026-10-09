@@ -8,8 +8,8 @@ A001 acceptance criteria:
   G2  architecture lock presence: docs/architecture-lock.md non-empty, version
       header A2.0, contiguous numbered rules (36 for A2.0), ACR section
   G3  authorized frontier consistency: every AUTHORIZED/ACTIVE item listed in
-      spec/PROJECT-STATE.md "Current frontier" exists in spec/work-items.md
-      (A-series, AWO1.0) or spec/post-v1-work-items.md (B-series, BWO1.0)
+      spec/PROJECT-STATE.md "Current frontier" exists in the authoritative roster
+      for its series (A/B/C/G/P).
   G4  work-order ownership: every changed path (dispatch base -> HEAD) is
       inside the owned surfaces of SOME work order
       (scripts/work-order-surfaces.json)
@@ -151,7 +151,7 @@ def parse_frontier(project_state_text: str) -> dict[str, str]:
             in_section = line.strip() == "## Current frontier"
             continue
         if in_section:
-            match = re.match(r"^-\s+([ABCG]\d{3})\s+(\S+)\s*$", line.strip())
+            match = re.match(r"^-\s+([ABCGP]\d{3})\s+(\S+)\s*$", line.strip())
             if match:
                 frontier[match.group(1)] = match.group(2)
     return frontier
@@ -159,7 +159,7 @@ def parse_frontier(project_state_text: str) -> dict[str, str]:
 
 def parse_work_item_ids(work_items_text: str) -> set[str]:
     ids: set[str] = set()
-    for match in re.finditer(r"^\|\s*([ABCG]\d{3})\s*\|", work_items_text, re.M):
+    for match in re.finditer(r"^\|\s*([ABCGP]\d{3})\s*\|", work_items_text, re.M):
         ids.add(match.group(1))
     return ids
 
@@ -577,6 +577,9 @@ def run_repo_checks(root: Path, base_override: str | None) -> tuple[list[str], d
     closure_spec_path = root / "spec" / "post-b019-launch-integrity-closure.md"
     if closure_spec_path.is_file():
         work_items_text += "\n" + closure_spec_path.read_text(encoding="utf-8")
+    production_items_path = root / "spec" / "post-roadmap-production-work-items.md"
+    if production_items_path.is_file():
+        work_items_text += "\n" + production_items_path.read_text(encoding="utf-8")
     violations += check_frontier_consistency(project_state_text, work_items_text)
 
     surfaces = load_surfaces(SURFACES_REGISTRY)
