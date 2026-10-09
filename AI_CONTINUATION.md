@@ -391,3 +391,46 @@ Wave 2 AUTHORIZED on live main 377e4fe per the dependency graph:
 The resident TL watch loop continues: monitor → harvest → review → approve/require-changes
 → dispatch next. The release boundary stands: no live-money claim before the P008 hard
 gates clear.
+
+## WAVE-2 HARVEST AND WAVE-3 AUTHORIZATION (2026-10-09, TL)
+
+PR #165 (P007 threat-model register, head 41b5ab2) merged at main b3f4427 after CI Battery
+success on the exact head; PR #166 (P003 public transport, head 74f986f after TL lockfile
+intake registering services/webhook-delivery) merged at main 28f6a6b after CI Battery
+success. Issues: #155 closed by the P003 merge; #159 REMAINS OPEN by design (the register
+is partial — the integrated P007 pass is post-P006).
+
+P003 delivered (two-session lineage disclosed): the real HTTP listener (http-host binding
+the frozen packages/runtime-host interface: C001 REST create/status contracts verbatim,
+scoped API-key auth, tenant policy, typed idempotency replay/conflict, shared error
+taxonomy, health/readiness), the MCP tool layer over the same authority/schema
+(one authority, two transports per ADR-P001-08), and services/webhook-delivery (signed
+at-least-once delivery via the existing HMAC contract, per-event-id dedupe, backoff retry
++ dead-letter on a dedicated durable loop — honestly disclosed against ADR-P001-01's
+job-runner alternative with the registry follow-up recorded). Acceptance battery:
+tests/api-host 20/20 (real-listener e2e, webhook verify/forgery/dedupe, MCP boundary,
+auth/tenant negatives) + 8/8 webhook-delivery units; workspace battery 123/123 with zero
+failed tests. Disclosed limitations: dead-letter permanence across restart is
+process-local (durable outbox preserves at-least-once), tests/api-host persistence rides
+the in-memory reference transport behind the real listener (P002's batteries own the
+real-database proofs), apps/api deployable shell not yet materialized.
+
+P007 threat-model register delivered: docs/security/post-roadmap/threat-model.md (684
+lines: trust boundaries over the as-built architecture at main ae6df29, fourteen attack
+classes with assets/vectors/affected surfaces/existing mitigations/residual risk) +
+findings-register.md skeleton (93 lines: release-gate vocabulary; known limitations
+honestly dispositioned OPEN with owners). No findings closed; integrated pass post-P006.
+
+P006 AUTHORIZED (wave 3, issue #158) on live main 28f6a6b: both the generic client and
+the Epoch adapter through the REAL host and durable stores over public transport — the
+full core flow (request → capability demand/routing → offer/acceptance → bounded expert
+session → intervention/artifacts → validation/adjudication → typed result → webhook
+retry/dedupe + polling → payment sandbox → consent/rights-gated learning candidate →
+observational replay with live-world writeback denied) including restart, duplicate,
+concurrency, timeout, provider outage and recovery. Both clients MUST use public
+transport (per ADR-P001-08), never direct in-process references. The P007 integrated
+pass follows P006 per the dependency graph (wave 4: P008 after P006 + P007 dispositions).
+
+Resident TL watch loop active per the operator directive: monitor → harvest → review →
+approve/require-changes → dispatch next, until the program completes. Replay stack
+rebuilt and healthy (console :3000, replayd :3100, CDP :9222, keeper processes live).

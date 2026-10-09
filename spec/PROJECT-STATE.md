@@ -312,10 +312,11 @@ boundary of issue #102, provisioned ahead of the B019 merge):
 - P000 MERGED
 - P001 MERGED (PR #161, main d2f364f; issue #153 closed)
 - P002 MERGED (PR #164, main 377e4fe; issue #154 closed; TL lockfile intake 23c8760)
-- P003 AUTHORIZED (wave 2, issue #155)
+- P003 MERGED (PR #166, main 28f6a6b; issue #155 closed; TL lockfile intake 74f986f)
 - P004 MERGED (PR #162, main 9d2c9bc; issue #156 closed)
 - P005 MERGED (PR #163, main 81dbb0e; issue #157 closed)
-- P007 threat-model register AUTHORIZED (wave 2 parallel, docs-only read-only scope; full P007 waits on P006)
+- P007 threat-model register MERGED (PR #165, main b3f4427; integrated pass AUTHORIZED post-P006 — issue #159 stays open)
+- P006 AUTHORIZED (wave 3, issue #158)
 
 ## Long-term product direction
 
