@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "typeRoots": ["../../adapters/hosted/node_modules/@types"],
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@arena/persistence": ["../../packages/persistence/src/index.ts"],
+      "@arena/protocol-core": ["../../packages/protocol-core/src/index.ts"],
+      "@arena/hosted-r2-object-store": ["../../adapters/hosted/r2-object-store/src/index.ts"],
+      "@arena/hosted-upstash-redis": ["../../adapters/hosted/upstash-redis/src/index.ts"],
+      "@arena/deploy/env-contract": ["../../deploy/src/hosted/env-contract.ts"],
+      "@aws-sdk/client-s3": ["../../adapters/hosted/node_modules/@aws-sdk/client-s3"],
+      "vitest": ["../../adapters/hosted/node_modules/vitest/dist/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts", "vitest.config.ts"]
+}
