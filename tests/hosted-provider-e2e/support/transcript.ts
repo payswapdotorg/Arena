@@ -79,7 +79,11 @@ export function transcriptEnabled(): boolean {
   return evidenceOutDir() !== null;
 }
 
-const MAX_RESULT_LENGTH = 400;
+// Generous but bounded: the zero-credential rows embed the full list of
+// removed provider env-var NAMES (~500 chars; names only, never values) —
+// the finisher raised this from 400 after the predecessor's capture
+// truncated exactly those name lists mid-row.
+const MAX_RESULT_LENGTH = 1200;
 
 function truncate(text: string): string {
   return text.length > MAX_RESULT_LENGTH ? `${text.slice(0, MAX_RESULT_LENGTH)}…[truncated]` : text;
