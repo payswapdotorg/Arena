@@ -478,3 +478,39 @@ settled.
 
 Resident TL watch loop continues per the operator directive. Replay stack healthy
 (console :3000, replayd :3100, CDP :9222).
+
+## P002-F1 HARVESTED — 2026-10-09 (UTC)
+
+P002-F1 MERGED: PR #170 (main 5d9e8a5), issue #169 closed at acceptance. Lineage: worker
+delivered M1–M4 (788190c durable payment ledger + outbox migration 0006; badf000 F-08
+catch-and-replay + F-09 settleDurably seam; c207d01 regression flips) then died mid-M5;
+finisher subagent re-ran the five P006 evidence transcripts fresh at the final head
+(b1246c5) and re-verified every battery.
+
+Acceptance proof (both pinned regressions flipped, not relaxed):
+- F-09 (HIGH): ac09 now pins exactly 1 applied + 5 duplicate over the DURABLE payment
+  ledger (migration 0006, UNIQUE(request_id, operation_key) over the P002 host stores);
+  the 6/6 double-apply reproduction is unreachable. P006 integrated battery re-run green
+  (5 files / 7 tests) with fresh transcripts at source-sha c207d01.
+- F-08 (medium): losers of concurrent same-identity submissions now receive the 200
+  replay (observation run: 1×201 created + 11×200 replayed, zero typed conflicts,
+  exactly-one record); the exactly-once invariant stays pinned by ac07.
+
+TL intake at the station: lockfile intake (@arena/payments registered) + governance
+registry intake (P002-F1 WO entry + carve-out, scripts/work-order-surfaces.json) —
+commit f49edec; station battery green on the post-intake tree (governance/boundary
+clean, typecheck/lint/test/build 123/123); CI Battery success on f49edec → merged.
+Finisher batteries: adversarial 13 files / 66 tests green; runtime-host 3 files / 7
+tests green on LIVE Neon (dedicated arena-p002f1-evidence project, migrations 1..6);
+fresh --force affected-subgraph 36/36.
+
+Findings register updated at harvest: 9 OPEN, 1 BLOCKED (F-07), 2 FIXED (F-08/F-09).
+
+**P008 AUTHORIZED** (issue #160 — the terminal work order: release evidence, checklist
+reconciliation, governance gate). Entry criterion (release-gate §2) met for F-09; F-07
+remains BLOCKED-COMMERCIAL and surfaces as the named NO-GO driver at the gate until the
+release owner settles it in writing. Worker dispatched; frontier docs are TL-serialized.
+
+Resident TL watch loop continues per the operator directive (monitor → harvest →
+review → approve/require-changes → dispatch next; no early returns). Replay stack
+healthy (console :3000, replayd :3100 frames flowing, CDP :9222 Chrome 153).

@@ -317,8 +317,8 @@ boundary of issue #102, provisioned ahead of the B019 merge):
 - P005 MERGED (PR #163, main 81dbb0e; issue #157 closed)
 - P007 threat-model register MERGED (PR #165, main b3f4427) + integrated adversarial pass MERGED (PR #168, main bdd09e1; issue #159 closed; F-08/F-09 filed with reproduced regressions)
 - P006 MERGED (PR #167, main f662603; issue #158 closed)
-- P002-F1 AUTHORIZED (serialized remediation: durable payment ledger/outbox swap + F-08 catch-and-replay — P008's high-finding entry criterion)
-- P008 HELD pending P002-F1 (entry criterion: P007 critical/high findings fixed or accepted)
+- P002-F1 MERGED (PR #170, main 5d9e8a5; issue #169 closed; TL lockfile+registry intake f49edec; F-08/F-09 FIXED — ac09 flipped to exactly-one applied + N-1 duplicate over the durable payment ledger/outbox, ac07 losers now served the 200 replay; P006 integrated battery re-run green on fresh transcripts)
+- P008 AUTHORIZED (terminal WO — release evidence, checklist reconciliation, governance gate; entry criterion met: F-09 HIGH fixed via PR #170; F-07 remains BLOCKED-COMMERCIAL — the release owner's decision to be documented at the gate)
 
 ## Long-term product direction
 
