@@ -220,3 +220,23 @@ architecture-review backlog (preserved in PR bodies + PROJECT-STATE). The z-ai g
 outage that started 12:08 UTC Oct 7 never recovered — the entire C-series (22 WOs, 15 PRs
 #129-#150) was executed via platform-native Task subagents with the sprint-cycle cadence
 (autonomous session → reap → finisher re-dispatch), documented in the worklog.
+
+
+## AUTHORITATIVE FRONTIER — POST-ROADMAP PRODUCTIONIZATION (2026-10-09)
+
+This section supersedes all earlier statements in this historical continuation file that say G001–G003 are pending or C001–C022 are the active implementation roadmap.
+
+- A001–A036: COMPLETE / MERGED.
+- B001–B019: COMPLETE / MERGED.
+- G001–G003: COMPLETE / MERGED, with committed local, hosted and UX evidence.
+- C001–C022: COMPLETE / MERGED.
+- Roadmap total: 80/80 work orders merged.
+- Latest reviewed main: 07a6b72d0fd82e087e159176a999b19adf8ced05.
+- Latest integrated-main task battery recorded: 120/120 at fcc9215a548f8caa9b13d88858e07a31eca9c11f.
+- CI and Deploy preview on 07a6b72: successful.
+
+Next program: P001–P008 defined in spec/post-roadmap-production-work-items.md with graph in spec/post-roadmap-production-dependency-graph.md. First dispatch is P001 architecture-question closure. Once its blockers are resolved, P002/P004/P005 may run concurrently on disjoint surfaces, maximum three workers.
+
+Critical limitations: reference fabrics remain in-memory in multiple services; C019's generic client is in-process rather than a deployed HTTP host and does not exercise MCP; G002 did not directly prove Neon migration/connectivity, R2 bucket was empty, and Upstash PING alone does not prove coordination; the launch-checklist matrix is stale at 7/69; /tasks has a minor route-surface concern; current hosted availability was not re-probed in this 2026-10-09 review; branch protection could not be verified by the connected GitHub integration. See docs/LLM-ARCHITECT-FINAL-HANDOFF.md and the new P work items.
+
+Do not restart A/B/G/C. Do not claim production/commercial readiness from reference-fabric tests or a successful build alone.
