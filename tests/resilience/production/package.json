@@ -1,0 +1,7 @@
+{
+  "name": "@arena-resilience-production-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "P007 integrated resilience battery (tests/resilience/production — NOT a pnpm workspace project; run via node tests/resilience/production/run.mjs, which drives services/escalation-api's typescript + vitest). Boots the REAL production composition over an embedded real PostgreSQL (PGlite) with the REAL public transport and REAL hosted-provider adapters (injected fake transports per the P004 CI pattern) to attack provider outage/recovery windows, timeout/retry storms, dead-letter behavior and restart recovery sweeps. Evidence class per release-gate §3: AUTOMATED-TEST-ONLY (embedded-PG engine)."
+}

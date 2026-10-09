@@ -1,0 +1,7 @@
+{
+  "name": "@arena/security-production-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "P007 integrated adversarial security battery (tests/security/production — NOT a pnpm workspace project; run via node tests/security/production/run.mjs, which drives services/escalation-api's typescript + vitest). Boots the REAL production composition over an embedded real PostgreSQL (PGlite) with the REAL public transport (HTTP listener + MCP + signed webhooks) and executes the threat model's 14 attack classes. Evidence class per release-gate §3: AUTOMATED-TEST-ONLY (embedded-PG engine); live-Neon re-runs are optional DEMONSTRATED-LIVE additions owned by the release owner."
+}

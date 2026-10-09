@@ -1,0 +1,83 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "typeRoots": ["../../../services/escalation-api/node_modules/@types"],
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@arena/escalation-api/http-host": [
+        "../../../services/escalation-api/src/http-host/index.ts"
+      ],
+      "@arena/escalation-api/mcp-host": [
+        "../../../services/escalation-api/src/mcp-host/index.ts"
+      ],
+      "@arena/escalation-api": ["../../../services/escalation-api/src/index.ts"],
+      "@arena/webhook-delivery": ["../../../services/webhook-delivery/src/index.ts"],
+      "@arena/escalation-adapters": ["../../../adapters/escalation/src/index.ts"],
+      "@arena/developer-platform": [
+        "../../../packages/developer-platform/src/index.ts"
+      ],
+      "@arena/runtime-host": ["../../../packages/runtime-host/src/index.ts"],
+      "@arena/runtime-host-service": ["../../../services/runtime-host/src/index.ts"],
+      "@arena/runtime-host-service/memory-transport": [
+        "../../../services/runtime-host/src/memory-transport.ts"
+      ],
+      "@arena/runtime-host-service/test-support": [
+        "../../../services/runtime-host/src/test-support.ts"
+      ],
+      "@arena/runtime-host-composition": ["../../../deploy/runtime/src/composition.ts"],
+      "@arena/escalation-routing-service": [
+        "../../../services/escalation-routing/src/index.ts"
+      ],
+      "@arena/job-orchestrator": ["../../../services/job-orchestrator/src/index.ts"],
+      "@arena/hosted-neon-postgres": [
+        "../../../adapters/hosted/neon-postgres/src/index.ts"
+      ],
+      "@arena/hosted-r2-object-store": [
+        "../../../adapters/hosted/r2-object-store/src/index.ts"
+      ],
+      "@arena/hosted-r2-object-store/test-support": [
+        "../../../adapters/hosted/r2-object-store/src/test-support.ts"
+      ],
+      "@arena/hosted-upstash-redis": [
+        "../../../adapters/hosted/upstash-redis/src/index.ts"
+      ],
+      "@arena/hosted-upstash-redis/test-support": [
+        "../../../adapters/hosted/upstash-redis/src/test-support.ts"
+      ],
+      "@arena/payments-adapters": ["../../../adapters/payments/src/index.ts"],
+      "@arena/payments": ["../../../packages/payments/src/index.ts"],
+      "@arena/payments-service": ["../../../services/payments/src/index.ts"],
+      "@arena/intervention": ["../../../packages/intervention/src/index.ts"],
+      "@arena/persistence": ["../../../packages/persistence/src/index.ts"],
+      "@arena/protocol-core": ["../../../packages/protocol-core/src/index.ts"],
+      "@arena/escalation": ["../../../packages/escalation/src/index.ts"],
+      "@arena/job-protocol": ["../../../packages/job-protocol/src/index.ts"],
+      "@arena/expert-session": ["../../../packages/expert-session/src/index.ts"],
+      "@arena/expert-session/test-support": [
+        "../../../packages/expert-session/src/test-support.ts"
+      ],
+      "@arena/expert-session-policy": [
+        "../../../packages/expert-session-policy/src/index.ts"
+      ],
+      "@arena/expert-session-policy/test-support": [
+        "../../../packages/expert-session-policy/src/test-support.ts"
+      ],
+      "@arena/capability-learning": [
+        "../../../packages/capability-learning/src/index.ts"
+      ],
+      "@arena/capability-learning/test-support": [
+        "../../../packages/capability-learning/src/test-support.ts"
+      ],
+      "@arena/security": ["../../../packages/security/src/index.ts"],
+      "@arena/security-service": ["../../../services/security/src/index.ts"],
+      "@electric-sql/pglite": [
+        "../../../services/runtime-host/node_modules/@electric-sql/pglite/dist/index.d.ts"
+      ],
+      "vitest": ["../../../services/escalation-api/node_modules/vitest/dist/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts", "vitest.config.ts"]
+}
