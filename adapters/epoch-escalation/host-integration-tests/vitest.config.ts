@@ -1,49 +1,42 @@
 /**
- * tests/integration/production battery — the P006 integrated
- * generic-AI-app + Epoch end-to-end acceptance battery (NOT a pnpm
- * workspace project; run via `node tests/integration/production/run.mjs`,
- * which drives services/runtime-host's typescript + vitest — the
- * tests/runtime-host precedent, chosen because services/runtime-host owns
- * the @electric-sql/pglite pin this battery composes as its embedded real
- * Postgres engine).
+ * adapters/epoch-escalation/host-integration-tests battery — the P006
+ * EPOCH ADAPTER host-integration surface (Work Order P006; issue #158;
+ * ADR-P001-08: Epoch consumes over the PUBLIC transport — no
+ * Epoch-specific Arena API).
  *
- * Every proof boots the REAL integrated deployment:
- *   - the REAL durable components over ONE shared SqlTransport (the
- *     embedded real PostgreSQL 17 engine — PGlite WASM — for the CI
- *     zero-credential path; the P002 battery precedent);
- *   - the REAL service engines (EscalationApiService with the REAL
- *     routing service over a REAL capability graph + routing-candidate
- *     directory, JobOrchestrator) injected through the frozen host seam
- *     (createRuntimeHost) — mirroring deploy/runtime/src/composition.ts
- *     (the production composition is ALSO booted verbatim in
- *     composition.e2e.test.ts through composeRuntimeHost);
- *   - the REAL public transport: services/escalation-api/src/http-host
- *     listener on a REAL port (the ACTUAL local URL both clients talk
- *     to) + the REAL webhook-delivery service draining the REAL durable
- *     outbox to a REAL webhook receiver + the REAL developer-platform
- *     key model;
- *   - TWO clients, both over PUBLIC TRANSPORT ONLY (ADR-P001-07/08):
- *     the generic AI application client harness (plain fetch + signed
- *     webhook consumption) and the Epoch adapter
- *     (adapters/epoch-escalation, driven through its host-integration
- *     surface and re-driven here for the identical-public-flow proof).
+ * NOT part of the adapter package's own `vitest run` (its frozen config
+ * includes src/** only); this is a SELF-CONTAINED battery exactly like
+ * tests/integration/production (also not a pnpm workspace project — the
+ * workspace root does not include tests/* or extra adapter subtrees, and
+ * adding one would be a root-manifest edit this worker must not make).
+ * Run it either way:
+ *
+ *   node adapters/epoch-escalation/host-integration-tests/run.mjs
+ *   node tests/integration/production/run.mjs   # the FULL integrated battery (both clients)
+ *
+ * The battery boots the REAL integrated deployment through the SHARED
+ * harness imported from tests/integration/production/support/ (imported,
+ * not replicated — one composition site, two clients) and drives the
+ * Epoch adapter through the identical §15 public flow plus the adapter's
+ * own fail-closed walls.
+ *
+ * NOTE: this config deliberately does NOT import 'vitest/config' — the
+ * battery has no node_modules of its own; vitest (owned by
+ * services/runtime-host, driven via run.mjs) loads a plain
+ * default-export config just fine (the tests/integration/production
+ * precedent).
  */
 
 import { fileURLToPath } from 'node:url';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 
-/**
- * NOTE: this config deliberately does NOT import 'vitest/config' —
- * tests/integration/production has no node_modules of its own (it is not
- * a workspace project), and vitest loads a plain default-export config
- * just fine (the tests/api-host precedent).
- */
 export default {
   resolve: {
     alias: {
       // The battery's bare imports, resolved into the REAL workspace
-      // sources (type-source identities, not built artifacts).
+      // sources (type-source identities, not built artifacts) — the SAME
+      // alias set the tests/integration/production battery uses.
       '@arena/capability-learning/test-support': `${here}../../../packages/capability-learning/src/test-support.ts`,
       '@arena/runtime-host-service/test-support': `${here}../../../services/runtime-host/src/test-support.ts`,
       '@arena/runtime-host-composition': `${here}../../../deploy/runtime/src/composition.ts`,
@@ -58,7 +51,7 @@ export default {
       '@arena/escalation-adapters': `${here}../../../adapters/escalation/src/index.ts`,
       '@arena/payments-adapters': `${here}../../../adapters/payments/src/index.ts`,
       '@arena/hosted-neon-postgres': `${here}../../../adapters/hosted/neon-postgres/src/index.ts`,
-      '@arena/epoch-escalation-adapter': `${here}../../../adapters/epoch-escalation/src/index.ts`,
+      '@arena/epoch-escalation-adapter': `${here}../src/index.ts`,
       '@arena/runtime-host': `${here}../../../packages/runtime-host/src/index.ts`,
       '@arena/developer-platform': `${here}../../../packages/developer-platform/src/index.ts`,
       '@arena/capability-learning': `${here}../../../packages/capability-learning/src/index.ts`,
@@ -91,19 +84,13 @@ export default {
   test: {
     environment: 'node',
     include: ['**/*.test.ts'],
-    // Each suite boots a full embedded PostgreSQL 17 (WASM) + a real
-    // HTTP listener + real webhook round-trips.
+    // The suite boots a full embedded PostgreSQL 17 (WASM) + a real HTTP
+    // listener + real webhook round-trips.
     testTimeout: 180_000,
     hookTimeout: 180_000,
     teardownTimeout: 60_000,
     // Evidence capture (fresh timestamps; the honest classification
     // lives in docs/evidence/production/integration/README.md).
-    // SESSION-2 CORRECTION: the previous depth ('../../../..') pointed
-    // one directory ABOVE the repository root, so session-1's transcripts
-    // escaped the worktree (nothing in-repo was written; nothing
-    // historical was rewritten). The corrected depth lands the fresh
-    // transcripts in docs/evidence/production/integration/ inside the
-    // repository, where the evidence bundle commits them.
     env: {
       ARENA_P006_EVIDENCE_OUT:
         process.env.ARENA_P006_EVIDENCE_OUT ?? `${here}../../../docs/evidence/production/integration`,
