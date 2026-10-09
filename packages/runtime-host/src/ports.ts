@@ -144,12 +144,12 @@ export interface WebhookDeliveryRecordJson {
 
 /**
  * Durable, at-least-once webhook outbox — mirrors C001's `WebhookOutbox`
- * with the envelope pre-serialized by the caller (the port is pure
- * data: the host persists the canonical wire form verbatim).
+ * exactly (event + envelope parameters; the event carries the idempotent
+ * consumer key and the envelope is persisted as the canonical wire form).
  */
 export interface WebhookOutboxPort {
-  /** Append one serialized event envelope; throws on duplicate eventId (dedupe). */
-  append(envelope: Envelope<EscalationWebhookEvent>): Promise<void>;
+  /** Append one event envelope; throws on duplicate eventId (dedupe). */
+  append(event: EscalationWebhookEvent, envelope: Envelope<EscalationWebhookEvent>): Promise<void>;
   /** Pending (undelivered) deliveries in append order. */
   listPending(): Promise<readonly WebhookDeliveryRecordJson[]>;
   /** All deliveries (audit / tests). */

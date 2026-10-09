@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Neon PostgreSQL adapter for @arena/persistence (Work Order B002; issue #64; FT2.0 'Database'): authoritative control-plane repository + versioned ordered SQL migrations with an applied-record ledger over @neondatabase/serverless (exact pin; Vercel-compatible HTTP driver). DISABLED fail-closed without configuration; capacity probe; SqlTransport seam for credential-free contract tests.",
+  "description": "Neon PostgreSQL adapter for @arena/persistence (Work Order B002; issue #64; FT2.0 'Database'), extended by P002 (issue #154) with the durable host-runtime SQL surface: authoritative control-plane repository + versioned ordered SQL migrations (control-plane + P002 runtime tables) with an applied-record ledger + the named durable-runtime statement set, over @neondatabase/serverless (exact pin; Vercel-compatible HTTP driver). DISABLED fail-closed without configuration; capacity probe; SqlTransport seam for credential-free contract tests.",
   "exports": {
     ".": {
       "types": "./src/index.ts",

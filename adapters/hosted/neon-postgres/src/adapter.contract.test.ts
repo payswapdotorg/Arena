@@ -50,7 +50,8 @@ describe('neon-postgres adapter discipline', () => {
     const transport = new FakeSqlTransport({ enforceTables: true });
     const runner = new NeonMigrationRunner({ transport, clock });
     const migrations = bindSqlMigrations(transport);
-    expect(migrations.map((migration) => migration.version)).toEqual([1, 2]);
+    // 0001-0002 control plane (B002) + 0003-0005 durable host runtime (P002).
+    expect(migrations.map((migration) => migration.version)).toEqual([1, 2, 3, 4, 5]);
 
     // Before bootstrap, repository operations fail closed on the missing
     // relation (the transport enforces table existence).
@@ -70,16 +71,26 @@ describe('neon-postgres adapter discipline', () => {
     expect(isPersistenceError(transportFailure)).toBe(true);
 
     const first = await runner.run(migrations);
-    expect(first.applied.map((entry) => entry.version)).toEqual([1, 2]);
+    expect(first.applied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5]);
     expect(first.fromVersion).toBeNull();
-    expect(first.toVersion).toBe(2);
+    expect(first.toVersion).toBe(5);
     expect(transport.createdTables()).toContain('arena_control_record');
     expect(transport.createdTables()).toContain('arena_migration_ledger');
+    // P002 durable host-runtime tables (migrations 0003-0005).
+    expect(transport.createdTables()).toContain('arena_escalation_record');
+    expect(transport.createdTables()).toContain('arena_escalation_event');
+    expect(transport.createdTables()).toContain('arena_webhook_outbox');
+    expect(transport.createdTables()).toContain('arena_job_record');
+    expect(transport.createdTables()).toContain('arena_job_event');
+    expect(transport.createdTables()).toContain('arena_audit_record');
+    expect(transport.createdTables()).toContain('arena_job_dead_letter');
+    expect(transport.createdTables()).toContain('arena_runtime_idempotency');
+    expect(transport.createdTables()).toContain('arena_projection_state');
 
     // Re-run is a no-op.
     const second = await runner.run(migrations);
     expect(second.applied).toEqual([]);
-    expect(second.skipped.map((entry) => entry.version)).toEqual([1, 2]);
+    expect(second.skipped.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5]);
 
     // After bootstrap the repository works.
     const inserted = await repo.insert({

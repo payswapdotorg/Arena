@@ -1,12 +1,26 @@
 /**
  * @arena/hosted-neon-postgres — the Neon PostgreSQL adapter for
- * @arena/persistence (Work Order B002; issue #64; FT2.0 "Database").
+ * @arena/persistence (Work Order B002; issue #64; FT2.0 "Database";
+ * extended by Work Order P002; issue #154 with the durable host-runtime
+ * stores).
  *
  * Public surface:
  *   env         — env-var contract (DATABASE_URL / NEON_CONNECTION_STRING)
  *   sql-transport — the SqlTransport seam + the default Neon HTTP driver
  *                 transport (the ONLY infrastructure touchpoint)
- *   statements  — the closed, named, parameterized SQL statement set
+ *   statements  — the closed, named, parameterized control-plane SQL set
+ *   runtime-statements — the closed, named, parameterized durable
+ *                 host-runtime SQL set (P002 tables: escalation
+ *                 lifecycle/event records, the webhook outbox, idempotency
+ *                 outcomes, job records with claim/lease/dead-letter
+ *                 columns, job-event envelopes, the tamper-evident audit
+ *                 chain, projection state). The durable PORT
+ *                 implementations over these statements live in
+ *                 services/runtime-host (the P002 composition root)
+ *                 because the nested-adapter glob gap means dependency
+ *                 manifests materialize only through the TL-owned
+ *                 adapters/hosted container manifest — disclosed in the
+ *                 P002 PR body.
  *   adapter     — NeonControlPlaneRepository (ControlPlaneRepository +
  *                 CapacityProbe; DISABLED fail-closed without config)
  *   migrations  — SQL_MIGRATION_SOURCES (inlined mirror of migrations/*.sql),
@@ -23,6 +37,7 @@
 export * from './env.js';
 export * from './sql-transport.js';
 export * from './statements.js';
+export * from './runtime-statements.js';
 export * from './adapter.js';
 export * from './migrations.js';
 
