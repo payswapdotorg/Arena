@@ -1,0 +1,38 @@
+{
+  "name": "@arena/webhook-delivery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arena signed webhook delivery service (Work Order P003; issue #155; ADR-P001-08 rule 4 — at-least-once signed delivery of the closed 13-type taxonomy, deduped per EVENT ID never per type; ADR-P001-01 — job-driven dispatch where the host provides it). Drains the P002 durable webhook outbox (the frozen @arena/runtime-host WebhookOutboxPort) through the existing adapters/escalation WebhookDeliveryAdapter contract (HMAC-SHA256, x-arena-signature, x-arena-event-id, deterministic backoff retry, explicit dead-letter) over a real node fetch transport. DISCLOSED: the frozen host job-kind registry is closed (no webhook-delivery kind is registrable without editing the frozen P002 package), so dispatch rides a dedicated durable loop — the outbox is the durable substrate (listPending/markDelivered over Postgres); the attempt ledger + dead-letter lot are process-local (a restart re-arms pending events from the durable outbox — at-least-once holds; dead-letter permanence across restart is the disclosed limitation).",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@arena/escalation-adapters": "workspace:*",
+    "@arena/runtime-host": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

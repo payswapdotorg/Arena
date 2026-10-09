@@ -1,0 +1,7 @@
+{
+  "name": "@arena/api-host-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "P003 public-transport acceptance battery (tests/api-host — NOT a pnpm workspace project; run via node tests/api-host/run.mjs, which drives services/escalation-api's typescript + vitest). A generic plain-fetch client against an ACTUAL local URL: the real node:http listener over the frozen host seam + the REAL EscalationApiService/routing/JobOrchestrator engines + the REAL durable components + the REAL developer-platform key model; end-to-end create/status/replay/collision, typed auth + tenant negatives, the MCP boundary over the same authority, and signed webhook delivery end-to-end (signature verify, per-event-id dedupe on duplicate delivery, forgery rejection, bounded timeout + retry + dead-letter) through the REAL webhook-delivery service draining the REAL durable outbox. Plus the mirror parity pins the http-host/mcp-host doc comments promise."
+}
