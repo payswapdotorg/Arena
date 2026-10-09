@@ -54,6 +54,11 @@ restart-recovery sweep and flips to `started`.
   structural-parity pinning the frozen package's comment names. The
   battery's `run.mjs` reaches this source through an explicit alias
   (the P004 `@arena/deploy/env-contract` battery-alias precedent).
+- **EVIDENCE.md** (this directory) is the release-gate-facing summary of
+  the five P002 acceptance proofs — environment, migration output,
+  restart/resume proof, idempotent replay proof, cross-tenant
+  fail-closed proof — with the machine-generated transcripts in
+  `tests/runtime-host/evidence/`.
 - `deploy/`'s own battery does not cover this subtree (deploy's
   `tsconfig.json`/`vitest.config.ts` include `src/` only; those root
   files are outside P002's owned surfaces) — disclosed in the PR body.

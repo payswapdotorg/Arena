@@ -44,9 +44,16 @@ export function insertEscalationRecordStatement(row: {
 }): SqlStatement {
   return {
     name: 'insert_escalation_record',
+    // RETURNING request_id: a REAL Postgres returns zero rows for a
+    // plain INSERT ... ON CONFLICT DO NOTHING on BOTH success and
+    // conflict — the RETURNING row is the ONLY success signal the
+    // caller can dispatch on (the same shape insert_webhook_delivery /
+    // insert_job_record / record_idempotency_outcome carry). Found by
+    // the P002 real-database acceptance battery (PGlite).
     sql: `INSERT INTO arena_escalation_record (${ESCALATION_RECORD_COLUMNS})
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10, $11)
-ON CONFLICT (request_id) DO NOTHING`,
+ON CONFLICT (request_id) DO NOTHING
+RETURNING request_id`,
     params: [
       row.requestId,
       row.tenantId,

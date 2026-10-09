@@ -1,0 +1,7 @@
+{
+  "name": "@arena/runtime-host-battery",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "P002 durable host runtime acceptance battery (tests/runtime-host — NOT a pnpm workspace project; run via node tests/runtime-host/run.mjs, which drives services/runtime-host's typescript + vitest). Evidence classes: (1) composition parity — the REAL service engines composed through deploy/runtime/src/composition.ts over the reference transport; (2) embedded real Postgres — @electric-sql/pglite (a real PostgreSQL 17 WASM build) executing the real migration DDL + named statement set, proving the five P002 acceptance criteria with zero credentials; (3) live Neon — self-skipping suites against the DEDICATED arena-p002-evidence project through the real Neon HTTP driver, with redacted transcripts captured into tests/runtime-host/evidence/."
+}
