@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "description": "Machine-readable work-order owned-surface registry. Derived from spec/work-items.md (A-series, AWO1.0), spec/post-v1-work-items.md (B-series, BWO1.0), spec/human-escalation-work-items.md (C-series, CWO roster) and spec/post-b019-launch-integrity-closure.md (G-series). The governance checker (scripts/governance-check.py) enforces: (1) every changed path in a work-order branch matches at least one surface of SOME work order; (2) concurrently ACTIVE/AUTHORIZED work orders have pairwise-disjoint surfaces.",
+  "description": "Machine-readable work-order owned-surface registry. Derived from spec/work-items.md (A-series, AWO1.0), spec/post-v1-work-items.md (B-series, BWO1.0), spec/human-escalation-work-items.md (C-series, CWO roster) and spec/post-b019-launch-integrity-closure.md (G-series). The governance checker (scripts/governance-check.py) enforces: (1) every changed path in a work-order branch matches at least one surface of SOME work order; (2) concurrently ACTIVE/AUTHORIZED work orders have pairwise-disjoint surfaces. P-series productionization WOs are defined in spec/post-roadmap-production-work-items.md.",
   "semantics": {
     "globs": "fnmatch-style. '*' matches any characters including '/'. A pattern without '*' is an exact path. A pattern ending in '/*' covers the directory tree beneath the prefix.",
     "root_manifests": "A001's 'root manifests' surface from spec/work-items.md, expanded to explicit root-level file paths.",
@@ -552,6 +552,83 @@
       "surfaces": [
         "packages/capability-learning/*",
         "services/capability-learning/*"
+      ]
+    },
+    "P000": {
+      "surfaces": [
+        "scripts/governance-check.py",
+        "scripts/work-order-surfaces.json",
+        "AI_CONTINUATION.md",
+        "docs/LLM-ARCHITECT-FINAL-HANDOFF.md",
+        "docs/LLM-ARCHITECT-HANDOFF.md",
+        "docs/launch-checklist.md",
+        "spec/PROJECT-STATE.md",
+        "spec/post-roadmap-production-work-items.md",
+        "spec/post-roadmap-production-dependency-graph.md"
+      ]
+    },
+    "P001": {
+      "surfaces": [
+        "docs/architecture-review/*",
+        "docs/decisions/post-roadmap/*"
+      ]
+    },
+    "P002": {
+      "surfaces": [
+        "services/runtime-host/*",
+        "packages/runtime-host/*",
+        "adapters/hosted/neon-postgres/*",
+        "deploy/runtime/*",
+        "tests/runtime-host/*"
+      ]
+    },
+    "P003": {
+      "surfaces": [
+        "apps/api/*",
+        "services/escalation-api/src/http-host/*",
+        "services/escalation-api/src/mcp-host/*",
+        "services/webhook-delivery/*",
+        "tests/api-host/*"
+      ]
+    },
+    "P004": {
+      "surfaces": [
+        "adapters/hosted/r2-object-store/*",
+        "adapters/hosted/upstash-redis/*",
+        "tests/hosted-provider-e2e/*",
+        "docs/evidence/production/providers/*"
+      ]
+    },
+    "P005": {
+      "surfaces": [
+        "apps/web/src/app/*",
+        "docs/evidence/production/ux/*"
+      ]
+    },
+    "P006": {
+      "surfaces": [
+        "tests/integration/production/*",
+        "docs/evidence/production/integration/*",
+        "examples/generic-ai-client/deployment-tests/*",
+        "adapters/epoch-escalation/host-integration-tests/*"
+      ]
+    },
+    "P007": {
+      "surfaces": [
+        "docs/security/post-roadmap/*",
+        "tests/security/production/*",
+        "tests/resilience/production/*",
+        "docs/evidence/production/security/*"
+      ]
+    },
+    "P008": {
+      "surfaces": [
+        "docs/launch-checklist.md",
+        "docs/evidence/production/*",
+        "release/evidence/production/*",
+        "docs/LLM-ARCHITECT-FINAL-HANDOFF.md",
+        "AI_CONTINUATION.md",
+        "spec/PROJECT-STATE.md"
       ]
     }
   }
