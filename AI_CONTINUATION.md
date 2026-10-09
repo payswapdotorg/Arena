@@ -434,3 +434,47 @@ pass follows P006 per the dependency graph (wave 4: P008 after P006 + P007 dispo
 Resident TL watch loop active per the operator directive: monitor → harvest → review →
 approve/require-changes → dispatch next, until the program completes. Replay stack
 rebuilt and healthy (console :3000, replayd :3100, CDP :9222, keeper processes live).
+
+## WAVE-3 HARVEST AND P002-F1 SERIALIZATION (2026-10-09, TL)
+
+PR #167 (P006 integrated acceptance, head a8ef6c2) merged at main f662603 and PR #168
+(P007 integrated adversarial pass, head d0593e9) merged at main bdd09e1, both after CI
+Battery success on the exact head SHAs. Issues #158 and #159 closed by the merges. The
+full P-series implementation program P001-P007 is now MERGED.
+
+P006 delivered (three-session lineage + TL finisher, disclosed): the integrated battery —
+both the generic AI client and the Epoch adapter over PUBLIC TRANSPORT (real node:http
+listener, embedded real Postgres) through the full §15 core flow, identical-public-flow
+receipt equality, the resilience matrix (hard mid-flow restart → flow completes; same-key
+race → exactly-once invariant with the F-08 loser distribution; 8-way parallel isolation;
+post-deadline denial + durable sweep; cross-tenant fail-closed), and the five-transcript
+evidence bundle with per-proof engine classes. Battery: integrated 7/7; workspace 123/123.
+
+P007 integrated pass delivered (two-session lineage + TL finisher, disclosed): all 14
+threat-model attack classes as adversarial suites (13 files / 66 tests) + the resilience
+battery (6 tests) — tenant isolation fail-closed at service boundaries, webhook forgery,
+API-key misuse, idempotency races (exactly-once holds), restart partial-state, learning
+boundary, digest integrity, policy drift, live-world writeback typed denial, fail-closed
+bypass. TWO findings filed (additive register rows, nothing closed):
+
+- **F-08** (medium, OPEN): racing idempotency losers get the typed fail-closed conflict
+  rather than the smooth C001 replay — remediation = catch-and-replay conversion in
+  P002/P003-owned surfaces.
+- **F-09** (HIGH, OPEN): the payments service's in-process ledger/outbox reference fabric
+  double-applies concurrent SAME-operation-key settlement operations (the
+  charge-succeeded/record-failed race — reproduced 6/6 applied); sequential replay is
+  correct; remediation = the durable payment ledger/outbox swap (P002/C010 surfaces).
+
+P008 is HELD at its entry criterion (release-gate §2): "every P007 critical/high finding
+either fixed or formally accepted in writing by the release owner" — F-09 (high) is
+neither. A waiver requires the release owner's written rationale (not available to the
+TL). **P002-F1 AUTHORIZED** as the serialized remediation work order: the durable payment
+ledger/outbox swap (per-operation-key uniqueness on the durable host stores) + the F-08
+catch-and-replay conversion, on the P002/P003/C010 surfaces, with both pinned regressions
+(ac09's F-09 block; ac07's loser distribution) flipping as the acceptance proof. P008
+dispatch follows P002-F1's merge. F-07 (critical, BLOCKED-COMMERCIAL) remains the release
+owner's hard-gate decision and will surface as the named NO-GO driver at the gate until
+settled.
+
+Resident TL watch loop continues per the operator directive. Replay stack healthy
+(console :3000, replayd :3100, CDP :9222).
