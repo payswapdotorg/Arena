@@ -115,6 +115,38 @@ interface ProjectionRow {
   updated_at: number;
 }
 
+interface PaymentLedgerRow {
+  request_id: string;
+  tenant_id: string;
+  correlation_id: string;
+  currency: string;
+  truth: string;
+  state: string;
+  entries_length: number;
+  ledger: unknown;
+  created_at: number;
+  updated_at: number;
+}
+
+interface PaymentLedgerEntryRow {
+  request_id: string;
+  sequence: number;
+  operation_key: string;
+  tenant_id: string;
+  entry: unknown;
+  appended_at: number;
+}
+
+interface PaymentOutboxRow {
+  event_id: string;
+  request_id: string;
+  tenant_id: string;
+  sequence: number;
+  payload: string;
+  created_at: number;
+  delivered_at: number | null;
+}
+
 interface LedgerRow {
   version: number;
   name: string;
@@ -136,6 +168,9 @@ export class MemoryRuntimeTransport implements SqlTransport {
   private readonly deadLetters = new Map<string, DeadLetterRow>();
   private readonly idempotency = new Map<string, IdempotencyRow>();
   private readonly projections = new Map<string, ProjectionRow>();
+  private readonly paymentLedgers = new Map<string, PaymentLedgerRow>();
+  private readonly paymentLedgerEntries = new Map<string, PaymentLedgerEntryRow>();
+  private readonly paymentOutbox = new Map<string, PaymentOutboxRow>();
   private readonly ledger = new Map<number, LedgerRow>();
   private readonly tables = new Set<string>();
   readonly executedStatements: string[] = [];
@@ -152,6 +187,9 @@ export class MemoryRuntimeTransport implements SqlTransport {
         'arena_job_dead_letter',
         'arena_runtime_idempotency',
         'arena_projection_state',
+        'arena_payment_ledger',
+        'arena_payment_ledger_entry',
+        'arena_payment_outbox',
         'arena_migration_ledger',
         'arena_control_record',
       ]) {
@@ -499,6 +537,113 @@ export class MemoryRuntimeTransport implements SqlTransport {
         return row !== undefined ? [{ ...row }] : [];
       }
 
+      // -- payment escrow ledger + entry rows + payment outbox (P002-F1) ----
+      case 'insert_payment_ledger': {
+        this.requireTable('arena_payment_ledger');
+        const requestId = String(p(0));
+        if (this.paymentLedgers.has(requestId)) return [];
+        this.paymentLedgers.set(requestId, {
+          request_id: requestId,
+          tenant_id: String(p(1)),
+          correlation_id: String(p(2)),
+          currency: String(p(3)),
+          truth: String(p(4)),
+          state: String(p(5)),
+          entries_length: Number(p(6)),
+          ledger: parseJson(p(7)),
+          created_at: Number(p(8)),
+          updated_at: Number(p(9)),
+        });
+        return [{ request_id: requestId }];
+      }
+      case 'select_payment_ledger': {
+        this.requireTable('arena_payment_ledger');
+        const row = this.paymentLedgers.get(String(p(0)));
+        return row !== undefined ? [{ ...row, ledger: row.ledger }] : [];
+      }
+      case 'select_all_payment_ledgers': {
+        this.requireTable('arena_payment_ledger');
+        return [...this.paymentLedgers.values()]
+          .sort((a, b) => (a.request_id < b.request_id ? -1 : 1))
+          .map((row) => ({ ...row, ledger: row.ledger }));
+      }
+      case 'update_payment_ledger': {
+        this.requireTable('arena_payment_ledger');
+        const requestId = String(p(0));
+        const entriesLength = Number(p(6));
+        const row = this.paymentLedgers.get(requestId);
+        if (row === undefined || row.entries_length >= entriesLength) return [];
+        const updated: PaymentLedgerRow = {
+          ...row,
+          tenant_id: String(p(1)),
+          correlation_id: String(p(2)),
+          currency: String(p(3)),
+          truth: String(p(4)),
+          state: String(p(5)),
+          entries_length: entriesLength,
+          ledger: parseJson(p(7)),
+          updated_at: Number(p(8)),
+        };
+        this.paymentLedgers.set(requestId, updated);
+        return [{ request_id: requestId }];
+      }
+      case 'insert_payment_ledger_entry': {
+        this.requireTable('arena_payment_ledger_entry');
+        const requestId = String(p(0));
+        const sequence = Number(p(1));
+        const operationKey = String(p(2));
+        const key = `${requestId}:${String(sequence)}`;
+        if (this.paymentLedgerEntries.has(key)) return [];
+        // The UNIQUE (request_id, operation_key) exactly-once gate: a
+        // same-key row at a DIFFERENT sequence raises (fail closed),
+        // exactly like the real unique index does.
+        for (const row of this.paymentLedgerEntries.values()) {
+          if (row.request_id === requestId && row.operation_key === operationKey) {
+            throw new PersistenceError(PERSISTENCE_ERROR_CODES.TRANSPORT_FAILED, {
+              message: `duplicate key value violates unique constraint "arena_payment_ledger_operation_idx" on (request_id, operation_key)`,
+              details: { requestId, operationKey },
+            });
+          }
+        }
+        this.paymentLedgerEntries.set(key, {
+          request_id: requestId,
+          sequence,
+          operation_key: operationKey,
+          tenant_id: String(p(3)),
+          entry: parseJson(p(4)),
+          appended_at: Number(p(5)),
+        });
+        return [{ sequence }];
+      }
+      case 'insert_payment_outbox_delivery': {
+        this.requireTable('arena_payment_outbox');
+        const eventId = String(p(0));
+        if (this.paymentOutbox.has(eventId)) return [];
+        this.paymentOutbox.set(eventId, {
+          event_id: eventId,
+          request_id: String(p(1)),
+          tenant_id: String(p(2)),
+          sequence: Number(p(3)),
+          payload: String(p(4)),
+          created_at: Number(p(5)),
+          delivered_at: null,
+        });
+        return [{ event_id: eventId }];
+      }
+      case 'select_pending_payment_outbox_deliveries':
+        this.requireTable('arena_payment_outbox');
+        return this.filterPaymentOutbox((row) => row.delivered_at === null);
+      case 'select_all_payment_outbox_deliveries':
+        this.requireTable('arena_payment_outbox');
+        return this.filterPaymentOutbox(() => true);
+      case 'mark_payment_outbox_delivery_delivered': {
+        this.requireTable('arena_payment_outbox');
+        const row = this.paymentOutbox.get(String(p(0)));
+        if (row === undefined || row.delivered_at !== null) return [];
+        row.delivered_at = Number(p(1));
+        return [{ event_id: row.event_id }];
+      }
+
       default:
         throw new PersistenceError(PERSISTENCE_ERROR_CODES.TRANSPORT_FAILED, {
           message: `MemoryRuntimeTransport does not implement statement: ${statement.name}`,
@@ -530,6 +675,13 @@ export class MemoryRuntimeTransport implements SqlTransport {
       .filter(predicate)
       .sort((a, b) => (a.job_id < b.job_id ? -1 : 1))
       .map((row) => ({ ...row, record: row.record }));
+  }
+
+  private filterPaymentOutbox(predicate: (row: PaymentOutboxRow) => boolean): SqlRow[] {
+    return [...this.paymentOutbox.values()]
+      .filter(predicate)
+      .sort((a, b) => a.created_at - b.created_at || (a.event_id < b.event_id ? -1 : 1))
+      .map((row) => ({ ...row }));
   }
 
   private trackCreateTable(sql: string): void {

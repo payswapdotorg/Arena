@@ -81,6 +81,16 @@ export const SQL_STATEMENT_NAMES = Object.freeze([
   'select_all_audit_records',
   'upsert_projection_state',
   'select_projection_state',
+  // P002-F1 durable payment statements (see ./runtime-statements.ts; F-09).
+  'insert_payment_ledger',
+  'select_payment_ledger',
+  'select_all_payment_ledgers',
+  'update_payment_ledger',
+  'insert_payment_ledger_entry',
+  'insert_payment_outbox_delivery',
+  'select_pending_payment_outbox_deliveries',
+  'select_all_payment_outbox_deliveries',
+  'mark_payment_outbox_delivery_delivered',
 ] as const);
 
 export type SqlStatementName = (typeof SQL_STATEMENT_NAMES)[number];
