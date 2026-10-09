@@ -310,3 +310,43 @@ Wave 1 AUTHORIZED on live main d2f364f per spec/post-roadmap-production-dependen
 Dependencies were revalidated from live main post-merge per the dependency-graph law.
 P003 (wave 2) waits on P002 freezing the host/runtime interface. The release boundary
 stands: no live-money claim before the P008 hard gates clear.
+
+## WAVE-1 HARVEST: P004 AND P005 ACCEPTED (2026-10-09, TL)
+
+PR #162 (P004 hosted-provider lifecycle, head d4649c0) merged at main 9d2c9bc and PR #163
+(P005 route inventory, head 8b5ec8d) merged at main 81dbb0e, both after the normal merge
+gate: CI Battery success on the exact head SHAs, mergeable state clean, and TL content
+review. Issues #156 and #157 closed by the merges.
+
+P004 delivered: the hosted-provider E2E battery (tests/hosted-provider-e2e — live R2
+object lifecycle, R2 failure/capacity matrix, live Upstash coordination semantics, Upstash
+failure matrix, zero-credential fail-closed boot; 43 tests, 0 skipped, all live suites
+active at harvest time) plus five evidence transcripts under docs/evidence/production/
+providers/* classified per the release-gate vocabulary — R2 write/head/read+download/
+digest/delete and Upstash lease/lock/idempotency/rate-limit/cache/isolation are
+DEMONSTRATED-LIVE; adapter retry postures, SDK retry stubs and EXHAUSTED gates are
+AUTOMATED-TEST-ONLY; live quota exhaustion, R2 retention, Upstash queue and true
+cross-account access are honestly NOT claimed with recorded reasons. PING is recorded as
+context only, closing L-005's "PING is not coordination proof" gap for the operations the
+runtime uses. Honest lineage disclosed in the PR: the original worker died after the
+battery commit; a finisher session committed the evidence and opened the PR.
+
+P005 delivered: the reconciled route inventory (docs/evidence/production/ux/
+route-inventory.md — 83 build-table rows reconciled against the UXM1.0 matrix and C-series
+PR bodies), the three ADR-P001-09 surface dispositions (S-01 competitions MOUNTED at
+/competitions + /competitions/[id]; S-02 body-marketplace MOUNTED at /body-marketplace +
+/listings/[listingId] + /request-pretraining + /my-listings; S-03 developer-portal writes
+RESOLVED with real POST API routes under /developers/api/* carrying fail-closed typed-401
+auth, demo read-only 403, strict same-origin CSRF and the C001 idempotency law), and the
+/tasks fix (L-007 — distinct honest signpost index, 5-test evidence). R-084 recorded
+intentionally non-UI. Battery all green (8,039 tests passed / 0 failed). Honest lineage
+disclosed: the original worker died after pushing M1/M2; a finisher delivered the
+inventory + PR. Disclosed follow-ups: console UI wiring to the S-03 endpoints (C017
+feature surface frozen for P005), durable idempotency + developer-platform runtime (P002),
+and a TL-owned spec naming divergence (/runs/:id matrix name vs served /replay/[runKey]).
+
+P002 remains in flight (worker lineage session 3): the frozen host-runtime interface
+package (packages/runtime-host, M1 commit 426a764) is pushed; the neon-postgres durable
+extension (M2) is in progress. TL lockfile intake is expected at P002 harvest (new
+workspace package — the A017 reconcile precedent). P003 (wave 2) waits on P002 freezing
+the host/runtime interface. The release boundary stands.
