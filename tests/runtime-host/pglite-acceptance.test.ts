@@ -31,14 +31,15 @@ describe('P002 acceptance — embedded real Postgres (PGlite) through the produc
         transcript,
       });
 
-      // (a) a clean database migrated all five versions from zero.
-      expect(verdict.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5]);
+      // (a) a clean database migrated all six versions from zero.
+      expect(verdict.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5, 6]);
       expect(verdict.migrationsApplied.map((entry) => entry.name)).toEqual([
         'create-control-plane-records',
         'create-migration-ledger',
         'create-runtime-escalation-records',
         'create-runtime-job-records',
         'create-runtime-idempotency-and-projections',
+        'create-payment-ledger-and-outbox',
       ]);
       // (b) the real adapter persisted + read the accepted escalation back.
       expect(verdict.escalationReadBack).toBe(true);
@@ -74,7 +75,7 @@ describe('P002 acceptance — embedded real Postgres (PGlite) through the produc
       const { composeRuntimeHost } = await import('@arena/runtime-host-composition');
       const hostA = await composeRuntimeHost({ transport: handle.transport, clock });
       const first = await hostA.start();
-      expect(first.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5]);
+      expect(first.migrationsApplied.map((entry) => entry.version)).toEqual([1, 2, 3, 4, 5, 6]);
       await hostA.stop();
       const hostB = await composeRuntimeHost({ transport: handle.transport, clock });
       const second = await hostB.start();

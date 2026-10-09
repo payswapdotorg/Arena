@@ -101,14 +101,14 @@ export async function runAcceptanceProofs(
     `- (a) start #1 applied migrations: ${JSON.stringify(startA.migrationsApplied.map((m) => m.version))}`,
   );
   if (migrationMode === 'fresh') {
-    if (startA.migrationsApplied.length !== 5) {
+    if (startA.migrationsApplied.length !== 6) {
       throw new Error(
-        `expected a clean database to migrate 5 versions, got ${String(startA.migrationsApplied.length)}`,
+        `expected a clean database to migrate 6 versions, got ${String(startA.migrationsApplied.length)}`,
       );
     }
-  } else if (startA.migrationsApplied.length !== 0 && startA.migrationsApplied.length !== 5) {
+  } else if (startA.migrationsApplied.length !== 0 && startA.migrationsApplied.length !== 6) {
     throw new Error(
-      `expected 0 (already migrated) or 5 (fresh) applied migrations, got ${String(startA.migrationsApplied.length)}`,
+      `expected 0 (already migrated) or 6 (fresh) applied migrations, got ${String(startA.migrationsApplied.length)}`,
     );
   }
 

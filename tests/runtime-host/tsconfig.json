@@ -20,6 +20,7 @@
       "@arena/job-orchestrator": ["../../services/job-orchestrator/src/index.ts"],
       "@arena/runtime-host": ["../../packages/runtime-host/src/index.ts"],
       "@arena/hosted-neon-postgres": ["../../adapters/hosted/neon-postgres/src/index.ts"],
+      "@arena/payments": ["../../packages/payments/src/index.ts"],
       "@arena/persistence": ["../../packages/persistence/src/index.ts"],
       "@arena/protocol-core": ["../../packages/protocol-core/src/index.ts"],
       "@arena/escalation": ["../../packages/escalation/src/index.ts"],

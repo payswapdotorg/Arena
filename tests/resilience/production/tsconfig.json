@@ -26,6 +26,7 @@
         "../../../services/escalation-routing/src/index.ts"
       ],
       "@arena/job-orchestrator": ["../../../services/job-orchestrator/src/index.ts"],
+      "@arena/payments": ["../../../packages/payments/src/index.ts"],
       "@arena/hosted-neon-postgres": [
         "../../../adapters/hosted/neon-postgres/src/index.ts"
       ],

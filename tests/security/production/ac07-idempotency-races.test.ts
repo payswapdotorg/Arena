@@ -160,6 +160,11 @@ describe('AC-07 — concurrent same-key submissions (the exactly-once invariant)
     // A racing loser is EITHER served the replay (200) or fails closed
     // (typed 500 with the honest concurrent-insert message) — never a
     // silent second create.
+    // [P002-F1 REMEDIATION NOTE: since the F-08 catch-and-replay landed,
+    // racing losers are served the 200 recorded-outcome replay (the
+    // failClosed bucket is empty on this engine) — the C001 law under
+    // contention. The characterization stays: EITHER shape is honest;
+    // a second create is never reachable.]
     for (const exchange of failClosed) {
       expect(exchange.status).toBe(500);
       const body = json(exchange.body);
