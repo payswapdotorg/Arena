@@ -125,12 +125,15 @@ export const DENIAL_CODE_MIRROR: Readonly<Record<ApiKeyDenialReason, DeveloperCo
 
 /**
  * The runtime-host boundary codes — the closed set the frozen host
- * surface throws (services/runtime-host's RuntimeHostError codes + the
- * ADR-P001-02 lens vocabulary). Structural mirror, pinned by
- * tests/api-host.
+ * surface throws (services/runtime-host's RuntimeHostError + the frozen
+ * package's lifecycle and lens error namespaces). Structural mirror,
+ * pinned by tests/api-host (every mirrored value is proven to exist in
+ * the frozen sources; the frozen lifecycle/lens vocabularies are proven
+ * COVERED).
  */
 export const RUNTIME_CODE_MIRROR = Object.freeze([
   'RUNTIME_NOT_STARTED',
+  'RUNTIME_ALREADY_STOPPED',
   'RUNTIME_PERSISTENCE_DISABLED',
   'RUNTIME_CROSS_TENANT_ACCESS',
   'RUNTIME_ESCALATION_NOT_FOUND',
@@ -203,6 +206,7 @@ export const DEVELOPER_CODE_HTTP: Readonly<Record<DeveloperCodeMirror, number>> 
 export const RUNTIME_CODE_HTTP: Readonly<Record<RuntimeCodeMirror, number>> =
   Object.freeze({
     RUNTIME_NOT_STARTED: 503,
+    RUNTIME_ALREADY_STOPPED: 503,
     RUNTIME_PERSISTENCE_DISABLED: 503,
     RUNTIME_CROSS_TENANT_ACCESS: 403,
     RUNTIME_ESCALATION_NOT_FOUND: 404,

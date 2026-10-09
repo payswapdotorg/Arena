@@ -1,0 +1,45 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "typeRoots": ["../../services/escalation-api/node_modules/@types"],
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@arena/escalation-api/http-host": [
+        "../../services/escalation-api/src/http-host/index.ts"
+      ],
+      "@arena/escalation-api/mcp-host": [
+        "../../services/escalation-api/src/mcp-host/index.ts"
+      ],
+      "@arena/escalation-api": ["../../services/escalation-api/src/index.ts"],
+      "@arena/webhook-delivery": ["../../services/webhook-delivery/src/index.ts"],
+      "@arena/escalation-adapters": ["../../adapters/escalation/src/index.ts"],
+      "@arena/developer-platform": [
+        "../../packages/developer-platform/src/index.ts"
+      ],
+      "@arena/runtime-host": ["../../packages/runtime-host/src/index.ts"],
+      "@arena/runtime-host-service": ["../../services/runtime-host/src/index.ts"],
+      "@arena/runtime-host-service/memory-transport": [
+        "../../services/runtime-host/src/memory-transport.ts"
+      ],
+      "@arena/runtime-host-service/test-support": [
+        "../../services/runtime-host/src/test-support.ts"
+      ],
+      "@arena/escalation-routing-service": [
+        "../../services/escalation-routing/src/index.ts"
+      ],
+      "@arena/job-orchestrator": ["../../services/job-orchestrator/src/index.ts"],
+      "@arena/hosted-neon-postgres": [
+        "../../adapters/hosted/neon-postgres/src/index.ts"
+      ],
+      "@arena/persistence": ["../../packages/persistence/src/index.ts"],
+      "@arena/protocol-core": ["../../packages/protocol-core/src/index.ts"],
+      "@arena/escalation": ["../../packages/escalation/src/index.ts"],
+      "@arena/job-protocol": ["../../packages/job-protocol/src/index.ts"],
+      "vitest": ["../../services/escalation-api/node_modules/vitest/dist/index.d.ts"]
+    }
+  },
+  "include": ["**/*.ts", "vitest.config.ts"]
+}
