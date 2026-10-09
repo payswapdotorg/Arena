@@ -173,3 +173,17 @@ For every P work order record exact base/head SHAs, owned/excluded paths, issue/
 5. Distinguish implemented code, automated-test pass, local proof, hosted proof and production/commercial approval in every status statement.
 
 Arena's source tree and evidence artifacts—not chat—are the continuation contract.
+
+
+GitHub tracking issues for the P-series:
+- P000 handoff/governance registration: issue #152, PR #151.
+- P001 architecture-question closure: issue #153.
+- P002 durable runtime/persistence/jobs: issue #154.
+- P003 HTTP/MCP/webhook host: issue #155.
+- P004 hosted-provider lifecycle: issue #156.
+- P005 route inventory/mounts/UX: issue #157.
+- P006 generic-app + Epoch integration: issue #158.
+- P007 security/privacy/resilience: issue #159.
+- P008 final evidence/release governance: issue #160.
+
+Do not dispatch P001 until PR #151 is merged; after that, recompute live main, issue dependencies and branch ownership before starting work.
