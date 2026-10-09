@@ -240,3 +240,32 @@ Next program: P001–P008 defined in spec/post-roadmap-production-work-items.md 
 Critical limitations: reference fabrics remain in-memory in multiple services; C019's generic client is in-process rather than a deployed HTTP host and does not exercise MCP; G002 did not directly prove Neon migration/connectivity, R2 bucket was empty, and Upstash PING alone does not prove coordination; the launch-checklist matrix is stale at 7/69; /tasks has a minor route-surface concern; current hosted availability was not re-probed in this 2026-10-09 review; branch protection could not be verified by the connected GitHub integration. See docs/LLM-ARCHITECT-FINAL-HANDOFF.md and the new P work items.
 
 Do not restart A/B/G/C. Do not claim production/commercial readiness from reference-fabric tests or a successful build alone.
+
+## P000 ACCEPTANCE AND WAVE-0 AUTHORIZATION (2026-10-09, TL)
+
+PR #151 (P000 final TL handoff, head 6e8e944) was merged by the TL at main 42f7ac8 after
+the repository's normal merge gate: CI Battery success on the exact head SHA
+(install/governance/boundary/typecheck/lint/test/build), mergeable state clean against
+07a6b72, and TL content review of the work-items P1.0, dependency-graph P1.0, final
+handoff doc, reconciled continuation records and the P-series registry/checker intake.
+Issue #152 (P000) closed by the merge; issues #153-#160 track P001-P008.
+
+The P008 release gate is now defined at spec/post-roadmap-release-gate.md (registered as
+a P008 owned surface): evidence classes (DEMONSTRATED-LIVE / AUTOMATED-TEST-ONLY / OPEN /
+BLOCKED / WAIVED), five hard gates (commercial boundary, tenant isolation/fail-closed,
+deployed-artifact-SHA linkage, branch protection, checklist completeness), the minimum
+evidence bundle mapping the handoff's material limitations, GO/NO-GO criteria and release
+artifacts.
+
+Frontier advanced on live main: P001 AUTHORIZED (wave 0 — architecture-question closure
+over PRs #129-#150 and the C-series harvest in spec/PROJECT-STATE.md; owned surfaces
+docs/architecture-review/* and docs/decisions/post-roadmap/*). Dependencies revalidated
+from live main post-merge per the work-items rule. P002/P004/P005 dispatch waits on
+P001's blocking decisions; maximum three concurrent workers on disjoint surfaces.
+
+Release boundary preserved: roadmap completion is not production readiness. In-memory
+reference fabrics, incomplete direct Neon proof, the empty-bucket R2 state,
+PING-only Upstash evidence, the three unnamed unmounted web surfaces, the /tasks UX
+finding, the 7/69 launch checklist, the 2026-10-07-dated hosted probes, the unverified
+branch protection and the unsettled commercial payment responsibilities all remain open
+and are tracked by the P-series. No live-money claim before the hard gates clear.

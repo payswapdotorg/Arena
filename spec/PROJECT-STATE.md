@@ -309,7 +309,8 @@ boundary of issue #102, provisioned ahead of the B019 merge):
 - GitHub repository secrets VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID
   injected — deploy-preview.yml is now unblocked on push to main.
 
-- P001 READY
+- P000 MERGED
+- P001 AUTHORIZED
 
 ## Long-term product direction
 

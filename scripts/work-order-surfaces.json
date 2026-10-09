@@ -629,7 +629,8 @@
         "release/evidence/production/*",
         "docs/LLM-ARCHITECT-FINAL-HANDOFF.md",
         "AI_CONTINUATION.md",
-        "spec/PROJECT-STATE.md"
+        "spec/PROJECT-STATE.md",
+        "spec/post-roadmap-release-gate.md"
       ]
     }
   }
