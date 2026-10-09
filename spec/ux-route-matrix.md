@@ -22,7 +22,8 @@ The active role is a UI context. Permission checks remain server-side/policy-dri
 | /tasks/:id | task outcome | task design | execute/review | rubric | benchmark | run health | — | policy |
 | /bodies | used bodies | body library | expertise context | tested bodies | study population | runtime health | available releases | governance |
 | /bodies/:id | adopt/inspect | build/improve | review | certify | compare | runtime | license/offer | policy |
-| /runs/:id | outcome | debug | work replay | evaluation | analysis | incident | — | audit |
+| /replay | run history | debug stream | replayable work | evaluation history | analysis runs | job runs | — | audit index |
+| /replay/[runKey] | outcome | debug | work replay | evaluation | analysis | incident | — | audit |
 | /research | — | experiments | — | suites | benchmark lab | — | public research | — |
 | /marketplace | browse | publish/use | sell expertise | publish evaluator | publish dataset | — | buy/sell | policy |
 | /operations | — | — | — | — | — | jobs/SLO/quota | — | audit |
@@ -74,3 +75,12 @@ Use shared visual vocabulary for:
 - demo.
 
 The UI must not represent these as equivalent badges.
+
+## Revision notes
+
+- **UXM1.0-r1 (2026-10-09):** run-detail row reconciled with the served router —
+  `/runs/:id` renamed to `/replay/[runKey]`, and the `/replay` run-list row added
+  (it previously had no matrix row). Capability cells unchanged; no route was added,
+  removed, or re-pointed. Closes findings-register F-06 (naming drift only — no
+  missing capability; origin: P005 route-inventory §3 divergence note, run list
+  served at `/replay`, detail at `/replay/[runKey]`).
